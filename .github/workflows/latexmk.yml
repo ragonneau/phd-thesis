@@ -1,0 +1,33 @@
+# .github/workflows/latexmk.yml
+# GitHub Actions configuration file for latexmk
+# See https://github.com/hspaans/latexmk-action for details
+
+
+name: latexmk
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  run:
+    name: Run latexmk
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout phd-thesis
+        uses: actions/checkout@v2
+
+      - name: Generate PDF document
+        uses: hspaans/latexmk-action@v1.1.0
+        with:
+          format: pdf
+          filename: main.tex
+
+      - name: Store artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: *.pdf
