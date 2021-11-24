@@ -30,4 +30,5 @@ jobs:
       - name: Store artifacts
         uses: actions/upload-artifact@v2
         with:
-          path: *.pdf
+          name: thesis
+          path: ./*.pdf
