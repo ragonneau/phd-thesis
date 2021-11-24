@@ -1,3 +1,4 @@
+# LaTeX
 ## Core latex/pdflatex auxiliary files
 *.aux
 *.lof
@@ -37,52 +38,52 @@
 *.pdfsync
 
 ## Build tool directories for auxiliary files
-# latexrun
+### latexrun
 latex.out/
 
 ## Auxiliary and intermediate files from other packages
-# algorithms
+### algorithms
 *.alg
 *.loa
 
-# achemso
+### achemso
 acs-*.bib
 
-# amsthm
+### amsthm
 *.thm
 
-# beamer
+### beamer
 *.nav
 *.pre
 *.snm
 *.vrb
 
-# changes
+### changes
 *.soc
 
-# comment
+### comment
 *.cut
 
-# cprotect
+### cprotect
 *.cpt
 
-# elsarticle (documentclass of Elsevier journals)
+### elsarticle (documentclass of Elsevier journals)
 *.spl
 
-# endnotes
+### endnotes
 *.ent
 
-# fixme
+### fixme
 *.lox
 
-# feynmf/feynmp
+### feynmf/feynmp
 *.mf
 *.mp
 *.t[1-9]
 *.t[1-9][0-9]
 *.tfm
 
-#(r)(e)ledmac/(r)(e)ledpar
+### (r)(e)ledmac/(r)(e)ledpar
 *.end
 *.?end
 *.[1-9]
@@ -98,7 +99,7 @@ acs-*.bib
 *.eledsec[1-9][0-9][0-9]
 *.eledsec[1-9][0-9][0-9]R
 
-# glossaries
+### glossaries
 *.acn
 *.acr
 *.glg
@@ -108,18 +109,18 @@ acs-*.bib
 *.lzo
 *.lzs
 
-# glossaries-extra
+### glossaries-extra
 *.ist
 
-# gnuplottex
+### gnuplottex
 *-gnuplottex-*
 
-# gregoriotex
+### gregoriotex
 *.gaux
 *.glog
 *.gtex
 
-# htlatex
+### htlatex
 *.4ct
 *.4tc
 *.idv
@@ -127,25 +128,25 @@ acs-*.bib
 *.trc
 *.xref
 
-# hyperref
+### hyperref
 *.brf
 
-# knitr
+### knitr
 *-concordance.tex
 *-tikzDictionary
 
-# listings
+### listings
 *.lol
 
-# luatexja-ruby
+### luatexja-ruby
 *.ltjruby
 
-# makeidx
+### makeidx
 *.idx
 *.ilg
 *.ind
 
-# minitoc
+### minitoc
 *.maf
 *.mlf
 *.mlt
@@ -154,97 +155,102 @@ acs-*.bib
 *.slt[0-9]*
 *.stc[0-9]*
 
-# minted
+### minted
 _minted*
 *.pyg
 
-# morewrites
+### morewrites
 *.mw
 
-# newpax
+### newpax
 *.newpax
 
-# nomencl
+### nomencl
 *.nlg
 *.nlo
 *.nls
 
-# pax
+### pax
 *.pax
 
-# pdfpcnotes
+### pdfpcnotes
 *.pdfpc
 
-# sagetex
+### sagetex
 *.sagetex.sage
 *.sagetex.py
 *.sagetex.scmd
 
-# scrwfile
+### scrwfile
 *.wrt
 
-# sympy
+### sympy
 *.sout
 *.sympy
 sympy-plots-for-*.tex/
 
-# pdfcomment
+### pdfcomment
 *.upa
 *.upb
 
-# pythontex
+### pythontex
 *.pytxcode
 pythontex-files-*/
 
-# tcolorbox
+### tcolorbox
 *.listing
 
-# thmtools
+### thmtools
 *.loe
 
-# TikZ & PGF
+### TikZ & PGF
 *.dpth
 *.md5
 *.auxlock
 
-# todonotes
+### todonotes
 *.tdo
 
-# vhistory
+### vhistory
 *.hst
 *.ver
 
-# easy-todo
+### easy-todo
 *.lod
 
-# xcolor
+### xcolor
 *.xcp
 
-# xmpincl
+### xmpincl
 *.xmpi
 
-# xindy
+### xindy
 *.xdy
 
-# xypic precompiled matrices and outlines
+### xypic precompiled matrices and outlines
 *.xyc
 *.xyd
 
-# endfloat
+### endfloat
 *.ttt
 *.fff
 
-# Latexian
+### Latexian
 TSWLatexianTemp*
 
-# standalone
+### standalone
 *.sta
 
-# Makeindex log files
+### Makeindex log files
 *.lpz
 
-# xwatermark
+### xwatermark
 *.xwm
 
-## Editors
+# Visual Studio Code
 .vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
