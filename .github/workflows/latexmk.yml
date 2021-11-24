@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout phd-thesis
         uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
       - name: Generate PDF document
         uses: hspaans/latexmk-action@v1.1.0
