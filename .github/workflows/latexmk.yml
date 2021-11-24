@@ -29,8 +29,12 @@ jobs:
           format: pdf
           filename: main.tex
 
+      - name: Rename PDF document
+        run: mv main.pdf thesis_$(date "+%Y-%m-%dT%H-%M-%S").pdf
+
       - name: Store artifacts
         uses: actions/upload-artifact@v2
         with:
           name: thesis
           path: ./*.pdf
+          if-no-files-found: error
