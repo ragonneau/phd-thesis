@@ -1,0 +1,53 @@
+%%
+%% This is method.tex.
+%% A content TeX-file of the Ph.D. thesis of Tom M. Ragonneau.
+%% It follows the requirements of The Hong Kong Polytechnic University.
+%%
+%% It may be distributed and/or modified under the conditions of the
+%% LaTeX Project Public License, either version 1.3 of this license or
+%% (at your option) any later version. The latest version of this
+%% license is in
+%%     http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2003/12/01 or later.
+%%
+%% This work has the LPPL maintenance status 'maintained'.
+%%
+%% The Current Maintainer of this work is Tom M. Ragonneau.
+%%
+\chapter{A derivative-free composite-step trust-region \glsfmtshort{sqp} framework}
+
+\section{Context of the study}
+
+\subsection{Statement of the problem}
+
+We consider the nonlinearly-constrained optimization problem
+
+\begin{subequations}
+    \label{eq:nlcp}
+    \begin{align}
+        \min        & \quad \obj(x) \label{eq:nlcp-obj}\\
+        \text{s.t.} & \quad \con{i}(x) \le 0, ~ i \in \iub, \label{eq:nlcp-cub}\\
+                    & \quad \con{i}(x) = 0, ~ i \in \ieq, \label{eq:nlcp-ceq}\\
+                    & \quad \bl \le x \le \bu, \label{eq:nlcp-bds}\\
+                    & \quad x \in \R^n. \nonumber
+    \end{align}
+\end{subequations}
+\nomenclature[F]{$\obj$}{Objective function of the nonlinear optimization problem}%
+\nomenclature[F]{$\con{i}$}{Constraint functions of the nonlinear optimization problem, with $i \in \iub \cup \ieq$}%
+\nomenclature[S]{$\iub$}{Indices of the inequality constraints of the nonlinear optimization problem}%
+\nomenclature[S]{$\ieq$}{Indices of the equality constraints of the nonlinear optimization problem}%
+where the objective and constraint functions~$f$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and the bound vectors~$\bl \in \R^n$ and~$\bu \in \R^n$ satisfy~$\bl < \bu$.
+Such an assumption on the bound constraints~\eqref{eq:nlcp-bds} is not restrictive as problem~\eqref{eq:nlcp} would otherwise either be infeasible (if~$\bl_j > \bu_j$ for some~$j \in \set{1, 2, \dots, n}$) or admit fixed variables (corresponding to the indices~$j \in \set{1, 2, \dots, n}$ for which~$\bl_j = \bu_j$).
+Moreover, we define the Lagrangian function~$\lag$ of problem~\eqref{eq:nlcp} as
+
+\begin{equation}
+    \label{eq:lag}
+    \lag(x, \lambda) = \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x),
+\end{equation}
+\nomenclature[F]{$\lag$}{Lagrangian function of the nonlinear optimization problem}%
+where~$\lambda_i \in \R$, with~$i \in \iub \cup \ieq$, are referred to as the Lagrange multipliers.
+
+\subsection{Comprehensive literature review}
+
+The \gls{sqp} framework~\cite{Han_1976,Han_1977,Powell_1978a,Powell_1978b,Wilson_1963}

@@ -17,6 +17,12 @@
 %%
 \renewcommand{\nomname}{List of Symbols}
 \renewcommand{\pagedeclaration}[1]{\unskip. \hyperpage{#1}}
+\renewcommand{\nomgroup}[1]{\vspace*{\baselineskip}\item[\bfseries%
+    \ifthenelse{\equal{#1}{C}}{Constants}{%
+    \ifthenelse{\equal{#1}{F}}{Functions}{%
+    \ifthenelse{\equal{#1}{O}}{Operators}{%
+    \ifthenelse{\equal{#1}{S}}{Sets}{}}}}
+]}
 \renewcommand{\nompreamble}{In what follows, the descriptions of the mathematical symbols are suffixed with the page numbers of their introductory uses for referencing.}
 
 \printnomenclature

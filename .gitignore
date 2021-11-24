@@ -15,6 +15,7 @@
 
 ## Intermediate documents
 *.dvi
+*.pdf
 *.xdv
 *-converted-to.*
 
@@ -253,4 +254,5 @@ TSWLatexianTemp*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/ltex.dictionary.*.txt
 *.code-workspace
