@@ -30,7 +30,7 @@ jobs:
           filename: main.tex
 
       - name: Rename PDF document
-        run: mv main.pdf thesis_$(date "+%FT%T%Z").pdf
+        run: mv main.pdf thesis_$(date "+%FT%H-%M-%S%Z").pdf
 
       - name: Store artifacts
         uses: actions/upload-artifact@v2
