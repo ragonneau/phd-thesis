@@ -39,7 +39,8 @@ We consider the nonlinearly-constrained optimization problem
 \nomenclature[S]{$\ieq$}{Indices of the equality constraints of the nonlinear optimization problem}%
 where the objective and constraint functions~$f$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and the bound vectors~$\bl \in \R^n$ and~$\bu \in \R^n$ satisfy~$\bl < \bu$.
 Such an assumption on the bound constraints~\eqref{eq:nlcp-bds} is not restrictive as problem~\eqref{eq:nlcp} would otherwise either be infeasible (if~$\bl_j > \bu_j$ for some~$j \in \set{1, 2, \dots, n}$) or admit fixed variables (corresponding to the indices~$j \in \set{1, 2, \dots, n}$ for which~$\bl_j = \bu_j$).
-Moreover, we define the Lagrangian function~$\lag$ of problem~\eqref{eq:nlcp} as
+
+We define the Lagrangian function~$\lag$ of problem~\eqref{eq:nlcp} as
 
 \begin{equation}
     \label{eq:lag}
