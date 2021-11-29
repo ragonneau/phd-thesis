@@ -24,7 +24,20 @@
 \usepackage{dsfont}
 \usepackage{empheq}
 \usepackage{bm}
+\usepackage[theorems,skins]{tcolorbox}
 \usepackage{xargs}
+
+% Define the mathematical alphabet to the kernel one
+% \DeclareSymbolFont{operators}{OT1}{cmr}{m}{n}
+% \DeclareSymbolFont{letters}{OML}{cmm}{m}{it}
+% \DeclareSymbolFont{symbols}{OMS}{cmsy}{m}{n}
+% \DeclareSymbolFontAlphabet{\mathrm}{operators}
+% \DeclareSymbolFontAlphabet{\mathnormal}{letters}
+% \DeclareSymbolFontAlphabet{\mathcal}{symbols}
+% \DeclareMathAlphabet{\mathbf}{OT1}{cmr}{bx}{n}
+% \DeclareMathAlphabet{\mathsf}{OT1}{cmss}{m}{n}
+% \DeclareMathAlphabet{\mathit}{OT1}{cmr}{m}{it}
+% \DeclareMathAlphabet{\mathtt}{OT1}{cmtt}{m}{n}
 
 % General aspect of the mathematical expressions and environments
 \numberwithin{equation}{section}
@@ -73,6 +86,30 @@
 \newtheorem*{claim}{Claim}
 \newtheorem*{note}{Note}
 \newtheorem*{remark}{Remark}
+
+% Display mathematical environments in boxes
+\tcbset{
+    after skip=\baselineskip,
+    before skip=\baselineskip,
+    boxrule=0pt,
+    colback=gray!15,
+    enhanced jigsaw,
+    frame hidden,
+}
+\tcolorboxenvironment{assumption}{borderline west={4pt}{0pt}{CadetBlue}}
+\tcolorboxenvironment{condition}{borderline west={4pt}{0pt}{CadetBlue}}
+\tcolorboxenvironment{definition}{borderline west={4pt}{0pt}{PineGreen}}
+\tcolorboxenvironment{example}{borderline west={4pt}{0pt}{Orchid}}
+\tcolorboxenvironment{problem}{borderline west={4pt}{0pt}{Orchid}}
+\tcolorboxenvironment{conjecture}{borderline west={4pt}{0pt}{WildStrawberry}}
+\tcolorboxenvironment{proposition}{borderline west={4pt}{0pt}{WildStrawberry}}
+\tcolorboxenvironment{theorem}{borderline west={4pt}{0pt}{WildStrawberry}}
+\tcolorboxenvironment{corollary}{borderline west={4pt}{0pt}{WildStrawberry}}
+\tcolorboxenvironment{lemma}{borderline west={4pt}{0pt}{WildStrawberry}}
+\tcolorboxenvironment{annotation}{borderline west={4pt}{0pt}{Melon}}
+\tcolorboxenvironment{claim}{borderline west={4pt}{0pt}{Melon}}
+\tcolorboxenvironment{note}{borderline west={4pt}{0pt}{Melon}}
+\tcolorboxenvironment{remark}{borderline west={4pt}{0pt}{Melon}}
 
 % Fine-tuning spacing in formulas
 % Make @ behave as per catcode 13 (active). The TeXbook, p. 155.

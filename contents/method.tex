@@ -22,7 +22,6 @@
 \subsection{Statement of the problem}
 
 We consider the nonlinearly-constrained optimization problem
-
 \begin{subequations}
     \label{eq:nlcp}
     \begin{align}
@@ -37,17 +36,25 @@ We consider the nonlinearly-constrained optimization problem
 \nomenclature[F]{$\con{i}$}{Constraint functions of the nonlinear optimization problem, with $i \in \iub \cup \ieq$}%
 \nomenclature[S]{$\iub$}{Indices of the inequality constraints of the nonlinear optimization problem}%
 \nomenclature[S]{$\ieq$}{Indices of the equality constraints of the nonlinear optimization problem}%
-where the objective and constraint functions~$f$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and the bound vectors~$\bl \in \R^n$ and~$\bu \in \R^n$ satisfy~$\bl < \bu$.
-Such an assumption on the bound constraints~\eqref{eq:nlcp-bds} is not restrictive as problem~\eqref{eq:nlcp} would otherwise either be infeasible (if~$\bl_j > \bu_j$ for some~$j \in \set{1, 2, \dots, n}$) or admit fixed variables (corresponding to the indices~$j \in \set{1, 2, \dots, n}$ for which~$\bl_j = \bu_j$).
+where the objective and constraint functions~$f$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and the bound vectors~$\bl, \bu \in (\R \cup \set{\pm \infty})^n$ satisfy~$\bl < \bu$.
+Such an assumption on the bound constraints~\eqref{eq:nlcp-bds} is not restrictive as problem~\eqref{eq:nlcp} would otherwise either be infeasible (if~$\bl_j > \bu_j$ for some~$j \in \set{1, 2, \dots, n}$) or admit fixed variables (the indices~$j \in \set{1, 2, \dots, n}$ for which~$\bl_j = \bu_j$).
+Some bound constraint components may be set to~$\pm \infty$ to indicate that there is no bound constraint on the corresponding components of the decision variable.
+In opposition to the general constraints~\eqref{eq:nlcp-cub} and~\eqref{eq:nlcp-ceq}, we assume that the bound constraints~\eqref{eq:nlcp-bds} cannot be violated, as they often represent inalienable physical or theoretical constraints of industrial or research applications.
+We study problem~\eqref{eq:nlcp} in \gls{dfo} settings, so that we do not required any derivative information on the functions~$f$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$.
+We may require some smoothness assumptions in theoretical considerations, but the algorithms we deem do not use such information, as it may be prohibitively expensive to evaluate, unknown, or even undefined.
 
-We define the Lagrangian function~$\lag$ of problem~\eqref{eq:nlcp} as
+\subsection{Expected outcomes of the study}
 
-\begin{equation}
-    \label{eq:lag}
-    \lag(x, \lambda) = \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x),
-\end{equation}
-\nomenclature[F]{$\lag$}{Lagrangian function of the nonlinear optimization problem}%
-where~$\lambda_i \in \R$, with~$i \in \iub \cup \ieq$, are referred to as the Lagrange multipliers.
+We aim at developing a derivative-free method for solving problem~\eqref{eq:nlcp}.
+We are not interested in this study in finding global minimizer (if any) of problem~\eqref{eq:nlcp}, as such a problem is tremendously difficult, even in gradient-based settings.
+We are rather interested in finding stationary points of problem~\eqref{eq:nlcp}, as defined below.
+
+% \begin{equation}
+%     \label{eq:nlcp-lag}
+%     \lag(x, \lambda) = \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x),
+% \end{equation}
+% \nomenclature[F]{$\lag$}{Lagrangian function of the nonlinear optimization problem}%
+% where~$\lambda_i \in \R$, with~$i \in \iub \cup \ieq$, are referred to as the Lagrange multipliers.
 
 \subsection{Comprehensive literature review}
 
