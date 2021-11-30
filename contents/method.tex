@@ -46,8 +46,14 @@ We may require some smoothness assumptions in theoretical considerations, but th
 \subsection{Expected outcomes of the study}
 
 We aim at developing a derivative-free method for solving problem~\eqref{eq:nlcp}.
-We are not interested in this study in finding global minimizer (if any) of problem~\eqref{eq:nlcp}, as such a problem is tremendously difficult, even in gradient-based settings.
-We are rather interested in finding stationary points of problem~\eqref{eq:nlcp}, as defined below.
+We are not interested in this study in finding global minimizer (if any) of problem~\eqref{eq:nlcp}, as such a problem is tremendously difficult, even in gradient-based settings, but rather in finding stationary points of problem~\eqref{eq:nlcp}, as defined below.
+
+We denote for convenience~$\Omega \subseteq \R^n$ the feasible set of problem~\eqref{eq:nlcp}, that is the set of points that satisfy the constraints~\eqref{eq:nlcp-cub},~\eqref{eq:nlcp-ceq}, and~\eqref{eq:nlcp-bds}.
+
+\begin{definition}
+    For problem~\eqref{eq:nlcp}, a vector~$x^{\ast} \in \Omega$ is referred to as a \emph{local solution} if there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) \ge \obj(x^{\ast})$ holds for all~$x \in \mathcal{N} \cap \Omega$.
+    It is a \emph{strict local solution} if the above inequality is strict for all~$x \in \mathcal{N} \cap \Omega \setminus \set{x^{\ast}}$ and \emph{isolated} if it is the only local solution in a given neighborhood.
+\end{definition}
 
 % \begin{equation}
 %     \label{eq:nlcp-lag}

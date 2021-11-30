@@ -30,7 +30,6 @@
 ]{cmbright}
 \usepackage{nameref}
 \usepackage{titling}
-\usepackage{enumitem}
 \usepackage{morewrites}
 
 % Cross-referencing and colorization
@@ -48,6 +47,11 @@
     urlcolor=black,
     linktoc=page,
 }
+
+% Extend the list of base directories
+\makeatletter
+\def\input@path{{imgs/}{imgs/logos/}{utils/}{contents/}}
+\makeatother
 
 % Page headers and footers
 \usepackage{fancyhdr}
@@ -96,10 +100,10 @@
 % Support for Chinese characters
 \usepackage{CJKutf8}
 
-% Extend the list of base directories
-\makeatletter
-\def\input@path{{imgs/}{imgs/logos/}{utils/}{contents/}}
-\makeatother
+% Customize list environments
+\usepackage{enumitem}
+\setlist[itemize]{nosep,label=--}
+\setlist[enumerate]{nosep}
 
 % Mathematical expressions
 \input{utils/mathematics}
