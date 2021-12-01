@@ -24,7 +24,7 @@ jobs:
           submodules: true
 
       - name: Generate PDF document
-        uses: hspaans/latexmk-action@v1.1.0
+        uses: hspaans/latexmk-action@v1.1.1
         with:
           format: pdf
           filename: main.tex
