@@ -2,7 +2,6 @@
 # GitHub Actions configuration file for latexmk
 # See https://github.com/hspaans/latexmk-action for details
 
-
 name: latexmk
 
 on:
