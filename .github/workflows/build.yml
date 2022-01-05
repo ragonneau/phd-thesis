@@ -1,8 +1,8 @@
-# .github/workflows/latexmk.yml
-# GitHub Actions configuration file for latexmk
-# See https://github.com/hspaans/latexmk-action for details
+# .github/workflows/build.yml
+# GitHub Actions configuration file for latex
+# See https://github.com/xu-cheng/latex-action for details
 
-name: latexmk
+name: Build
 
 on:
   push:
@@ -13,20 +13,22 @@ on:
 
 jobs:
   run:
-    name: Run latexmk
+    name: Build LaTeX document
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout phd-thesis
+      - name: Checkout repository
         uses: actions/checkout@v2
         with:
           submodules: true
 
       - name: Generate PDF document
-        uses: hspaans/latexmk-action@v1.1.1
+        uses: xu-cheng/latex-action@v2
         with:
-          format: pdf
-          filename: main.tex
+          root_file: main.tex
+          args: -file-line-error -halt-on-error -interaction=nonstopmode
+          pre_compile: "tlmgr update --self && tlmgr update --all"
+          latexmk_shell_escape: true
 
       - name: Rename PDF document
         run: mv main.pdf thesis_$(date "+%FT%H-%M-%S%Z").pdf
@@ -34,6 +36,6 @@ jobs:
       - name: Store artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: thesis
+          name: Dissertation
           path: thesis_*.pdf
           if-no-files-found: error

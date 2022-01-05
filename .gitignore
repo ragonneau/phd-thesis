@@ -15,9 +15,11 @@
 
 ## Intermediate documents
 *.dvi
-*.pdf
 *.xdv
 *-converted-to.*
+*.ps
+*.eps
+*.pdf
 
 ## Generated if empty string is given at "Please type another file name for output:"
 .pdf
@@ -109,9 +111,16 @@ acs-*.bib
 *.glsdefs
 *.lzo
 *.lzs
+*.slg
+*.slo
+*.sls
 
 ### glossaries-extra
 *.ist
+
+### gnuplot
+*.gnuplot
+*.table
 
 ### gnuplottex
 *-gnuplottex-*
@@ -134,6 +143,7 @@ acs-*.bib
 
 ### knitr
 *-concordance.tex
+*.tikz
 *-tikzDictionary
 
 ### listings
@@ -185,6 +195,9 @@ _minted*
 ### scrwfile
 *.wrt
 
+### svg
+svg-inkscape/
+
 ### sympy
 *.sout
 *.sympy
@@ -208,6 +221,9 @@ pythontex-files-*/
 *.dpth
 *.md5
 *.auxlock
+
+### titletoc
+*.ptc
 
 ### todonotes
 *.tdo
@@ -239,19 +255,23 @@ pythontex-files-*/
 ### Latexian
 TSWLatexianTemp*
 
-### standalone
-*.sta
-
-### Makeindex log files
-*.lpz
-
-### xwatermark
-*.xwm
-
 # Visual Studio Code
+## User and workspace settings
 .vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/*.code-snippets
 *.code-workspace
+
+## Local history
+.history/
+
+## Built visual studio code extensions
+*.vsix
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride

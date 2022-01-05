@@ -9,7 +9,7 @@
 %% license is in
 %%     http://www.latex-project.org/lppl.txt
 %% and version 1.3 or later is part of all distributions of LaTeX
-%% version 2003/12/01 or later.
+%% version 2005/12/01 or later.
 %%
 %% This work has the LPPL maintenance status 'maintained'.
 %%
@@ -37,21 +37,21 @@ We consider the nonlinearly-constrained optimization problem
 \nomenclature[S]{$\iub$}{Indices of the inequality constraints of the nonlinear optimization problem}%
 \nomenclature[S]{$\ieq$}{Indices of the equality constraints of the nonlinear optimization problem}%
 where the objective and constraint functions~$f$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and the bound vectors~$\bl, \bu \in (\R \cup \set{\pm \infty})^n$ satisfy~$\bl < \bu$.
-Such an assumption on the bound constraints~\eqref{eq:nlcp-bds} is not restrictive as problem~\eqref{eq:nlcp} would otherwise either be infeasible (if~$\bl_j > \bu_j$ for some~$j \in \set{1, 2, \dots, n}$) or admit fixed variables (the indices~$j \in \set{1, 2, \dots, n}$ for which~$\bl_j = \bu_j$).
+Such an assumption on the bound constraints~\cref{eq:nlcp-bds} is not restrictive as problem~\cref{eq:nlcp} would otherwise either be infeasible (if~$\bl_j > \bu_j$ for some~$j \in \set{1, 2, \dots, n}$) or admit fixed variables (the indices~$j \in \set{1, 2, \dots, n}$ for which~$\bl_j = \bu_j$).
 Some bound constraint components may be set to~$\pm \infty$ to indicate that there is no bound constraint on the corresponding components of the decision variable.
-In opposition to the general constraints~\eqref{eq:nlcp-cub} and~\eqref{eq:nlcp-ceq}, we assume that the bound constraints~\eqref{eq:nlcp-bds} cannot be violated, as they often represent inalienable physical or theoretical constraints of industrial or research applications.
-We study problem~\eqref{eq:nlcp} in \gls{dfo} settings, so that we do not required any derivative information on the functions~$f$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$.
+In opposition to the general constraints~\cref{eq:nlcp-cub,eq:nlcp-ceq}, we assume that the bound constraints~\cref{eq:nlcp-bds} cannot be violated, as they often represent inalienable physical or theoretical constraints of industrial or research applications.
+We study problem~\cref{eq:nlcp} in \gls{dfo} settings, so that we do not required any derivative information on the functions~$f$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$.
 We may require some smoothness assumptions in theoretical considerations, but the algorithms we deem do not use such information, as it may be prohibitively expensive to evaluate, unknown, or even undefined.
 
 \subsection{Expected outcomes of the study}
 
-We aim at developing a derivative-free method for solving problem~\eqref{eq:nlcp}.
-We are not interested in this study in finding global minimizer (if any) of problem~\eqref{eq:nlcp}, as such a problem is tremendously difficult, even in gradient-based settings, but rather in finding stationary points of problem~\eqref{eq:nlcp}, as defined below.
+We aim at developing a derivative-free method for solving problem~\cref{eq:nlcp}.
+We are not interested in this study in finding global minimizer (if any) of problem~\cref{eq:nlcp}, as such a problem is tremendously difficult, even in gradient-based settings, but rather in finding stationary points of problem~\cref{eq:nlcp}, as defined below.
 
-We denote for convenience~$\Omega \subseteq \R^n$ the feasible set of problem~\eqref{eq:nlcp}, that is the set of points that satisfy the constraints~\eqref{eq:nlcp-cub},~\eqref{eq:nlcp-ceq}, and~\eqref{eq:nlcp-bds}.
+We denote for convenience~$\Omega \subseteq \R^n$ the feasible set of problem~\cref{eq:nlcp}, that is the set of points that satisfy the constraints~\cref{eq:nlcp-cub,eq:nlcp-ceq,eq:nlcp-bds}.
 
 \begin{definition}
-    For problem~\eqref{eq:nlcp}, a vector~$x^{\ast} \in \Omega$ is referred to as a \emph{local solution} if there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) \ge \obj(x^{\ast})$ holds for all~$x \in \mathcal{N} \cap \Omega$.
+    For problem~\cref{eq:nlcp}, a vector~$x^{\ast} \in \Omega$ is referred to as a \emph{local solution} if there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) \ge \obj(x^{\ast})$ holds for all~$x \in \mathcal{N} \cap \Omega$.
     It is a \emph{strict local solution} if the above inequality is strict for all~$x \in \mathcal{N} \cap \Omega \setminus \set{x^{\ast}}$ and \emph{isolated} if it is the only local solution in a given neighborhood.
 \end{definition}
 
@@ -62,6 +62,6 @@ We denote for convenience~$\Omega \subseteq \R^n$ the feasible set of problem~\e
 % \nomenclature[F]{$\lag$}{Lagrangian function of the nonlinear optimization problem}%
 % where~$\lambda_i \in \R$, with~$i \in \iub \cup \ieq$, are referred to as the Lagrange multipliers.
 
-\subsection{Comprehensive literature review}
+\subsection{Literature review}
 
 The \gls{sqp} framework~\cite{Han_1976,Han_1977,Powell_1978a,Powell_1978b,Wilson_1963}

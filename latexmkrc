@@ -1,10 +1,10 @@
 #=======================================================================
 #     latexmkrc
 #
-#     Configuration file for LaTeX compilation using Latexmk.
+#     Configuration file for LaTeX compilation using latexmk.
 #
-#     This is a configuration file for Latexmk.
-#     Copyright 2021 Tom M. Ragonneau.
+#     This is a configuration file for latexmk.
+#     Copyright 2021-2022 Tom M. Ragonneau.
 #=======================================================================
 
 # Generate pdf using pdflatex
