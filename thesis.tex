@@ -1,0 +1,224 @@
+%%
+%% This is thesis.tex.
+%% The main TeX-file of the Ph.D. thesis of Tom M. Ragonneau.
+%% It follows the requirements of The Hong Kong Polytechnic University.
+%%
+%% It may be distributed and/or modified under the conditions of the
+%% LaTeX Project Public License, either version 1.3 of this license or
+%% (at your option) any later version. The latest version of this
+%% license is in
+%%     http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status 'maintained'.
+%%
+%% The Current Maintainer of this work is Tom M. Ragonneau.
+%%
+\documentclass[11pt]{book}
+\usepackage[T1]{fontenc}
+\usepackage[american]{babel}
+\usepackage[a4paper]{geometry}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{csquotes}
+\usepackage{emptypage}
+\usepackage{tocbibind}
+\usepackage{microtype}
+\usepackage{nameref}
+\usepackage{titling}
+\usepackage{morewrites}
+
+% Extend the list of base directories
+\makeatletter
+\def\input@path{{imgs/}{imgs/logos/}{utils/}{contents/}}
+\makeatother
+
+% Latin and Chinese fonts
+\usepackage{lmodern}
+\usepackage{xeCJK}
+\setCJKmainfont[
+    Extension=.otf,
+    Path=fonts/NotoSerifTC/,
+    BoldFont=NotoSerifTC-Bold,
+]{NotoSerifTC-Regular}
+
+% Page headers and footers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.7pt}
+\addtolength{\headheight}{\baselineskip}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[LO]{\textsc{\nouppercase\leftmark}}
+\fancyhead[RE]{\textsc{\nouppercase\rightmark}}
+
+% List of hyphenation exceptions for US English
+% Source: https://ctan.org/tex-archive/info/digests/tugboat/hyphenex
+\input{ushyphex}
+
+% Spacing between lines
+% The Hong Kong Polytechnic University imposes a space of 1.5 or 2
+\usepackage{setspace}
+\onehalfspacing
+
+% Customize list environments
+\usepackage{enumitem}
+\setlist[itemize]{
+    topsep=\parsep,
+    itemsep=0pt,
+    label=$\vcenter{\hbox{\scriptsize$\bullet$}}$,
+}
+\setlist[enumerate]{
+    topsep=\parsep,
+    itemsep=0pt,
+}
+
+% Mathematical expressions
+\input{utils/mathematics}
+
+% Cross-referencing and colorization
+% Note: hyperref must be imported after utils/mathematics.tex
+\usepackage{hyperref}
+\usepackage{url}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=OliveGreen,
+    anchorcolor=black,
+    citecolor=MidnightBlue,
+    filecolor=black,
+    menucolor=black,
+    runcolor=black,
+    urlcolor=black,
+    linktoc=page,
+}
+
+% Automatic references
+% Note: cleveref must be imported after hyperref
+\usepackage[noabbrev]{cleveref}
+\crefname{equation}{}{}
+\Crefname{equation}{}{}
+
+% Terms and acronyms processing
+\usepackage[
+    acronym,
+    nopostdot=false,
+    nogroupskip,
+    indexonlyfirst,
+]{glossaries-extra}
+\setabbreviationstyle[acronym]{long-short}
+\setglossarystyle{super}
+\glssetcategoryattribute{\acronymtype}{glossdesc}{firstuc}
+\glssetcategoryattribute{\acronymtype}{glossnamefont}{textbf}
+\defglsentryfmt[main]{\texttt{\glsentrytext{\glslabel}}}
+\renewcommand*{\glsfirstlongdefaultfont}[1]{\emph{#1}}
+\makeglossaries
+\glsdisablehyper
+\loadglsentries{utils/glossary}
+
+% Index processing
+\usepackage{makeidx}
+\usepackage[columns=2,totoc]{idxlayout}
+\newcommand{\tb}[1]{#1\kern.15em t}  % indicates a table
+\newcommand{\fb}[1]{#1\kern.15em f}  % indicates a figure
+\newcommand{\nb}[1]{#1\kern.15em n}  % indicates a footnote
+\makeindex
+
+% Nomenclature processing
+\usepackage[refpage,nocfg,intoc]{nomencl}
+\setlength{\nomitemsep}{-\parsep}
+\makenomenclature
+
+% Environments for writing algorithms
+\usepackage[
+    ruled,
+    algochapter,
+    dotocloa,
+    lined,
+    longend,
+    linesnumbered,
+]{algorithm2e}
+
+% Enhanced support for graphics
+\usepackage{graphicx}
+
+% Bibliography information processing
+\usepackage[
+    style=numeric-comp,
+    sorting=nyt,
+    sortcites,
+    backref,
+    backrefstyle=three,
+]{biblatex}
+\DefineBibliographyStrings{american}{
+    backrefpage={Cited on p.},
+    backrefpages={Cited on pp.},
+}
+\addbibresource{ragonneau-bib/strings.bib}
+\addbibresource{ragonneau-bib/optim.bib}
+
+% Thesis metadata
+\usepackage[en-US]{datetime2}
+\title{Model-Based Derivative-Free Optimization Methods and Software}
+\author{Tom M. Ragonneau}
+\DTMsavedate{ini}{2022-04-01}  % date of creation
+\DTMsavedate{rev}{2022-09-01}  % date of revision
+\date{\DTMusedate{ini}}
+\def\degree{Doctor of Philosophy}
+\def\university{The Hong Kong Polytechnic University}
+\def\department{Department of Applied Mathematics}
+\hypersetup{
+    pdftitle=\thetitle,
+    pdfauthor=\theauthor,
+    pdfsubject={},
+    pdfkeywords={},
+}
+
+\begin{document}
+
+\frontmatter
+
+\hypersetup{pageanchor=false}
+\include{coverpage}
+\include{typeset}
+\include{titlepage}
+\hypersetup{pageanchor=true}
+
+\include{certificate}
+
+\include{dedication}
+\include{abstract}
+\include{acknowledgments}
+
+\cleardoublepage
+\tableofcontents
+
+\cleardoublepage
+\listoffigures
+
+\cleardoublepage
+\listoftables
+
+\cleardoublepage
+\listofalgorithms
+
+\cleardoublepage
+\printglossary[type=\acronymtype]
+
+\cleardoublepage
+\include{nomenclature}
+
+\mainmatter
+
+\include{introduction}
+\include{method}
+\include{conclusion}
+
+\appendix
+
+\cleardoublepage
+\printbibliography[heading=bibintoc]
+
+\cleardoublepage
+\include{index}
+
+\end{document}
