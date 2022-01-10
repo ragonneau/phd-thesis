@@ -2,7 +2,7 @@
 # GitHub Actions configuration file for latex
 # See https://github.com/xu-cheng/latex-action for details
 
-name: Build
+name: build
 
 on:
   push:
