@@ -30,10 +30,10 @@ We consider the nonlinearly-constrained optimization problem
                     & \quad x \in \R^n. \nonumber
     \end{align}
 \end{subequations}
-\nomenclature[F]{$\obj$}{Objective function of the nonlinear optimization problem}%
-\nomenclature[F]{$\con{i}$}{Constraint functions of the nonlinear optimization problem, with $i \in \iub \cup \ieq$}%
-\nomenclature[S]{$\iub$}{Indices of the inequality constraints of the nonlinear optimization problem}%
-\nomenclature[S]{$\ieq$}{Indices of the equality constraints of the nonlinear optimization problem}%
+\nomenclature[F]{$\obj$}{Objective function}%
+\nomenclature[F]{$\con{i}$}{Constraint functions, with $i \in \iub \cup \ieq$}%
+\nomenclature[S]{$\iub$}{Indices of the inequality constraints}%
+\nomenclature[S]{$\ieq$}{Indices of the equality constraints}%
 where the objective and constraint functions~$f$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and the bound vectors~$\bl, \bu \in (\R \cup \set{\pm \infty})^n$ satisfy~$\bl < \bu$.
 Such an assumption on the bound constraints~\cref{eq:nlcp-bds} is not restrictive as problem~\cref{eq:nlcp} would otherwise either be infeasible (if~$\bl_j > \bu_j$ for some~$j \in \set{1, 2, \dots, n}$) or admit fixed variables (the indices~$j \in \set{1, 2, \dots, n}$ for which~$\bl_j = \bu_j$).
 Some bound constraint components may be set to~$\pm \infty$ to indicate that there is no bound constraint on the corresponding components of the decision variable.
