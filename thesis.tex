@@ -23,7 +23,7 @@
     includemp,
     bindingoffset=0.5cm,
     top=2.25cm,
-    left=3.75cm,
+    left=3.25cm,
     right=0.75cm,
     bottom=1.5cm,
     marginparwidth=1.75cm,
@@ -32,13 +32,14 @@
 ]{geometry}
 \usepackage[dvipsnames]{xcolor}
 \usepackage[american]{babel}
-\usepackage[strict]{csquotes}
+\usepackage{csquotes}
 \usepackage{emptypage}
 \usepackage{tocbibind}
 \usepackage{microtype}
 \usepackage{nameref}
 \usepackage{titling}
 \usepackage{morewrites}
+\usepackage{lipsum}
 
 % Latin and Chinese fonts
 \usepackage[T1]{fontenc}
@@ -274,15 +275,19 @@
 
 \cleardoublepage
 \tableofcontents
+\markboth{\contentsname}{\contentsname}
 
 \cleardoublepage
 \listoffigures
+\markboth{\listfigurename}{\listfigurename}
 
 \cleardoublepage
 \listoftables
+\markboth{\listtablename}{\listtablename}
 
 \cleardoublepage
 \listofalgorithms
+\markboth{\listalgorithmcfname}{\listalgorithmcfname}
 
 \cleardoublepage
 \printglossary[type=\acronymtype]
