@@ -20,19 +20,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          submodules: true
+          submodules: recursive
 
-      - name: Generate PDF document
+      - name: Generate pdf document
         uses: xu-cheng/latex-action@v2
         with:
           root_file: thesis.tex
           args: -file-line-error -halt-on-error -interaction=nonstopmode
           extra_fonts: |
             ./fonts/NotoSerifTC/*.otf
+            ./fonts/Roboto/*.ttf
           pre_compile: tlmgr update --self && tlmgr update --all
           latexmk_shell_escape: true
 
-      - name: Rename PDF document
+      - name: Rename pdf document
         run: bash build_tools/github/rename.sh
 
       - name: Store artifacts

@@ -23,3 +23,4 @@ all: thesis
 .PHONY: clean
 clean:
 	$(LC) -c
+	@find . -name *.aux -type f -exec rm -rf "{}" ";"

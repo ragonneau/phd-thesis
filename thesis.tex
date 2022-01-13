@@ -1,3 +1,6 @@
+% !TeX program = XeTeX
+% !TeX encoding = utf-8
+% !TeX spellcheck = en-US
 %% thesis.tex
 %% Copyright 2021-2022 Tom M. Ragonneau
 %
@@ -13,11 +16,23 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \documentclass[11pt]{book}
-\usepackage[T1]{fontenc}
-\usepackage[american]{babel}
-\usepackage[a4paper]{geometry}
+\usepackage[
+    a4paper,
+    nohead,
+    includefoot,
+    includemp,
+    bindingoffset=0.5cm,
+    top=2.25cm,
+    left=3.75cm,
+    right=0.75cm,
+    bottom=1.5cm,
+    marginparwidth=1.75cm,
+    marginparsep=10pt,
+    footskip=2cm,
+]{geometry}
 \usepackage[dvipsnames]{xcolor}
-\usepackage{csquotes}
+\usepackage[american]{babel}
+\usepackage[strict]{csquotes}
 \usepackage{emptypage}
 \usepackage{tocbibind}
 \usepackage{microtype}
@@ -25,33 +40,96 @@
 \usepackage{titling}
 \usepackage{morewrites}
 
-% Extend the list of base directories
-\makeatletter
-\def\input@path{{imgs/}{imgs/logos/}{utils/}{contents/}}
-\makeatother
-
 % Latin and Chinese fonts
-\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{fontspec}
 \usepackage{xeCJK}
+\newfontfamily{\regularheader}[
+    Path=fonts/Roboto/,
+    Extension=.ttf,
+    UprightFont=*-Regular,
+    BoldFont=*-Bold,
+    ItalicFont=*-Italic,
+    BoldItalicFont=*-BoldItalic,
+]{Roboto}
+\setmainfont{TeX Gyre Pagella}
 \setCJKmainfont[
-    Extension=.otf,
     Path=fonts/NotoSerifTC/,
-    BoldFont=NotoSerifTC-Bold,
-]{NotoSerifTC-Regular}
+    Extension=.otf,
+    UprightFont=*-Regular,
+    BoldFont=*-Bold,
+]{NotoSerifTC}
 \setCJKmonofont[
-    Extension=.otf,
     Path=fonts/NotoSerifTC/,
+    Extension=.otf,
 ]{NotoSerifTC-Regular}
 
 % Page headers and footers
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\fancyhf{}
-\renewcommand{\headrulewidth}{0.7pt}
-\addtolength{\headheight}{\baselineskip}
-\fancyhead[LE,RO]{\thepage}
-\fancyhead[LO]{\textsc{\nouppercase\leftmark}}
-\fancyhead[RE]{\textsc{\nouppercase\rightmark}}
+\renewcommand*{\chaptermark}[1]{\markboth{\textbf{\chaptername\ \thechapter\quad}\color{NavyBlue}#1}{}}
+\renewcommand*{\sectionmark}[1]{\markright{\textbf{\thesection}\quad\color{NavyBlue}#1}}
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
+    \fancyfootoffset[OR]{1.85cm}
+    \fancyfoot[OR]{
+        \ \regularheader{\color{NavyBlue}\rule[-90pt]{1.25pt}{100pt}}\hspace*{10pt}%
+        \begin{minipage}[b]{1.5cm}
+            \normalsize\textbf{\thepage}
+        \end{minipage}%
+    }
+    \fancyfootoffset[EL]{1.85cm}
+    \fancyfoot[EL]{
+        \regularheader
+        \begin{minipage}[b]{1.5cm}
+            \raggedleft\normalsize\textbf{\thepage}
+        \end{minipage}%
+        \hspace*{10pt}{\color{NavyBlue}\rule[-90pt]{1.25pt}{100pt}}%
+    }
+}
+\fancypagestyle{main}{
+    \pagestyle{plain}
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
+    \fancyfootoffset[OR]{1.85cm}
+    \fancyfoot[OR]{
+        \ \regularheader\footnotesize\rightmark\hspace*{1pc}{\color{NavyBlue}\rule[-90pt]{1.25pt}{100pt}}\hspace*{10pt}%
+        \begin{minipage}[b]{1.5cm}
+            \normalsize\textbf{\thepage}
+        \end{minipage}%
+    }
+    \fancyfootoffset[EL]{1.85cm}
+    \fancyfoot[EL]{
+        \regularheader\footnotesize
+        \begin{minipage}[b]{1.5cm}
+            \raggedleft\normalsize\textbf{\thepage}
+        \end{minipage}%
+        \hspace*{10pt}{\color{NavyBlue}\rule[-90pt]{1.25pt}{100pt}}\hspace*{1pc}\leftmark%
+    }
+}
+\pagestyle{main}
+
+% Titles and sectioning
+\usepackage[explicit]{titlesec}
+\titleformat{\chapter}[display]
+    {\normalfont\regularheader}
+    {\vspace{-8em}\raggedleft\color{NavyBlue}{\rule[-5pt]{2pt}{5cm}\quad\fontsize{60}{60}\selectfont\thechapter}}
+    {-2.1em}
+    {\parbox[t]{\dimexpr\textwidth-4em\relax}{\raggedright\huge#1}}[\phantomsection]
+\titlespacing*{\chapter}{0pt}{0pt}{3em}
+\titleformat{\section}
+    {\normalfont\regularheader\Large}
+    {\thesection}
+    {1pc}
+    {\color{NavyBlue}#1}[\phantomsection]
+\titleformat{\subsection}
+    {\normalfont\regularheader\large}
+    {\thesubsection}
+    {1pc}
+    {\color{NavyBlue}#1}[\phantomsection]
 
 % List of hyphenation exceptions for US English
 % Source: https://ctan.org/tex-archive/info/digests/tugboat/hyphenex
@@ -64,12 +142,11 @@
 
 % Customize list environments
 \usepackage{enumitem}
-\setlist[itemize]{
+\setitemize{
     topsep=\parsep,
     itemsep=0pt,
-    label=$\vcenter{\hbox{\scriptsize$\bullet$}}$,
 }
-\setlist[enumerate]{
+\setenumerate{
     topsep=\parsep,
     itemsep=0pt,
 }
@@ -85,7 +162,7 @@
     colorlinks=true,
     linkcolor=OliveGreen,
     anchorcolor=black,
-    citecolor=MidnightBlue,
+    citecolor=RedViolet,
     filecolor=black,
     menucolor=black,
     runcolor=black,
@@ -154,6 +231,11 @@
     backrefpage={Cited on p.},
     backrefpages={Cited on pp.},
 }
+\defbibheading{bibintoc}[\bibname]{
+    \chapter*{#1}
+    \addcontentsline{toc}{chapter}{#1}
+    \markboth{#1}{#1}
+}
 \addbibresource{ragonneau-bib/strings.bib}
 \addbibresource{ragonneau-bib/optim.bib}
 
@@ -179,16 +261,16 @@
 \frontmatter
 
 \hypersetup{pageanchor=false}
-\include{coverpage}
-\include{typeset}
-\include{titlepage}
+\include{utils/coverpage}
+\include{utils/typeset}
+\include{utils/titlepage}
 \hypersetup{pageanchor=true}
 
-\include{certificate}
+\include{utils/certificate}
 
-\include{dedication}
-\include{abstract}
-\include{acknowledgments}
+\include{content/dedication}
+\include{content/abstract}
+\include{content/acknowledgments}
 
 \cleardoublepage
 \tableofcontents
@@ -206,13 +288,13 @@
 \printglossary[type=\acronymtype]
 
 \cleardoublepage
-\include{nomenclature}
+\include{utils/nomenclature}
 
 \mainmatter
 
-\include{introduction}
-\include{method}
-\include{conclusion}
+\include{content/introduction}
+\include{content/method}
+\include{content/conclusion}
 
 \appendix
 
@@ -220,6 +302,6 @@
 \printbibliography[heading=bibintoc]
 
 \cleardoublepage
-\include{index}
+\include{utils/index}
 
 \end{document}
