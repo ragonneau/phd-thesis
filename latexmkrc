@@ -13,7 +13,7 @@
 #
 # The Current Maintainer of this work is Tom M. Ragonneau.
 
-# Generate pdf using xelatex v4.51 or later.
+# Generate pdf using xelatex (latexmk v4.51 or later)
 $pdf_mode = 5;
 $postscript_mode = 0;
 $dvi_mode = 0;
@@ -22,7 +22,7 @@ $dvi_mode = 0;
 push @generated_exts, "xdv";
 
 # Remove extra extensions on clean
-$clean_ext = "bbl ist loa mw run.xml";
+$clean_ext = "bbl ist loa mw run.xml tdo";
 
 # Build dependencies for the glossaries-extra package
 add_cus_dep("acn", "acr", 0, "makeglo2gls");
