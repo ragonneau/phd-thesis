@@ -21,8 +21,8 @@
     nohead,
     includemp,
     top=33.48mm,
-    left=25.2mm,
-    right=4.8mm,
+    left=25.20mm,
+    right=4.80mm,
     bottom=33.48mm,
     marginparwidth=30mm,
     marginparsep=3mm,
@@ -98,8 +98,7 @@
     \renewcommand{\footrulewidth}{0pt}
     \fancyfootoffset[OR]{1.85cm}
     \fancyfoot[OR]{
-        \ \regularheader\footnotesize
-        \rightmark\hspace*{1pc}{\color{NavyBlue}\rule[-18.48mm]{1.25pt}{21.98mm}}\hspace*{10pt}%
+        \ \regularheader\footnotesize\rightmark\hspace*{1pc}{\color{NavyBlue}\rule[-18.48mm]{1.25pt}{21.98mm}}\hspace*{10pt}%
         \begin{minipage}[b]{1.5cm}
             \normalsize\textbf{\thepage}
         \end{minipage}%
@@ -119,8 +118,7 @@
 \usepackage[explicit]{titlesec}
 \titleformat{\chapter}[display]
     {\normalfont\regularheader}
-    {\raggedleft\vspace{-\dimexpr\baselineskip+33.48mm\relax}\color{NavyBlue}%
-        \rule[-2mm]{2pt}{45.48mm}\quad\fontsize{60}{60}\selectfont\thechapter}
+    {\raggedleft\vspace{-\dimexpr\baselineskip+33.48mm\relax}\color{NavyBlue}\rule[-2mm]{2pt}{45.48mm}\quad\fontsize{60}{60}\selectfont\thechapter}
     {-12mm}
     {\parbox[t]{\dimexpr\textwidth-35mm\relax}{\raggedright\huge#1}}[\phantomsection]
 \titlespacing*{\chapter}{0pt}{0pt}{3em}
@@ -242,17 +240,15 @@
 }
 \addbibresource{ragonneau-bib/strings.bib}
 \addbibresource{ragonneau-bib/optim.bib}
+\appto{\bibsetup}{\sloppy}
 
 \usepackage{ifdraft}
-\ifdraft{
-    \usepackage[
-        english,
-        color=BurntOrange,
-        textsize=scriptsize,
-    ]{todonotes}
-}{
-    \usepackage[disable]{todonotes}
-}
+\usepackage[
+    obeyDraft,
+    english,
+    color=BurntOrange,
+    textsize=scriptsize,
+]{todonotes}
 
 % Thesis metadata
 \usepackage[en-US]{datetime2}
