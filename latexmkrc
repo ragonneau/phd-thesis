@@ -13,7 +13,7 @@
 #
 # The Current Maintainer of this work is Tom M. Ragonneau.
 
-# Generate pdf using xelatex (latexmk v4.51 or later)
+# Generate pdf using xelatex (requires latexmk v4.51 or later)
 $pdf_mode = 5;
 $postscript_mode = 0;
 $dvi_mode = 0;

@@ -13,7 +13,7 @@
 #
 # The Current Maintainer of this work is Tom M. Ragonneau.
 LC := latexmk
-LCFLAGS := -Werror -file-line-error -halt-on-error -interaction=nonstopmode
+LCFLAGS := -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape
 
 all: thesis
 
