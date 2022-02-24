@@ -14,9 +14,90 @@
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \chapter{Some notes to include in the thesis}
 
+\nomenclature[O]{$\nabla$}{Gradient operator for real-valued functions}%
+\nomenclature[O]{$\nabla^2$}{Hessian operator for real-valued functions}%
+\nomenclature[N]{$\qedsymbol$}{End of proof}
+\nomenclature[S]{$\R$}{Set of real numbers}%
+
 \section{Maratos effect}
 
 \begin{itemize}
     \item \citeauthor{Maratos_1978} first observed in his Ph.D.\ thesis the Maratos effect occurring in line-search \gls{sqp} methods~\cite{Maratos_1978}.
     \item This defect of the line-search and trust-region \gls{sqp} methods was overcome by several techniques, including nonmonotone line-search techniques~\cite{Chamberlain_Etal_1982}, \gls{soc} techniques~\cite{Colman_Conn_1982a,Colman_Conn_1982b,Fletcher_1982,Fukushima_1986,Mayne_1980,Mayne_Polak_1982}, and the use of differentiable exact penalty functions~\cite{Powell_Yuan_1990}.
 \end{itemize}
+
+\section{Truncated conjugate gradient}
+
+\begin{subequations}
+    \label{eq:tcg}
+    \begin{align}
+        \min        & \quad \inner{g, x - x^0} + \frac{1}{2} \inner{x - x^0, H(x - x^0)} \label{eq:tcg-obj}\\
+        \text{s.t.} & \quad \xl \le x \le \xu, \label{eq:tcg-bd}\\
+                    & \quad \norm{x - x^0} \le \Delta, \label{eq:tcg-tr}\\
+                    & \quad x \in \R^n. \nonumber
+    \end{align}
+\end{subequations}
+
+\begin{algorithm}
+    \DontPrintSemicolon
+    \KwData{Vector~$g \in \R^n$, symmetric matrix~$H \in \R^{n \times n}$, trust-region center~$x^0 \in \R^n$, and trust-region radius~$\Delta > 0$ from problem~\cref{eq:tcg}.}
+    \KwResult{Approximate solution to problem~\cref{eq:tcg} when constraints~\cref{eq:tcg-bd} are not restrictive (i.e., satisfied for all~$x \in \R^n$).}
+    Set~$g^0 \gets g$ and~$d^0 \gets -g^0$\;
+    \For{$k = 0, 1, 2, \dots$}{
+        \If{$\norm{g^k} = 0$}{
+            \Return $x^k$\;
+        }
+        Set~$\bar{\alpha}_k \gets \argmax \set{\alpha \ge 0 : \norm{x^k + \alpha d^k - x^0} \le \Delta}$\;
+        \eIf{$\inner{d^k, Hd^k} \le 0$}{
+            Set~$\alpha_k \gets \bar{\alpha}_k$\;
+        }{
+            Set~$\alpha_k \gets \min \set{\bar{\alpha}_k, -\inner{g^k, d^k} / \inner{d^k, Hd^k}}$\;
+        }
+        Update~$x^{k + 1} \gets x^k + \alpha_k d^k$\;
+        \eIf{$\alpha_k = \bar{\alpha}_k$}{
+            \Return $x^{k + 1}$\;
+        }{
+            Update~$g^{k + 1} \gets g^k + \alpha_k Hd^k$\;
+        }
+        Set~$\beta_k \gets \norm{g^{k + 1}}^2 / \norm{g^k}^2$ and update~$d^{k + 1} \gets -g^k + \beta_k d^k$\;
+    }
+    \caption{Truncated conjugate gradient}
+    \label{alg:tcg}
+\end{algorithm}
+
+\begin{algorithm}
+    \DontPrintSemicolon
+    \KwData{Vector~$g \in \R^n$, symmetric matrix~$H \in \R^{n \times n}$, bounds~$\xl \in \R^n$ and~$\xu \in \R^n$, trust-region center~$x^0 \in \R^n$, and trust-region radius~$\Delta > 0$ from problem~\cref{eq:tcg}.}
+    \KwResult{Approximate solution to problem~\cref{eq:tcg}.}
+    Set~$g^0 \gets g$ and~$d^0 \gets -g^0$\;
+    \For{$k = 0, 1, 2, \dots$}{
+        \If{$\norm{g^k} = 0$}{
+            \Return $x^k$\;
+        }
+        Set~$\bar{\alpha}_k \gets \argmax \set{\alpha \ge 0 : \norm{x^k + \alpha d^k - x^0} \le \Delta}$\;
+        \eIf{$\inner{d^k, Hd^k} \le 0$}{
+            Set~$\alpha_k \gets \bar{\alpha}_k$\;
+        }{
+            Set~$\alpha_k \gets \min \set{\bar{\alpha}_k, -\inner{g^k, d^k} / \inner{d^k, Hd^k}}$\;
+        }
+        Update~$x^{k + 1} \gets x^k + \alpha_k d^k$\;
+        \eIf{$\alpha_k = \bar{\alpha}_k$}{
+            \Return $x^{k + 1}$\;
+        }{
+            Update~$g^{k + 1} \gets g^k + \alpha_k Hd^k$\;
+        }
+        Set~$\beta_k \gets \norm{g^{k + 1}}^2 / \norm{g^k}^2$ and update~$d^{k + 1} \gets -g^k + \beta_k d^k$\;
+    }
+    \caption{Bound constrained truncated conjugate gradient}
+    \label{alg:bvtcg}
+\end{algorithm}
+
+\begin{figure}[htp]
+    \centering
+    \def\selectsolvers{{"cobyqa","newuoa"}}
+    \def\selectcsv{figures/test.csv}
+    \def\selectprofile{3}
+    \input{utils/profiles.tex}
+    \caption{This is the title}
+    \label{fig:fig1}
+\end{figure}

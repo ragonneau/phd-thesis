@@ -15,7 +15,7 @@
 LC := latexmk
 LCFLAGS := -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape
 
-all: thesis
+all: $(basename $(wildcard *.tex))
 
 %: %.tex
 	$(LC) $(LCFLAGS) $^
@@ -23,4 +23,4 @@ all: thesis
 .PHONY: clean
 clean:
 	$(LC) -c
-	@find . -name *.aux -type f -exec rm -rf "{}" ";"
+	find . -regex ".*-figure[0-9]*\..*" -type f -exec rm -f "{}" ";"

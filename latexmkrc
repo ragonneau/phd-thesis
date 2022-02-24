@@ -22,7 +22,7 @@ $dvi_mode = 0;
 push @generated_exts, "xdv";
 
 # Remove extra extensions on clean
-$clean_ext = "bbl ist loa mw run.xml tdo";
+$clean_ext = "auxlock bbl ist loa mw run.xml tdo";
 
 # Build dependencies for the glossaries-extra package
 add_cus_dep("acn", "acr", 0, "makeglo2gls");

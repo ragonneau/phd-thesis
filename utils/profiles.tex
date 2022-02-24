@@ -1,0 +1,52 @@
+%% utils/profiles.tex
+%% Copyright 2021-2022 Tom M. Ragonneau
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is Tom M. Ragonneau.
+\begin{tikzpicture}
+    \pgfplotstableread[col sep=comma]{\selectcsv}\selectcsvread
+    \newcommand{\getxmaxcsv}[1]{%
+        \pgfplotstablegetrowsof{\selectcsvread}%
+        \pgfmathtruncatemacro{\LastRowNo}{\pgfplotsretval-1}%
+        \pgfplotstablesort[sort key={#1}]{\csvsorted}{\selectcsvread}%
+        \pgfplotstablegetelem{\LastRowNo}{#1}\of{\csvsorted}%
+        \pgfmathsetmacro{\selectxmaxcsv}{\pgfplotsretval}%
+    }
+    \pgfmathparse{\selectsolvers[0]}
+    \let\selectsolver\pgfmathresult\relax
+    \getxmaxcsv{x\selectprofile_\selectsolver}
+    \begin{axis}[%
+        enlarge y limits={value=0.05,upper},%
+        xmin=0,%
+        xmax=0.55*\selectxmaxcsv,%
+        minor y tick num=1,%
+        yminorticks=true,%
+        ytick={0,0.2,..., 1},%
+        cycle list name=profiles,%
+        legend pos=south east,%
+        xlabel={X axis label},%
+        ylabel={X axis label},%
+    ]
+        \pgfmathparse{dim{\selectsolvers}-1}
+        \let\selectlastindex\pgfmathresult\relax
+        \foreach \i in {0,1,...,\selectlastindex} {%
+            \pgfmathparse{\selectsolvers[\i]}%
+            \let\selectsolver\pgfmathresult\relax%
+            \addplot table[%
+            x=x\selectprofile_\selectsolver,%
+            y=y\selectprofile,%
+            col sep=comma,%
+            ]{\selectcsvread};%
+            \addlegendentryexpanded{\selectsolver}%
+        }
+    \end{axis}
+\end{tikzpicture}

@@ -174,12 +174,6 @@
     linktoc=page,%
 }
 
-% Automatic references
-% Note: cleveref must be imported after hyperref
-\usepackage[noabbrev]{cleveref}
-\crefname{equation}{}{}
-\Crefname{equation}{}{}
-
 % Terms and acronyms processing
 \usepackage[%
     acronym,%
@@ -220,10 +214,42 @@
     linesnumbered,%
 ]{algorithm2e}
 
+% Automatic references
+% Note: cleveref must be imported after hyperref and algorithm2e
+\usepackage[noabbrev]{cleveref}
+\crefname{equation}{}{}
+\Crefname{equation}{}{}
+
 % Enhanced support for graphics
-\usepackage{graphicx}
-\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.18}
 \usetikzlibrary{calc}
+\usepgfplotslibrary{external}
+\pgfplotscreateplotcyclelist{profiles}{%
+    thick,mark=none,NavyBlue,solid\\%
+    thick,mark=none,BurntOrange,dashed\\%
+    thick,mark=none,OliveGreen,dotted\\%
+    thick,mark=none,BrickRed,dashdotted\\%
+    thick,mark=none,Purple,densely dashed\\%
+    thick,mark=none,Mahogan,densely dashed\\%
+    thick,mark=none,Rhodamine,densely dashdotted\\%
+    thick,mark=none,Gray,loosely dashed\\%
+    thick,mark=none,LimeGreen,loosely dotted\\%
+    thick,mark=none,JungleGreen,loosely dashdotted\\%
+}
+\pgfplotsset{%
+    every axis/.append style={%
+        label style={font=\small},%
+        legend cell align=left,%
+        legend style={rounded corners,thick,draw=black!15,font=\small},%
+        tick label style={font=\small},%
+    },%
+}
+\pgfkeys{/pgf/images/include external/.code=\includegraphics{#1}}
+\tikzexternalize[%
+    prefix=figures/,%
+]
 
 % Bibliography information processing
 \usepackage[%

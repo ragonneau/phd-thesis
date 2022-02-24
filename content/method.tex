@@ -25,7 +25,7 @@ We consider the nonlinearly-constrained optimization problem
         \min        & \quad \obj(x) \label{eq:nlcp-obj}\\
         \text{s.t.} & \quad \con{i}(x) \le 0, ~ i \in \iub, \label{eq:nlcp-cub}\\
                     & \quad \con{i}(x) = 0, ~ i \in \ieq, \label{eq:nlcp-ceq}\\
-                    & \quad \bl \le x \le \bu, \label{eq:nlcp-bds}\\
+                    & \quad \xl \le x \le \xu, \label{eq:nlcp-bds}\\
                     & \quad x \in \R^n. \nonumber
     \end{align}
 \end{subequations}
@@ -33,8 +33,8 @@ We consider the nonlinearly-constrained optimization problem
 \nomenclature[F]{$\con{i}$}{Constraint functions, with $i \in \iub \cup \ieq$}%
 \nomenclature[S]{$\iub$}{Indices of the inequality constraints}%
 \nomenclature[S]{$\ieq$}{Indices of the equality constraints}%
-where the objective and constraint functions~$f$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and the bound vectors~$\bl, \bu \in (\R \cup \set{\pm \infty})^n$ satisfy~$\bl < \bu$.
-Such an assumption on the bound constraints~\cref{eq:nlcp-bds} is not restrictive as problem~\cref{eq:nlcp} would otherwise either be infeasible (if~$\bl_j > \bu_j$ for some~$j \in \set{1, 2, \dots, n}$) or admit fixed variables (the indices~$j \in \set{1, 2, \dots, n}$ for which~$\bl_j = \bu_j$).
+where the objective and constraint functions~$f$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and the bound vectors~$\xl, \xu \in (\R \cup \set{\pm \infty})^n$ satisfy~$\xl < \xu$.
+Such an assumption on the bound constraints~\cref{eq:nlcp-bds} is not restrictive as problem~\cref{eq:nlcp} would otherwise either be infeasible (if~$\xl_j > \xu_j$ for some~$j \in \set{1, 2, \dots, n}$) or admit fixed variables (the indices~$j \in \set{1, 2, \dots, n}$ for which~$\xl_j = \xu_j$).
 Some bound constraint components may be set to~$\pm \infty$ to indicate that there is no bound constraint on the corresponding components of the decision variable.
 In opposition to the general constraints~\cref{eq:nlcp-cub,eq:nlcp-ceq}, we assume that the bound constraints~\cref{eq:nlcp-bds} cannot be violated, as they often represent inalienable physical or theoretical constraints of industrial or research applications.
 We study problem~\cref{eq:nlcp} in \gls{dfo} settings, so that we do not required any derivative information on the functions~$f$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$.

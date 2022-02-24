@@ -1,4 +1,5 @@
 # LaTeX
+
 ## Core latex/pdflatex auxiliary files
 *.aux
 *.lof
@@ -219,6 +220,7 @@ pythontex-files-*/
 *.loe
 
 ### TikZ & PGF
+*.dep
 *.dpth
 *.md5
 *.auxlock
@@ -258,6 +260,7 @@ TSWLatexianTemp*
 
 # JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
 ## User-specific stuff
 .idea/
 
@@ -286,29 +289,14 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-# Visual Studio Code
-## User and workspace settings
-.vscode/
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
-*.code-workspace
-
-## Local history
-.history/
-
-## Built visual studio code extensions
-*.vsix
-
 # macOS
-# General
+
+## General
 .DS_Store
 .AppleDouble
 .LSOverride
 
-# Files that might appear in the root of a volume
+## Files that might appear in the root of a volume
 .DocumentRevisions-V100
 .fseventsd
 .Spotlight-V100
@@ -317,7 +305,7 @@ fabric.properties
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
-# Directories potentially created on remote AFP share
+## Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
 Network Trash Folder
