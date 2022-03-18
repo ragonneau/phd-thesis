@@ -28,12 +28,10 @@ $clean_ext = "auxlock bbl ist loa mw run.xml tdo";
 add_cus_dep("acn", "acr", 0, "makeglo2gls");
 add_cus_dep("glo", "gls", 0, "makeglo2gls");
 sub makeglo2gls {
-    if ($silent) {
-        system("makeglossaries -q $_[0]");
-    }
-    else {
-        system("makeglossaries $_[0]");
-    };
+    my ($base_name, $path) = fileparse( $_[0] );
+    my @args = ( "-q", "-d", $path, $base_name );
+    if ($silent) { unshift @args, "-q"; }
+    return system "makeglossaries", "-d", $path, $base_name;
 }
 push @generated_exts, "glg", "glo", "gls";
 push @generated_exts, "acn", "acr", "alg";

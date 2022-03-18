@@ -191,10 +191,10 @@
 \setglossarystyle{super}
 \glssetcategoryattribute{\acronymtype}{glossdesc}{firstuc}
 \glssetcategoryattribute{\acronymtype}{glossnamefont}{textbf}
-\defglsentryfmt[main]{\glsentrytext{\glslabel}}
 \renewcommand*{\glsfirstlongdefaultfont}[1]{\emph{#1}}
-\makeglossaries
+\glsxtrinsertinsidetrue
 \glsdisablehyper
+\makeglossaries
 \loadglsentries{utils/glossary}
 
 % Index processing
