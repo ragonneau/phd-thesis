@@ -67,6 +67,10 @@
     color=BurntOrange,%
     textsize=scriptsize,%
 ]{todonotes}
+\makeatletter
+\renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
+\makeatother
+
 
 % Page headers and footers
 \usepackage{fancyhdr}
@@ -208,6 +212,7 @@
 % Nomenclature processing
 \usepackage[refpage,nocfg,intoc]{nomencl}
 \setlength{\nomitemsep}{-\parsep}
+\setlength{\nomlabelwidth}{0.08\textwidth}
 \makenomenclature
 
 % Environments for writing algorithms
