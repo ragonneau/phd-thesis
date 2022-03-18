@@ -25,9 +25,10 @@
     \let\selectsolver\pgfmathresult\relax
     \getxmaxcsv{x\selectprofile_\selectsolver}
     \begin{axis}[%
-        enlarge y limits={value=0.05,upper},%
         xmin=0,%
         xmax=0.55*\selectxmaxcsv,%
+        ymin=0,%
+        ymax=1,%
         minor y tick num=1,%
         yminorticks=true,%
         ytick={0,0.2,..., 1},%

@@ -157,6 +157,12 @@
 
 % Mathematical expressions
 \input{utils/mathematics}
+\newcommand{\drawprofiles}[3]{%
+    \def\selectsolvers{#1}%
+    \def\selectcsv{figures/#2}%
+    \def\selectprofile{#3}%
+    \input{utils/profiles.tex}%
+}
 
 % Cross-referencing and colorization
 % Note: hyperref must be imported after utils/mathematics.tex
@@ -166,7 +172,7 @@
     colorlinks=true,%
     linkcolor=OliveGreen,%
     anchorcolor=black,%
-    citecolor=Bittersweet,%
+    citecolor=Fuchsia,%
     filecolor=black,%
     menucolor=black,%
     runcolor=black,%
@@ -185,7 +191,7 @@
 \setglossarystyle{super}
 \glssetcategoryattribute{\acronymtype}{glossdesc}{firstuc}
 \glssetcategoryattribute{\acronymtype}{glossnamefont}{textbf}
-\defglsentryfmt[main]{\texttt{\glsentrytext{\glslabel}}}
+\defglsentryfmt[main]{\glsentrytext{\glslabel}}
 \renewcommand*{\glsfirstlongdefaultfont}[1]{\emph{#1}}
 \makeglossaries
 \glsdisablehyper
@@ -337,8 +343,11 @@
 \mainmatter
 
 \include{content/introduction}
-\include{content/method}
-\include{content/notes}
+\include{content/pdfo}
+\include{content/cobyqa-introduction}
+\include{content/cobyqa-subproblems}
+\include{content/cobyqa-analysis}
+\include{content/cobyqa-implementation}
 \include{content/conclusion}
 
 \appendix
