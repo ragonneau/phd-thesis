@@ -15,33 +15,39 @@
 \chapter{Introduction}
 
 \todo[noline]{Place the nomenclature items right after their first use.}
-\nomenclature[F]{$\con{i}$}{Constraint function, with~$i \in \iub \cup \ieq$}%
-\nomenclature[F]{$\obj$}{Objective function}%
-\nomenclature[F]{$\lag$}{Lagrangian function}%
-\nomenclature[N]{$\qedsymbol$}{End of proof}%
-\nomenclature[N]{$\subseteq$}{Set inclusion notation}%
-\nomenclature[N]{$\in$}{Element in set notation}%
-\nomenclature[N]{$\mathcal{O}(\cdot)$}{Big-O notation}%
-\nomenclature[N]{$o(\cdot)$}{Little-O notation}%
-\nomenclature[N]{$A^{\mathsf{T}}$,~$v^{\mathsf{T}}$}{Transpose of a matrix or a vector}%
-\nomenclature[O]{$\nabla$}{Gradient operator (elements~$\partial / \partial x_i$, with~$i \in \set{1, 2, \dots, n}$)}%
-\nomenclature[O]{$\nabla_x$}{Partial-derivative operator with respect to~$x$}%
-\nomenclature[O]{$\nabla^2$}{Hessian operator (elements~$\partial^2 / \partial x_i \partial x_j$, with~$i, j \in \set{1, 2, \dots, n}$)}%
-\nomenclature[O]{$\nabla_{x, y}^2$}{Second-order partial-derivative operator with respect to~$x$ and~$y$}%
-\nomenclature[O]{$[\cdot]_{+}$}{Elementwise positive-part operator}%
-\nomenclature[O]{$[\cdot]_{-}$}{Elementwise negative-part operator}%
-\nomenclature[O]{$\abs{\cdot}$}{Modulus operator}%
-\nomenclature[O]{$\norm{\cdot}$}{Norm of a vector or a matrix}%
-\nomenclature[O]{$\inner{\cdot, \cdot}$}{Inner-product operator}%
-\nomenclature[S]{$\emptyset$}{Empty set}%
-\nomenclature[S]{$[a, b]$}{Closed set~$\set{x \in \R : a \le x \le b}$}%
-\nomenclature[S]{$(a, b)$}{Open set~$\set{x \in \R : a < x < b}$}%
-\nomenclature[S]{$\ieq$}{Set of indices of the equality constraints}%
-\nomenclature[S]{$\iub$}{Set of indices of the inequality constraints}%
-\nomenclature[S]{$\R$}{Set of real numbers}%
-\nomenclature[S]{$\R^n$}{Real coordinate space of dimension~$n$}%
+\nomenclature[F0]{$\obj$}{Real-valued objective function defined on~$\R^n$}%
+\nomenclature[F1]{$\con{i}$}{Real-valued constraint function defined on~$\R^n$, with~$i \in \iub \cup \ieq$}%
+\nomenclature[F2]{$\lag$}{Lagrangian function}%
+\nomenclature[N0]{$\in$}{Set membership notation}%
+\nomenclature[N1]{$\subseteq$}{Set inclusion notation}%
+\nomenclature[N2]{$\qedsymbol$}{Halmos symbol}%
+\nomenclature[N3]{$A^{\mathsf{T}}$,~$v^{\mathsf{T}}$}{Transpose of a matrix or a vector}%
+\nomenclature[N4]{$\mathcal{O}(\cdot)$}{Big-O notation}%
+\nomenclature[N5]{$o(\cdot)$}{Little-O notation}%
+\nomenclature[O0]{$[\cdot]_{+}$}{Elementwise positive-part operator}%
+\nomenclature[O1]{$[\cdot]_{-}$}{Elementwise negative-part operator}%
+\nomenclature[O2]{$\abs{\cdot}$}{Elementwise modulus operator}%
+\nomenclature[O3]{$\inner{\cdot, \cdot}$}{Inner-product operator (may be subscripted for sake of clarity)}%
+\nomenclature[O4]{$\norm{\cdot}$}{Norm of a vector or a matrix (may be subscripted for sake of clarity)}%
+\nomenclature[O5]{$\nabla$}{Gradient operator (elements~$\partial / \partial x_i$, with~$i \in \set{1, 2, \dots, n}$)}%
+\nomenclature[O6]{$\nabla^2$}{Hessian operator (elements~$\partial^2 / \partial x_i \partial x_j$, with~$i, j \in \set{1, 2, \dots, n}$)}%
+\nomenclature[S0]{$\emptyset$}{Empty set}%
+\nomenclature[S1]{$[a, b]$}{Closed set~$\set{x \in \R : a \le x \le b}$ with~$a \le b$}%
+\nomenclature[S2]{$(a, b)$}{Open set~$\set{x \in \R : a < x < b}$ with~$a < b$}%
+\nomenclature[S3]{$[a, b)$}{Semi-open set~$\set{x \in \R : a \le x < b}$ with~$a < b$}%
+\nomenclature[S4]{$(a, b]$}{Semi-open set~$\set{x \in \R : a < x \le b}$ with~$a < b$}%
+\nomenclature[S5]{$\R$}{Set of real numbers}%
+\nomenclature[S6]{$\R^n$}{Real coordinate space of dimension~$n$}%
+\nomenclature[S7]{$\ieq$}{Set of indices of the equality constraints}%
+\nomenclature[S8]{$\iub$}{Set of indices of the inequality constraints}%
 
-\section{Forewords on \glsfmtlong{dfo}}
+\section{Overview of \glsfmtlong{dfo}}
+
+\begin{itemize}
+    \item What is \gls{dfo}?
+    \item \Gls{dfo} is not nonsmooth optimization.
+    \item We are considering deterministic optimization only.
+\end{itemize}
 
 \section{Examples of \glsfmtlong{dfo} applications}
 
@@ -62,6 +68,81 @@
     \item Chemical product design~\cite{Sun_Etal_2020}.
 \end{itemize}
 
-\section{Optimality criteria for smooth optimization}
+\section{Optimality conditions for smooth optimization}
 
-\section{Methods for solving \glsfmtlong{dfo} problems}
+We consider the nonlinearly-constrained optimization problem
+\begin{subequations}
+    \label{eq:nlcp}
+    \begin{align}
+        \min        & \quad \obj(x) \label{eq:nlcp-obj}\\
+        \text{s.t.} & \quad \con{i}(x) \le 0, ~ i \in \iub, \label{eq:nlcp-cub}\\
+                    & \quad \con{i}(x) = 0, ~ i \in \ieq, \label{eq:nlcp-ceq}\\
+                    & \quad x \in \R^n, \nonumber
+    \end{align}
+\end{subequations}
+where the \emph{objective} and \emph{constraint functions}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$.
+We define for sake of clarity the \emph{feasible set}~$\Omega \subseteq \R^n$ to be the set of points satisfying the constraints~\cref{eq:nlcp-cub,eq:nlcp-ceq}, that is
+\begin{equation*}
+    \Omega \eqdef \set{x \in \R^n : \con{i}(x) \le 0, ~ i \in \iub, ~ \con{i}(x) = 0, ~ i \in \ieq}.
+\end{equation*}
+
+\subsection{Local and global solutions}
+
+\begin{definition}[Global solution]
+    A point~$x^{\ast} \in \R^n$ is referred to as a \emph{global solution} to problem~\cref{eq:nlcp} if~$x^{\ast} \in \Omega$ and~$f(x) \ge f(x^{\ast})$ for all~$x \in \Omega$.
+\end{definition}
+
+\begin{definition}[Local solution]
+    A points~$x^{\ast} \in \R^n$ is referred to as
+    \begin{itemize}
+        \item a \emph{local solution} to problem~\cref{eq:nlcp} if~$x^{\ast} \in \Omega$ and there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$f(x) \ge f(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega$.
+        \item a \emph{strict local solution} to problem~\cref{eq:nlcp} if~$x^{\ast} \in \Omega$ and there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$f(x) > f(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega \setminus \set{x^{\ast}}$.
+        \item an \emph{isolated local solution} to problem~\cref{eq:nlcp} if there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that it is the only local solution in~$\mathcal{N} \cap \Omega$.
+    \end{itemize}
+\end{definition}
+
+\subsection{Constraint qualifications}
+
+\begin{definition}[Active set]
+    The \emph{active set}~$\mathcal{A}(x) \subseteq \iub \cup \ieq$ for problem~\cref{eq:nlcp} at a point~$x \in \Omega$ is defined by
+    \begin{equation*}
+        \mathcal{A}(x) \eqdef \ieq \cup \set{i \in \iub : \con{i}(x) \ge 0}.
+    \end{equation*}
+\end{definition}
+
+\begin{definition}[Constraint qualification]
+    Let~$x \in \Omega$ be any feasible point, denote~$\mathcal{A}(x)$ the active set for problem~\cref{eq:nlcp} at~$x$, and assume that the constraints function~$\con{i}$ are differentiable at~$x$ for all~$i \in \mathcal{A}(x)$.
+    We say that
+    \begin{itemize}
+        \item the \gls{licq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \mathcal{A}(x)$, and
+        \item the \gls{mfcq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \ieq$ and there exists a vector~$d \in \R^n$ such that
+        \begin{equation*}
+            \begin{cases}
+                \inner{\nabla \con{i}(x), d} < 0    & \text{if~$i \in \mathcal{A}(x) \cap \iub$, and}\\
+                \inner{\nabla \con{i}(x), d} = 0    & \text{if~$i \in \ieq$}.
+            \end{cases}
+        \end{equation*}
+    \end{itemize}
+\end{definition}
+
+\begin{itemize}
+    \item \gls{acq}.
+    \item \gls{gcq}.
+\end{itemize}
+
+\subsection{First-order optimality conditions}
+
+\subsection{Second-order optimality conditions}
+
+\section{Methodology of \glsfmtlong{dfo} algorithms}
+
+\subsection{Frameworks and algorithms for \glsfmtlong{dfo}}
+
+\begin{itemize}
+    \item Direct-search and model-based methods.
+    \item Line-search and trust-region methods.
+    \item Filtering methods and composite methods.
+    \item Geometry of the interpolation sets.
+\end{itemize}
+
+\subsection{Prominent \glsfmtlong{dfo} methods}
