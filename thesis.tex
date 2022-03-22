@@ -191,9 +191,8 @@
     indexonlyfirst,%
 ]{glossaries-extra}
 \setabbreviationstyle[acronym]{long-short}
-\setglossarystyle{super}
+\setglossarystyle{alttree}
 \glssetcategoryattribute{\acronymtype}{glossdesc}{firstuc}
-\glssetcategoryattribute{\acronymtype}{glossnamefont}{textbf}
 \renewcommand*{\glsfirstlongdefaultfont}[1]{\emph{#1}}
 \glsxtrinsertinsidetrue
 \glsdisablehyper
@@ -332,6 +331,7 @@
 \markboth{\listalgorithmcfname}{\listalgorithmcfname}
 
 \cleardoublepage
+\glsfindwidesttoplevelname
 \printglossary[type=\acronymtype]
 
 \cleardoublepage

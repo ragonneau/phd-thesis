@@ -15,38 +15,45 @@
 \chapter{Introduction}
 
 \todo[noline]{Place the nomenclature items right after their first use.}
-\nomenclature[F0]{$\obj$}{Real-valued objective function defined on~$\R^n$}%
-\nomenclature[F1]{$\con{i}$}{Real-valued constraint function defined on~$\R^n$, with~$i \in \iub \cup \ieq$}%
-\nomenclature[F2]{$\lag$}{Lagrangian function}%
-\nomenclature[N0]{$\in$}{Set membership notation}%
-\nomenclature[N1]{$\subseteq$}{Set inclusion notation}%
-\nomenclature[N2]{$\qedsymbol$}{Halmos symbol}%
-\nomenclature[N3]{$A^{\mathsf{T}}$,~$v^{\mathsf{T}}$}{Transpose of a matrix or a vector}%
-\nomenclature[N4]{$\mathcal{O}(\cdot)$}{Big-O notation}%
-\nomenclature[N5]{$o(\cdot)$}{Little-O notation}%
-\nomenclature[O0]{$[\cdot]_{+}$}{Elementwise positive-part operator}%
-\nomenclature[O1]{$[\cdot]_{-}$}{Elementwise negative-part operator}%
-\nomenclature[O2]{$\abs{\cdot}$}{Elementwise modulus operator}%
-\nomenclature[O3]{$\inner{\cdot, \cdot}$}{Inner-product operator (may be subscripted for sake of clarity)}%
-\nomenclature[O4]{$\norm{\cdot}$}{Norm of a vector or a matrix (may be subscripted for sake of clarity)}%
-\nomenclature[O5]{$\nabla$}{Gradient operator (elements~$\partial / \partial x_i$, with~$i \in \set{1, 2, \dots, n}$)}%
-\nomenclature[O6]{$\nabla^2$}{Hessian operator (elements~$\partial^2 / \partial x_i \partial x_j$, with~$i, j \in \set{1, 2, \dots, n}$)}%
-\nomenclature[S0]{$\emptyset$}{Empty set}%
-\nomenclature[S1]{$[a, b]$}{Closed set~$\set{x \in \R : a \le x \le b}$ with~$a \le b$}%
-\nomenclature[S2]{$(a, b)$}{Open set~$\set{x \in \R : a < x < b}$ with~$a < b$}%
-\nomenclature[S3]{$[a, b)$}{Semi-open set~$\set{x \in \R : a \le x < b}$ with~$a < b$}%
-\nomenclature[S4]{$(a, b]$}{Semi-open set~$\set{x \in \R : a < x \le b}$ with~$a < b$}%
-\nomenclature[S5]{$\R$}{Set of real numbers}%
-\nomenclature[S6]{$\R^n$}{Real coordinate space of dimension~$n$}%
-\nomenclature[S7]{$\ieq$}{Set of indices of the equality constraints}%
-\nomenclature[S8]{$\iub$}{Set of indices of the inequality constraints}%
+\nomenclature[Fa]{$\obj$}{Real-valued objective function defined on~$\R^n$}%
+\nomenclature[Fb]{$\con{i}$}{Real-valued constraint function defined on~$\R^n$, with~$i \in \iub \cup \ieq$}%
+\nomenclature[Fc]{$\lag$}{Lagrangian function}%
+\nomenclature[Na]{$\in$}{Set membership notation}%
+\nomenclature[Nb]{$\subseteq$}{Set inclusion notation}%
+\nomenclature[Nc]{$\qedsymbol$}{Halmos symbol}%
+\nomenclature[Nd]{$A^{\mathsf{T}}$,~$v^{\mathsf{T}}$}{Transpose of a matrix or a vector}%
+\nomenclature[Ne]{$\mathcal{O}(\cdot)$}{Big-O notation}%
+\nomenclature[Nf]{$o(\cdot)$}{Little-O notation}%
+\nomenclature[Oa]{$[\cdot]_{+}$}{Elementwise positive-part operator}%
+\nomenclature[Ob]{$[\cdot]_{-}$}{Elementwise negative-part operator}%
+\nomenclature[Oc]{$\abs{\cdot}$}{Elementwise modulus operator}%
+\nomenclature[Od]{$\inner{\cdot, \cdot}$}{Inner-product operator (may be subscripted for sake of clarity)}%
+\nomenclature[Oe]{$\norm{\cdot}$}{Norm of a vector or a matrix (may be subscripted for sake of clarity)}%
+\nomenclature[Of]{$\nabla$}{Gradient operator (elements~$\partial / \partial x_i$, with~$i \in \set{1, 2, \dots, n}$)}%
+\nomenclature[Og]{$\nabla^2$}{Hessian operator (elements~$\partial^2 / \partial x_i \partial x_j$, with~$i, j \in \set{1, 2, \dots, n}$)}%
+\nomenclature[Sa]{$\emptyset$}{Empty set}%
+\nomenclature[Sb]{$[a, b]$}{Closed set~$\set{x \in \R : a \le x \le b}$ with~$a \le b$}%
+\nomenclature[Sc]{$(a, b)$}{Open set~$\set{x \in \R : a < x < b}$ with~$a < b$}%
+\nomenclature[Sd]{$[a, b)$}{Semi-open set~$\set{x \in \R : a \le x < b}$ with~$a < b$}%
+\nomenclature[Se]{$(a, b]$}{Semi-open set~$\set{x \in \R : a < x \le b}$ with~$a < b$}%
+\nomenclature[Sf]{$\R$}{Set of real numbers}%
+\nomenclature[Sg]{$\R^n$}{Real coordinate space of dimension~$n$}%
+\nomenclature[Sh]{$\Omega$}{Feasible set, included in~$\R^n$}%
+\nomenclature[Si]{$\ieq$}{Set of indices of the equality constraints}%
+\nomenclature[Sj]{$\iub$}{Set of indices of the inequality constraints}%
 
 \section{Overview of \glsfmtlong{dfo}}
 
+Optimization is the study of extremal points and values of mathematical functions.
+Traditional optimization aims at minimizing (or maximizing) a real-valued function~$f$, referred to as the \emph{objective function}, within a given nonempty set of points~$\Omega \subseteq \R^n$, referred to as the \emph{feasible set}.
+It is well known that the most useful information to optimization is embraced in the derivatives of~$f$ and of the curves of~$\Omega$.
+However, such derivative information may not exist, be unassessable, be unreliable, or be prohibitively expensive to evaluate.
+It is within this context, referred to as \gls{dfo}, that our research focuses.
+We emphasize that we are \emph{not} studying nonsmooth optimization.
+Classical or generalized derivatives of the functions defining the optimization problem may be well-defined, but we assume that they cannot be numerically assessed.
+
 \begin{itemize}
-    \item What is \gls{dfo}?
-    \item \Gls{dfo} is not nonsmooth optimization.
-    \item We are considering deterministic optimization only.
+    \item The leading complexity measure is the number of objective function evaluations.
 \end{itemize}
 
 \section{Examples of \glsfmtlong{dfo} applications}
@@ -128,6 +135,11 @@ We define for sake of clarity the \emph{feasible set}~$\Omega \subseteq \R^n$ to
 \begin{itemize}
     \item \gls{acq}.
     \item \gls{gcq}.
+    \item \gls{lcq}.
+    \item \gls{crcq}.
+    \item \gls{cpld}.
+    \item \gls{qncq}.
+    \item \gls{sc}.
 \end{itemize}
 
 \subsection{First-order optimality conditions}
@@ -146,3 +158,5 @@ We define for sake of clarity the \emph{feasible set}~$\Omega \subseteq \R^n$ to
 \end{itemize}
 
 \subsection{Prominent \glsfmtlong{dfo} methods}
+
+\section{Performance profiles-distribution functions}
