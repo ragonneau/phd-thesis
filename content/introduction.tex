@@ -14,7 +14,6 @@
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \chapter{Introduction}
 
-\todo[noline]{Place the nomenclature items right after their first use.}
 \nomenclature[Fa]{$\obj$}{Real-valued objective function defined on~$\R^n$}%
 \nomenclature[Fb]{$\con{i}$}{Real-valued constraint function defined on~$\R^n$, with~$i \in \iub \cup \ieq$}%
 \nomenclature[Fc]{$\lag$}{Lagrangian function}%
@@ -38,87 +37,126 @@
 \nomenclature[Se]{$(a, b]$}{Semi-open set~$\set{x \in \R : a < x \le b}$ with~$a < b$}%
 \nomenclature[Sf]{$\R$}{Set of real numbers}%
 \nomenclature[Sg]{$\R^n$}{Real coordinate space of dimension~$n$}%
-\nomenclature[Sh]{$\Omega$}{Feasible set, included in~$\R^n$}%
-\nomenclature[Si]{$\ieq$}{Set of indices of the equality constraints}%
-\nomenclature[Sj]{$\iub$}{Set of indices of the inequality constraints}%
+\nomenclature[Sh]{$\R^{m \times n}$}{Real matrix space of dimension~$m \times n$}%
+\nomenclature[Si]{$\Omega$}{Feasible set, included in~$\R^n$}%
+\nomenclature[Sj]{$\ieq$}{Set of indices of the equality constraints}%
+\nomenclature[Sk]{$\iub$}{Set of indices of the inequality constraints}%
+\todo[noline]{Replace the nomenclature items.}
 
 \section{Overview of \glsfmtlong{dfo}}
 
 Optimization is the study of extremal points and values of mathematical functions.
-Traditional optimization aims at minimizing (or maximizing) a real-valued function~$f$, referred to as the \emph{objective function}, within a given nonempty set of points~$\Omega \subseteq \R^n$, referred to as the \emph{feasible set}.
-It is well known that the most helpful information to optimization is embraced in the derivatives of~$f$ and the curves of~$\Omega$.
+Traditional optimization aims at minimizing (or maximizing) a real-valued function~$\obj$, referred to as the \emph{objective function}, within a given nonempty set of points~$\Omega \subseteq \R^n$, referred to as the \emph{feasible set}.
+It is well known that the most helpful information to optimization is embraced in the derivatives of~$\obj$ and the curves of~$\Omega$.
 However, such derivative information may not exist, be unassessable, unreliable, or prohibitively expensive to evaluate.
-It is within this context, referred to as \gls{dfo}, that our research focuses.
+It is within this context, referred to as \gls{dfo}~\cite{Audet_Hare_2017,Conn_Scheinberg_Vicente_2009b}, that our research focuses.
 We emphasize that we are \emph{not} studying nonsmooth optimization.
 Classical or generalized derivatives of the optimization problem's functions may be well-defined, but we assume they cannot be numerically assessed.
 
 The leading complexity measure we consider is the number of objective function evaluations.
 We presume that an objective function evaluation dawdles and requires several minutes or even several days to complete.
-For instance, a modern example of \gls{dfo} applications is hyperparameter tuning in machine learning, for which one objective function evaluation necessitates training a machine learning model.
+For instance, a modern example of \gls{dfo} applications is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}, for which one objective function evaluation necessitates training a machine learning model.
+Hence, the algebraic complexity of the methods we consider is not our leading issue, although we will strive to maintain it acceptable.
 
-\section{Examples of \glsfmtlong{dfo} applications}
-
-\begin{itemize}
-    \item Automatic error analysis~\cite{Higham_1993,Higham_2002}.
-    \item Parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
-    \item Machine learning~\cite{Ghanbari_Scheinberg_2017,Qian_Yu_2021}.
-    \item Helicopter rotor blade design~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}.
-    \item Molecular conformational analysis~\cite{Alberto_Etal_2004,Meza_Martinez_1994}.
-    \item Groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}.
-    \item Aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}.
-    \item Hydrodynamic design~\cite{Duvigneau_Visonneau_2004}.
-    \item Registration in medical imaging~\cite{Oeuvray_2005,Oeuvray_Bierlaire_2007}.
-    \item Dynamic pricing~\cite{Levina_Etal_2009}.
-    \item Reservoir engineering and engine calibration~\cite{Langouet_2011}.
-    \item Analog circuit design~\cite{Latorre_Etal_2019}.
-    \item Aircraft engineering~\cite{Gazaix_Etal_2019}.
-    \item Chemical product design~\cite{Sun_Etal_2020}.
-\end{itemize}
-
-\section{Optimality conditions for smooth optimization}
-
-We consider the nonlinearly-constrained optimization problem
+We consider in this section the nonlinearly-constrained problem
 \begin{subequations}
-    \label{eq:nlcp}
+    \label{eq:nlcp-intro}
     \begin{align}
-        \min        & \quad \obj(x) \label{eq:nlcp-obj}\\
-        \text{s.t.} & \quad \con{i}(x) \le 0, ~ i \in \iub, \label{eq:nlcp-cub}\\
-                    & \quad \con{i}(x) = 0, ~ i \in \ieq, \label{eq:nlcp-ceq}\\
+        \min        & \quad \obj(x) \label{eq:nlcp-intro-obj}\\
+        \text{s.t.} & \quad \con{i}(x) \le 0, ~ i \in \iub, \label{eq:nlcp-intro-cub}\\
+                    & \quad \con{i}(x) = 0, ~ i \in \ieq, \label{eq:nlcp-intro-ceq}\\
                     & \quad x \in \R^n, \nonumber
     \end{align}
 \end{subequations}
-where the \emph{objective} and \emph{constraint functions}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$.
-We define for sake of clarity the \emph{feasible set}~$\Omega \subseteq \R^n$ to be the set of points satisfying the constraints~\cref{eq:nlcp-cub,eq:nlcp-ceq}, that is
-\begin{equation*}
+where the \emph{objective} and \emph{constraint functions}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and where the sets of indices~$\iub$ and~$\ieq$ are finite (perhaps empty).
+The above-mentioned feasible set~$\Omega \subseteq \R^n$ is, therefore, the set of points satisfying the inequality constraints~\cref{eq:nlcp-intro-cub} and the equality constraints~\cref{eq:nlcp-intro-ceq}, that is
+\begin{equation}
+    \label{eq:omega-intro}
     \Omega \eqdef \set{x \in \R^n : \con{i}(x) \le 0, ~ i \in \iub, ~ \con{i}(x) = 0, ~ i \in \ieq}.
+\end{equation}
+
+\section{Examples of \glsfmtlong{dfo} applications}
+
+A typical example of \gls{dfo} applications is automatic error analysis~\cite{Higham_1993,Higham_2002}, which consists of formulating a numerical computation's accuracy and stability analyses using optimization problems.
+For instance, the choice of pivoting strategy in a Gaussian elimination with partial pivoting process can be made by maximizing the elimination's growth factor among all nonsingular matrices since these growth factors are proportional to the backward errors of the computed solutions~\cite{Wilkinson_1961}.
+Although the growth factor is defined everywhere when a pivoting strategy is implemented, it may not continuous at some points (when a tie arises at the selection of a pivot element).
+Hence, optimization methods based on derivative information cannot be used for such a problem.
+
+Another well-known example of \gls{dfo} applications is the parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
+Assume that we are given a nonlinear optimization method that depends on~$n$ parameters and a function~$\obj$ that measures the method's performance (e.g., the \glsxtrshort{cpu} time of the method for solving a given set of optimization problems).
+Let~$\Omega \subseteq \R^n$ be the feasible set of the method's parameters, which likely represents bound constraints on the parameters and inequalities between the parameters.
+One may then solve the optimization problem
+\begin{equation*}
+    \min_{p \in \Omega} f(p),
 \end{equation*}
+to select \enquote{optimal} parameters for the method.
+
+Hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}.%
+\todo{Develop the example}
+
+\begin{figure}[htp]
+    \centering
+    \begin{tikzpicture}[every text node part/.style={align=center}]
+        \draw[thick,rounded corners] (0,0) rectangle (3,1.5);
+        \draw[thick,rounded corners,pattern=north west lines,pattern color=OliveGreen!50] (0,2) rectangle (3,3.5);
+        \draw[thick,rounded corners] (0,4) rectangle (3,5.5);
+        \draw[thick,rounded corners] (4,2) rectangle (7,3.5);
+        \draw[thick,rounded corners] (8,0.75) rectangle (11,2.25);
+        \draw[thick,rounded corners,pattern=north west lines,pattern color=OliveGreen!50] (8,3.25) rectangle (11,4.75);
+        \draw[thick] (3,0.5) -- (7.5,0.5) -- (7.5,2.5) -- (7,2.5);
+        \draw[thick] (3,5) -- (7.5,5) -- (7.5,3) -- (7,3);
+        \draw[thick,-latex] (3,1) -- (5.5,1) -- (5.5,2);
+        \draw[thick,-latex] (3,2.75) -- (4,2.75);
+        \draw[thick,-latex] (7.5,1.5) -- (8,1.5);
+        \draw[thick,-latex] (7.5,4) -- (8,4);
+        \node at (1.5,0.75) {Training\\ dataset};
+        \node at (1.5,2.75) {Hyper-\\ parameters};
+        \node at (1.5,4.75) {Testing\\ dataset};
+        \node at (5.5,2.75) {Machine\\ learning};
+        \node at (9.5,1.5) {Training\\ accuracy};
+        \node at (9.5,4) {Testing\\ accuracy};
+    \end{tikzpicture}
+    \caption{Training and testing flow of a machine learning model}
+\end{figure}
+
+Other industrial and research examples include molecular conformational analysis~\cite{Alberto_Etal_2004,Meza_Martinez_1994}, helicopter rotor blade design~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, hydrodynamic design~\cite{Duvigneau_Visonneau_2004}, registration in medical imaging~\cite{Oeuvray_2005,Oeuvray_Bierlaire_2007}, dynamic pricing~\cite{Levina_Etal_2009}, reservoir engineering and engine calibration~\cite{Langouet_2011}, analog circuit design~\cite{Latorre_Etal_2019}, aircraft engine engineering~\cite{Gazaix_Etal_2019}, chemical product design~\cite{Sun_Etal_2020}, and reinforcement learning~\cite{Qian_Yu_2021} for instance.
+
+\section{Optimality conditions for smooth optimization}
 
 \subsection{Local and global solutions}
 
+We are interested in numerical methods for solving the problem~\cref{eq:nlcp-intro}.
+Therefore, we will consider in this study well-defined problems only, for which the least function value exists and is attained in~$\Omega$.
+To that end, we make the following assumption.
+
+\begin{assumption}
+    The feasible set~\cref{eq:omega-intro} is nonempty and for some~$x^0 \in \Omega$, the level set~$\set{x \in \Omega : \obj(x) \le \obj(x^0)}$ is bounded.
+\end{assumption}
+
 \begin{definition}[Global solution]
-    A point~$x^{\ast} \in \R^n$ is referred to as a \emph{global solution} to problem~\cref{eq:nlcp} if~$x^{\ast} \in \Omega$ and~$f(x) \ge f(x^{\ast})$ for all~$x \in \Omega$.
+    A point~$x^{\ast} \in \R^n$ is referred to as a \emph{global solution} to problem~\cref{eq:nlcp-intro} if~$x^{\ast} \in \Omega$ and~$f(x) \ge f(x^{\ast})$ for all~$x \in \Omega$.
 \end{definition}
 
 \begin{definition}[Local solution]
     A points~$x^{\ast} \in \R^n$ is referred to as
     \begin{itemize}
-        \item a \emph{local solution} to problem~\cref{eq:nlcp} if~$x^{\ast} \in \Omega$ and there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$f(x) \ge f(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega$.
-        \item a \emph{strict local solution} to problem~\cref{eq:nlcp} if~$x^{\ast} \in \Omega$ and there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$f(x) > f(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega \setminus \set{x^{\ast}}$.
-        \item an \emph{isolated local solution} to problem~\cref{eq:nlcp} if there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that it is the only local solution in~$\mathcal{N} \cap \Omega$.
+        \item a \emph{local solution} to problem~\cref{eq:nlcp-intro} if~$x^{\ast} \in \Omega$ and there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$f(x) \ge f(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega$.
+        \item a \emph{strict local solution} to problem~\cref{eq:nlcp-intro} if~$x^{\ast} \in \Omega$ and there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$f(x) > f(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega \setminus \set{x^{\ast}}$.
+        \item an \emph{isolated local solution} to problem~\cref{eq:nlcp-intro} if there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that it is the only local solution in~$\mathcal{N} \cap \Omega$.
     \end{itemize}
 \end{definition}
 
 \subsection{Constraint qualifications}
 
 \begin{definition}[Active set]
-    The \emph{active set}~$\mathcal{A}(x) \subseteq \iub \cup \ieq$ for problem~\cref{eq:nlcp} at a point~$x \in \Omega$ is defined by
+    The \emph{active set}~$\mathcal{A}(x) \subseteq \iub \cup \ieq$ for problem~\cref{eq:nlcp-intro} at a point~$x \in \Omega$ is defined by
     \begin{equation*}
         \mathcal{A}(x) \eqdef \ieq \cup \set{i \in \iub : \con{i}(x) \ge 0}.
     \end{equation*}
 \end{definition}
 
 \begin{definition}[Constraint qualification]
-    Let~$x \in \Omega$ be any feasible point, denote~$\mathcal{A}(x)$ the active set for problem~\cref{eq:nlcp} at~$x$, and assume that the constraints function~$\con{i}$ are differentiable at~$x$ for all~$i \in \mathcal{A}(x)$.
+    Let~$x \in \Omega$ be any feasible point, denote~$\mathcal{A}(x)$ the active set for problem~\cref{eq:nlcp-intro} at~$x$, and assume that the constraints function~$\con{i}$ are differentiable at~$x$ for all~$i \in \mathcal{A}(x)$.
     We say that
     \begin{itemize}
         \item the \gls{licq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \mathcal{A}(x)$, and

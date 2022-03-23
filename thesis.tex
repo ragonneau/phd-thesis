@@ -59,19 +59,6 @@
     UprightFont=*-Medium,%
 ]{NotoSerifTC}
 
-% Drafting packages
-\usepackage{ifdraft}
-\usepackage[%
-    obeyDraft,%
-    english,%
-    colorinlistoftodos,%
-    color=Apricot,%
-    textsize=scriptsize,%
-]{todonotes}
-\makeatletter
-\renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
-\makeatother
-
 % Page headers and footers
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -176,7 +163,7 @@
     colorlinks=true,%
     linkcolor=OliveGreen,%
     anchorcolor=black,%
-    citecolor=Fuchsia,%
+    citecolor=DarkOrchid,%
     filecolor=black,%
     menucolor=black,%
     runcolor=black,%
@@ -234,7 +221,7 @@
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=1.18}
-\usetikzlibrary{calc}
+\usetikzlibrary{calc,patterns}
 \usepgfplotslibrary{external}
 \pgfplotscreateplotcyclelist{profiles}{%
     thick,mark=none,NavyBlue,solid\\%
@@ -260,6 +247,19 @@
 \tikzexternalize[%
     prefix=figures/,%
 ]
+
+% Drafting packages
+\usepackage{ifdraft}
+\usepackage[%
+    obeyDraft,%
+    english,%
+    colorinlistoftodos,%
+    color=Apricot,%
+    textsize=scriptsize,%
+]{todonotes}
+\makeatletter
+\renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
+\makeatother
 
 % Bibliography information processing
 \usepackage[%
