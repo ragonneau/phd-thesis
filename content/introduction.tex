@@ -46,15 +46,15 @@
 
 Optimization is the study of extremal points and values of mathematical functions.
 Traditional optimization aims at minimizing (or maximizing) a real-valued function~$f$, referred to as the \emph{objective function}, within a given nonempty set of points~$\Omega \subseteq \R^n$, referred to as the \emph{feasible set}.
-It is well known that the most useful information to optimization is embraced in the derivatives of~$f$ and of the curves of~$\Omega$.
-However, such derivative information may not exist, be unassessable, be unreliable, or be prohibitively expensive to evaluate.
+It is well known that the most helpful information to optimization is embraced in the derivatives of~$f$ and the curves of~$\Omega$.
+However, such derivative information may not exist, be unassessable, unreliable, or prohibitively expensive to evaluate.
 It is within this context, referred to as \gls{dfo}, that our research focuses.
 We emphasize that we are \emph{not} studying nonsmooth optimization.
-Classical or generalized derivatives of the functions defining the optimization problem may be well-defined, but we assume that they cannot be numerically assessed.
+Classical or generalized derivatives of the optimization problem's functions may be well-defined, but we assume they cannot be numerically assessed.
 
-\begin{itemize}
-    \item The leading complexity measure is the number of objective function evaluations.
-\end{itemize}
+The leading complexity measure we consider is the number of objective function evaluations.
+We presume that an objective function evaluation dawdles and requires several minutes or even several days to complete.
+For instance, a modern example of \gls{dfo} applications is hyperparameter tuning in machine learning, for which one objective function evaluation necessitates training a machine learning model.
 
 \section{Examples of \glsfmtlong{dfo} applications}
 
