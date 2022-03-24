@@ -147,6 +147,7 @@
 }
 
 % Mathematical expressions
+\usepackage[final]{graphicx}
 \input{utils/mathematics}
 \newcommand{\drawprofiles}[3]{%
     \def\selectsolvers{#1}%
@@ -218,6 +219,7 @@
 \Crefname{equation}{}{}
 
 % Enhanced support for graphics
+% Note: graphicx has already been imported to avoid option's conflicts
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=1.18}
