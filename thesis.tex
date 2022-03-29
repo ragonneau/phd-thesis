@@ -211,6 +211,11 @@
     longend,%
     linesnumbered,%
 ]{algorithm2e}
+\makeatletter
+\renewenvironment{algomathdisplay}%
+    {\begin{equation*}}%
+    {\@endalgocfline\end{equation*}\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}%
+\makeatother
 
 % Automatic references
 % Note: cleveref must be imported after hyperref and algorithm2e
