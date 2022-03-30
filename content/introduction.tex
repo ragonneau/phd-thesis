@@ -172,11 +172,31 @@ In this example, since the considered optimization method is itself a \gls{dfo} 
 \label{subsec:machine-learning}
 
 A newfangled example of \gls{dfo} applications is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}.
-Consider, for example, the following~$k$-ary classification problem.
-Let~$\mathcal{X}$ be any given finite vector space.
-Assume that we want to arrange each element of~$\mathcal{X}$ into one of~$k$ given categories.
-To that end, we are given a finite dataset of labelled elements~$\set{(x_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \mathcal{X} \times \set{1, 2, \dots, k}$ and a machine learning model~$\obj_p : \mathcal{X} \times \mathcal{W} \to [0, 1]^k$, where~$\mathcal{W}$ denotes the finite vector space of the internal coefficients of~$\obj_p$.
-Moreover, the machine learning model~$\obj_p$ depends on the fixed vector of hyperparameters~$p \in \Omega \subseteq \R^n$.
+To illustrate this example, we consider the following hyperparameter tuning problem of a \gls{svm} for binary classification.
+Given a labelled dataset~$\set{(x_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$, we build a \gls{svm} for classifying the data with their respective labels.
+Such a binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by solving the optimization problem
+\begin{subequations}
+    \label{eq:csvc}
+    \begin{align}
+        \min        & \quad \frac{1}{2} \norm{\omega}_2^2 + C \norm{\xi}_1\\
+        \text{s.t.} & \quad y_i (\beta + \inner{\omega, \varphi_{\gamma}(x_i)}) \ge 1 - \xi_i, ~ i \in \set{1, 2, \dots, m},\\
+                    & \quad \xi \ge 0,\\
+                    & \quad (\omega, \beta, \xi) \in \R^{\ell} \times \R \times \R^m,
+    \end{align}
+\end{subequations}
+where~$\varphi_{\gamma}$ is a function mapping the data to a higher-dimensional space~$\R^{\ell}$ for some given parameters~$\gamma > 0$ and~$C > 0$.
+Given~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$ a solution to problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$x \in \R^n$ according to
+\begin{equation*}
+    \delta(x) \eqdef \sgn(\beta^{\ast} + \inner{\omega^{\ast}, \varphi_{\gamma}(x)}).
+\end{equation*}
+In other words, the function~$\delta$ maps a observation~$x \in \R^n$ to a certain label.
+It is clear that~$\delta$ depends on the two parameters~$C$ and~$\gamma$, and we want to find the optimal parameters for the given dataset.
+
+%Consider, for example, the following~$k$-ary classification problem.
+%Let~$\mathcal{X}$ be any given finite vector space.
+%Assume that we want to arrange each element of~$\mathcal{X}$ into one of~$k$ given categories.
+%To that end, we are given a finite dataset of labelled elements~$\set{(x_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \mathcal{X} \times \set{1, 2, \dots, k}$ and a machine learning model~$\obj_p : \mathcal{X} \times \mathcal{W} \to [0, 1]^k$, where~$\mathcal{W}$ denotes the finite vector space of the internal coefficients of~$\obj_p$.
+%Moreover, the machine learning model~$\obj_p$ depends on the fixed vector of hyperparameters~$p \in \Omega \subseteq \R^n$.
 
 %\begin{figure}[htp]
 %    \centering
