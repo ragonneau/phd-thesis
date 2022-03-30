@@ -87,23 +87,23 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
 
 \begin{algorithm}[htp]
     \DontPrintSemicolon
-    \KwData{Matrix~$A \in \R^{n \times n}$}
-    Initialize $A^{(1)} \gets A$\;
+    \KwData{Matrix~$A \in \R^{n \times n}$.}
+    Initialize $A^{(0)} \gets A$\;
     \For{$k = 1, 2, \dots, n - 1$}{
-        Determine the pivot index~$j = \argmax \set[\big]{\abs[\big]{A_{i, k}^{(k)}} : k \le i \le n}$\;
-        \eIf{$A_{j, k}^{(k)} \neq 0$}{
-            Exchange the~$k$th and the~$j$th rows of~$A^{(k)}$\;
+        Determine the pivot index~$j = \argmax \set[\big]{\abs[\big]{A_{i, k}^{(k - 1)}} : k \le i \le n}$\;
+        \eIf{$A_{j, k}^{(k - 1)} \neq 0$}{
+            Exchange the~$k$th and the~$j$th rows of~$A^{(k - 1)}$\;
             Evaluate the multiplier~$\tau^{(k)} \in \R^n$ with components
             \begin{algomathdisplay}
                 \tau_i^{(k)} =
                 \begin{cases}
-                    A_{i, k}^{(k)} / A_{k, k}^{(k)} & \text{if~$i > k$, and}\\
-                    0                               & \text{otherwise}
+                    A_{i, k}^{(k - 1)} / A_{k, k}^{(k - 1)} & \text{if~$i > k$, and}\\
+                    0                                       & \text{otherwise}
                 \end{cases}
             \end{algomathdisplay}
-            Update~$A^{(k + 1)} \gets (I_n - \tau^{(k)} e_k^{\mathsf{T}})A^{(k)}$\;
+            Update~$A^{(k)} \gets (I_n - \tau^{(k)} e_k^{\mathsf{T}})A^{(k - 1)}$\;
         }{
-            Set~$A^{(k + 1)} \gets A^{(k)}$\;
+            Set~$A^{(k)} \gets A^{(k - 1)}$\;
         }
     }
     \caption{Gaussian elimination with partial pivoting}
@@ -113,29 +113,60 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
 \Citeauthor{Wilkinson_1961}'s backward error analysis~\cite{Wilkinson_1961} demonstrates that the growth factor
 \begin{equation}
     \label{eq:gepp-growth-factor}
-    \rho_n(A) \eqdef \frac{\max \set{\abs{A_{i, j}^{(k)}} : 1 \le i, j \le n, ~ 1 \le k \le n - 1}}{\max \set{\abs{A_{i, j}} : 1 \le i, j \le n}},
+    \rho_n(A) \eqdef \frac{\max_{0 \le k \le n - 1} \norm{A^{(k)}}_{\max}}{\norm{A}_{\max}},
 \end{equation}
-determinates the numerical stability of~\cref{alg:gepp} because the~$\ell_{\infty}$-norm of the backward error of the computed solution is bounded from above by a term proportional to~$\rho_n(A)$.
-We wish to determine how large~$\rho_n(A)$ can be and hence, to solve
+determinates the numerical stability of~\cref{alg:gepp}, where~$\norm{\cdot}_{\max}$ denotes the max norm of a matrix, i.e., the largest entry of the matrix in absolute value.
+More specifically, the~$\ell_{\infty}$-norm of the backward error of the computed solution is bounded from above by a term proportional to~$\rho_n(A)$.
+To study the worse-case scenario of~\cref{alg:gepp}, we wish to determine how large~$\rho_n$ can be and hence, to solve
 \begin{equation}
     \label{eq:gepp-opti}
     \max_{A \in \R^{n \times n}} \rho_n(A).
 \end{equation}
-Although the growth factor is defined everywhere, it may not be continuous at the points yielding a tie in the selection of the pivot element.
+Note that~$\R^{n \times n}$ is isomorphic to~$\R^{n^2}$ and hence, problem~\cref{eq:gepp-opti} could straightforwardly be formulated as problem~\cref{eq:nlcp-intro}.
+Besides, although the growth factor is defined everywhere, it may not be continuous at the points yielding a tie in the selection of the pivot element.
 Moreover, it is not differentiable at the points yielding a tie in any maximum operator in equation~\cref{eq:gepp-growth-factor}.
 Hence, optimization methods based on derivative information cannot be used for such a problem.
-In such a case, \gls{dfo} methods can help to determine the optimal solution to problem~\cref{eq:gepp-opti}, and \citeauthor{Higham_Higham_1989} have used \gls{dfo} methods to determine the set of matrices yielding the optimal solution~\cite{Higham_Higham_1989}.
+In such a case, \gls{dfo} methods can help determine the optimal solution to problem~\cref{eq:gepp-opti}, and \citeauthor{Higham_Higham_1989} have used \gls{dfo} methods to determine the set of matrices yielding the optimal solution~\cite{Higham_Higham_1989}.
 
 \subsection{Tuning nonlinear optimization methods}
 
 Another well-known example of \gls{dfo} applications is the parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
-Assume that we are given a nonlinear optimization method that depends on~$n$ parameters and a function~$\obj$ that measures the method's performance (e.g., the \glsxtrshort{cpu} time of the method for solving a given set of optimization problems).
-Let~$\Omega \subseteq \R^n$ be the feasible set of the method's parameters, which likely represents bound constraints on the parameters and inequalities between the parameters.
-One may then solve the optimization problem
-\begin{equation*}
-    \min_{p \in \Omega} f(p),
-\end{equation*}
-to select \enquote{optimal} parameters for the method.
+Consider, for example, the simplified version of the direct-search method for solving problem~\cref{eq:nlcp-intro} when~$\iub = \ieq = \emptyset$ given in~\cref{alg:direct-search}.
+
+\begin{algorithm}[htp]
+    \DontPrintSemicolon
+    \KwData{Objective function~$f$, positive spanning set~$\mathcal{D} \subset \R^n$, initial guess~$x^{(0)} \in \R^n$, steplengths~$0 < \alpha_{\min} < \alpha_0 < \alpha_{\max}$, and parameters~$0 < \theta < 1 \le \gamma$.}
+    \For{$k = 0, 1, \dots$}{
+        Evaluate~$d^{(k)} = \argmin \set{f(x^{(k)} + \alpha_k d) : d \in \mathcal{D}}$\;
+        \eIf{$f(x^{(k)} + \alpha_k d^{(k)}) < f(x^{(k)})$}{
+            Update~$x^{(k + 1)} \gets x^{(k)} + \alpha_k d^{(k)}$\;
+            Increase the steplength~$\alpha_{k + 1} = \min \set{\gamma \alpha_k, \alpha_{\max}}$
+        }{
+            Update~$x^{(k + 1)} \gets x^{(k)}$\;
+            Decrease the steplength~$\alpha_{k + 1} = \max \set{\theta \alpha_k, \alpha_{\min}}$
+        }
+        \If{$\alpha_k = \alpha_{\min}$}{
+            Stop the computations\;
+        }
+    }
+    \caption{Direct search for unconstrained optimization}
+    \label{alg:direct-search}
+\end{algorithm}
+
+Such an algorithm depends on two parameters, namely~$\theta$ and~$\gamma$.
+To choose those parameters, we wish to minimize some measure of the method's performance (e.g., the sum of the number of function evaluations required to solve a given set of optimization problems),~$\rho$ say.
+In other words, we wish to solve the optimization problem
+\begin{subequations}
+    \label{eq:tuning-opti}
+    \begin{align}
+        \min        & \quad \rho(\theta, \gamma) \label{eq:tuning-opti-obj}\\
+        \text{s.t.} & \quad \theta \in (0, 1), \label{eq:tuning-opti-theta}\\
+                    & \quad \gamma \ge 1. \label{eq:tuning-opti-gamma}
+    \end{align}
+\end{subequations}
+Derivatives of~$\rho$ are unassessable and may not even exist.
+Such a problem is then solved using \gls{dfo} methods.
+In this example, since the considered optimization method is itself a \gls{dfo} method, we could even solve problem~\cref{eq:tuning-opti} using~\cref{alg:direct-search} given some estimates of the parameters~$\theta$ and~$\gamma$.
 
 \subsection{Hyperparameter tuning in machine learning}
 \label{subsec:machine-learning}
@@ -240,10 +271,10 @@ Other industrial examples of \gls{dfo} applications include molecular conformati
 \begin{itemize}
     \item Direct-search and model-based methods.
     \item Line-search and trust-region methods.
-    \item Filtering methods and composite methods.
-    \item Geometry of the interpolation sets.
+    \item Filter methods and hybrid methods.
+    \item implicit filtering methods (hybrid between direct-search and line-search).
 \end{itemize}
 
-\subsection{Prominent \glsfmtlong{dfo} methods}
+\subsection{Examples of \glsfmtlong{dfo} methods}
 
-\section{Performance profiles-distribution functions}
+\section{Benchmarking tools for \glsfmtlong{dfo} methods}
