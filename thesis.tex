@@ -279,9 +279,8 @@
     backrefpages={Cited on pp.},%
 }
 \defbibheading{bibintoc}[\bibname]{%
-    \chapter*{#1}%
+    \chapter*{#1\markboth{#1}{#1}}%
     \addcontentsline{toc}{chapter}{#1}%
-    \markboth{#1}{#1}%
 }
 \addbibresource{ragonneau-bib/strings.bib}
 \addbibresource{ragonneau-bib/optim.bib}
@@ -290,26 +289,22 @@
 % Repair contents and lists
 \makeatletter
 \renewcommand{\tableofcontents}{%
-    \chapter*{\contentsname}%
-    \markboth{\contentsname}{\contentsname}%
+    \chapter*{\contentsname\markboth{\contentsname}{\contentsname}}%
     \addcontentsline{toc}{chapter}{\contentsname}%
     \@starttoc{toc}%
 }
 \renewcommand{\listoffigures}{%
-    \chapter*{\listfigurename}%
-    \markboth{\listfigurename}{\listfigurename}%
+    \chapter*{\listfigurename\markboth{\listfigurename}{\listfigurename}}%
     \addcontentsline{toc}{chapter}{\listfigurename}%
     \@starttoc{lof}%
 }
 \renewcommand{\listoftables}{%
-    \chapter*{\listtablename}%
-    \markboth{\listtablename}{\listtablename}%
+    \chapter*{\listtablename\markboth{\listtablename}{\listtablename}}%
     \addcontentsline{toc}{chapter}{\listtablename}%
     \@starttoc{lot}%
 }
 \renewcommand{\listofalgorithms}{%
-    \chapter*{\listalgorithmcfname}%
-    \markboth{\listalgorithmcfname}{\listalgorithmcfname}%
+    \chapter*{\listalgorithmcfname\markboth{\listalgorithmcfname}{\listalgorithmcfname}}%
     \addcontentsline{toc}{chapter}{\listalgorithmcfname}%
     \@starttoc{loa}%
 }
