@@ -21,8 +21,11 @@ $dvi_mode = 0;
 # Configure xelatex engine
 push @generated_exts, "xdv";
 
+# Run bibtex or biber as needed to regenerate the bbl files
+$bibtex_use = 2;
+
 # Remove extra extensions on clean
-$clean_ext = "auxlock bbl ist loa mw run.xml tdo";
+$clean_ext = "auxlock ist loa mw run.xml tdo";
 
 # Build dependencies for the glossaries-extra package
 add_cus_dep("acn", "acr", 0, "makeglo2gls");
