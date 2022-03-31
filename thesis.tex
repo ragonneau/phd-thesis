@@ -28,7 +28,6 @@
 \usepackage[american]{babel}
 \usepackage{csquotes}
 \usepackage{emptypage}
-\usepackage{tocbibind}
 \usepackage[final]{microtype}
 \usepackage{nameref}
 \usepackage{titling}
@@ -206,7 +205,6 @@
 \usepackage[%
     ruled,%
     algochapter,%
-    dotocloa,%
     lined,%
     longend,%
     linesnumbered,%
@@ -289,6 +287,34 @@
 \addbibresource{ragonneau-bib/optim.bib}
 \appto{\bibsetup}{\sloppy}
 
+% Repair contents and lists
+\makeatletter
+\renewcommand{\tableofcontents}{%
+    \chapter*{\contentsname}%
+    \markboth{\contentsname}{\contentsname}%
+    \addcontentsline{toc}{chapter}{\contentsname}%
+    \@starttoc{toc}%
+}
+\renewcommand{\listoffigures}{%
+    \chapter*{\listfigurename}%
+    \markboth{\listfigurename}{\listfigurename}%
+    \addcontentsline{toc}{chapter}{\listfigurename}%
+    \@starttoc{lof}%
+}
+\renewcommand{\listoftables}{%
+    \chapter*{\listtablename}%
+    \markboth{\listtablename}{\listtablename}%
+    \addcontentsline{toc}{chapter}{\listtablename}%
+    \@starttoc{lot}%
+}
+\renewcommand{\listofalgorithms}{%
+    \chapter*{\listalgorithmcfname}%
+    \markboth{\listalgorithmcfname}{\listalgorithmcfname}%
+    \addcontentsline{toc}{chapter}{\listalgorithmcfname}%
+    \@starttoc{loa}%
+}
+\makeatother
+
 % Thesis metadata
 \usepackage[en-US]{datetime2}
 \title{Model-Based Derivative-Free Optimization Methods and Software}
@@ -306,6 +332,7 @@
     pdfkeywords={},%
 }
 
+\usepackage{lipsum}
 \begin{document}
 
 \frontmatter
@@ -324,19 +351,15 @@
 
 \cleardoublepage
 \tableofcontents
-\markboth{\contentsname}{\contentsname}
 
 \cleardoublepage
 \listoffigures
-\markboth{\listfigurename}{\listfigurename}
 
 \cleardoublepage
 \listoftables
-\markboth{\listtablename}{\listtablename}
 
 \cleardoublepage
 \listofalgorithms
-\markboth{\listalgorithmcfname}{\listalgorithmcfname}
 
 \cleardoublepage
 \glsfindwidesttoplevelname
