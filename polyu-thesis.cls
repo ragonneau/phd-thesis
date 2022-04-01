@@ -13,11 +13,12 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/03/31 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/04/01 PolyU thesis document class]
 
+% Load book class as basis
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessOptions\relax
-\LoadClass{book}
+\LoadClass[11pt]{book}
 
 % General packages
 \RequirePackage[%
@@ -37,6 +38,8 @@
 \RequirePackage{csquotes}
 \RequirePackage{emptypage}
 \RequirePackage{morewrites}
+\RequirePackage{titling}
+\RequirePackage[en-US]{datetime2}
 
 % Latin and Chinese fonts
 \RequirePackage[T1]{fontenc}
@@ -258,4 +261,23 @@
     \chapter*{\listalgorithmcfname\markboth{\listalgorithmcfname}{\listalgorithmcfname}}%
     \addcontentsline{toc}{chapter}{\listalgorithmcfname}%
     \@starttoc{loa}%
+}
+
+% Insert coverpage and titlepage
+\renewcommand{\maketitle}{%
+    \hypersetup{pageanchor=false}%
+    \include{utils/coverpage}%
+    \include{utils/typeset}%
+    \include{utils/titlepage}%
+    \hypersetup{pageanchor=true}%
+}
+
+% Insert document metadata
+\AtBeginDocument{%
+    \hypersetup{%
+        pdftitle=\thetitle,%
+        pdfauthor=\theauthor,%
+        pdfsubject={},%
+        pdfkeywords={},%
+    }%
 }

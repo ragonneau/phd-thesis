@@ -23,4 +23,5 @@ all: $(basename $(wildcard *.tex))
 .PHONY: clean
 clean:
 	$(LC) -c
+	find . -name "*.aux" -type f -exec rm -f "{}" ";"
 	find . -regex ".*-figure[0-9]*\..*" -type f -exec rm -f "{}" ";"

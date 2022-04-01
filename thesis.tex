@@ -12,7 +12,7 @@
 % This work has the LPPL maintenance status `maintained'.
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
-\documentclass[11pt,draft]{polyu-thesis}
+\documentclass[draft]{polyu-thesis}
 \usepackage[final]{microtype}
 \usepackage{nameref}
 
@@ -33,8 +33,6 @@
 }
 
 % Thesis metadata
-\usepackage{titling}
-\usepackage[en-US]{datetime2}
 \title{Model-Based Derivative-Free Optimization Methods and Software}
 \author{Tom M. Ragonneau}
 \DTMsavedate{ini}{2022-04-01}  % date of creation
@@ -43,22 +41,12 @@
 \newcommand{\degree}{Doctor of Philosophy}
 \newcommand{\university}{The Hong Kong Polytechnic University}
 \newcommand{\department}{Department of Applied Mathematics}
-\hypersetup{%
-    pdftitle=\thetitle,%
-    pdfauthor=\theauthor,%
-    pdfsubject={},%
-    pdfkeywords={},%
-}
 
 \begin{document}
 
-\frontmatter
+\maketitle
 
-\hypersetup{pageanchor=false}
-\include{utils/coverpage}
-\include{utils/typeset}
-\include{utils/titlepage}
-\hypersetup{pageanchor=true}
+\frontmatter
 
 \include{utils/certificate}
 
