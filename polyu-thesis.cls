@@ -118,22 +118,6 @@
 % Mathematical expressions
 \input{utils/mathematics}
 
-% Cross-referencing and colorization
-% Note: hyperref must be imported after utils/mathematics.tex
-\RequirePackage[final]{hyperref}
-\RequirePackage{url}
-\hypersetup{%
-    colorlinks=true,%
-    linkcolor=OliveGreen,%
-    anchorcolor=black,%
-    citecolor=DarkOrchid,%
-    filecolor=black,%
-    menucolor=black,%
-    runcolor=black,%
-    urlcolor=black,%
-    linktoc=page,%
-}
-
 % Terms and acronyms processing
 \RequirePackage[%
     acronym,%
@@ -151,7 +135,7 @@
 \loadglsentries{utils/glossary}
 
 % Index processing
-\RequirePackage{makeidx}
+\RequirePackage{imakeidx}
 \RequirePackage[columns=2,totoc]{idxlayout}
 \newcommand{\tb}[1]{#1\kern.15em t}  % indicates a table
 \newcommand{\fb}[1]{#1\kern.15em f}  % indicates a figure
@@ -164,6 +148,22 @@
 \setlength{\nomlabelwidth}{0.08\textwidth}
 \makenomenclature
 
+% Cross-referencing and colorization
+% Note: hyperref must be imported after utils/mathematics.tex and imakeidx
+\RequirePackage[final]{hyperref}
+\RequirePackage{url}
+\hypersetup{%
+    colorlinks=true,%
+    linkcolor=OliveGreen,%
+    anchorcolor=black,%
+    citecolor=DarkOrchid,%
+    filecolor=black,%
+    menucolor=black,%
+    runcolor=black,%
+    urlcolor=black,%
+    linktoc=page,%
+}
+
 % Environments for writing algorithms
 \RequirePackage[%
     ruled,%
@@ -173,6 +173,11 @@
     linesnumbered,%
 ]{algorithm2e}
 \renewenvironment{algomathdisplay}{\begin{equation*}}{\@endalgocfline\end{equation*}\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
+\renewcommand{\listofalgorithms}{%
+    \chapter*{\listalgorithmcfname\markboth{\listalgorithmcfname}{\listalgorithmcfname}}%
+    \addcontentsline{toc}{chapter}{\listalgorithmcfname}%
+    \@starttoc{loa}%
+}
 
 % Automatic references
 % Note: cleveref must be imported after hyperref and algorithm2e
@@ -222,6 +227,14 @@
     textsize=scriptsize,%
 ]{todonotes}
 \renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
+\if@todonotes@disabled
+\else
+\renewcommand{\listoftodos}[1][\@todonotes@todolistname]{%
+    \chapter*{#1\markboth{#1}{#1}}%
+    \addcontentsline{toc}{chapter}{#1}%
+    \@starttoc{tdo}%
+}
+\fi
 
 % Bibliography information processing
 \RequirePackage[%
@@ -241,7 +254,7 @@
 }
 \appto{\bibsetup}{\sloppy}
 
-% Repair contents and lists from the book class and the algorithm2e package
+% Repair contents and lists from the book class
 \renewcommand{\tableofcontents}{%
     \chapter*{\contentsname\markboth{\contentsname}{\contentsname}}%
     \addcontentsline{toc}{chapter}{\contentsname}%
@@ -256,11 +269,6 @@
     \chapter*{\listtablename\markboth{\listtablename}{\listtablename}}%
     \addcontentsline{toc}{chapter}{\listtablename}%
     \@starttoc{lot}%
-}
-\renewcommand{\listofalgorithms}{%
-    \chapter*{\listalgorithmcfname\markboth{\listalgorithmcfname}{\listalgorithmcfname}}%
-    \addcontentsline{toc}{chapter}{\listalgorithmcfname}%
-    \@starttoc{loa}%
 }
 
 % Insert coverpage and titlepage

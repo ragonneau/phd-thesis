@@ -21,7 +21,9 @@
     \ifthenelse{\equal{#1}{O}}{Operators}{%
     \ifthenelse{\equal{#1}{S}}{Sets}{Others}}}}}%
 ]}
-\renewcommand{\nompreamble}{In what follows, the descriptions of the mathematical symbols are suffixed with the page numbers of their introductory uses for referencing.}
+\renewcommand{\nompreamble}{%
+    \markboth{\nomname}{\nomname}%
+    In what follows, the descriptions of the mathematical symbols are suffixed with the page numbers of their introductory uses for referencing.%
+}
 
 \printnomenclature
-\markboth{\nomname}{\nomname}
