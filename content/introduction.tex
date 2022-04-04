@@ -95,22 +95,22 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
         Determine the pivot index~$j = \argmax \set[\big]{\abs[\big]{A_{i, k}^{(k - 1)}} : k \le i \le n}$\;
         \eIf{$A_{j, k}^{(k - 1)} \neq 0$}{
             Exchange the~$k$th and the~$j$th rows of~$A^{(k - 1)}$\;
-            Evaluate the multiplier~$\tau^{(k)} \in \R^n$ with components
+            Evaluate the multiplier~$\tau^k \in \R^n$ with components
             \begin{algomathdisplay}
-                \tau_i^{(k)} =
+                \tau_i^k =
                 \begin{cases}
                     A_{i, k}^{(k - 1)} / A_{k, k}^{(k - 1)} & \text{if~$i > k$, and}\\
                     0                                       & \text{otherwise}
                 \end{cases}
             \end{algomathdisplay}
-            Update~$A^{(k)} \gets (I_n - \tau^{(k)} e_k^{\T})A^{(k - 1)}$\;
+            Update~$A^{(k)} \gets (I_n - \tau^k e_k^{\T})A^{(k - 1)}$\;
         }{
             Set~$A^{(k)} \gets A^{(k - 1)}$\;
         }
     }
 \end{algorithm}
 
-\Citeauthor{Wilkinson_1961}'s backward error analysis~\cite{Wilkinson_1961} demonstrates that the growth factor
+\Citeauthor{Wilkinson_1963}'s backward error analysis~\cite[eq. (25.14)]{Wilkinson_1963} demonstrates that the growth factor of the Gaussian elimination, defined by
 \begin{equation}
     \label{eq:gepp-growth-factor}
     \rho_n(A) \eqdef \frac{\max_{0 \le k \le n - 1} \norm{A^{(k)}}_{\max}}{\norm{A}_{\max}},
@@ -131,47 +131,65 @@ In such a case, \gls{dfo} methods can help determine the optimal solution to pro
 \subsection{Tuning nonlinear optimization methods}
 
 Another well-known example of \gls{dfo} applications is the parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
-Consider, for example, the simplified version of the direct-search method for solving problem~\cref{eq:nlcp-intro} when~$\iub = \ieq = \emptyset$ given in~\cref{alg:direct-search}.
+Consider, for example, the simplified version of the trust-region method for solving problem~\cref{eq:nlcp-intro} when~$\iub = \ieq = \emptyset$ given in~\cref{alg:trust-region}.
 
 \begin{algorithm}[htp]
-    \caption{Direct search for unconstrained optimization}
-    \label{alg:direct-search}
+    \caption{Trust region for unconstrained optimization}
+    \label{alg:trust-region}
     \DontPrintSemicolon
-    \KwData{Objective function~$f$, positive spanning set~$\mathcal{D} \subset \R^n$, initial guess~$x^{(0)} \in \R^n$, steplengths~$0 < \alpha_{\min} < \alpha_0 < \alpha_{\max}$, and parameters~$0 < \theta < 1 \le \gamma$.}
+    \KwData{Objective function~$\obj$, initial guess~$x^0 \in \R^n$, initial trust-region radius~$\Delta_0 > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
     \For{$k = 0, 1, \dots$}{
-        Evaluate~$d^{(k)} = \argmin \set{f(x^{(k)} + \alpha_k d) : d \in \mathcal{D}}$\;
-        \eIf{$f(x^{(k)} + \alpha_k d^{(k)}) < f(x^{(k)})$}{
-            Update~$x^{(k + 1)} \gets x^{(k)} + \alpha_k d^{(k)}$\;
-            Increase the steplength~$\alpha_{k + 1} = \min \set{\gamma \alpha_k, \alpha_{\max}}$
+        Define a model~$m_k$ of~$\obj$ around~$x^k$\;
+        Set the trial step~$d^k$ to any solution to
+        \begin{algomathdisplay}
+            \begin{aligned}
+                \min        & \quad m_k(x^k + d)\\
+                \text{s.t.} & \quad \norm{d} \le \Delta_k,\\
+                            & \quad d \in \R^n
+            \end{aligned}
+        \end{algomathdisplay}
+        Evaluate the trust-region ratio
+        \begin{algomathdisplay}
+            \rho_k \gets \frac{f(x^k) - f(x^k + d^k)}{m_k(x^k) - m_k(x^k + d^k)}
+        \end{algomathdisplay}
+        \eIf{$\rho_k \ge \eta_1$}{
+            Update the trial point~$x^{k + 1} \gets x^k + d^k$\;
         }{
-            Update~$x^{(k + 1)} \gets x^{(k)}$\;
-            Decrease the steplength~$\alpha_{k + 1} = \max \set{\theta \alpha_k, \alpha_{\min}}$
+            Retain the trial point~$x^{k + 1} \gets x^k$\;
         }
-        \If{$\alpha_k = \alpha_{\min}$}{
-            Stop the computations\;
-        }
+        Update the trust-region radius
+        \begin{algomathdisplay}
+            \Delta_{k + 1} \gets
+            \begin{cases}
+                \theta_1 \Delta_k   & \text{if~$\rho_k < \eta_1$,}\\
+                \Delta_k            & \text{if~$\eta_1 \le \rho_k \le \eta_2$, and}\\
+                \theta_2 \Delta_k   & \text{otherwise}
+            \end{cases}
+        \end{algomathdisplay}
     }
 \end{algorithm}
 
-Such an algorithm depends on two parameters, namely~$\theta$ and~$\gamma$.
+Such an algorithm depends on four parameters, namely~$\eta_1$,~$\eta_2$,~$\theta_1$, and~$\theta_2$.
+A complete trust-region method includes more parameters, but we simplified the algorithm for sake of clarity.
+For example, the threshold on the trust-region ratio for accepting the trial step should necessarily be the same as the one for enlarging the trust-region radius (and can even be zero).
 To choose those parameters, we wish to minimize some measure of the method's performance (e.g., the sum of the number of function evaluations required to solve a given set of optimization problems),~$\rho$ say.
 In other words, we wish to solve the optimization problem
 \begin{subequations}
     \label{eq:tuning-opti}
     \begin{align}
-        \min        & \quad \rho(\theta, \gamma) \label{eq:tuning-opti-obj}\\
-        \text{s.t.} & \quad \theta \in (0, 1), \label{eq:tuning-opti-theta}\\
-                    & \quad \gamma \ge 1. \label{eq:tuning-opti-gamma}
+        \min        & \quad \rho(\eta_1, \eta_2, \theta_1, \theta_2)\\
+        \text{s.t.} & \quad 0 \le \eta_1 \le \eta_2 < 1,\\
+                    & \quad 0 < \theta_1 < 1 < \theta_2.
     \end{align}
 \end{subequations}
 Derivatives of~$\rho$ are unassessable and may not even exist.
 Such a problem is then solved using \gls{dfo} methods.
-In this example, since the considered optimization method is itself a \gls{dfo} method, we could even solve problem~\cref{eq:tuning-opti} using~\cref{alg:direct-search} given some estimates of the parameters~$\theta$ and~$\gamma$.
 
 \subsection{Hyperparameter tuning in machine learning}
 \label{subsec:machine-learning}
 
 A newfangled example of \gls{dfo} applications is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}.
+For instance, researchers at Google solve internal parameter tuning problems using Google Vizier~\cite{Golovin_Etal_2017}, the Google-internal service for performing black-box optimization
 To illustrate this example, we consider the following hyperparameter tuning problem of a \gls{svm} for binary classification.
 Given a labeled dataset~$\set{(x_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$, we build a \gls{svm} to classify the data with their respective labels.
 A binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by solving the optimization problem
@@ -191,7 +209,7 @@ Given~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times 
 \end{equation*}
 In other words, the function~$\delta$ maps an observation~$x \in \R^n$ to a certain label.
 It is clear that~$\delta$ depends on the two parameters~$C$ and~$\gamma$, and we want to find the optimal parameters for the given dataset.
-Do to so, we use a~$5$-fold cross-validation of our model, as presented in~\cref{alg:cross-validation}.
+Do to so, we use a~$5$-fold cross-validation of our model, as presented in~\cref{alg:cross-validation}, for some model's performance measure.
 
 \begin{algorithm}[htp]
     \caption{$k$-fold cross-validation of a~$C$-\glsfmtshort{svc}}
@@ -211,10 +229,11 @@ The~\gls{auc}~\cite{Hanley_Mcneil_1982} is another example of model's performanc
 In this example, hyperparameter tuning maximizes the model's performance provided by the~$k$-fold cross-validation of the~$C$-\gls{svc}~\cref{eq:csvc} with respect to the parameters~$C$ and~$\gamma$, subject to~$C > 0$ and~$\gamma > 0$.
 It is clear that derivatives of the objective function of such a problem cannot be easily evaluated and may even not exist.
 Hyperparameter tuning problems may be solved numerically using \gls{dfo} methods.
-For instance, Google uses Google Vizier~\cite{Golovin_Etal_2017} as their internal hyperparameter tuning engine.
 In a similar fashion, reinforcement learning in machine learning necessitates solving optimization problems for which derivatives cannot be assessed~\cite{Qian_Yu_2021}.
 
 \subsection{Some industrial and engineering applications}
+
+In engineering studies, \gls{mdo} designates a field that uses optimization methods for solving design problems.
 
 Other industrial examples of \gls{dfo} applications include molecular conformational analysis~\cite{Alberto_Etal_2004,Meza_Martinez_1994}, helicopter rotor blade design~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, hydrodynamic design~\cite{Duvigneau_Visonneau_2004}, registration in medical imaging~\cite{Oeuvray_2005,Oeuvray_Bierlaire_2007}, dynamic pricing~\cite{Levina_Etal_2009}, reservoir engineering and engine calibration~\cite{Langouet_2011}, analog circuit design~\cite{Latorre_Etal_2019}, aircraft engine engineering~\cite{Gazaix_Etal_2019}, and chemical product design~\cite{Sun_Etal_2020} for instance.
 
@@ -302,6 +321,14 @@ Other industrial examples of \gls{dfo} applications include molecular conformati
 \end{itemize}
 
 \subsection{Examples of \glsfmtlong{dfo} methods}
+
+\begin{itemize}
+    \item The earliest work on numerical \gls{dfo} is attributed to~\citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}.
+    \item Nelder-Mead method~\cite{Nelder_Mead_1965}.
+    \item BFO~\cite{Porcelli_Toint_2017}.
+    \item NOMAD~\cite{Digabel_2011}.
+    \item MNH~\cite{Wild_2008}
+\end{itemize}
 
 \section{Benchmarking tools for \glsfmtlong{dfo} methods}
 
