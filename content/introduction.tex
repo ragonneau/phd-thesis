@@ -184,6 +184,8 @@ In other words, we wish to solve the optimization problem
 \end{subequations}
 Derivatives of~$\rho$ are unassessable and may not even exist.
 Such a problem is then solved using \gls{dfo} methods.
+For instance, the \gls{mads} with minimal granularity and controlled decimals method~\cite{Audet_Digabel_Tribes_2019} was proposed by~\citeauthor{Audet_Digabel_Tribes_2019} to solve problem~\cref{eq:tuning-opti} with a fixed number of significant digits.
+Similarly, the \gls{bfo} solver~\cite{Porcelli_Toint_2017}, a \gls{dfo} method for bound-constrained problems mixing continuous and discrete variables, has been self-tuned using the method presented above.
 
 \subsection{Hyperparameter tuning in machine learning}
 \label{subsec:machine-learning}
@@ -234,8 +236,8 @@ In a similar fashion, reinforcement learning in machine learning necessitates so
 \subsection{Some industrial and engineering applications}
 
 In engineering studies, \gls{mdo} designates a field that uses optimization methods for solving design problems.
-
-Other industrial examples of \gls{dfo} applications include molecular conformational analysis~\cite{Alberto_Etal_2004,Meza_Martinez_1994}, helicopter rotor blade design~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, hydrodynamic design~\cite{Duvigneau_Visonneau_2004}, registration in medical imaging~\cite{Oeuvray_2005,Oeuvray_Bierlaire_2007}, dynamic pricing~\cite{Levina_Etal_2009}, reservoir engineering and engine calibration~\cite{Langouet_2011}, analog circuit design~\cite{Latorre_Etal_2019}, aircraft engine engineering~\cite{Gazaix_Etal_2019}, and chemical product design~\cite{Sun_Etal_2020} for instance.
+Examples of \gls{mdo} applications include molecular conformational analysis~\cite{Alberto_Etal_2004,Meza_Martinez_1994}, helicopter rotor blade design~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, hydrodynamic design~\cite{Duvigneau_Visonneau_2004}, registration in medical imaging~\cite{Oeuvray_2005,Oeuvray_Bierlaire_2007}, reservoir engineering and engine calibration~\cite{Langouet_2011}, analog circuit design~\cite{Latorre_Etal_2019}, aircraft engine engineering~\cite{Gazaix_Etal_2019}, and chemical product design~\cite{Sun_Etal_2020} for instance.
+\Gls{mdo} problems are solved using \gls{dfo} solvers such as the Nelder-Mead simplex method~\cite{Nelder_Mead_1965}, underlying the MATLAB function \texttt{fminsearch}, open-source optimizers such as NOMAD~\cite{Digabel_2011}, or CONDOR~\cite{Berghen_Bersini_2004}, or proprietary software such as Boeing's Design Explorer~\cite{Cramer_Gablonsky_2004}.
 
 \section{Optimality conditions for smooth optimization}
 
@@ -301,11 +303,10 @@ Other industrial examples of \gls{dfo} applications include molecular conformati
             \con{i}(x) \le 0,                               & i \in \iub,\\
             \con{i}(x) = 0,                                 & i \in \ieq,\\
             \lambda_i \con{i}(x) = 0,                       & i \in \iub,\\
-            \lambda_i \le 0,                                & i \in \iub.
+            \lambda_i \ge 0,                                & i \in \iub.
         \end{cases}
     \end{equation*}
 \end{theorem}
-\todo{Check the inequalities}
 
 \subsection{Second-order optimality conditions}
 
@@ -323,9 +324,10 @@ Other industrial examples of \gls{dfo} applications include molecular conformati
 \subsection{Examples of \glsfmtlong{dfo} methods}
 
 \begin{itemize}
-    \item The earliest work on numerical \gls{dfo} is attributed to~\citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}.
+    \item The earliest work on numerical \gls{dfo} is attributed to~\citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed a nonlinear least-squares solver using a \gls{dfo} coordinate search on MANIAC, an early computer based on the von Neumann architecture.
     \item Nelder-Mead method~\cite{Nelder_Mead_1965}.
     \item BFO~\cite{Porcelli_Toint_2017}.
+    \item DFO~\cite{Conn_Scheinberg_Toint_1998}.
     \item NOMAD~\cite{Digabel_2011}.
     \item MNH~\cite{Wild_2008}
 \end{itemize}
