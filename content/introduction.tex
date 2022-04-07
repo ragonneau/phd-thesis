@@ -72,7 +72,7 @@ Within this chapter, we consider the nonlinearly-constrained problem
                     & \quad x \in \R^n, \nonumber
     \end{align}
 \end{subequations}
-where the \emph{objective} and \emph{constraint functions}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and where the sets of indices~$\iub$ and~$\ieq$ are finite (perhaps empty).
+where the \emph{objective} and \emph{constraint functions}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and where the sets of indices~$\iub$ and~$\ieq$ are finite (perhaps empty) and disjoint.
 The above-mentioned feasible set~$\Omega \subseteq \R^n$ is, therefore, the set of points satisfying the inequality constraints~\cref{eq:nlcp-intro-cub} and the equality constraints~\cref{eq:nlcp-intro-ceq}, that is
 \begin{equation*}
     \Omega \eqdef \set{x \in \R^n : \con{i}(x) \le 0, ~ i \in \iub \land \con{i}(x) = 0, ~ i \in \ieq}.
@@ -96,13 +96,10 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
         \eIf{$A_{j, k}^{(k - 1)} \neq 0$}{
             Exchange the~$k$th and the~$j$th rows of~$A^{(k - 1)}$\;
             Evaluate the multiplier~$\tau^k \in \R^n$ with components
-            \begin{algomathdisplay}
-                \tau_i^k =
-                \begin{cases}
-                    A_{i, k}^{(k - 1)} / A_{k, k}^{(k - 1)} & \text{if~$i > k$, and}\\
-                    0                                       & \text{otherwise}
-                \end{cases}
-            \end{algomathdisplay}
+            \begin{algoempheq}[left={\tau_i^k = \empheqlbrace}]{alignat*=2}
+                & A_{i, k}^{(k - 1)} / A_{k, k}^{(k - 1)}   && \quad \text{if~$i > k$, and}\\
+                & 0                                         && \quad \text{otherwise}
+            \end{algoempheq}
             Update~$A^{(k)} \gets (I_n - \tau^k e_k^{\T})A^{(k - 1)}$\;
         }{
             Set~$A^{(k)} \gets A^{(k - 1)}$\;
@@ -150,7 +147,7 @@ Consider, for example, the simplified version of the trust-region method for sol
         \end{algomathdisplay}
         Evaluate the trust-region ratio
         \begin{algomathdisplay}
-            \rho_k \gets \frac{f(x^k) - f(x^k + d^k)}{m_k(x^k) - m_k(x^k + d^k)}
+            \rho_k \gets \frac{\obj(x^k) - \obj(x^k + d^k)}{m_k(x^k) - m_k(x^k + d^k)}
         \end{algomathdisplay}
         \eIf{$\rho_k \ge \eta_1$}{
             Update the trial point~$x^{k + 1} \gets x^k + d^k$\;
@@ -158,14 +155,11 @@ Consider, for example, the simplified version of the trust-region method for sol
             Retain the trial point~$x^{k + 1} \gets x^k$\;
         }
         Update the trust-region radius
-        \begin{algomathdisplay}
-            \Delta_{k + 1} \gets
-            \begin{cases}
-                \theta_1 \Delta_k   & \text{if~$\rho_k < \eta_1$,}\\
-                \Delta_k            & \text{if~$\eta_1 \le \rho_k \le \eta_2$, and}\\
-                \theta_2 \Delta_k   & \text{otherwise}
-            \end{cases}
-        \end{algomathdisplay}
+        \begin{algoempheq}[left={\Delta_{k + 1} \gets \empheqlbrace}]{alignat*=2}
+            & \theta_1 \Delta_k && \quad \text{if~$\rho_k < \eta_1$,}\\
+            & \Delta_k          && \quad \text{if~$\eta_1 \le \rho_k \le \eta_2$, and}\\
+            & \theta_2 \Delta_k && \quad \text{otherwise}
+        \end{algoempheq}
     }
 \end{algorithm}
 
@@ -244,14 +238,14 @@ Examples of \gls{mdo} applications include molecular conformational analysis~\ci
 \subsection{Local and global solutions}
 
 \begin{definition}[Global solution]
-    A point~$x^{\ast} \in \R^n$ is referred to as a \emph{global solution} to problem~\cref{eq:nlcp-intro} if~$x^{\ast} \in \Omega$ and~$f(x) \ge f(x^{\ast})$ for all~$x \in \Omega$.
+    A point~$x^{\ast} \in \R^n$ is referred to as a \emph{global solution} to problem~\cref{eq:nlcp-intro} if~$x^{\ast} \in \Omega$ and~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \Omega$.
 \end{definition}
 
 \begin{definition}[Local solution]
     A points~$x^{\ast} \in \R^n$ is referred to as
     \begin{itemize}
-        \item a \emph{local solution} to problem~\cref{eq:nlcp-intro} if~$x^{\ast} \in \Omega$ and there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$f(x) \ge f(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega$.
-        \item a \emph{strict local solution} to problem~\cref{eq:nlcp-intro} if~$x^{\ast} \in \Omega$ and there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$f(x) > f(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega \setminus \set{x^{\ast}}$.
+        \item a \emph{local solution} to problem~\cref{eq:nlcp-intro} if~$x^{\ast} \in \Omega$ and there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega$.
+        \item a \emph{strict local solution} to problem~\cref{eq:nlcp-intro} if~$x^{\ast} \in \Omega$ and there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) > \obj(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega \setminus \set{x^{\ast}}$.
         \item an \emph{isolated local solution} to problem~\cref{eq:nlcp-intro} if there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that it is the only local solution in~$\mathcal{N} \cap \Omega$.
     \end{itemize}
 \end{definition}
@@ -266,17 +260,15 @@ Examples of \gls{mdo} applications include molecular conformational analysis~\ci
 \end{definition}
 
 \begin{definition}[Constraint qualification]
-    Let~$x \in \Omega$ be any feasible point, denote~$\mathcal{A}(x)$ the active set for problem~\cref{eq:nlcp-intro} at~$x$, and assume that the constraints function~$\con{i}$ are differentiable at~$x$ for all~$i \in \mathcal{A}(x)$.
+    Let~$x \in \Omega$ be any feasible point of problem~\cref{eq:nlcp-intro}, denote~$\mathcal{A}(x)$ the active set for problem~\cref{eq:nlcp-intro} at~$x$, and assume that the constraints function~$\con{i}$ are differentiable at~$x$ for all~$i \in \mathcal{A}(x)$.
     We say that
     \begin{itemize}
         \item the \gls{licq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \mathcal{A}(x)$, and
         \item the \gls{mfcq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \ieq$ and there exists a vector~$d \in \R^n$ such that
-        \begin{equation*}
-            \begin{cases}
-                \inner{\nabla \con{i}(x), d} < 0    & \text{if~$i \in \mathcal{A}(x) \cap \iub$, and}\\
-                \inner{\nabla \con{i}(x), d} = 0    & \text{if~$i \in \ieq$}.
-            \end{cases}
-        \end{equation*}
+        \begin{empheq}[left=\empheqlbrace]{alignat*=2}
+            & \inner{\nabla \con{i}(x), d} < 0  && \quad \text{if~$i \in \mathcal{A}(x) \cap \iub$, and}\\
+            & \inner{\nabla \con{i}(x), d} = 0  && \quad \text{if~$i \in \ieq$}.
+        \end{empheq}
     \end{itemize}
 \end{definition}
 
@@ -293,22 +285,55 @@ Examples of \gls{mdo} applications include molecular conformational analysis~\ci
 \subsection{First-order optimality conditions}
 
 \begin{equation*}
-    \lag(x, \lambda) \eqdef f(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x).
+    \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x),
 \end{equation*}
+where~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \in \R$ for all~$i \in \iub \cup \ieq$.
 
-\begin{theorem}[\gls{kkt} conditions]
-    \begin{equation*}
-        \begin{cases}
-            \nabla_x \lag(x^{\ast}, \lambda^{\ast}) = 0,\\
-            \con{i}(x) \le 0,                               & i \in \iub,\\
-            \con{i}(x) = 0,                                 & i \in \ieq,\\
-            \lambda_i \con{i}(x) = 0,                       & i \in \iub,\\
-            \lambda_i \ge 0,                                & i \in \iub.
-        \end{cases}
-    \end{equation*}
+\begin{theorem}[First-order necessary conditions]
+    Let~$x^{\ast} \in \Omega$ be a given local solution to problem~\cref{eq:nlcp-intro}, assume that \gls{licq} holds at~$x^{\ast}$ and that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are continuously differentiable in an open neighborhood or~$x^{\ast}$.
+    Then there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
+    \begin{subequations}
+        \label{eq:kkt-intro}
+        \begin{empheq}[left=\empheqlbrace]{alignat=2}
+            & \nabla_x \lag(x^{\ast}, \lambda^{\ast}) = 0,  && \label{eq:kkt-intro-sta}\\
+            & \con{i}(x^{\ast}) \le 0,                      && \quad i \in \iub, \label{eq:kkt-intro-pfub}\\
+            & \con{i}(x^{\ast}) = 0,                        && \quad i \in \ieq, \label{eq:kkt-intro-pfeq}\\
+            & \lambda_i^{\ast} \con{i}(x^{\ast}) = 0,       && \quad i \in \iub, \label{eq:kkt-intro-csl}\\
+            & \lambda_i^{\ast} \ge 0,                       && \quad i \in \iub. \label{eq:kkt-intro-df}
+        \end{empheq}
+    \end{subequations}
 \end{theorem}
 
+The conditions~\cref{eq:kkt-intro} are referred to as the \gls{kkt} conditions.
+More specifically, condition~\cref{eq:kkt-intro-sta} is referred to as the \emph{stationarity} condition, conditions~\cref{eq:kkt-intro-pfub,eq:kkt-intro-pfeq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-intro-csl} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-intro-df} as the \emph{dual feasibility} condition.
+Note that this theorem holds for more general constraint qualifications, such as the \gls{mfcq}.
+Moreover, the smoothness assumptions on the objective and constraint functions can be relaxed, using some generalized derivatives, but we want to keep this theoretical development as simple as possible for sake of clarity.
+
 \subsection{Second-order optimality conditions}
+
+\begin{theorem}[Second-order necessary conditions]
+    Let~$x^{\ast} \in \Omega$ be a given local solution to problem~\cref{eq:nlcp-intro}, assume that \gls{licq} holds at~$x^{\ast}$ and that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are twice continuously differentiable in an open neighborhood or~$x^{\ast}$.
+    Denote~$\mathcal{A}(x^{\ast})$ the active set for problem~\cref{eq:nlcp-intro} at~$x^{\ast}$.
+    Let~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ be a Lagrange multiplier satisfying the KKT condition~\cref{eq:kkt-intro}, and let~$z \in \R^n$ be any vector such that
+    \begin{subequations}
+        \label{eq:second-order-intro}
+        \begin{empheq}[left=\empheqlbrace]{alignat*=2}
+            & \inner{\nabla \con{i}(x^{\ast}), z} = 0,      && \quad \text{if~$i \in \ieq$,}\\
+            & \inner{\nabla \con{i}(x^{\ast}), z} = 0,      && \quad \text{if~$i \in \mathcal{A}(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} > 0$, and}\\
+            & \inner{\nabla \con{i}(x^{\ast}), z} \ge 0,    && \quad \text{if~$i \in \mathcal{A}(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} = 0$.}
+        \end{empheq}
+    \end{subequations}
+    Then~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} \ge 0$.
+\end{theorem}
+
+\begin{theorem}[Second-order sufficient conditions]
+    Let~$x^{\ast} \in \Omega$ be any feasible point of problem~\cref{eq:nlcp-intro}, and assume that \gls{licq} holds at~$x^{\ast}$, that there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-intro}, and that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are twice continuously differentiable in an open neighborhood or~$x^{\ast}$.
+    If for all nonzero vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-intro} we have
+    \begin{equation*}
+        \inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} > 0,
+    \end{equation*}
+    then~$x^{\ast}$ is a strict local solution to problem~\cref{eq:nlcp-intro}.
+\end{theorem}
 
 \section{Methodology of \glsfmtlong{dfo} algorithms}
 
