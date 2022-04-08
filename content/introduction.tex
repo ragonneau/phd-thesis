@@ -284,6 +284,8 @@ Examples of \gls{mdo} applications include molecular conformational analysis~\ci
 
 \subsection{First-order optimality conditions}
 
+\subsubsection{Statement of the optimality conditions}
+
 \begin{equation*}
     \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x),
 \end{equation*}
@@ -308,6 +310,85 @@ The conditions~\cref{eq:kkt-intro} are referred to as the \gls{kkt} conditions.
 More specifically, condition~\cref{eq:kkt-intro-sta} is referred to as the \emph{stationarity} condition, conditions~\cref{eq:kkt-intro-pfub,eq:kkt-intro-pfeq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-intro-csl} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-intro-df} as the \emph{dual feasibility} condition.
 Note that this theorem holds for more general constraint qualifications, such as the \gls{mfcq}.
 Moreover, the smoothness assumptions on the objective and constraint functions can be relaxed, using some generalized derivatives, but we want to keep this theoretical development as simple as possible for sake of clarity.
+
+\subsubsection{Graphical description of the first-order optimality conditions}
+
+Consider the following two-dimensional problem
+\begin{subequations}
+    \label{eq:kkt-description-one-constraint}
+    \begin{align}
+        \min        & \quad \obj(x) = x_1 + x_2\\
+        \text{s.t.} & \quad \con{1}(x) = x_1^2 + x_2^2 - 2 \le 0,\\
+                    & \quad x \in \R^2. \nonumber
+    \end{align}
+\end{subequations}
+
+\begin{figure}[htp]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[%
+            xmin=-4,%
+            xmax=2,%
+            ymin=-4,%
+            ymax=2,%
+            axis equal image,%
+            xlabel={$x_1$},%
+            ylabel={$x_2$},%
+            axis background/.style={%
+                pattern=north west lines,%
+                pattern color=black!20,%
+                even odd rule,%
+                insert path={let \p1=(axis cs:0,0), \p2=(axis cs:1,1), \n1={veclen(\x2-\x1,\y2-\y1)}, in (\p1) circle[radius=\n1]},%
+            },%
+        ]
+            \draw[dashed] (0,0) circle[radius=2^0.5];
+            \draw[-latex] (-1,-1) -- (-3,-3) node[below right] {$\nabla \con{1}(x^{\ast})$};
+            \draw[-latex] (-1,-1) -- (-2,-2) node[below right] {$\nabla \obj(x^{\ast})$};
+            \addplot[BrickRed,mark=*,only marks] coordinates {(-1,-1)};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Graphical representation of problem~\cref{eq:kkt-description-one-constraint}}
+\end{figure}
+
+Consider the following two-dimensional problem
+\begin{subequations}
+    \label{eq:kkt-description-two-constraint}
+    \begin{align}
+        \min        & \quad \obj(x) = x_1 + x_2\\
+        \text{s.t.} & \quad \con{1}(x) = x_1^2 + x_2^2 - 2 \le 0,\\
+                    & \quad \con{2}(x) = -x_2 \le 0,\\
+                    & \quad x \in \R^2. \nonumber
+    \end{align}
+\end{subequations}
+
+\begin{figure}[htp]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[%
+            xmin=-4,%
+            xmax=2,%
+            ymin=-4,%
+            ymax=2,%
+            axis equal image,%
+            xlabel={$x_1$},%
+            ylabel={$x_2$},%
+            axis background/.style={%
+                pattern=north west lines,%
+                pattern color=black!20,%
+                even odd rule,%
+                insert path={let \p1=(axis cs:0,0), \p2=(axis cs:1,1), \n1={veclen(\x2-\x1,\y2-\y1)}, in (\p1) circle[radius=\n1]},%
+            },%
+        ]
+            \draw[dashed] (0,0) circle[radius=2^0.5];
+            \draw[dashed] (-4,0) -- (2,0);
+            \draw[-latex] (-2^0.5,0) -- (-2*2^0.5,0) node[above] {$\nabla \con{1}(x^{\ast})$};
+            \draw[-latex] (-2^0.5,0) -- (-2^0.5,-1) node[below] {$\nabla \con{2}(x^{\ast})$};
+            \draw[-latex] (-2^0.5,0) -- (-2^0.5-1,-1) node[below left] {$\nabla \obj(x^{\ast})$};
+            \addplot[BrickRed,mark=*,only marks] coordinates {(-2^0.5,0)};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Graphical representation of problem~\cref{eq:kkt-description-two-constraint}}
+\end{figure}
 
 \subsection{Second-order optimality conditions}
 

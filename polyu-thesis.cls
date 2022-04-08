@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/04/07 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/04/08 PolyU thesis document class]
 
 % Load book class as basis
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
@@ -118,22 +118,6 @@
 % Mathematical expressions
 \input{utils/mathematics}
 
-% Terms and acronyms processing
-\RequirePackage[%
-    acronym,%
-    nopostdot=false,%
-    nogroupskip,%
-    indexonlyfirst,%
-]{glossaries-extra}
-\setabbreviationstyle[acronym]{long-short}
-\setglossarystyle{alttree}
-\glssetcategoryattribute{\acronymtype}{glossdesc}{firstuc}
-\renewcommand*{\glsfirstlongdefaultfont}[1]{\emph{#1}}
-\glsxtrinsertinsidetrue
-\glsdisablehyper
-\makeglossaries
-\loadglsentries{utils/glossary}
-
 % Index processing
 \RequirePackage{imakeidx}
 \RequirePackage[columns=2,totoc]{idxlayout}
@@ -164,6 +148,23 @@
     linktoc=page,%
 }
 
+% Terms and acronyms processing
+% Note: glossaries-extra must be imported after hyperref
+\RequirePackage[%
+    acronym,%
+    nopostdot=false,%
+    nogroupskip,%
+    indexonlyfirst,%
+]{glossaries-extra}
+\setabbreviationstyle[acronym]{long-short}
+\setglossarystyle{alttree}
+\glssetcategoryattribute{\acronymtype}{glossdesc}{firstuc}
+\renewcommand*{\glsfirstlongdefaultfont}[1]{\emph{#1}}
+\glsxtrinsertinsidetrue
+\glsdisablehyper
+\makeglossaries
+\loadglsentries{utils/glossary}
+
 % Environments for writing algorithms
 \RequirePackage[%
     ruled,%
@@ -188,6 +189,7 @@
 
 % Enhanced support for graphics
 % Note: graphicx has already been imported to avoid option's conflicts
+\RequirePackage{tikz}
 \RequirePackage{pgfplots}
 \RequirePackage{pgfplotstable}
 \pgfplotsset{compat=1.18}
@@ -213,10 +215,10 @@
         tick label style={font=\small},%
     },%
 }
-\pgfkeys{/pgf/images/include external/.code=\includegraphics{#1}}
-\tikzexternalize[%
-    prefix=figures/,%
-]
+%\pgfkeys{/pgf/images/include external/.code=\includegraphics{#1}}
+%\tikzexternalize[%
+%    prefix=figures/,%
+%]
 
 % Drafting packages
 \RequirePackage{ifdraft}
@@ -254,6 +256,11 @@
     \addcontentsline{toc}{chapter}{#1}%
 }
 \appto{\bibsetup}{\sloppy}
+
+% Captions in floating environments
+\RequirePackage{floatrow}
+\floatsetup[figure]{capposition=bottom}
+\floatsetup[table]{capposition=top}
 
 % Repair contents and lists from the book class
 \renewcommand{\tableofcontents}{%
