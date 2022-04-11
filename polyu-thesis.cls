@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/04/08 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/04/11 PolyU thesis document class]
 
 % Load book class as basis
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
@@ -34,7 +34,6 @@
 ]{geometry}
 \RequirePackage[dvipsnames]{xcolor}
 \RequirePackage[american]{babel}
-\RequirePackage[final]{graphicx}
 \RequirePackage{csquotes}
 \RequirePackage{emptypage}
 \RequirePackage{morewrites}
@@ -115,6 +114,10 @@
     itemsep=0pt,%
 }
 
+% Enhanced support for graphics
+% Note: graphicx must be imported before utils/mathematics.tex.
+\RequirePackage[final]{graphicx}
+
 % Mathematical expressions
 \input{utils/mathematics}
 
@@ -187,8 +190,7 @@
 \crefname{equation}{}{}
 \Crefname{equation}{}{}
 
-% Enhanced support for graphics
-% Note: graphicx has already been imported to avoid option's conflicts
+% Plots and graphs
 \RequirePackage{tikz}
 \RequirePackage{pgfplots}
 \RequirePackage{pgfplotstable}
@@ -215,10 +217,10 @@
         tick label style={font=\small},%
     },%
 }
-%\pgfkeys{/pgf/images/include external/.code=\includegraphics{#1}}
-%\tikzexternalize[%
-%    prefix=figures/,%
-%]
+\pgfkeys{/pgf/images/include external/.code=\includegraphics{#1}}
+\tikzexternalize[%
+    prefix=figures/,%
+]
 
 % Drafting packages
 \RequirePackage{ifdraft}
@@ -246,6 +248,7 @@
     sortcites,%
     backref,%
     backrefstyle=three,%
+    abbreviate=false,%
 ]{biblatex}
 \DefineBibliographyStrings{american}{%
     backrefpage={Cited on p.},%

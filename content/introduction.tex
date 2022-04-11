@@ -52,8 +52,10 @@ Optimization is the study of extremal points and values of mathematical function
 Traditional optimization aims at minimizing (or maximizing) a real-valued function~$\obj$, referred to as the \emph{objective function}, within a given nonempty set of points~$\Omega \subseteq \R^n$, referred to as the \emph{feasible set}.
 It is well known that the most helpful information to optimization is embraced in the derivatives of~$\obj$ and the curves of~$\Omega$.
 However, such derivative information may not exist, be unassessable, unreliable, or prohibitively expensive to evaluate.
-It is within this context, referred to as \gls{dfo}~\cite{Audet_Hare_2017,Conn_Scheinberg_Vicente_2009b}, that our research focuses.
+It is within this context, referred to as \gls{dfo} that our research focuses.
+For more details on \gls{dfo}, readers may refer to the books~\cite{Audet_Hare_2017,Conn_Scheinberg_Vicente_2009b} or the more recent survey~\cite{Larson_Menickelly_Wild_2019}.
 Problems for which derivative information is unavailable arise naturally when the objective function or the feasible set results from complex experiments or simulations.
+When the only pieces of information on a problem that can be retrieved are function values, it is usually referred to as a \gls{bbo} problem.
 We emphasize that we are \emph{not} studying nonsmooth optimization.
 Classical or generalized derivatives of the optimization problem's functions may be well-defined, but we assume they cannot be numerically assessed.
 
@@ -107,7 +109,7 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
     }
 \end{algorithm}
 
-\Citeauthor{Wilkinson_1963}'s backward error analysis~\cite[eq. (25.14)]{Wilkinson_1963} demonstrates that the growth factor of the Gaussian elimination, defined by
+\Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of paragraph~10, and~$g$ at the end of page~97) demonstrates that the growth factor of the Gaussian elimination, defined by
 \begin{equation}
     \label{eq:gepp-growth-factor}
     \rho_n(A) \eqdef \frac{\max_{0 \le k \le n - 1} \norm{A^{(k)}}_{\max}}{\norm{A}_{\max}},
@@ -119,75 +121,79 @@ To study the worst-case scenario of~\cref{alg:gepp}, we wish to determine how la
     \label{eq:gepp-opti}
     \max_{A \in \R^{n \times n}} \rho_n(A).
 \end{equation}
-Note that~$\R^{n \times n}$ is isomorphic to~$\R^{n^2}$ and hence, problem~\cref{eq:gepp-opti} could straightforwardly be formulated as problem~\cref{eq:nlcp-intro}.
+Note that~$\R^{n \times n}$ is isomorphic to~$\R^{n^2}$ and hence, problem~\cref{eq:gepp-opti} can straightforwardly be formulated as problem~\cref{eq:nlcp-intro}.
 Besides, although the growth factor is defined everywhere, it may not be continuous at the points yielding a tie in the selection of the pivot element.
 Moreover, it is not differentiable at the points yielding a tie in any maximum operator in equation~\cref{eq:gepp-growth-factor}.
-Hence, optimization methods based on derivative information cannot be used for such a problem.
-In such a case, \gls{dfo} methods can help determine the optimal solution to problem~\cref{eq:gepp-opti}, and \citeauthor{Higham_Higham_1989} have used \gls{dfo} methods to determine the set of matrices yielding the optimal solution~\cite{Higham_Higham_1989}.
+Hence, optimization methods based on derivative information cannot be used for this problem.
+In such a case, \gls{dfo} methods can help solving problem~\cref{eq:gepp-opti}.
+Note that the optimal value and all optimal solutions to problem~\cref{eq:gepp-opti} are analytically known~\cite{Higham_Higham_1989}, but \gls{dfo} methods could have been used to help the theoretical development.
 
 \subsection{Tuning nonlinear optimization methods}
 
 Another well-known example of \gls{dfo} applications is the parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
-Consider, for example, the simplified version of the trust-region method for solving problem~\cref{eq:nlcp-intro} when~$\iub = \ieq = \emptyset$ given in~\cref{alg:trust-region}.
+For example, consider~\cref{alg:trust-region}, a basic trust-region method for solving problem~\cref{eq:nlcp-intro} when~$\iub = \ieq = \emptyset$.
 
 \begin{algorithm}[htp]
-    \caption{Trust region for unconstrained optimization}
+    \caption{Basic trust-region method for unconstrained optimization}
     \label{alg:trust-region}
     \DontPrintSemicolon
     \KwData{Objective function~$\obj$, initial guess~$x^0 \in \R^n$, initial trust-region radius~$\Delta_0 > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
     \For{$k = 0, 1, \dots$}{
-        Define a model~$m_k$ of~$\obj$ around~$x^k$\;
-        Set the trial step~$d^k$ to any solution to
+        Define a simple function~$m_k$ such that~$m_k(d) \approx f(x^k + d)$ for~$\norm{d} \le \Delta_k$\;
+        Set the trial step~$d^k$ to an approximate solution to
         \begin{algomathdisplay}
             \begin{aligned}
-                \min        & \quad m_k(x^k + d)\\
+                \min        & \quad m_k(d)\\
                 \text{s.t.} & \quad \norm{d} \le \Delta_k,\\
                             & \quad d \in \R^n
             \end{aligned}
         \end{algomathdisplay}
         Evaluate the trust-region ratio
         \begin{algomathdisplay}
-            \rho_k \gets \frac{\obj(x^k) - \obj(x^k + d^k)}{m_k(x^k) - m_k(x^k + d^k)}
+            \rho_k \gets \frac{\obj(x^k) - \obj(x^k + d^k)}{m_k(0) - m_k(d^k)}
         \end{algomathdisplay}
-        \eIf{$\rho_k \ge \eta_1$}{
+        \eIf{$\rho_k \ge \eta_1$}{ \nllabel{alg:trust-region-success}
             Update the trial point~$x^{k + 1} \gets x^k + d^k$\;
         }{
             Retain the trial point~$x^{k + 1} \gets x^k$\;
         }
         Update the trust-region radius
         \begin{algoempheq}[left={\Delta_{k + 1} \gets \empheqlbrace}]{alignat*=2}
-            & \theta_1 \Delta_k && \quad \text{if~$\rho_k < \eta_1$,}\\
-            & \Delta_k          && \quad \text{if~$\eta_1 \le \rho_k \le \eta_2$, and}\\
+            & \theta_1 \Delta_k && \quad \text{if~$\rho_k \le \eta_1$,}\\
+            & \Delta_k          && \quad \text{if~$\eta_1 < \rho_k \le \eta_2$, and}\\
             & \theta_2 \Delta_k && \quad \text{otherwise}
         \end{algoempheq}
     }
 \end{algorithm}
 
-Such an algorithm depends on four parameters, namely~$\eta_1$,~$\eta_2$,~$\theta_1$, and~$\theta_2$.
-A complete trust-region method includes more parameters, but we simplified the algorithm for sake of clarity.
-For example, the threshold on the trust-region ratio for accepting the trial step should necessarily be the same as the one for enlarging the trust-region radius (and can even be zero).
-To choose those parameters, we wish to minimize some measure of the method's performance (e.g., the sum of the number of function evaluations required to solve a given set of optimization problems),~$\rho$ say.
+The most important simplification in~\cref{alg:trust-region} lies in~\cref{alg:trust-region-success}.
+A complete framework includes a parameter~$\eta_0 \ge 0$ satisfying~$\eta_0 \le \eta_1$, and the condition in~\cref{alg:trust-region-success} is replaced by~$\rho_k \ge \eta_0$.
+In practice, we usually have~$\eta_0 = 0$.
+However, this parameter genuinely complexifies the theoretical analysis of the trust-region method, and hence, we omit it here for sake of simplicity.
+We consider only the four parameters~$\eta_1$,~$\eta_2$,~$\theta_1$, and~$\theta_2$.
+To choose those parameters, we minimize some measure of the method's expense (e.g., the \glsxtrshort{cpu} time to solve a given set of optimization problems),~$C$ say.
 In other words, we wish to solve the optimization problem
 \begin{subequations}
     \label{eq:tuning-opti}
     \begin{align}
-        \min        & \quad \rho(\eta_1, \eta_2, \theta_1, \theta_2)\\
+        \min        & \quad C(\eta_1, \eta_2, \theta_1, \theta_2)\\
         \text{s.t.} & \quad 0 \le \eta_1 \le \eta_2 < 1,\\
                     & \quad 0 < \theta_1 < 1 < \theta_2.
     \end{align}
 \end{subequations}
-Derivatives of~$\rho$ are unassessable and may not even exist.
-Such a problem is then solved using \gls{dfo} methods.
-For instance, the \gls{mads} with minimal granularity and controlled decimals method~\cite{Audet_Digabel_Tribes_2019} was proposed by~\citeauthor{Audet_Digabel_Tribes_2019} to solve problem~\cref{eq:tuning-opti} with a fixed number of significant digits.
-Similarly, the \gls{bfo} solver~\cite{Porcelli_Toint_2017}, a \gls{dfo} method for bound-constrained problems mixing continuous and discrete variables, has been self-tuned using the method presented above.
+Derivatives of~$C$ are unassessable if they even exist.
+Such a problem is then solved using \gls{dfo} methods, for example using the \gls{mads} method~\cite{Audet_Orban_2006}.
+\Citeauthor{Audet_Digabel_Tribes_2019} modified the \gls{mads} method to solve problem~\cref{eq:tuning-opti} with a controlled number of significant digits~\cite{Audet_Digabel_Tribes_2019}, to determine parameters that can be used by practitioners.
+Interestingly, \gls{dfo} methods can be self-tuned using the method presented above.
+The \gls{bfo} solver~\cite{Porcelli_Toint_2017}, a method for bound-constrained problems mixing continuous and discrete variables, is an example of self-tuned \gls{dfo} methods.
 
 \subsection{Hyperparameter tuning in machine learning}
 \label{subsec:machine-learning}
 
-A newfangled example of \gls{dfo} applications is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}.
-For instance, researchers at Google solve internal parameter tuning problems using Google Vizier~\cite{Golovin_Etal_2017}, the Google-internal service for performing black-box optimization
+A more recent example of \gls{dfo} applications is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}.
+For instance, Google solves hyperparameter tuning problems using Google Vizier~\cite{Golovin_Etal_2017}, the Google-internal service for performing black-box optimization.
 To illustrate this example, we consider the following hyperparameter tuning problem of a \gls{svm} for binary classification.
-Given a labeled dataset~$\set{(x_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$, we build a \gls{svm} to classify the data with their respective labels.
+Given a binary-labeled dataset~$\set{(x_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$, we build a \gls{svm} to classify the data with their respective labels.
 A binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by solving the optimization problem
 \begin{subequations}
     \label{eq:csvc}
@@ -198,55 +204,65 @@ A binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} 
                     & \quad (\omega, \beta, \xi) \in \R^{\ell} \times \R \times \R^m,
     \end{align}
 \end{subequations}
-where~$\varphi_{\gamma}$ is a function mapping the data to a higher-dimensional space~$\R^{\ell}$ for some given parameters~$\gamma > 0$ and~$C > 0$.
-Given~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$ a solution to problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$x \in \R^n$ according to
-\begin{equation*}
-    \delta(x) \eqdef \sgn(\beta^{\ast} + \inner{\omega^{\ast}, \varphi_{\gamma}(x)}).
-\end{equation*}
-In other words, the function~$\delta$ maps an observation~$x \in \R^n$ to a certain label.
-It is clear that~$\delta$ depends on the two parameters~$C$ and~$\gamma$, and we want to find the optimal parameters for the given dataset.
-Do to so, we use a~$5$-fold cross-validation of our model, as presented in~\cref{alg:cross-validation}, for some model's performance measure.
+where~$\varphi_{\gamma}$ is a function mapping the data to a higher-dimensional space~$\R^{\ell}$ and~$\gamma > 0$ and~$C > 0$ are parameters.
+Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$ to problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$x \in \R^n$ according to
+\begin{equation}
+    \label{eq:csvc-classifier}
+    \delta(x) \eqdef \sgn(\beta^{\ast} + \inner{\omega^{\ast}, \varphi_{\gamma}(x)}),
+\end{equation}
+which maps an observation~$x \in \R^n$ to a label in~$\set{\pm 1}$.
+It is clear that~$\delta$ depends on the two parameters~$C$ and~$\gamma$, which can be chosen by solving an optimization problem.
+The objective function~$P$ of this problem is a~$5$-fold cross-validation based on some performance measure of the model~\cref{eq:csvc-classifier}.
+The general~$k$-fold cross-validation to define~$P(C, \gamma)$ is presented in~\cref{alg:cross-validation}.
 
 \begin{algorithm}[htp]
-    \caption{$k$-fold cross-validation of a~$C$-\glsfmtshort{svc}}
+    \caption{$k$-fold cross-validation of an \glsfmtshort{svc} with parameters~$C$ and~$\gamma$}
     \label{alg:cross-validation}
     \DontPrintSemicolon
-    \KwData{Labelled dataset~$\set{(x_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$ and fold number~$k > 0$.}
-    Split randomly the dataset into~$k$ balanced groups\;
+    \KwData{Labeled dataset~$\set{(x_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$ and fold number~$k > 0$.}
+    Split the dataset into~$k$ balanced groups\;
     \For{$i = 1, 2, \dots, k$}{
-        Train the~$C$-\gls{svc}~\cref{eq:csvc} with the all the data except those in the~$i$th group\;
-        Evaluate the model's performance on the data in the~$i$th group\;
+        Calculate~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast})$ with the all the data except those in the~$i$th group\;
+        Evaluate the performance~$p_i$ of the model~\cref{eq:csvc-classifier} on the data in the~$i$th group\;
     }
-    Summarize the model's performance using the~$k$ samples\;
+    Define~$P(C, \gamma)$ by summarizing the performances~$\set{p_1, p_2, \dots, p_k}$\;
 \end{algorithm}
 
-A typical example of model's performance used in the~$k$-fold cross-validation is the model's accuracy, i.e., the percentage of testing data correctly classified.
-The~\gls{auc}~\cite{Hanley_Mcneil_1982} is another example of model's performance, particularly effective for imbalanced datasets~\cite{Bradley_1997}.
-In this example, hyperparameter tuning maximizes the model's performance provided by the~$k$-fold cross-validation of the~$C$-\gls{svc}~\cref{eq:csvc} with respect to the parameters~$C$ and~$\gamma$, subject to~$C > 0$ and~$\gamma > 0$.
+A typical example of model's performance used in the~$k$-fold cross-validation is the model's accuracy, i.e., the percentage of data correctly classified.
+The~\gls{auc}~\cite{Hanley_Mcneil_1982} is another example of performance measure, particularly effective for imbalanced datasets~\cite{Bradley_1997}.
+The hyperparameter tuning problem can be formulated as
+\begin{equation*}
+    \begin{aligned}
+        \min        & \quad P(C, \gamma)\\
+        \text{s.t.} & \quad C > 0,\\
+                    & \quad \gamma > 0.
+    \end{aligned}
+\end{equation*}
 It is clear that derivatives of the objective function of such a problem cannot be easily evaluated and may even not exist.
-Hyperparameter tuning problems may be solved numerically using \gls{dfo} methods.
-In a similar fashion, reinforcement learning in machine learning necessitates solving optimization problems for which derivatives cannot be assessed~\cite{Qian_Yu_2021}.
+This problem may be solved numerically using \gls{dfo} methods.
+
+In a similar fashion\todo{Rewrite and give more details}, reinforcement learning in machine learning necessitates solving optimization problems for which derivatives cannot be assessed~\cite{Qian_Yu_2021}.
 
 \subsection{Some industrial and engineering applications}
 
-In engineering studies, \gls{mdo} designates a field that uses optimization methods for solving design problems.
-Examples of \gls{mdo} applications include molecular conformational analysis~\cite{Alberto_Etal_2004,Meza_Martinez_1994}, helicopter rotor blade design~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, hydrodynamic design~\cite{Duvigneau_Visonneau_2004}, registration in medical imaging~\cite{Oeuvray_2005,Oeuvray_Bierlaire_2007}, reservoir engineering and engine calibration~\cite{Langouet_2011}, analog circuit design~\cite{Latorre_Etal_2019}, aircraft engine engineering~\cite{Gazaix_Etal_2019}, and chemical product design~\cite{Sun_Etal_2020} for instance.
-\Gls{mdo} problems are solved using \gls{dfo} solvers such as the Nelder-Mead simplex method~\cite{Nelder_Mead_1965}, underlying the MATLAB function \texttt{fminsearch}, open-source optimizers such as NOMAD~\cite{Digabel_2011}, or CONDOR~\cite{Berghen_Bersini_2004}, or proprietary software such as Boeing's Design Explorer~\cite{Cramer_Gablonsky_2004}.
+In industry and engineering, \gls{mdo} designates a field that uses optimization methods for solving design problems that involve several disciplines.
+For example, the objective and constraint functions of a \gls{mdo} problem can be defined by different departments of the same company, or even by different companies, such as in aircraft engine engineering~\cite{Gazaix_Etal_2019}.
+Other design optimization applications include molecular conformational analysis~\cite{Alberto_Etal_2004,Meza_Martinez_1994}, helicopter rotor blade design~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, hydrodynamic design~\cite{Duvigneau_Visonneau_2004}, registration in medical imaging~\cite{Oeuvray_2005,Oeuvray_Bierlaire_2007}, reservoir engineering and engine calibration~\cite{Langouet_2011}, analog circuit design~\cite{Latorre_Etal_2019}, and chemical product design~\cite{Sun_Etal_2020} for instance.
 
 \section{Optimality conditions for smooth optimization}
 
 \subsection{Local and global solutions}
 
 \begin{definition}[Global solution]
-    A point~$x^{\ast} \in \R^n$ is referred to as a \emph{global solution} to problem~\cref{eq:nlcp-intro} if~$x^{\ast} \in \Omega$ and~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \Omega$.
+    To problem~\cref{eq:nlcp-intro}, a point~$x^{\ast} \in \R^n$ is a \emph{global solution} if~$x^{\ast} \in \Omega$ and~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \Omega$.
 \end{definition}
 
 \begin{definition}[Local solution]
-    A points~$x^{\ast} \in \R^n$ is referred to as
+    To problem~\cref{eq:nlcp-intro}, a point~$x^{\ast} \in \R^n$ is
     \begin{itemize}
-        \item a \emph{local solution} to problem~\cref{eq:nlcp-intro} if~$x^{\ast} \in \Omega$ and there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega$.
-        \item a \emph{strict local solution} to problem~\cref{eq:nlcp-intro} if~$x^{\ast} \in \Omega$ and there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) > \obj(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega \setminus \set{x^{\ast}}$.
-        \item an \emph{isolated local solution} to problem~\cref{eq:nlcp-intro} if there exists an open neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that it is the only local solution in~$\mathcal{N} \cap \Omega$.
+        \item a \emph{local solution} if~$x^{\ast} \in \Omega$ and there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega$,
+        \item a \emph{strict local solution} if~$x^{\ast} \in \Omega$ and there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) > \obj(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega \setminus \set{x^{\ast}}$, and
+        \item an \emph{isolated local solution} if there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that it is the only local solution in~$\mathcal{N} \cap \Omega$.
     \end{itemize}
 \end{definition}
 
@@ -260,14 +276,14 @@ Examples of \gls{mdo} applications include molecular conformational analysis~\ci
 \end{definition}
 
 \begin{definition}[Constraint qualification]
-    Let~$x \in \Omega$ be any feasible point of problem~\cref{eq:nlcp-intro}, denote~$\mathcal{A}(x)$ the active set for problem~\cref{eq:nlcp-intro} at~$x$, and assume that the constraints function~$\con{i}$ are differentiable at~$x$ for all~$i \in \mathcal{A}(x)$.
+    Given~$x \in \Omega$, denote~$\mathcal{A}(x)$ the active set for problem~\cref{eq:nlcp-intro} at~$x$, and assume that the constraint functions~$\con{i}$ are differentiable at~$x$ for all~$i \in \mathcal{A}(x)$.
     We say that
     \begin{itemize}
         \item the \gls{licq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \mathcal{A}(x)$, and
-        \item the \gls{mfcq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \ieq$ and there exists a vector~$d \in \R^n$ such that
+        \item the \gls{mfcq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \ieq$ and there exists a vector~$z \in \R^n$ such that
         \begin{empheq}[left=\empheqlbrace]{alignat*=2}
-            & \inner{\nabla \con{i}(x), d} < 0  && \quad \text{if~$i \in \mathcal{A}(x) \cap \iub$, and}\\
-            & \inner{\nabla \con{i}(x), d} = 0  && \quad \text{if~$i \in \ieq$}.
+            & \inner{\nabla \con{i}(x), z} < 0  && \quad \text{if~$i \in \mathcal{A}(x) \cap \iub$, and}\\
+            & \inner{\nabla \con{i}(x), z} = 0  && \quad \text{if~$i \in \ieq$}.
         \end{empheq}
     \end{itemize}
 \end{definition}
@@ -291,66 +307,29 @@ Examples of \gls{mdo} applications include molecular conformational analysis~\ci
 \end{equation*}
 where~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \in \R$ for all~$i \in \iub \cup \ieq$.
 
-\begin{theorem}[First-order necessary conditions]
-    Let~$x^{\ast} \in \Omega$ be a given local solution to problem~\cref{eq:nlcp-intro}, assume that \gls{licq} holds at~$x^{\ast}$ and that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are continuously differentiable in an open neighborhood or~$x^{\ast}$.
+\begin{theorem}[First-order necessary conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.1
+    Let~$x^{\ast} \in \Omega$ be a local solution to problem~\cref{eq:nlcp-intro}, assume that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are continuously differentiable in a neighborhood of~$x^{\ast}$, and that \gls{licq} holds at~$x^{\ast}$.
     Then there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
     \begin{subequations}
         \label{eq:kkt-intro}
         \begin{empheq}[left=\empheqlbrace]{alignat=2}
             & \nabla_x \lag(x^{\ast}, \lambda^{\ast}) = 0,  && \label{eq:kkt-intro-sta}\\
-            & \con{i}(x^{\ast}) \le 0,                      && \quad i \in \iub, \label{eq:kkt-intro-pfub}\\
-            & \con{i}(x^{\ast}) = 0,                        && \quad i \in \ieq, \label{eq:kkt-intro-pfeq}\\
-            & \lambda_i^{\ast} \con{i}(x^{\ast}) = 0,       && \quad i \in \iub, \label{eq:kkt-intro-csl}\\
-            & \lambda_i^{\ast} \ge 0,                       && \quad i \in \iub. \label{eq:kkt-intro-df}
+            & \con{i}(x^{\ast}) \le 0,                      && \quad \text{if~$i \in \iub$,} \label{eq:kkt-intro-pfub}\\
+            & \con{i}(x^{\ast}) = 0,                        && \quad \text{if~$i \in \ieq$,} \label{eq:kkt-intro-pfeq}\\
+            & \lambda_i^{\ast} \con{i}(x^{\ast}) = 0,       && \quad \text{if~$i \in \iub$,} \label{eq:kkt-intro-csl}\\
+            & \lambda_i^{\ast} \ge 0,                       && \quad \text{if~$i \in \iub$.} \label{eq:kkt-intro-df}
         \end{empheq}
     \end{subequations}
 \end{theorem}
 
-The conditions~\cref{eq:kkt-intro} are referred to as the \gls{kkt} conditions.
+The conditions~\cref{eq:kkt-intro} are commonly referred to as the \gls{kkt} conditions~\cite{Karush_1939,Kuhn_Tucker_1951}.
 More specifically, condition~\cref{eq:kkt-intro-sta} is referred to as the \emph{stationarity} condition, conditions~\cref{eq:kkt-intro-pfub,eq:kkt-intro-pfeq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-intro-csl} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-intro-df} as the \emph{dual feasibility} condition.
-Note that this theorem holds for more general constraint qualifications, such as the \gls{mfcq}.
-Moreover, the smoothness assumptions on the objective and constraint functions can be relaxed, using some generalized derivatives, but we want to keep this theoretical development as simple as possible for sake of clarity.
+Note that this theorem holds for more general constraint qualifications, such as the \gls{mfcq} (see, e.g.,~\cite[p.~339]{Nocedal_Wright_2006}).
+% Moreover, the smoothness assumptions on the objective and constraint functions can be relaxed, using generalized derivatives.
 
-\subsubsection{Graphical description of the first-order optimality conditions}
+\subsubsection{Graphical insight of the first-order optimality conditions}
 
-Consider the following two-dimensional problem
-\begin{subequations}
-    \label{eq:kkt-description-one-constraint}
-    \begin{align}
-        \min        & \quad \obj(x) = x_1 + x_2\\
-        \text{s.t.} & \quad \con{1}(x) = x_1^2 + x_2^2 - 2 \le 0,\\
-                    & \quad x \in \R^2. \nonumber
-    \end{align}
-\end{subequations}
-
-\begin{figure}[htp]
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[%
-            xmin=-4,%
-            xmax=2,%
-            ymin=-4,%
-            ymax=2,%
-            axis equal image,%
-            xlabel={$x_1$},%
-            ylabel={$x_2$},%
-            axis background/.style={%
-                pattern=north west lines,%
-                pattern color=black!20,%
-                even odd rule,%
-                insert path={let \p1=(axis cs:0,0), \p2=(axis cs:1,1), \n1={veclen(\x2-\x1,\y2-\y1)}, in (\p1) circle[radius=\n1]},%
-            },%
-        ]
-            \draw[dashed] (0,0) circle[radius=2^0.5];
-            \draw[-latex] (-1,-1) -- (-3,-3) node[below right] {$\nabla \con{1}(x^{\ast})$};
-            \draw[-latex] (-1,-1) -- (-2,-2) node[below right] {$\nabla \obj(x^{\ast})$};
-            \addplot[BrickRed,mark=*,only marks] coordinates {(-1,-1)};
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Graphical representation of problem~\cref{eq:kkt-description-one-constraint}}
-\end{figure}
-
-Consider the following two-dimensional problem
+Consider the two-dimensional problem
 \begin{subequations}
     \label{eq:kkt-description-two-constraint}
     \begin{align}
@@ -365,9 +344,9 @@ Consider the following two-dimensional problem
     \centering
     \begin{tikzpicture}
         \begin{axis}[%
-            xmin=-4,%
+            xmin=-5,%
             xmax=2,%
-            ymin=-4,%
+            ymin=-2,%
             ymax=2,%
             axis equal image,%
             xlabel={$x_1$},%
@@ -376,29 +355,34 @@ Consider the following two-dimensional problem
                 pattern=north west lines,%
                 pattern color=black!20,%
                 even odd rule,%
-                insert path={let \p1=(axis cs:0,0), \p2=(axis cs:1,1), \n1={veclen(\x2-\x1,\y2-\y1)}, in (\p1) circle[radius=\n1]},%
+                insert path={let \p1=(axis cs:0,0), \p2=(axis cs:2^0.5,0), \n1={veclen(\x2-\x1,\y2-\y1)}, in (\p2) arc(0:180:\n1) -- cycle},%
             },%
         ]
             \draw[dashed] (0,0) circle[radius=2^0.5];
-            \draw[dashed] (-4,0) -- (2,0);
-            \draw[-latex] (-2^0.5,0) -- (-2*2^0.5,0) node[above] {$\nabla \con{1}(x^{\ast})$};
-            \draw[-latex] (-2^0.5,0) -- (-2^0.5,-1) node[below] {$\nabla \con{2}(x^{\ast})$};
-            \draw[-latex] (-2^0.5,0) -- (-2^0.5-1,-1) node[below left] {$\nabla \obj(x^{\ast})$};
+            \draw[dashed] (-5,0) -- (2,0);
+            \draw[-latex] (-2^0.5,0) -- (-3*2^0.5,0) node[above right] {$\nabla \con{1}(x^{\ast})$};
+            \draw[-latex] (-2^0.5,0) -- (-2^0.5,-1) node[below left] {$\nabla \con{2}(x^{\ast})$};
+            \draw[-latex] (-2^0.5,0) -- (1-2^0.5,1) node[below right] {$\nabla \obj(x^{\ast})$};
             \addplot[BrickRed,mark=*,only marks] coordinates {(-2^0.5,0)};
+            \node[above left] at (-2^0.5,0) {$x^{\ast}$};
         \end{axis}
     \end{tikzpicture}
     \caption{Graphical representation of problem~\cref{eq:kkt-description-two-constraint}}
 \end{figure}
 
+\begin{itemize}
+    \item If an inequality constraint is not active at~$x^{\ast}$, then removing this constraint from the problem does not modify its solution, and the corresponding Lagrange multiplier coefficient must be zero.
+\end{itemize}
+
 \subsection{Second-order optimality conditions}
 
-\begin{theorem}[Second-order necessary conditions]
-    Let~$x^{\ast} \in \Omega$ be a given local solution to problem~\cref{eq:nlcp-intro}, assume that \gls{licq} holds at~$x^{\ast}$ and that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are twice continuously differentiable in an open neighborhood or~$x^{\ast}$.
+\begin{theorem}[Second-order necessary conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.5
+    Let~$x^{\ast} \in \Omega$ be a local solution to problem~\cref{eq:nlcp-intro}, assume that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are twice continuously differentiable in a neighborhood or~$x^{\ast}$, and that \gls{licq} holds at~$x^{\ast}$.
     Denote~$\mathcal{A}(x^{\ast})$ the active set for problem~\cref{eq:nlcp-intro} at~$x^{\ast}$.
     Let~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ be a Lagrange multiplier satisfying the KKT condition~\cref{eq:kkt-intro}, and let~$z \in \R^n$ be any vector such that
     \begin{subequations}
         \label{eq:second-order-intro}
-        \begin{empheq}[left=\empheqlbrace]{alignat*=2}
+        \begin{empheq}[left=\empheqlbrace]{alignat=2}
             & \inner{\nabla \con{i}(x^{\ast}), z} = 0,      && \quad \text{if~$i \in \ieq$,}\\
             & \inner{\nabla \con{i}(x^{\ast}), z} = 0,      && \quad \text{if~$i \in \mathcal{A}(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} > 0$, and}\\
             & \inner{\nabla \con{i}(x^{\ast}), z} \ge 0,    && \quad \text{if~$i \in \mathcal{A}(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} = 0$.}
@@ -407,13 +391,9 @@ Consider the following two-dimensional problem
     Then~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} \ge 0$.
 \end{theorem}
 
-\begin{theorem}[Second-order sufficient conditions]
-    Let~$x^{\ast} \in \Omega$ be any feasible point of problem~\cref{eq:nlcp-intro}, and assume that \gls{licq} holds at~$x^{\ast}$, that there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-intro}, and that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are twice continuously differentiable in an open neighborhood or~$x^{\ast}$.
-    If for all nonzero vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-intro} we have
-    \begin{equation*}
-        \inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} > 0,
-    \end{equation*}
-    then~$x^{\ast}$ is a strict local solution to problem~\cref{eq:nlcp-intro}.
+\begin{theorem}[Second-order sufficient conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.6
+    Let~$x^{\ast} \in \Omega$ be a given point, and assume that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are twice continuously differentiable in a neighborhood of~$x^{\ast}$, that \gls{licq} holds at~$x^{\ast}$, and that there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-intro}.
+    If for all nonzero vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-intro} we have~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} > 0$, then~$x^{\ast}$ is a strict local solution to problem~\cref{eq:nlcp-intro}.
 \end{theorem}
 
 \section{Methodology of \glsfmtlong{dfo} algorithms}
