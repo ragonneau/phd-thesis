@@ -37,7 +37,7 @@ jobs:
         run: bash build_tools/github/rename.sh
 
       - name: Store artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: thesis_*.pdf
           if-no-files-found: error
