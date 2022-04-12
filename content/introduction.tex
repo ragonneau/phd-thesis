@@ -87,7 +87,7 @@ The above-mentioned feasible set~$\Omega \subseteq \R^n$ is, therefore, the set 
 A typical example of \gls{dfo} applications is automatic error analysis~\cite{Higham_1993,Higham_2002}, which formulates numerical computation's accuracies and stabilities using optimization problems.
 Consider, for instance, the Gaussian elimination with partial pivoting of a matrix~$A \in \R^{n \times n}$, given in~\cref{alg:gepp}.
 
-\begin{algorithm}[htp]
+\begin{algorithm}[ht]
     \caption{Gaussian elimination with partial pivoting}
     \label{alg:gepp}
     \DontPrintSemicolon
@@ -133,7 +133,7 @@ Note that the optimal value and all optimal solutions to problem~\cref{eq:gepp-o
 Another well-known example of \gls{dfo} applications is the parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
 For example, consider~\cref{alg:trust-region}, a basic trust-region method for solving problem~\cref{eq:nlcp-intro} when~$\iub = \ieq = \emptyset$.
 
-\begin{algorithm}[htp]
+\begin{algorithm}[ht]
     \caption{Basic trust-region method for unconstrained optimization}
     \label{alg:trust-region}
     \DontPrintSemicolon
@@ -215,7 +215,7 @@ It is clear that~$\delta$ depends on the two parameters~$C$ and~$\gamma$, which 
 The objective function~$P$ of this problem is a~$5$-fold cross-validation based on some performance measure of the model~\cref{eq:csvc-classifier}.
 The general~$k$-fold cross-validation to define~$P(C, \gamma)$ is presented in~\cref{alg:cross-validation}.
 
-\begin{algorithm}[htp]
+\begin{algorithm}[ht]
     \caption{$k$-fold cross-validation of an \glsfmtshort{svc} with parameters~$C$ and~$\gamma$}
     \label{alg:cross-validation}
     \DontPrintSemicolon
@@ -239,9 +239,12 @@ The hyperparameter tuning problem can be formulated as
     \end{aligned}
 \end{equation*}
 It is clear that derivatives of the objective function of such a problem cannot be easily evaluated and may even not exist.
-This problem may be solved numerically using \gls{dfo} methods.
+This problem may be solved using \gls{dfo} methods.
 
-In a similar fashion\todo{Rewrite and give more details}, reinforcement learning in machine learning necessitates solving optimization problems for which derivatives cannot be assessed~\cite{Qian_Yu_2021}.
+Another application of \gls{dfo} in machine learning is reinforcement learning~\cite{Qian_Yu_2021}.
+Instead of training a model on a fixed labelled dataset, reinforcement learning bases the training process on rewarding expected behaviors and punishing undesired ones.
+Hence, if often consists in finding optimal parameters that maximize a reward.
+However, this reward's derivatives are often unassessable, and \gls{dfo} methods can be used to solve such problems.
 
 \subsection{Some industrial and engineering applications}
 
@@ -251,13 +254,40 @@ Other design optimization applications include molecular conformational analysis
 
 \section{Optimality conditions for smooth optimization}
 
+We discuss in this section necessary and sufficient conditions for optimality.
+We state the most general results only, without assuming any structure on the objective and constraint functions, except some smoothness.
+Stronger results can be obtained by assuming that problem~\cref{eq:nlcp-intro} is convex for example, but it is out of the scope of this work.
+
 \subsection{Local and global solutions}
 
+Before solving problem~\cref{eq:nlcp-intro}, we must define what is a solution.
+The most natural definition of a solution is given in~\cref{def:global-solution}.
+
 \begin{definition}[Global solution]
+    \label{def:global-solution}
     To problem~\cref{eq:nlcp-intro}, a point~$x^{\ast} \in \R^n$ is a \emph{global solution} if~$x^{\ast} \in \Omega$ and~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \Omega$.
 \end{definition}
 
+However, it is known that without any convexity assumption on problem~\cref{eq:nlcp-intro}, finding a global solution is at least NP-hard, even in gradient-based settings.
+Consider for example the following problem, known to be NP-complete.
+
+\begin{problem}[Subset sum]
+    \label{pb:subset-sum}
+    Given a finite set of scalars,~$\set{\alpha_1, \alpha_2, \dots, \alpha_n} \subseteq \R$ say, is there any nonempty subset whose sum is zero?
+\end{problem}
+
+It is clear that~\cref{pb:subset-sum} can be formulated as the optimization problem
+\begin{equation*}
+    \begin{aligned}
+        \min        & \quad \bigg( \sum_{i = 1}^n \alpha_i x_i \bigg)^2 + \sum_{i = 1}^n x_i^2 (1 - x_i)^2\\
+        \text{s.t.} & \quad x \in \R^n,
+    \end{aligned}
+\end{equation*}
+since its global solution is zero if and only if there exists a nonempty subset whose sum is zero.
+Therefore, we relax the definition of solution to problem~\cref{eq:nlcp-intro} in~\cref{def:local-solution}.
+
 \begin{definition}[Local solution]
+    \label{def:local-solution}
     To problem~\cref{eq:nlcp-intro}, a point~$x^{\ast} \in \R^n$ is
     \begin{itemize}
         \item a \emph{local solution} if~$x^{\ast} \in \Omega$ and there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega$,
@@ -266,7 +296,15 @@ Other design optimization applications include molecular conformational analysis
     \end{itemize}
 \end{definition}
 
+Note that an isolated local solution is strict, but the converse is not true.
+From now on, we refer to as an \emph{optimal solution} to problem~\cref{eq:nlcp-intro} a local solution, since we do not study global optimization.
+The value of the objective function~$\obj$ at an optimal solution is referred to as the \emph{optimal value}.
+
 \subsection{Constraint qualifications}
+
+Before introducing any necessary and sufficient conditions for local optimality, we discuss some regularity conditions on the constraints~\cref{eq:nlcp-intro-cub,eq:nlcp-intro-ceq}, referred to as the \emph{constraint qualifications}.
+These assumptions will be required for the necessary and sufficient conditions to hold.
+We first introduce the notion of \emph{active set}.
 
 \begin{definition}[Active set]
     The \emph{active set}~$\mathcal{A}(x) \subseteq \iub \cup \ieq$ for problem~\cref{eq:nlcp-intro} at a point~$x \in \Omega$ is defined by
@@ -274,6 +312,8 @@ Other design optimization applications include molecular conformational analysis
         \mathcal{A}(x) \eqdef \ieq \cup \set{i \in \iub : \con{i}(x) \ge 0}.
     \end{equation*}
 \end{definition}
+
+If a constraint belong to the active set at a given point, it is said to be \emph{active} at this point, and \emph{inactive} otherwise.
 
 \begin{definition}[Constraint qualification]
     Given~$x \in \Omega$, denote~$\mathcal{A}(x)$ the active set for problem~\cref{eq:nlcp-intro} at~$x$, and assume that the constraint functions~$\con{i}$ are differentiable at~$x$ for all~$i \in \mathcal{A}(x)$.
@@ -308,6 +348,7 @@ Other design optimization applications include molecular conformational analysis
 where~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \in \R$ for all~$i \in \iub \cup \ieq$.
 
 \begin{theorem}[First-order necessary conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.1
+    \label{thm:fonc}
     Let~$x^{\ast} \in \Omega$ be a local solution to problem~\cref{eq:nlcp-intro}, assume that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are continuously differentiable in a neighborhood of~$x^{\ast}$, and that \gls{licq} holds at~$x^{\ast}$.
     Then there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
     \begin{subequations}
@@ -329,18 +370,20 @@ Note that this theorem holds for more general constraint qualifications, such as
 
 \subsubsection{Graphical insight of the first-order optimality conditions}
 
-Consider the two-dimensional problem
+To help to understand graphically~\cref{thm:fonc}, we consider the problem
 \begin{subequations}
-    \label{eq:kkt-description-two-constraint}
+    \label{eq:kkt-description}
     \begin{align}
         \min        & \quad \obj(x) = x_1 + x_2\\
-        \text{s.t.} & \quad \con{1}(x) = x_1^2 + x_2^2 - 2 \le 0,\\
-                    & \quad \con{2}(x) = -x_2 \le 0,\\
-                    & \quad x \in \R^2. \nonumber
+        \text{s.t.} & \quad \con{1}(x) = x_1^2 + x_2^2 - 2 \le 0, \label{eq:kkt-description-c1}\\
+                    & \quad \con{2}(x) = -x_2 \le 0, \label{eq:kkt-description-c2}\\
+                    & \quad x \in \R^2, \nonumber
     \end{align}
 \end{subequations}
+whose solution is~$x^{\ast} = (-\sqrt{2}, 0)$.
+A graphical representation of problem~\cref{eq:kkt-description} is given in~\cref{fig:kkt-description}, where the white area represents the feasible set.
 
-\begin{figure}[htp]
+\begin{figure}[ht]
     \centering
     \begin{tikzpicture}
         \begin{axis}[%
@@ -367,12 +410,38 @@ Consider the two-dimensional problem
             \node[above left] at (-2^0.5,0) {$x^{\ast}$};
         \end{axis}
     \end{tikzpicture}
-    \caption{Graphical representation of problem~\cref{eq:kkt-description-two-constraint}}
+    \caption{Graphical representation of problem~\cref{eq:kkt-description}}
+    \label{fig:kkt-description}
 \end{figure}
 
-\begin{itemize}
-    \item If an inequality constraint is not active at~$x^{\ast}$, then removing this constraint from the problem does not modify its solution, and the corresponding Lagrange multiplier coefficient must be zero.
-\end{itemize}
+Assume that we are given~$x \in \R^2$ satisfying the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2} that is not optimal.
+We then have a direction~$d \in \R^2$ such that~$x + d$ satisfies the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2} and~$\obj(x + d) < \obj(x)$.
+Therefore,
+\begin{subequations}
+    \label{eq:kkt-description-system}
+    \begin{empheq}[left=\empheqlbrace]{alignat=1}
+        & 0 > \obj(x + d) - \obj(x) = \inner{\nabla \obj(x), d},\\
+        & 0 \ge \con{1}(x + d) \approx \con{1}(x) + \inner{\nabla \con{1}(x), d}, \label{eq:kkt-description-system-c1}\\
+        & 0 \ge \con{2}(x + d) = \con{2}(x) + \inner{\nabla \con{2}(x), d}.
+    \end{empheq}
+\end{subequations}
+If a constraint is not active at~$x$, then such a direction~$d$ can be chosen so that this constraint is also inactive at~$x + d$.
+Let us therefore assume that~$\con{1}(x) = \con{2}(x) = 0$.
+By omitting the approximation in~\cref{eq:kkt-description-system-c1}, we then have
+\begin{subequations}
+    \label{eq:kkt-proof}
+    \begin{empheq}[left=\empheqlbrace]{alignat=1}
+        & \inner{\nabla \obj(x), d} < 0,\\
+        & \inner{\nabla \con{1}(x), d} \le 0,\\
+        & \inner{\nabla \con{2}(x), d} \le 0.
+    \end{empheq}
+\end{subequations}
+We see on~\cref{fig:kkt-description} that no such direction exists for~$x = x^{\ast}$.
+One can straightforwarly show that no vector~$d$ satisfy system~\cref{eq:kkt-proof} only when there exists a Lagrange multiplier~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \ge 0$ for all~$i \in \iub \cup \ieq$ such that~$\nabla_x \lag(x, \lambda) = 0$, since
+\begin{equation*}
+    \nabla_x \lag(x, \lambda) = \nabla \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \nabla \con{i}(x).
+\end{equation*}
+A formal proof of~\cref{thm:fonc} follows the scheme presented above, by bounding the error terms arising in the first-order approximation~\cref{eq:kkt-description-system}.
 
 \subsection{Second-order optimality conditions}
 
