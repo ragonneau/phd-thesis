@@ -49,22 +49,24 @@
 \section{Overview of \glsfmtlong{dfo}}
 
 Optimization is the study of extremal points and values of mathematical functions.
-Traditional optimization aims at minimizing (or maximizing) a real-valued function~$\obj$, referred to as the \emph{objective function}, within a given nonempty set of points~$\Omega \subseteq \R^n$, referred to as the \emph{feasible set}.
-It is well known that the most helpful information to optimization is embraced in the derivatives of~$\obj$ and the curves of~$\Omega$.
-However, such derivative information may not exist, be unassessable, unreliable, or prohibitively expensive to evaluate.
-It is within this context, referred to as \gls{dfo} that our research focuses.
-For more details on \gls{dfo}, readers may refer to the books~\cite{Audet_Hare_2017,Conn_Scheinberg_Vicente_2009b} or the more recent survey~\cite{Larson_Menickelly_Wild_2019}.
-Problems for which derivative information is unavailable arise naturally when the objective function or the feasible set results from complex experiments or simulations.
-When the only pieces of information on a problem that can be retrieved are function values, it is usually referred to as a \gls{bbo} problem.
-We emphasize that we are \emph{not} studying nonsmooth optimization.
-Classical or generalized derivatives of the optimization problem's functions may be well-defined, but we assume they cannot be numerically assessed.
+Traditional optimization aims at minimizing (or maximizing) a real-valued function~$\obj$, referred to as the \emph{objective function}, within a given set of points~$\Omega \subseteq \R^n$, referred to as the \emph{feasible set}.
+It is well known that essential information to optimization is embraced in the (possibly generalized) derivatives of the functions involved.
+However, such derivatives may not exist.
+Even if they are well defined, practical evaluations of them may be unavailable, unreliable, or prohibitively expensive.
+This thesis focuses on this class of problems, referred to as \gls{dfo}~\cite{Conn_Scheinberg_Vicente_2009b,Audet_Hare_2017,Custodio_Scheinberg_Vicente_2017,Larson_Menickelly_Wild_2019}.
 
-The leading complexity measure we consider is the number of objective function evaluations.
-We presume that an objective function evaluation dawdles and requires several minutes or even several days to complete.
-For instance, a modern application of \gls{dfo} is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}, for which one objective function evaluation necessitates training a machine learning model (see~\cref{subsec:machine-learning}).
-Hence, the algebraic complexity of the methods we consider is not our leading issue, although we will strive to maintain it acceptable.
+\Gls{dfo} problems arise naturally when the objective function or the feasible set results from complex experiments or simulations.
+Regarding these functions as black-boxes, people often refer to those problems as \gls{bbo} problems.
+We emphasize that we are \emph{not} investigating nonsmooth optimization\todo{Put two classical references (Clark and ?).}, which studies problems that involve nonsmooth functions.
+In \gls{dfo}, classical or generalized derivatives may be well defined, but cannot be numerically assessed.
 
-Within this chapter, we consider the nonlinearly-constrained problem
+\Gls{dfo} methods use only function values to solve optimization problems.
+Therefore, the leading complexity measure we consider is the number of function evaluations.
+In practice, each function evaluation may require several minutes or even several days to complete\todo{Refer to the section in a book that talks about this.}.
+For instance, a recent application of \gls{dfo} is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}, for which one objective function evaluation necessitates training a machine learning model (see~\cref{subsec:machine-learning}).
+Hence, in \gls{dfo} methods, the expense of numerical linear algebra is less of a concern, although we will maintain it acceptable.
+
+In this introduction, we consider the nonlinearly-constrained problem
 \begin{subequations}
     \label{eq:nlcp-intro}
     \begin{align}
@@ -75,10 +77,14 @@ Within this chapter, we consider the nonlinearly-constrained problem
     \end{align}
 \end{subequations}
 where the \emph{objective} and \emph{constraint functions}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and where the sets of indices~$\iub$ and~$\ieq$ are finite (perhaps empty) and disjoint.
-The above-mentioned feasible set~$\Omega \subseteq \R^n$ is, therefore, the set of points satisfying the inequality constraints~\cref{eq:nlcp-intro-cub} and the equality constraints~\cref{eq:nlcp-intro-ceq}, that is
+The feasible set of this problem is\todo{Check the mathrel}
 \begin{equation*}
-    \Omega \eqdef \set{x \in \R^n : \con{i}(x) \le 0, ~ i \in \iub \land \con{i}(x) = 0, ~ i \in \ieq}.
+    \Omega \eqdef \set{x \in \R^n \mathrel{:} \con{i}(x) \le 0 ~ \text{for~$i \in \iub$}, ~ \con{i}(x) = 0 ~ \text{for~$i \in \ieq$}}.
 \end{equation*}
+
+We emphasize that~\cref{eq:nlcp-intro-cub,eq:nlcp-intro-ceq} may include bound constraints.
+We do not extract them explicitly in this chapter, but they may need to be handled differently from other constraints, because they often represent inalienable physical or theoretical restrictions.
+We will take this into consideration in our development\todo{Find a better word.} (see~\cref{ch:cobyqa-intro}).
 
 \section{Examples of applications}
 
@@ -126,7 +132,7 @@ Besides, although the growth factor is defined everywhere, it may not be continu
 Moreover, it is not differentiable at the points yielding a tie in any maximum operator in equation~\cref{eq:gepp-growth-factor}.
 Hence, optimization methods based on derivative information cannot be used for this problem.
 In such a case, \gls{dfo} methods can help solving problem~\cref{eq:gepp-opti}.
-Note that the optimal value and all optimal solutions to problem~\cref{eq:gepp-opti} are analytically known~\cite{Higham_Higham_1989}, but \gls{dfo} methods could have been used to help the theoretical development.
+Note that the optimal value and all optimal solutions to problem~\cref{eq:gepp-opti} are analytically known~\cite{Higham_Higham_1989}, but \gls{dfo} methods can be used to help the theoretical development~\cite{Higham_1993}.
 
 \subsection{Tuning nonlinear optimization methods}
 
@@ -181,7 +187,7 @@ In other words, we wish to solve the optimization problem
                     & \quad 0 < \theta_1 < 1 < \theta_2.
     \end{align}
 \end{subequations}
-Derivatives of~$C$ are unassessable if they even exist.
+Derivatives of~$C$ cannot be evaluated if they even exist.
 Such a problem is then solved using \gls{dfo} methods, for example using the \gls{mads} method~\cite{Audet_Orban_2006}.
 \Citeauthor{Audet_Digabel_Tribes_2019} modified the \gls{mads} method to solve problem~\cref{eq:tuning-opti} with a controlled number of significant digits~\cite{Audet_Digabel_Tribes_2019}, to determine parameters that can be used by practitioners.
 Interestingly, \gls{dfo} methods can be self-tuned using the method presented above.
@@ -241,35 +247,49 @@ The hyperparameter tuning problem can be formulated as
 It is clear that derivatives of the objective function of such a problem cannot be easily evaluated and may even not exist.
 This problem may be solved using \gls{dfo} methods.
 
-Another application of \gls{dfo} in machine learning is reinforcement learning~\cite{Qian_Yu_2021}.
+As in~\cite{Qian_Yu_2021}, \gls{dfo} be also be applied to reinforcement learning.
 Instead of training a model on a fixed labelled dataset, reinforcement learning bases the training process on rewarding expected behaviors and punishing undesired ones.
-Hence, if often consists in finding optimal parameters that maximize a reward.
-However, this reward's derivatives are often unassessable, and \gls{dfo} methods can be used to solve such problems.
+Hence, it often consists in finding optimal parameters that maximize a reward.
+However, this reward's derivatives often cannot be evaluated, and \gls{dfo} methods can be an approach to solving such problems.
 
 \subsection{Some industrial and engineering applications}
 
+\todo[noline]{Rewrite everything, put the citations first, then introduce MDO.}
+
+\todo[noline]{Check applications from Wild, Caris, Larsen, Shoemaker, Rinaldi, Vicente, Gratton, Royer, Stephano, Lucidi, Scheinberg, Custodio (such as GAN).}
+
+\todo[noline]{Mention that our work in included in a MDO software.}
+
+There are many other applications of \gls{dfo} in industry and engineering, such as in helicopter rotor blade design~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, hydrodynamic design~\cite{Duvigneau_Visonneau_2004}, nuclear energy density optimization~\cite{Kortelainen_Etal_2010}\todo{Add the 2 other papers.}, reservoir engineering and engine calibration~\cite{Langouet_2011}, and analog circuit design~\cite{Latorre_Etal_2019} for instance.
+This problems often involve sophisticated models...
+
 In industry and engineering, \gls{mdo} designates a field that uses optimization methods for solving design problems that involve several disciplines.
 For example, the objective and constraint functions of a \gls{mdo} problem can be defined by different departments of the same company, or even by different companies, such as in aircraft engine engineering~\cite{Gazaix_Etal_2019}.
-Other design optimization applications include molecular conformational analysis~\cite{Alberto_Etal_2004,Meza_Martinez_1994}, helicopter rotor blade design~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, hydrodynamic design~\cite{Duvigneau_Visonneau_2004}, registration in medical imaging~\cite{Oeuvray_2005,Oeuvray_Bierlaire_2007}, reservoir engineering and engine calibration~\cite{Langouet_2011}, analog circuit design~\cite{Latorre_Etal_2019}, and chemical product design~\cite{Sun_Etal_2020} for instance.
 
 \section{Optimality conditions for smooth optimization}
 
 We discuss in this section necessary and sufficient conditions for optimality.
-We state the most general results only, without assuming any structure on the objective and constraint functions, except some smoothness.
-Stronger results can be obtained by assuming that problem~\cref{eq:nlcp-intro} is convex for example, but it is out of the scope of this work.
+We do not assume any structure on the objective and constraint functions, except some smoothness.
+More specialized results can be obtained by assuming that problem~\cref{eq:nlcp-intro} is convex for example, but it is out of the scope of this work.
 
 \subsection{Local and global solutions}
 
-Before solving problem~\cref{eq:nlcp-intro}, we must define what is a solution.
-The most natural definition of a solution is given in~\cref{def:global-solution}.
+Before solving problem~\cref{eq:nlcp-intro}, we must define what a solution is.
+The most natural definition of a solution\todo{Rewrite to avoid definition and solution} is given in~\cref{def:global-solution}.
 
 \begin{definition}[Global solution]
     \label{def:global-solution}
     To problem~\cref{eq:nlcp-intro}, a point~$x^{\ast} \in \R^n$ is a \emph{global solution} if~$x^{\ast} \in \Omega$ and~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \Omega$.
 \end{definition}
 
-However, it is known that without any convexity assumption on problem~\cref{eq:nlcp-intro}, finding a global solution is at least NP-hard, even in gradient-based settings.
-Consider for example the following problem, known to be NP-complete.
+\todo[noline]{Be clear that local minimum is easier than global ones.}
+
+\todo[noline]{Emphasize that convexity does not make problems easier.}
+% https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.1011.7837&rep=rep1&type=pdf
+
+However, it is known that finding a global solution is NP-hard without any convexity assumption on problem~\cref{eq:nlcp-intro}, even in gradient-based settings.
+% http://www-personal.umich.edu/~murty/np.pdf
+Consider for example the following problem\todo{Remove the formulation, give some cited examples.}, known to be NP-complete.
 
 \begin{problem}[Subset sum]
     \label{pb:subset-sum}
@@ -366,10 +386,11 @@ where~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \in \R$ for
 The conditions~\cref{eq:kkt-intro} are commonly referred to as the \gls{kkt} conditions~\cite{Karush_1939,Kuhn_Tucker_1951}.
 More specifically, condition~\cref{eq:kkt-intro-sta} is referred to as the \emph{stationarity} condition, conditions~\cref{eq:kkt-intro-pfub,eq:kkt-intro-pfeq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-intro-csl} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-intro-df} as the \emph{dual feasibility} condition.
 Note that this theorem holds for more general constraint qualifications, such as the \gls{mfcq} (see, e.g.,~\cite[p.~339]{Nocedal_Wright_2006}).
-% Moreover, the smoothness assumptions on the objective and constraint functions can be relaxed, using generalized derivatives.
+% Moreover, the smoozthness assumptions on the objective and constraint functions can be relaxed, using generalized derivatives.
 
 \subsubsection{Graphical insight of the first-order optimality conditions}
 
+% We will not give the proof but show it on a simple example
 To help to understand graphically~\cref{thm:fonc}, we consider the problem
 \begin{subequations}
     \label{eq:kkt-description}
@@ -414,6 +435,8 @@ A graphical representation of problem~\cref{eq:kkt-description} is given in~\cre
     \label{fig:kkt-description}
 \end{figure}
 
+\todo[noline]{Find a solution to make the proof logic}
+
 Assume that we are given~$x \in \R^2$ satisfying the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2} that is not optimal.
 We then have a direction~$d \in \R^2$ such that~$x + d$ satisfies the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2} and~$\obj(x + d) < \obj(x)$.
 Therefore,
@@ -437,7 +460,7 @@ By omitting the approximation in~\cref{eq:kkt-description-system-c1}, we then ha
     \end{empheq}
 \end{subequations}
 We see on~\cref{fig:kkt-description} that no such direction exists for~$x = x^{\ast}$.
-One can straightforwarly show that no vector~$d$ satisfy system~\cref{eq:kkt-proof} only when there exists a Lagrange multiplier~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \ge 0$ for all~$i \in \iub \cup \ieq$ such that~$\nabla_x \lag(x, \lambda) = 0$, since
+One can straightforwarly\todo{Cite the Farkas' lemma} show that no vector~$d$ satisfy system~\cref{eq:kkt-proof} only when there exists a Lagrange multiplier~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \ge 0$ for all~$i \in \iub \cup \ieq$ such that~$\nabla_x \lag(x, \lambda) = 0$, since
 \begin{equation*}
     \nabla_x \lag(x, \lambda) = \nabla \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \nabla \con{i}(x).
 \end{equation*}

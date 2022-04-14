@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/04/12 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/04/13 PolyU thesis document class]
 
 % Load book class as basis
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
@@ -247,7 +247,7 @@
 \RequirePackage[%
     style=numeric-comp,%
     sorting=nyt,%
-    sortcites,%
+    sortcites=false,%
     backref,%
     backrefstyle=three,%
     abbreviate=false,%
