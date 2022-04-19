@@ -57,7 +57,7 @@ This thesis focuses on this class of problems, referred to as \gls{dfo}~\cite{Co
 
 \Gls{dfo} problems arise naturally when the objective function or the feasible set results from complex experiments or simulations.
 Regarding these functions as black-boxes, people often refer to those problems as \gls{bbo} problems.
-We emphasize that we are \emph{not} investigating nonsmooth optimization~\cite{Clark_1983,Bagirov_Karmitsa_Makela_2014}\todo[color=OliveGreen!50]{Put two classical references (Clark and ?)}, which studies problems that involve nonsmooth functions.
+We emphasize that we are \emph{not} investigating nonsmooth optimization~\cite{Clark_1983,Bagirov_Karmitsa_Makela_2014}\todo[color=OliveGreen!50]{Put two classical references}, which studies problems that involve nonsmooth functions.
 In \gls{dfo}, classical or generalized derivatives may be well defined, but cannot be numerically assessed.
 
 \Gls{dfo} methods use only function values to solve optimization problems.
@@ -273,36 +273,17 @@ More specialized results can be obtained by assuming that problem~\cref{eq:nlcp-
 \subsection{Local and global solutions}
 
 Before solving problem~\cref{eq:nlcp-intro}, we must define what a solution is.
-The most natural definition of a solution\todo{Rewrite to avoid definition and solution} is given in~\cref{def:global-solution}.
+\Cref{def:global-solution} establishes the most natural understanding of a solution.
 
 \begin{definition}[Global solution]
     \label{def:global-solution}
     To problem~\cref{eq:nlcp-intro}, a point~$x^{\ast} \in \R^n$ is a \emph{global solution} if~$x^{\ast} \in \Omega$ and~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \Omega$.
 \end{definition}
 
-\todo[noline]{Be clear that local minimum is easier than global ones}
-
-\todo[noline]{Emphasize that convexity does not make problems easier}
-% https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.1011.7837&rep=rep1&type=pdf
-
-However, it is known that finding a global solution is NP-hard without any convexity assumption on problem~\cref{eq:nlcp-intro}, even in gradient-based settings.
-% http://www-personal.umich.edu/~murty/np.pdf
-Consider for example the following problem\todo{Remove the formulation, give some cited examples}, known to be NP-complete.
-
-\begin{problem}[Subset sum]
-    \label{pb:subset-sum}
-    Given a finite set of scalars,~$\set{\alpha_1, \alpha_2, \dots, \alpha_n} \subseteq \R$ say, is there any nonempty subset whose sum is zero?
-\end{problem}
-
-It is clear that~\cref{pb:subset-sum} can be formulated as the optimization problem
-\begin{equation*}
-    \begin{aligned}
-        \min        & \quad \bigg( \sum_{i = 1}^n \alpha_i x_i \bigg)^2 + \sum_{i = 1}^n x_i^2 (1 - x_i)^2\\
-        \text{s.t.} & \quad x \in \R^n,
-    \end{aligned}
-\end{equation*}
-since its global solution is zero if and only if there exists a nonempty subset whose sum is zero.
-Therefore, we relax the definition of solution to problem~\cref{eq:nlcp-intro} in~\cref{def:local-solution}.
+However, it is known that finding a global solution to a nonconvex nonlinear problem is generally NP-hard~\cite{Murty_Kabadi_1987}.
+Examples of such problems include reformulating the subset sum problem as an optimization problem.
+There also exist convex optimization problems known to be NP-hard, such as copositive programming.
+\Cref{def:local-solution} provides another understanding of solutions to problem~\cref{eq:nlcp-intro}.
 
 \begin{definition}[Local solution]
     \label{def:local-solution}
@@ -317,6 +298,9 @@ Therefore, we relax the definition of solution to problem~\cref{eq:nlcp-intro} i
 Note that an isolated local solution is strict, but the converse is not true.
 From now on, we refer to as an \emph{optimal solution} to problem~\cref{eq:nlcp-intro} a local solution, since we do not study global optimization.
 The value of the objective function~$\obj$ at an optimal solution is referred to as the \emph{optimal value}.
+However, we note that the numerical methods we will consider in this thesis do \emph{not} attempt to find any local solution to~\cref{eq:nlcp-intro}, as such problem is also NP-hard in general~\cite{Murty_Kabadi_1987}.
+In fact, asserting that a given point is a local solution is already NP-hard for many optimization problems.
+Therefore, numerical methods attempt to find first- or second-order stationary points, presented hereinafter.
 
 \subsection{Constraint qualifications}
 
@@ -384,11 +368,10 @@ where~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \in \R$ for
 The conditions~\cref{eq:kkt-intro} are commonly referred to as the \gls{kkt} conditions~\cite{Karush_1939,Kuhn_Tucker_1951}.
 More specifically, condition~\cref{eq:kkt-intro-sta} is referred to as the \emph{stationarity} condition, conditions~\cref{eq:kkt-intro-pfub,eq:kkt-intro-pfeq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-intro-csl} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-intro-df} as the \emph{dual feasibility} condition.
 Note that this theorem holds for more general constraint qualifications, such as the \gls{mfcq} (see, e.g.,~\cite[p.~339]{Nocedal_Wright_2006}).
-% Moreover, the smoozthness assumptions on the objective and constraint functions can be relaxed, using generalized derivatives.
 
 \subsubsection{Graphical insight of the first-order optimality conditions}
 
-% We will not give the proof but show it on a simple example
+We do not provide a rigorous of~\cref{thm:fonc}, but we illustrate the main steps on a simple example.
 To help to understand graphically~\cref{thm:fonc}, we consider the problem
 \begin{subequations}
     \label{eq:kkt-description}
@@ -433,10 +416,10 @@ A graphical representation of problem~\cref{eq:kkt-description} is given in~\cre
     \label{fig:kkt-description}
 \end{figure}
 
-\todo[noline]{Find a solution to make the proof logic}
+\todo[noline,color=OliveGreen!50]{Find a solution to make the proof logic}
 
-Assume that we are given~$x \in \R^2$ satisfying the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2} that is not optimal.
-We then have a direction~$d \in \R^2$ such that~$x + d$ satisfies the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2} and~$\obj(x + d) < \obj(x)$.
+Assume that we are given~$x \in \R^2$ satisfying the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2}.
+If~$x$ is not optimal, then have a direction~$d \in \R^2$ such that~$x + d$ satisfies the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2} and~$\obj(x + d) < \obj(x)$.
 Therefore,
 \begin{subequations}
     \label{eq:kkt-description-system}
@@ -457,12 +440,13 @@ By omitting the approximation in~\cref{eq:kkt-description-system-c1}, we then ha
         & \inner{\nabla \con{2}(x), d} \le 0.
     \end{empheq}
 \end{subequations}
-We see on~\cref{fig:kkt-description} that no such direction exists for~$x = x^{\ast}$.
-One can straightforwarly\todo{Cite the Farkas' lemma} show that no vector~$d$ satisfy system~\cref{eq:kkt-proof} only when there exists a Lagrange multiplier~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \ge 0$ for all~$i \in \iub \cup \ieq$ such that~$\nabla_x \lag(x, \lambda) = 0$, since
+If~$x$ is optimal, then by definition, there exist no direction~$d \in \R^n$ satisfying~\cref{eq:kkt-description-system}.
+As we can see on~\cref{fig:kkt-description}, there is in fact no direction~$d \in \R^n$ satisfying~\cref{eq:kkt-proof}.
+The Farkas' lemma~\cite{Farkas_1902} shows that no vector~$d \in \R^2$ satisfy system~\cref{eq:kkt-proof} only when there exists~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \ge 0$ for all~$i \in \iub \cup \ieq$ such that~$\nabla_x \lag(x, \lambda) = 0$, since
 \begin{equation*}
     \nabla_x \lag(x, \lambda) = \nabla \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \nabla \con{i}(x).
 \end{equation*}
-A formal proof of~\cref{thm:fonc} follows the scheme presented above, by bounding the error terms arising in the first-order approximation~\cref{eq:kkt-description-system}.
+A formal proof of~\cref{thm:fonc} (see, e.g.,~\cite[\S 12.4]{Nocedal_Wright_2006}) follows the scheme presented above, by bounding the error terms arising in the first-order approximation~\cref{eq:kkt-description-system}.
 
 \subsection{Second-order optimality conditions}
 
@@ -488,19 +472,32 @@ A formal proof of~\cref{thm:fonc} follows the scheme presented above, by boundin
 
 \section{Methodology of \glsfmtlong{dfo} algorithms}
 
+We present in this section classical deterministic \gls{dfo} methods.
+
 \subsection{Frameworks and algorithms for \glsfmtlong{dfo}}
 
-\begin{itemize}
-    \item Direct-search and model-based methods.
-    \item Line-search and trust-region methods.
-    \item Filter methods and hybrid methods.
-    \item implicit filtering methods (hybrid between direct-search and line-search).
-\end{itemize}
+Essentially two main strategies have been developed in the litterature for solving \gls{dfo} problems.
+One strategy consists in sampling iteratively the objective function at a finite number of points around the current iterate, and choosing among these points the next iterate.
+The \emph{direct-search} methods~\cite{Kolda_Lewis_Torczon_2003} are based on this framework.
+The other strategy consists in building iteratively simple approximations of the problems (e.g., using polynomial functions) around the current iterate, and minimizing only the approximated problems.
+These methods are referred to as the \emph{model-based} methods.
+The approximated problems are usually embedded in a globalization strategy, such as a \emph{line-search} method or a \emph{trust-region} methods~\cite{Conn_Gould_Toint_2000,Yuan_2015}, to globalize their convergence properties.
+Most of the existing model-based methods use linear or quadratic approximations, although attempts have been made to use other functions, such as \gls{rbf}~\cite{Oeuvray_2005}.
+Some methods cannot be classified as direct-search or model-based, but are rather hybridized, such as the implicit filtering~\cite{Kelley_2011}, the SID-PSM method~\cite{Custodio_Rocha_Vicente_2009}.
 
 \subsection{Examples of \glsfmtlong{dfo} methods}
 
+\subsubsection{Direct-search methods}
+
+The earliest work on numerical \gls{dfo} is attributed to~\citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed a nonlinear least-squares solver using a \gls{dfo} coordinate search on MANIAC, an early computer based on the von Neumann architecture.
+Many related works on \gls{dfo} appeared in the next few years.
+These comprise the works of \citeauthor{Rosenbrock_1960}~\cite{Rosenbrock_1960}, \citeauthor{Rastrigin_1963}~\cite{Rastrigin_1963}, \citeauthor{Powell_1964}~\cite{Powell_1964,Powell_1975a}, \citeauthor{Matyas_1965}~\cite{Matyas_1965}, \citeauthor{Nelder_Mead_1965}~\cite{Nelder_Mead_1965}, \citeauthor{Fletcher_1965}~\cite{Fletcher_1965}, \citeauthor{Box_1966}~\cite{Box_1966}, and \citeauthor{Karmanov_1974}~\cite{Karmanov_1974} for instance.
+At the end of the millennium, with the prominent works of \citeauthor{Wright_1995} and others, \gls{dfo} became the wide research area that exists today, encouraged by recent engineering needs.
+
+\subsubsection{Model-based methods}
+
 \begin{itemize}
-    \item The earliest work on numerical \gls{dfo} is attributed to~\citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed a nonlinear least-squares solver using a \gls{dfo} coordinate search on MANIAC, an early computer based on the von Neumann architecture.
+    \item
     \item Nelder-Mead method~\cite{Nelder_Mead_1965}.
     \item BFO~\cite{Porcelli_Toint_2017}.
     \item DFO~\cite{Conn_Scheinberg_Toint_1998}.
