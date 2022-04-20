@@ -57,8 +57,9 @@ This thesis focuses on this class of problems, referred to as \gls{dfo}~\cite{Co
 
 \Gls{dfo} problems arise naturally when the objective function or the feasible set results from complex experiments or simulations.
 Regarding these functions as black-boxes, people often refer to those problems as \gls{bbo} problems.
-We emphasize that we are \emph{not} investigating nonsmooth optimization~\cite{Clark_1983,Bagirov_Karmitsa_Makela_2014}\todo[color=OliveGreen!50]{Put two classical references}, which studies problems that involve nonsmooth functions.
-In \gls{dfo}, classical or generalized derivatives may be well defined, but cannot be numerically assessed.
+We emphasize that we are \emph{not} investigating nonsmooth optimization~\cite{Clark_1983,Cui_Pang_2021}\todo[color=OliveGreen!50]{Put two classical references}, which studies problems that involve nonsmooth functions.
+In \gls{dfo}, the major difficulty is not the possible nonsmoothness of the functions involved, but the lack of knowledge about the structures of the problems.
+In theoretical analysis of \gls{dfo} methods, it is not uncommon to assume that the underlying functions enjoy some smoothness, although algorithms cannot retrieve their (classical or generalized) derivatives.
 
 \Gls{dfo} methods use only function values to solve optimization problems.
 Therefore, the leading complexity measure we consider is the number of function evaluations.
@@ -84,45 +85,47 @@ The feasible set of this problem is
 
 We emphasize that~\cref{eq:nlcp-intro-cub,eq:nlcp-intro-ceq} may include bound constraints.
 We do not extract them explicitly in this chapter, but they may need to be handled differently from other constraints, because they often represent inalienable physical or theoretical restrictions.
-We will later in this thesis introduce a new \gls{dfo} method, which will take this into consideration\todo[color=OliveGreen!50]{Find a better word} (see~\cref{ch:cobyqa-intro}).
+We will later in this thesis introduce a new \gls{dfo} method, namely \gls{cobyqa}, which will take this into consideration\todo[color=OliveGreen!50]{Find a better word} (see~\cref{ch:cobyqa-intro}).
 
 \section{Examples of applications}
 
 \subsection{Automatic error analysis}
 
 A typical example of \gls{dfo} applications is automatic error analysis~\cite{Higham_1993,Higham_2002}, which formulates numerical computation's accuracies and stabilities using optimization problems.
-Consider, for instance, the Gaussian elimination with partial pivoting of a matrix~$A \in \R^{n \times n}$, given in~\cref{alg:gepp}.
+Consider, for instance, the Gaussian elimination with partial pivoting of a matrix~$A \in \R^{n \times n}$, given in~\cref{alg:gepp}, where the superscripts denote iteration numbers.
 
 \begin{algorithm}[ht]
     \caption{Gaussian elimination with partial pivoting}
     \label{alg:gepp}
     \DontPrintSemicolon
     \KwData{Matrix~$A \in \R^{n \times n}$.}
-    Initialize $A^{(0)} \gets A$\;
+    Initialize $A^0 \gets A$\;
     \For{$k = 1, 2, \dots, n - 1$}{
-        Determine the pivot index~$j = \argmax \set[\big]{\abs[\big]{A_{i, k}^{(k - 1)}} : k \le i \le n}$\;
-        \eIf{$A_{j, k}^{(k - 1)} \neq 0$}{
-            Exchange the~$k$th and the~$j$th rows of~$A^{(k - 1)}$\;
+        Determine the pivot index~$j = \argmax \set[\big]{\abs[\big]{A_{i, k}^{k - 1}} : k \le i \le n}$\;
+        \eIf{$A_{j, k}^{k - 1} \neq 0$}{
+            Exchange the~$k$th and the~$j$th rows of~$A^{k - 1}$\;
             Evaluate the multiplier~$\tau^k \in \R^n$ with components
             \begin{algoempheq}[left={\tau_i^k = \empheqlbrace}]{alignat*=2}
-                & A_{i, k}^{(k - 1)} / A_{k, k}^{(k - 1)}   && \quad \text{if~$i > k$, and}\\
-                & 0                                         && \quad \text{otherwise}
+                & A_{i, k}^{k - 1} / A_{k, k}^{k - 1}   && \quad \text{if~$i > k$, and}\\
+                & 0                                     && \quad \text{otherwise}
             \end{algoempheq}
-            Update~$A^{(k)} \gets (I_n - \tau^k e_k^{\T})A^{(k - 1)}$\;
+            Update~$A^k \gets (I_n - \tau^k e_k^{\T})A^{k - 1}$\;
         }{
-            Set~$A^{(k)} \gets A^{(k - 1)}$\;
+            Set~$A^k \gets A^{k - 1}$\;
         }
     }
 \end{algorithm}
 
+\todo[noline]{Write down explicitly the conventions on the subscripts and superscripts.}
+
 \Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of paragraph~10, and~$g$ at the end of page~97) demonstrates that the growth factor of the Gaussian elimination, defined by
 \begin{equation}
     \label{eq:gepp-growth-factor}
-    \rho_n(A) \eqdef \frac{\max_{0 \le k \le n - 1} \norm{A^{(k)}}_{\max}}{\norm{A}_{\max}},
+    \rho_n(A) \eqdef \frac{\max_{0 \le k \le n - 1} \norm{A^k}_{\max}}{\norm{A}_{\max}},
 \end{equation}
-determinates the numerical stability of~\cref{alg:gepp}, where~$\norm{\cdot}_{\max}$ denotes the max norm of a matrix, i.e., the largest absolute value of the matrix's entries.
+determinates the numerical stability of~\cref{alg:gepp}, where~$\norm{\cdot}_{\max}$ denotes the max norm of a matrix, i.e., the largest absolute value of the matrix's entries, and~$A^k$ is defined by~\cref{alg:gepp}\todo{Explain more clearly}.
 More specifically, the~$\ell_{\infty}$-norm of the backward error of the computed solution is bounded from above by a term proportional to~$\rho_n(A)$.
-To study the worst-case scenario of~\cref{alg:gepp}, we wish to determine how large~$\rho_n$ can be and hence, to solve
+To study the worst-case scenario, we wish to determine how large~$\rho_n$ can be and hence, to solve
 \begin{equation}
     \label{eq:gepp-opti}
     \max_{A \in \R^{n \times n}} \rho_n(A).
@@ -132,7 +135,7 @@ Besides, although the growth factor is defined everywhere, it may not be continu
 Moreover, it is not differentiable at the points yielding a tie in any maximum operator in equation~\cref{eq:gepp-growth-factor}.
 Hence, optimization methods based on derivative information cannot be used for this problem.
 In such a case, \gls{dfo} methods can help solving problem~\cref{eq:gepp-opti}.
-Note that the optimal value and all optimal solutions to problem~\cref{eq:gepp-opti} are analytically known~\cite{Higham_Higham_1989}, but \gls{dfo} methods can be used to help the theoretical development~\cite{Higham_1993}.
+Note that the optimal value and all optimal solutions to problem~\cref{eq:gepp-opti} are known~\cite{Higham_Higham_1989}, but \gls{dfo} methods can be used to help the theoretical development~\cite{Higham_1993}.
 
 \subsection{Tuning nonlinear optimization methods}
 
@@ -250,19 +253,23 @@ This problem may be solved using \gls{dfo} methods.
 As in~\cite{Qian_Yu_2021}, \gls{dfo} be also be applied to reinforcement learning.
 Instead of training a model on a fixed labelled dataset, reinforcement learning bases the training process on rewarding expected behaviors and punishing undesired ones.
 Hence, it often consists in finding optimal parameters that maximize a reward.
-However, this reward's derivatives often cannot be evaluated, and \gls{dfo} methods can be an approach to solving such problems.
+However, these reward's derivatives often cannot be evaluated, and \gls{dfo} methods can be an approach to solving such problems.
+This concept is often referred to as derivative-free reinforcement learning.
+
 
 \subsection{Some industrial and engineering applications}
 
-\Gls{dfo} methods are also widely used in engineering, especially for solving design problems, including heavy simulations.
-Examples of such problems include helicopter rotor blade design~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, hydrodynamic design~\cite{Duvigneau_Visonneau_2004}, analog circuit design~\cite{Latorre_Etal_2019}, and rapid-cycling synchrotron design~\cite{Eldred_Etal_2021}.
-More generally, industrial and engineering problems that involve sophisticated models, complex simulations, or experiments, give rise to \gls{dfo} problems.
-This is true in many areas, such as in nuclear energy engineering~\cite{Kortelainen_Etal_2010,Kortelainen_Etal_2012,Kortelainen_Etal_2014}, reservoir engineering and engine calibration~\cite{Langouet_2011}, or groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, for instance.
-Another interesting application is \gls{mdo}.
-It is a field in industry and engineering that uses optimization methods for solving design problems whose components are defined by several disciplines.
-For example, the objective and constraint functions of a \gls{mdo} problem can be defined by different departments of the same company or even by different companies, such as in aircraft engine engineering~\cite{Gazaix_Etal_2019}.
-Because of the attraction of \gls{mdo} for practitioners, several dedicated packages are available on the market for solving \gls{mdo} problems numerically.
-We will present in~\cref{ch:pdfo} of this thesis a piece of software we implemented for solving \gls{dfo} problems, which has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry in France.
+\Gls{dfo} methods are also widely used in industry and engineering, especially for solving problems that involve heavy simulations.
+Such problems arise from helicopter rotor blade manufacturing~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, computational fluid dynamics~\cite{Duvigneau_Visonneau_2004}, worst-case analysis of analog circuit~\cite{Latorre_Etal_2019}, rapid-cycling synchrotron accelerator modeling~\cite{Eldred_Etal_2021}, nuclear energy engineering~\cite{Kortelainen_Etal_2010,Kortelainen_Etal_2012,Kortelainen_Etal_2014}, reservoir engineering and engine calibration~\cite{Langouet_2011}, or groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, to name but a few.
+More generally, industrial and engineering problems that involve sophisticated models, simulations, or experiments, give rise to \gls{dfo} problems.
+
+A particular application of \gls{dfo} comes from \gls{mdo}.
+It is a field that uses optimization methods to solve design problems defined by multiple disciplines.
+The objective and constraint functions of a \gls{mdo} problem can be provided by different departments of the same company or even by different companies.
+This is the case in aircraft engine engineering~\cite{Gazaix_Etal_2019}, where the design problem of one component is solved while taking into account constraints imposed by other components handled by different departments.
+\Gls{mdo} problems often involve simulations or experiments and therefore, \gls{mdo} problems are solved using \gls{dfo} methods.
+We will present in~\cref{ch:pdfo} of this thesis a piece of software we implemented for solving \gls{dfo} problems.
+It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry in France.
 
 \section{Optimality conditions for smooth optimization}
 
