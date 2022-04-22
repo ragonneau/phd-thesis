@@ -66,6 +66,8 @@ Therefore, the leading complexity measure we consider is the number of function 
 In practice, each function evaluation may require several minutes or even several days to complete~\cite[\S 1.4]{Audet_Hare_2017}.
 For instance, a recent application of \gls{dfo} is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}, for which one objective function evaluation necessitates training a machine learning model (see~\cref{subsec:machine-learning}).
 Hence, in \gls{dfo} methods, the expense of numerical linear algebra is less of a concern, although we will maintain it acceptable.
+We emphasize here that if any classical of generalized derivative information can be evaluated at a reasonable cost, \gls{dfo} methods should not be used, as it is very unlikely that they will outperform derivative-based methods.
+For example, if the source code of the functions involved in the optimization problem is available but complex, one may attempt to evaluate derivatives using automatic differentiation tools~\cite{Griewank_2003,Griewank_Walther_2008}.
 
 In this introduction, we consider the nonlinearly-constrained problem
 \begin{subequations}
@@ -480,6 +482,21 @@ A formal proof of~\cref{thm:first-order-necessary-conditions} (see, e.g.,~\cite[
 \section{Methodology of \glsfmtlong{dfo} algorithms}
 
 We present in this section classical deterministic \gls{dfo} methods.
+Many of the earliest works on \gls{dfo} applied derivative-based methods employing finite-difference approximations of the derivatives.
+For example, the first-order directional derivative of a differentiable function~$\obj : \R^n \to \R$ with respect to the direction~$d \in \R^n$ at a point~$x \in \R^n$ can be approximated by the forward difference
+\begin{equation*}
+    \partial_d \obj(x) \eqdef \inner{\nabla \obj(x), d} \approx \frac{\obj(x + hd) - \obj(x)}{h},
+\end{equation*}
+or the central difference
+\begin{equation*}
+    \partial_d \obj(x) \approx \frac{\obj(x + hd) - \obj(x - hd)}{2h},
+\end{equation*}
+where~$h > 0$ is a given difference parameter.
+Although simple, this technique is unstable to noise and necessitates~$\mathcal{O}(n)$ function evaluations to approximate one gradient.
+Hence, we do not apply this technique in this study, since each function evaluation is expensive.
+
+Besides the deterministic methods presented in this thesis, we acknowledge the existence of randomized methods, such as the random search methods~\cite{Zhigljavsky_1991}, the simulated annealing methods~\cite{Kirkpatrick_Gelatt_Vecchi_1983}, or the genetic algorithm~\cite{Jong_1975,Holland_1975}.
+However, we do not study these methods in this thesis.
 
 \subsection{Frameworks and algorithms for \glsfmtlong{dfo}}
 
@@ -554,12 +571,12 @@ Given any fixed solver~$\hat{s} \in \mathcal{S}$ and a threshold~$\alpha \ge 1$,
 where~$\card$ denotes the cardinal operator.
 Therefore, $\rho_{\hat{s}}(1)$ is the proportion of problems in~$\mathcal{P}$ that are solved faster by the solver~$\hat{s}$ than by any other solvers in~$\mathcal{S}$, and $\rho_{\hat{s}}(\alpha)$ is the proportion of problems in~$\mathcal{P}$ that are solved by the solver~$\hat{s}$ without any budget restriction for any~$\alpha \ge \max \set{r_{p, \hat{s}} : p \in \mathcal{P}}$.
 
-An example of performance profiles is given in~\cref{fig:performance-profile-example}.
+An example of performance profiles is given in~\cref{fig:performance-profile-example}\todo{What is the experiment?}.
 
 \begin{figure}[ht]
     \centering
-    \drawprofiles{{"cobyqa","newuoa"}}{test.csv}{4}
-    \caption{To do}
+    \drawprofiles{{"NEWUOA","CG"}}{plain-1-50-perf-cg-newuoa-U.csv}{5}
+    \caption{Example of performance profiles}
     \label{fig:performance-profile-example}
 \end{figure}
 
