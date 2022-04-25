@@ -49,25 +49,25 @@
 \section{Overview of \glsfmtlong{dfo}}
 
 Optimization is the study of extremal points and values of mathematical functions.
-Traditional optimization aims at minimizing (or maximizing) a real-valued function~$\obj$, referred to as the \emph{objective function}, within a given set of points~$\Omega \subseteq \R^n$, referred to as the \emph{feasible set}.
+It aims at minimizing (or maximizing) a real-valued function~$\obj$, referred to as the \emph{objective function}, within a given set of points~$\Omega \subseteq \R^n$, referred to as the \emph{feasible set}.
 It is well known that essential information to optimization is embraced in the (possibly generalized) derivatives of the functions involved.
-However, such derivatives may not exist.
-Even if they are well defined, practical evaluations of them may be unavailable, unreliable, or prohibitively expensive.
-This thesis focuses on this class of problems, referred to as \gls{dfo}~\cite{Conn_Scheinberg_Vicente_2009b,Audet_Hare_2017,Custodio_Scheinberg_Vicente_2017,Larson_Menickelly_Wild_2019}.
+However, in practice, evaluations of such derivatives may be unreliable, or prohibitively expensive, if not impossible.
+It motivates the study of \gls{dfo}~\cite{Conn_Scheinberg_Vicente_2009b,Audet_Hare_2017,Custodio_Scheinberg_Vicente_2017,Larson_Menickelly_Wild_2019}, where problems are solved using only function values.
+This thesis focuses on methods and software for \gls{dfo}.
 
 \Gls{dfo} problems arise naturally when the objective function or the feasible set results from complex experiments or simulations.
-Regarding these functions as black-boxes, people often refer to those problems as \gls{bbo} problems.
-We emphasize that we are \emph{not} investigating nonsmooth optimization~\cite{Clark_1983,Cui_Pang_2021}, which studies problems that involve nonsmooth functions.
+Regarding these functions as black boxes, people often refer to those problems as \gls{bbo} problems~\cite{Audet_Hare_2017}, which constitute a major type of \gls{dfo} problems in practice.
+Note that \gls{dfo} differs from nonsmooth optimization~\cite{Clark_1983,Cui_Pang_2021}, which studies problems that involve nonsmooth functions.
 In \gls{dfo}, the major difficulty is not the possible nonsmoothness of the functions involved, but the lack of knowledge about the structures of the problems.
 In theoretical analysis of \gls{dfo} methods, it is not uncommon to assume that the underlying functions enjoy some smoothness, although algorithms cannot retrieve their (classical or generalized) derivatives.
+We emphasize that if any derivative information can be evaluated at an affordable cost or approximated well enough, \gls{dfo} methods are not recommended, as they are very unlikely to outperform methods that use derivatives.
+Consider for example minimizing an objective function defined by a sophisticated simulation whose source code is available.
+One may then attempt to evaluate derivatives using automatic differentiation tools~\cite{Griewank_2003,Griewank_Walther_2008} and apply derivative-based methods.
 
-\Gls{dfo} methods use only function values to solve optimization problems.
-Therefore, the leading complexity measure we consider is the number of function evaluations.
-In practice, each function evaluation may require several minutes or even several days to complete~\cite[\S 1.4]{Audet_Hare_2017}.
-For instance, a recent application of \gls{dfo} is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}, for which one objective function evaluation necessitates training a machine learning model (see~\cref{subsec:machine-learning}).
+For \gls{dfo} methods, the leading complexity measure we consider is the number of function evaluations.
+In practice, each function evaluation may require several minutes or even several days to complete~\cite[\S~1.4]{Audet_Hare_2017}.
+For instance, a recent application of \gls{dfo} is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}, for which every objective function evaluation necessitates training a machine learning model (see~\cref{subsec:machine-learning}).
 Hence, in \gls{dfo} methods, the expense of numerical linear algebra is less of a concern, although we will maintain it acceptable.
-We emphasize here that if any classical of generalized derivative information can be evaluated at a reasonable cost, \gls{dfo} methods should not be used, as it is very unlikely that they will outperform derivative-based methods.
-For example, if the source code of the functions involved in the optimization problem is available but complex, one may attempt to evaluate derivatives using automatic differentiation tools~\cite{Griewank_2003,Griewank_Walther_2008}.
 
 In this introduction, we consider the nonlinearly-constrained problem
 \begin{subequations}
@@ -380,8 +380,9 @@ Note that this theorem holds for more general constraint qualifications, such as
 
 \subsubsection{Graphical insight of the first-order optimality conditions}
 
-We do not provide a rigorous of~\cref{thm:first-order-necessary-conditions}, but we illustrate the main steps on a simple example.
-To help to understand graphically~\cref{thm:first-order-necessary-conditions}, we consider the problem
+\todo[noline]{If~$x$ is not optimal, then the system is impossible and thus, the Farkas lemma concludes the proof}
+
+We do not provide a proof of~\cref{thm:first-order-necessary-conditions}, but we illustrate graphically the main idea on the simple example
 \begin{subequations}
     \label{eq:kkt-description}
     \begin{align}
@@ -428,7 +429,7 @@ A graphical representation of problem~\cref{eq:kkt-description} is given in~\cre
 \todo[noline,color=OliveGreen!50]{Find a solution to make the proof logic}
 
 Assume that we are given~$x \in \R^2$ satisfying the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2}.
-If~$x$ is not optimal, then have a direction~$d \in \R^2$ such that~$x + d$ satisfies the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2} and~$\obj(x + d) < \obj(x)$.
+If~$x$ is not optimal, then we have a direction~$d \in \R^2$ such that~$x + d$ satisfies the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2} and~$\obj(x + d) < \obj(x)$.
 Therefore,
 \begin{subequations}
     \label{eq:kkt-description-system}
@@ -455,7 +456,7 @@ The Farkas' lemma~\cite{Farkas_1902} shows that no vector~$d \in \R^2$ satisfy s
 \begin{equation*}
     \nabla_x \lag(x, \lambda) = \nabla \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \nabla \con{i}(x).
 \end{equation*}
-A formal proof of~\cref{thm:first-order-necessary-conditions} (see, e.g.,~\cite[\S 12.4]{Nocedal_Wright_2006}) follows the scheme presented above, by bounding the error terms arising in the first-order approximation~\cref{eq:kkt-description-system}.
+A formal proof of~\cref{thm:first-order-necessary-conditions} (see, e.g.,~\cite[\S~12.4]{Nocedal_Wright_2006}) follows the scheme presented above, by bounding the error terms arising in the first-order approximation~\cref{eq:kkt-description-system}.
 
 \subsection{Second-order optimality conditions}
 
@@ -479,51 +480,41 @@ A formal proof of~\cref{thm:first-order-necessary-conditions} (see, e.g.,~\cite[
     If for all nonzero vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-introduction} we have~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} > 0$, then~$x^{\ast}$ is a strict local solution to problem~\cref{eq:problem-introduction}.
 \end{theorem}
 
-\section{Methodology of \glsfmtlong{dfo} algorithms}
+\section{Methodology of \glsfmtlong{dfo}}
 
-We present in this section classical deterministic \gls{dfo} methods.
-Many of the earliest works on \gls{dfo} applied derivative-based methods employing finite-difference approximations of the derivatives.
-For example, the first-order directional derivative of a differentiable function~$\obj : \R^n \to \R$ with respect to the direction~$d \in \R^n$ at a point~$x \in \R^n$ can be approximated by the forward difference
-\begin{equation*}
-    \partial_d \obj(x) \eqdef \inner{\nabla \obj(x), d} \approx \frac{\obj(x + hd) - \obj(x)}{h},
-\end{equation*}
-or the central difference
-\begin{equation*}
-    \partial_d \obj(x) \approx \frac{\obj(x + hd) - \obj(x - hd)}{2h},
-\end{equation*}
-where~$h > 0$ is a given difference parameter.
-Although simple, this technique is unstable to noise and necessitates~$\mathcal{O}(n)$ function evaluations to approximate one gradient.
-Hence, we do not apply this technique in this study, since each function evaluation is expensive.
-
-Besides the deterministic methods presented in this thesis, we acknowledge the existence of randomized methods, such as the random search methods~\cite{Zhigljavsky_1991}, the simulated annealing methods~\cite{Kirkpatrick_Gelatt_Vecchi_1983}, or the genetic algorithm~\cite{Jong_1975,Holland_1975}.
-However, we do not study these methods in this thesis.
-
-\subsection{Frameworks and algorithms for \glsfmtlong{dfo}}
-
-Essentially two main strategies have been developed in the literature for solving \gls{dfo} problems.
-One strategy consists of sampling the objective function at a finite number of points around the current iterate and choosing among these points the next iterate.
+As summarized in~\cite{Conn_Scheinberg_Vicente_2009b}, two main strategies have been developed for solving \gls{dfo} problems.
+One strategy consists of sampling the objective function around the current iterate and choosing the next iterate among the sampled points based on simple comparisons.
 The \emph{direct-search} methods~\cite{Kolda_Lewis_Torczon_2003} are based on this framework.
-The other strategy consists in building iteratively simple approximations of the problems (e.g., using polynomial functions) around the current iterate and minimizing only the approximated problems.
+The other strategy builds iteratively models that approximate the problems (e.g., using polynomials) around the current iterate and choose the next iterate according to the approximated problems.
 These methods are referred to as \emph{model-based} methods.
-To globalize their convergence properties, the approximated problems are usually embedded in a globalization strategy, such as a \emph{line-search} method or a \emph{trust-region} methods~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
+Hybrid methods also exist, such as implicit filtering~\cite{Kelley_2011}, and \gls{sidpsm}~\cite{Custodio_Rocha_Vicente_2009}, which combine direct search and models.
+
+Some methods can solve \gls{dfo} problems but are not covered by the above categories.
+Examples include random search methods~\cite{Zhigljavsky_1991}, simulated annealing methods~\cite{Kirkpatrick_Gelatt_Vecchi_1983}, the genetic algorithm~\cite{Jong_1975,Holland_1975}, and Bayesian optimization methods~\cite{Mockus_1975,Shahriari_Etal_2016}.
+For more information on these methods, we refer to the review~\cite{Larson_Menickelly_Wild_2019} and the reference therein.
+
+\subsection{Direct-search methods}
+
+An early example of \gls{dfo} is a method from \citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed in \citeyear{Fermi_Metropolis_1952} a nonlinear least-squares solver on MANIAC, an computer based on the von Neumann architecture.
+From a modern viewpoint, this method is a coordinate search method, a particular example of direct-search methods, where the search directions are defined to be the coordinate axes.
+
+Several direct-search methods appeared to solve general and dedicated optimization problems in the next few years.
+\citeauthor{Rosenbrock_1960}, for example, designed a direct-search method, which chooses the search directions among linear combinations of previous steps that led to actual reductions of a merit function\todo{The concept of merit functions is not yet introduced}~\cite{Rosenbrock_1960}.
+Another famous early direct-search method is the Hooke-Jeeves method~\cite{Hooke_Jeeves_1961}.
+This method combines exploratory moves toward coordinates axes with pattern moves, aiming to reuse the previously computed directions.
+In \citeyear{Nelder_Mead_1965}, \citeauthor{Nelder_Mead_1965} introduced a method for solving unconstrained optimization problems, which evaluates the objective function at the vertices of a given simplex, and modifies this simplex, using reflection, expansion, contraction, and shink steps, one vertex at a time~\cite{Nelder_Mead_1965}.
+Among the various direct-search solvers, this method is interesting as it is still used today, underlying the MATLAB function \verb|fminsearch|.
+Many other works on direct search appeared in these years.
+These comprise, for example, the works of \citeauthor{Powell_1964}~\cite{Powell_1964,Powell_1975a}, \citeauthor{Matyas_1965}~\cite{Matyas_1965}, \citeauthor{Fletcher_1965}~\cite{Fletcher_1965}, and \citeauthor{Box_1966}~\cite{Box_1966}, for instance.
+At the end of the millennium, with the notable works of \citeauthor{Wright_1995}~\cite{Wright_1995} and others, \gls{dfo} became the broad research area that exists today, encouraged by recent engineering needs.
+Nowadays, the direct-search paradigm offers many other algorithms, such as the \gls{gps} methods~\cite{Booker_Etal_1999}, later extended to the \gls{mads} methods~\cite{Abramson_Audet_2006,Abramson_Etal_2009,Audet_Dennis_2006,Audet_Dennis_Digabel_2008,Digabel_2011}, the implicit filtering method~\cite{Kelley_2011}, and \gls{bfo}~\cite{Porcelli_Toint_2017}.
+A more recent work by \citeauthor{Porcelli_Toint_2022} attempts to incorporate partial separability knowledge in a direct-search framework~\cite{Porcelli_Toint_2022}.
+
+\subsection{Model-based methods}
+
+Unlike direct-search methods, model-based methods approximate locally the functions involved in the optimization problems.
+To globalize their convergence properties, the approximated problems are usually embedded in a globalization strategy, such as a \emph{line-search} method~\cite[ch.~3]{Nocedal_Wright_2006} or a \emph{trust-region} methods~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
 Most of the existing model-based methods use linear or quadratic approximations, although attempts have been made to use other functions, such as \gls{rbf}~\cite{Oeuvray_2005}.
-Some methods cannot be classified as direct-search or model-based, but are rather hybridized, such as the implicit filtering~\cite{Kelley_2011}, and the SID-PSM method~\cite{Custodio_Rocha_Vicente_2009}.
-
-\subsection{Examples of \glsfmtlong{dfo} methods}
-
-\subsubsection{Direct-search methods}
-
-The earliest work on numerical \gls{dfo} is attributed to~\citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed a nonlinear least-squares solver using a \gls{dfo} coordinate search on MANIAC, an early computer based on the von Neumann architecture.
-Many related works on \gls{dfo} appeared in the next few years.
-These comprise the works of \citeauthor{Rosenbrock_1960}~\cite{Rosenbrock_1960}, \citeauthor{Rastrigin_1963}~\cite{Rastrigin_1963}, \citeauthor{Powell_1964}~\cite{Powell_1964,Powell_1975a}, \citeauthor{Matyas_1965}~\cite{Matyas_1965}, \citeauthor{Nelder_Mead_1965}~\cite{Nelder_Mead_1965}, \citeauthor{Fletcher_1965}~\cite{Fletcher_1965}, \citeauthor{Box_1966}~\cite{Box_1966}, and \citeauthor{Karmanov_1974}~\cite{Karmanov_1974}, for instance.
-At the end of the millennium, with the notable works of \citeauthor{Wright_1995} and others, \gls{dfo} became the wide research area that exists today, encouraged by recent engineering needs.
-
-Among the various direct-search solvers, the Nelder-Mead method~\cite{Nelder_Mead_1965} is interesting as it is still used today, underlying the MATLAB function \texttt{fminsearch}.
-This method uses nondegenerate~$n$-simplices, iteratively transformed and shrunk to converge towards a first-order critical point located inside the initial simplex.
-The direct-search paradigm offers many other algorithms, such as the \gls{gps} methods~\cite{Booker_Etal_1999}, later extended to the \gls{mads} methods~\cite{Abramson_Audet_2006,Abramson_Etal_2009,Audet_Dennis_2006,Audet_Dennis_Digabel_2008,Digabel_2011}, the implicit filtering method~\cite{Kelley_2011}, and \gls{bfo}~\cite{Porcelli_Toint_2017}.
-A more recent work by \citeauthor{Porcelli_Toint_2021} attempts to incorporate partial separability knowledge in a direct-search framework~\cite{Porcelli_Toint_2021}.
-
-\subsubsection{Model-based methods}
 
 From an empirical viewpoint, the model-based methods are highly appealing, as they have excellent performances in real applications.
 Examples of such algorithms include the method of \citeauthor{Conn_Toint_1996}~\cite{Conn_Toint_1996} for unconstrained optimization, which models the objective function with either sub-quadratic or quadratic functions obtained by underdetermined interpolations (see~\cref{sec:underdetermined-interpolation} of~\cref{ch:interpolation}), for which the freedom bequeathed by the interpolation conditions is taken out by minimizing the~$\ell_2$-norm of the coefficients of the models.
@@ -535,6 +526,27 @@ It has, however, the unique feature that it does not include any geometry-improv
 Instead, it adds a new constraint to the trust-region subproblems to prevent the trial steps from lying in a region that is likely to worsen the geometry of the interpolation set.
 Other examples of trust-region methods are \gls{csv2}~\cite{Billups_Larson_Graf_2013}, which determines its models by regression and not interpolation, \gls{dfols}~\cite{Cartis_Etal_2019}, which aims at solving nonlinear least-squares problems, or the Powell's \gls{dfo} solvers, presented later in this document.
 We thus heed that some solvers use nonpolynomial models, such as \gls{orbit}~\cite{Wild_Regis_Shoemaker_2008}, \gls{conorbit}~\cite{Regis_Wild_2017}, and \gls{boosters}~\cite{Oeuvray_Bierlaire_2009}, which use cubic \gls{rbf}.
+
+\subsection{Comment on finite-difference approximations}
+
+Perhaps to simplest approach for solving \gls{dfo} problems is to use derivative-based methods with finite-difference approximations of the derivatives (see, e.g.,~\cite{Shi_Etal_2021}).
+For example, the~$i$th coordinate of the gradient of a differentiable function~$\obj : \R^n \to \R$ at a point~$x \in \R^n$ can be approximated by the forward difference
+\begin{equation*}
+    \frac{\partial \obj}{\partial x_i}(x) \approx \frac{\obj(x + h e_i) - \obj(x)}{h},
+\end{equation*}
+or the central difference
+\begin{equation*}
+    \frac{\partial \obj}{\partial x_i}(x) \approx \frac{\obj(x + h e_i) - \obj(x - h e_i)}{2h},
+\end{equation*}
+where~$h > 0$ is a given difference parameter and~$e_i \in \R^n$ is the~$i$th standard coordinate vector of~$\R^n$.
+It is known that such methods are competitive with \gls{dfo} methods when the problems considered are smooth and noiseless.
+However, in the presence of noise, the performance of finite-difference based methods usually drop.
+Moreover, the choice of the difference parameter~$h$ depends on the noise level, which is usually unknown.
+Futhermore, is it clear that estimating~$\nabla f(x)$ necessitates~$\mathcal{O}(n)$ function evaluations around~$x$ along the coordinate axes.
+Since each function evaluation is expensive, one should attempt to reuse as much as possible function evaluations.
+However, it is unlikely that these evaluations are reused by the gradient-based method considered without any modification.
+Thus, we do not consider finite-difference based method in this thesis, and focus on model-based methods only.
+
 
 \section{Benchmarking tools for \glsfmtlong{dfo} methods}
 
@@ -548,7 +560,7 @@ To compare the performances of the solvers in~$\mathcal{S}$, we use the concept 
 The numerical experiments presented in this thesis define~$\mathcal{P}$ as subsets of the CUTEst dataset~\cite{Gould_Orban_Toint_2015}.
 Traditional convergence tests necessitate derivative information, which is assumed unavailable in this work.
 We consider the following convergence test for \gls{dfo} solvers, proposed by \citeauthor{More_Wild_2009}~\cite{More_Wild_2009}.
-We assume that each problem~$\hat{p} \in \mathcal{P}$ has a merit function\todo{The concept of merit functions is not yet introduced}~$\varphi_{\hat{p}}$.
+We assume that each problem~$\hat{p} \in \mathcal{P}$ has a merit function~$\varphi_{\hat{p}}$.
 Let~$x_{\hat{p}}^0 \in \R^{n_{\hat{p}}}$ be the initial guess for problem~$\hat{p}$ and~$x_{\hat{p}}^{\ast} \in \R^{n_{\hat{p}}}$ be the point that achieves the least value of~$\varphi_{\hat{p}}$ among all iterates of all solvers in~$\mathcal{S}$, where~$n_{\hat{p}}$ denotes the dimension of the problem~$\hat{p}$.
 Given a tolerance~$\tau \in (0, 1)$, a point~$x \in \R^{n_{\hat{p}}}$ satisfies the convergence test if
 \begin{equation*}
