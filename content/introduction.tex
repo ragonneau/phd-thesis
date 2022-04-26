@@ -550,6 +550,7 @@ Other examples of trust-region methods are \gls{csv2}~\cite{Billups_Larson_Graf_
 We thus heed that some solvers use nonpolynomial models, such as \gls{orbit}~\cite{Wild_Regis_Shoemaker_2008}, \gls{conorbit}~\cite{Regis_Wild_2017}, and \gls{boosters}~\cite{Oeuvray_Bierlaire_2009}, which use cubic \gls{rbf}.
 
 \subsection{Comment on finite-difference approximations}
+\label{subsec:finite-difference}
 
 Perhaps to simplest approach for solving \gls{dfo} problems is to use derivative-based methods with finite-difference approximations of the derivatives (see, e.g.,~\cite{Shi_Etal_2021}).
 For example, the~$i$th coordinate of the gradient of a differentiable function~$\obj : \R^n \to \R$ at a point~$x \in \R^n$ can be approximated by the forward difference
@@ -593,6 +594,7 @@ A point~$x \in \R^n$ satisfies the convergence test if the reduction~$\varphi_p(
 Therefore, we assume that at least one of the solvers converged for each problem, as the actual solutions of the problems may be unknown.
 
 \subsection{Performance profiles}
+\label{subsec:performance-profiles}
 
 For any fixed solver~$\hat{s} \in \mathcal{S}$ and problem~$\hat{p} \in \mathcal{P}$, define their \emph{performance ratio} by
 \begin{equation*}
@@ -614,7 +616,7 @@ The abscissa is the performance ratio in base-$2$ logarithmic scale and the perf
 
 \begin{figure}[ht]
     \centering
-    \drawprofiles{{"NEWUOA","BFGS","CG"}}{plain-1-50-perf-bfgs-cg-newuoa-U.csv}{5}
+    \drawperformanceprofiles{{"NEWUOA","BFGS","CG"}}{plain-1-50-perf-bfgs-cg-newuoa-U.csv}{5}
     \caption{Example of performance profiles}
     \label{fig:performance-profile-example}
 \end{figure}
@@ -631,6 +633,9 @@ For any fixed solver~$\hat{s} \in \mathcal{S}$ and threshold~$\alpha \ge 0$, the
 \begin{equation*}
     d_{\hat{s}}(\alpha) \eqdef \frac{1}{\card \mathcal{P}} \card \set[\bigg]{p \in \mathcal{P} : \frac{t_{p, \hat{s}}}{n_p + 1} \le \alpha}.
 \end{equation*}
-Therefore,~$d_{\hat{s}}(0) = 0$ and~$d_{\hat{s}}(\alpha) = \rho_{\hat{s}}(\alpha)$ for any~$\alpha \ge \max \set{t_{p, \hat{s}} : p \in \mathcal{P}}$, since~$t_{p, s} \ge 1$ for any~$p \in \mathcal{P}$ and~$s \in \mathcal{S}$.
-
-\todo[noline]{Why~$n_p + 1$?}
+Therefore,~$d_{\hat{s}}(0) = 0$ and~$d_{\hat{s}}(\alpha) = \rho_{\hat{s}}(\alpha)$ for any~$\alpha$ such that
+\begin{equation*}
+    \alpha \ge \max \set[\bigg]{\max \set[\bigg]{r_{p, \hat{s}}, \frac{t_{p, \hat{s}}}{n_p + 1}} : p \in \mathcal{P}}.
+\end{equation*}
+The denominator~$n_p + 1$ serves to homogenize the problems and defines the data profiles in terms of simplex gradient evaluations (see \cref{sec:multivariate-interpolation}).
+A graphical representation of the data profiles of the experiment described in \cref{subsec:performance-profiles} is given in ...

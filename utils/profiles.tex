@@ -34,8 +34,8 @@
         ytick={0,0.2,...,1},%
         cycle list name=profiles,%
         legend pos=south east,%
-        xlabel={Logarithm of the performance ratio},%
-        ylabel={Performance profiles},%
+        xlabel={\selectxlabel},%
+        ylabel={\selectylabel},%
     ]
         \pgfmathparse{dim{\selectsolvers}-1}
         \let\selectlastindex\pgfmathresult\relax

@@ -30,12 +30,21 @@
 \addbibresource{ragonneau-bib/optim.bib}
 
 % Dedicated macros
-\newcommand{\drawprofiles}[3]{%
-    \def\selectsolvers{#1}%
-    \def\selectcsv{figures/#2}%
-    \def\selectprofile{#3}%
+\newcommand{\drawprofiles}[4]{%
+    \def\selectsolvers{#2}%
+    \def\selectcsv{figures/#3}%
+    \def\selectprofile{#4}%
+    \ifthenelse{\equal{#1}{performance}}{%
+        \def\selectxlabel{Logarithm of the performance ratio}%
+        \def\selectylabel{Performance profiles}%
+    }{%
+        \def\selectxlabel{Number of simplex gradients}%
+        \def\selectylabel{Data profiles}%
+    }
     \input{utils/profiles.tex}%
 }
+\newcommand{\drawperformanceprofiles}[3]{\drawprofiles{performance}{#1}{#2}{#3}}
+\newcommand{\drawdataprofiles}[3]{\drawprofiles{data}{#1}{#2}{#3}}
 
 % Thesis metadata
 \title{Model-Based Derivative-Free Optimization Methods and Software}
