@@ -353,6 +353,7 @@ If a constraint belong to the active set at a given point, it is said to be \emp
 
 \subsubsection{Statement of the optimality conditions}
 
+Let~$\lag$ be the Lagrangian function to problem~\cref{eq:problem-introduction}, defined by
 \begin{equation*}
     \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x),
 \end{equation*}
@@ -380,9 +381,7 @@ Note that this theorem holds for more general constraint qualifications, such as
 
 \subsubsection{Graphical insight of the first-order optimality conditions}
 
-\todo[noline]{If~$x$ is not optimal, then the system is impossible and thus, the Farkas lemma concludes the proof}
-
-We do not provide a proof of~\cref{thm:first-order-necessary-conditions}, but we illustrate graphically the main idea on the simple example
+We do not provide a proof of~\cref{thm:first-order-necessary-conditions}, but we illustrate graphically the main idea on the simple~$2$-dimensional example
 \begin{subequations}
     \label{eq:kkt-description}
     \begin{align}
@@ -426,37 +425,22 @@ A graphical representation of problem~\cref{eq:kkt-description} is given in~\cre
     \label{fig:kkt-description}
 \end{figure}
 
-\todo[noline,color=OliveGreen!50]{Find a solution to make the proof logic}
-
-Assume that we are given~$x \in \R^2$ satisfying the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2}.
-If~$x$ is not optimal, then we have a direction~$d \in \R^2$ such that~$x + d$ satisfies the constraints~\cref{eq:kkt-description-c1,eq:kkt-description-c2} and~$\obj(x + d) < \obj(x)$.
-Therefore,
-\begin{subequations}
-    \label{eq:kkt-description-system}
-    \begin{empheq}[left=\empheqlbrace]{alignat=1}
-        & 0 > \obj(x + d) - \obj(x) = \inner{\nabla \obj(x), d},\\
-        & 0 \ge \con{1}(x + d) \approx \con{1}(x) + \inner{\nabla \con{1}(x), d}, \label{eq:kkt-description-system-c1}\\
-        & 0 \ge \con{2}(x + d) = \con{2}(x) + \inner{\nabla \con{2}(x), d}.
-    \end{empheq}
-\end{subequations}
-If a constraint is not active at~$x$, then such a direction~$d$ can be chosen so that this constraint is also inactive at~$x + d$.
-Let us therefore assume that~$\con{1}(x) = \con{2}(x) = 0$.
-By omitting the approximation in~\cref{eq:kkt-description-system-c1}, we then have
+As manifest on~\cref{fig:kkt-description}, there is no direction~$d \in \R^2$ such as
 \begin{subequations}
     \label{eq:kkt-proof}
     \begin{empheq}[left=\empheqlbrace]{alignat=1}
-        & \inner{\nabla \obj(x), d} < 0,\\
-        & \inner{\nabla \con{1}(x), d} \le 0,\\
-        & \inner{\nabla \con{2}(x), d} \le 0.
+        & \inner{\nabla \obj(x^{\ast}), d} < 0,\\
+        & \inner{\nabla \con{1}(x^{\ast}), d} \le 0,\\
+        & \inner{\nabla \con{2}(x^{\ast}), d} \le 0.
     \end{empheq}
 \end{subequations}
-If~$x$ is optimal, then by definition, there exist no direction~$d \in \R^n$ satisfying~\cref{eq:kkt-description-system}.
-As we can see on~\cref{fig:kkt-description}, there is in fact no direction~$d \in \R^n$ satisfying~\cref{eq:kkt-proof}.
-The Farkas' lemma~\cite{Farkas_1902} shows that no vector~$d \in \R^2$ satisfy system~\cref{eq:kkt-proof} only when there exists~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \ge 0$ for all~$i \in \iub \cup \ieq$ such that~$\nabla_x \lag(x, \lambda) = 0$, since
+This is because the direction~$d$ would be feasible and would progress towards a point with a least objective function value.
+This statement necessitates the constraint qualification assumption to be proven.
+The Farkas' lemma~\cite{Farkas_1902} shows actually that no vector~$d \in \R^2$ satisfy system~\cref{eq:kkt-proof} only when there exists a nonnegative Lagrange multiplier~$\lambda^{\ast} = (\lambda_1^{\ast}, \lambda_2^{\ast})$ such that~$\nabla_x \lag(x^{\ast}, \lambda^{\ast}) = 0$, since
 \begin{equation*}
-    \nabla_x \lag(x, \lambda) = \nabla \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \nabla \con{i}(x).
+    \nabla_x \lag(x^{\ast}, \lambda^{\ast}) = \nabla \obj(x^{\ast}) + \lambda_1^{\ast} \nabla \con{i}(x^{\ast}) + \lambda_1^{\ast} \nabla \con{i}(x^{\ast}).
 \end{equation*}
-A formal proof of~\cref{thm:first-order-necessary-conditions} (see, e.g.,~\cite[\S~12.4]{Nocedal_Wright_2006}) follows the scheme presented above, by bounding the error terms arising in the first-order approximation~\cref{eq:kkt-description-system}.
+For a formal proof of~\cref{thm:first-order-necessary-conditions}, see, e.g.,~\cite[\S~12.4]{Nocedal_Wright_2006}.
 
 \subsection{Second-order optimality conditions}
 
@@ -542,10 +526,10 @@ where~$h > 0$ is a given difference parameter and~$e_i \in \R^n$ is the~$i$th st
 It is known that such methods are competitive with \gls{dfo} methods when the problems considered are smooth and noiseless.
 However, in the presence of noise, the performance of finite-difference based methods usually drop.
 Moreover, the choice of the difference parameter~$h$ depends on the noise level, which is usually unknown.
-Futhermore, is it clear that estimating~$\nabla f(x)$ necessitates~$\mathcal{O}(n)$ function evaluations around~$x$ along the coordinate axes.
+It is clear that estimating~$\nabla f(x)$ necessitates~$\mathcal{O}(n)$ function evaluations around~$x$ along the coordinate axes.
 Since each function evaluation is expensive, one should attempt to reuse as much as possible function evaluations.
-However, it is unlikely that these evaluations are reused by the gradient-based method considered without any modification.
-Thus, we do not consider finite-difference based method in this thesis, and focus on model-based methods only.
+However, it is unlikely that these evaluations are reused by the gradient-based method without any modification.
+Thus, we do not consider finite-difference based method in this thesis.
 
 
 \section{Benchmarking tools for \glsfmtlong{dfo} methods}
