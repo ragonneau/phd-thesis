@@ -196,7 +196,9 @@
 \RequirePackage{tikz}
 \RequirePackage{pgfplots}
 \RequirePackage{pgfplotstable}
-\pgfplotsset{compat=1.18}
+\pgfplotsset{%
+    compat=1.18,%
+}
 \usetikzlibrary{calc,patterns}
 \usepgfplotslibrary{external}
 \pgfplotscreateplotcyclelist{profiles}{%
@@ -213,10 +215,18 @@
 }
 \pgfplotsset{%
     every axis/.append style={%
-        label style={font=\small},%
+        label style={font=\footnotesize},%
         legend cell align=left,%
-        legend style={rounded corners,thick,draw=black!15,font=\small},%
-        tick label style={font=\small},%
+        legend style={%
+            rounded corners,%
+            thick,%
+            draw=black!15,%
+            fill opacity=0.5,%
+            draw opacity=1,%
+            text opacity=1,%
+            font=\footnotesize,%
+        },%
+        tick label style={font=\footnotesize},%
     },%
 }
 \pgfkeys{/pgf/images/include external/.code=\includegraphics{#1}}
@@ -264,9 +274,10 @@
 \appto{\bibsetup}{\sloppy}
 
 % Captions in floating environments
-\RequirePackage{floatrow}
-\floatsetup[figure]{capposition=bottom}
-\floatsetup[table]{capposition=top}
+\RequirePackage{caption}
+\RequirePackage{subcaption}
+\captionsetup[figure]{position=below}
+\captionsetup[table]{position=above}
 
 % Repair contents and lists from the book class
 \renewcommand{\tableofcontents}{%
