@@ -84,6 +84,8 @@ The feasible set of this problem is
 \begin{equation*}
     \Omega \eqdef \set{x \in \R^n : \con{i}(x) \le 0 ~ \text{for~$i \in \iub$}, ~ \con{i}(x) = 0 ~ \text{for~$i \in \ieq$}}.
 \end{equation*}
+If~$\obj$ is convex, while~$\con{i}$ are convex for~$i \in \iub$ and affine for~$i \in \ieq$, then problem~\cref{eq:problem-introduction} is said \emph{convex}.
+However, in this thesis, we do \emph{not} assume convexity for problem~\cref{eq:problem-introduction}.
 
 We emphasize that~\cref{eq:problem-introduction-cub,eq:problem-introduction-ceq} may include bound constraints.
 We do not extract them explicitly in this chapter, but they may need to be handled differently from other constraints, because they often represent inalienable physical or theoretical restrictions.
@@ -120,7 +122,7 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
 
 \todo[noline]{Write down explicitly the conventions on the subscripts and superscripts.}
 
-\Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of paragraph~10, and~$g$ at the end of page~97) demonstrates that the growth factor of the Gaussian elimination, defined by
+\Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of paragraph~10, and~$g$ at the end of page~97) demonstrates that the growth factor of the Gaussian elimination, defined as
 \begin{equation}
     \label{eq:gaussian-elimination-growth-factor}
     \rho_n(A) \eqdef \frac{\max_{0 \le k \le n - 1} \norm{A^{(k)}}_{\max}}{\norm{A}_{\max}},
@@ -137,7 +139,7 @@ Besides, although the growth factor is defined everywhere, it may not be continu
 Moreover, it is not differentiable at the points yielding a tie in any maximum operator in equation~\cref{eq:gaussian-elimination-growth-factor}.
 Hence, optimization methods based on derivative information cannot be used for this problem.
 In such a case, \gls{dfo} methods can help solving problem~\cref{eq:gaussian-elimination-problem}.
-Note that the optimal value and all optimal solutions to problem~\cref{eq:gaussian-elimination-problem} are known~\cite{Higham_Higham_1989}, but \gls{dfo} methods can be used to help the theoretical development~\cite{Higham_1993}.
+Note that the optimal value and all local solutions to problem~\cref{eq:gaussian-elimination-problem} are known~\cite{Higham_Higham_1989}, but \gls{dfo} methods can be used to help the theoretical development~\cite{Higham_1993}.
 
 \subsection{Tuning nonlinear optimization methods}
 
@@ -262,40 +264,37 @@ This concept is often referred to as derivative-free reinforcement learning.
 \subsection{Some industrial and engineering applications}
 
 \Gls{dfo} methods are also widely used in industry and engineering, especially for solving problems that involve heavy simulations.
-Such problems arise from helicopter rotor blade manufacturing~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, computational fluid dynamics~\cite{Duvigneau_Visonneau_2004}, worst-case analysis of analog circuit~\cite{Latorre_Etal_2019}, rapid-cycling synchrotron accelerator modeling~\cite{Eldred_Etal_2021}, nuclear energy engineering~\cite{Kortelainen_Etal_2010,Kortelainen_Etal_2012,Kortelainen_Etal_2014}, reservoir engineering and engine calibration~\cite{Langouet_2011}, or groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, to name but a few.
-More generally, industrial and engineering problems that involve sophisticated models, simulations, or experiments, give rise to \gls{dfo} problems.
+Such problems arise from helicopter rotor blade manufacturing~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, computational fluid dynamics~\cite{Duvigneau_Visonneau_2004}, worst-case analysis of analog circuit~\cite{Latorre_Etal_2019}, rapid-cycling synchrotron accelerator modeling~\cite{Eldred_Etal_2021}, nuclear energy engineering~\cite{Kortelainen_Etal_2010,Kortelainen_Etal_2012,Kortelainen_Etal_2014}, reservoir engineering and engine calibration~\cite{Langouet_2011}, and groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, to name but a few.
+In general, industrial and engineering problems that involve sophisticated models, simulations, or experiments, give rise to \gls{dfo} problems.
 
-A particular application of \gls{dfo} comes from \gls{mdo}.
-It is a field that uses optimization methods to solve design problems defined by multiple disciplines.
+A particular application of \gls{dfo} comes from \gls{mdo} in industry.
+It is an field that uses optimization methods to solve design problems defined by multiple disciplines.
 The objective and constraint functions of a \gls{mdo} problem can be provided by different departments of the same company or even by different companies.
 This is the case in aircraft engine engineering~\cite{Gazaix_Etal_2019}, where the design problem of one component is solved while taking into account constraints imposed by other components handled by different departments.
-\Gls{mdo} problems often involve simulations or experiments and therefore, \gls{mdo} problems are solved using \gls{dfo} methods.
-We will present in \cref{ch:pdfo} of this thesis a piece of software we implemented for solving \gls{dfo} problems.
-It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry in France.
+\Gls{mdo} problems often involve simulations or experiments and therefore, \gls{dfo} methods are often needed.
+We will present in \cref{ch:pdfo} of this thesis a piece of software we implemented for solving \gls{dfo} problems based on methods by Powell~\cite{Powell_1994,Powell_2002,Powell_2006,Powell_2009,Powell_2015}.
+It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry\footnote{\url{https://www.irt-saintexupery.com}} in France.
 
 \section{Optimality conditions for smooth optimization}
 
-We discuss in this section necessary and sufficient conditions for optimality.
+We discuss in this section optimality conditions for problem~\cref{eq:problem-introduction}.
 We do not assume any structure on the objective and constraint functions, except some smoothness.
 More specialized results can be obtained by assuming that problem~\cref{eq:problem-introduction} is convex for example, but it is out of the scope of this work.
 
 \subsection{Local and global solutions}
 
 Before solving problem~\cref{eq:problem-introduction}, we must define what a solution is.
-\Cref{def:global-solution} establishes the most natural understanding of a solution.
+\Cref{def:global-solution} presents the most natural understanding of a solution.
 
 \begin{definition}[Global solution]
     \label{def:global-solution}
     To problem~\cref{eq:problem-introduction}, a point~$x^{\ast} \in \R^n$ is a \emph{global solution} if~$x^{\ast} \in \Omega$ and~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \Omega$.
 \end{definition}
 
-However, it is known that finding a global solution to a nonconvex nonlinear problem is generally NP-hard~\cite{Murty_Kabadi_1987}.
-Examples of such problems include reformulating the subset sum problem as an optimization problem.
-There also exist convex optimization problems known to be NP-hard, such as copositive programming.
-\Cref{def:local-solution} provides another understanding of solutions to problem~\cref{eq:problem-introduction}.
+The following relaxed concept of solutions to problem~\cref{eq:problem-introduction} is of interest both in theory and in practice.
 
 \begin{definition}[Local solution]
-    \label{def:local-solution}
+    % \label{def:local-solution}
     To problem~\cref{eq:problem-introduction}, a point~$x^{\ast} \in \R^n$ is
     \begin{itemize}
         \item a \emph{local solution} if~$x^{\ast} \in \Omega$ and there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega$,
@@ -304,31 +303,34 @@ There also exist convex optimization problems known to be NP-hard, such as copos
     \end{itemize}
 \end{definition}
 
-Note that an isolated local solution is strict, but the converse is not true.
-From now on, we refer to as an \emph{optimal solution} to problem~\cref{eq:problem-introduction} a local solution, since we do not study global optimization.
-The value of the objective function~$\obj$ at an optimal solution is referred to as the \emph{optimal value}.
-However, we note that the numerical methods we will consider in this thesis do \emph{not} attempt to find any local solution to~\cref{eq:problem-introduction}, as such problem is also NP-hard in general~\cite{Murty_Kabadi_1987}.
-In fact, asserting that a given point is a local solution is already NP-hard for many optimization problems.
-Therefore, numerical methods attempt to find first- or second-order stationary points, presented hereinafter.
+It is known that finding a local solution to a general nonconvex problem is NP-hard.
+In many cases, it is already NP-hard to check whether a given point is a local solution.
+There also exist convex optimization problems that are NP-hard, such as copositive programming, for which checking the feasibility of a given point is indeed NP-hard.
+See~\cite{Murty_Kabadi_1987} for more discussions.
+
+The methods we consider in this thesis are local.
+They attempt to approximately find local solutions to problem~\cref{eq:problem-introduction}.
+However, in general, theoretical analyses of these methods can only guarantee approximations of stationary points, which will be introduced hereinafter.
 
 \subsection{Constraint qualifications}
 
-Before introducing any necessary and sufficient conditions for local optimality, we discuss some regularity conditions on the constraints~\cref{eq:problem-introduction-cub,eq:problem-introduction-ceq}, referred to as the \emph{constraint qualifications}.
-These assumptions will be required for the necessary and the sufficient conditions to hold.
+Before introducing any necessary and sufficient conditions for local optimality, we discuss some regularity conditions on the constraints~\cref{eq:problem-introduction-cub,eq:problem-introduction-ceq}, referred to as \emph{constraint qualifications}.
+They will be required for the necessary conditions to hold.
 We first introduce the notion of \emph{active set}.
 
 \begin{definition}[Active set]
-    The \emph{active set}~$\mathcal{A}(x) \subseteq \iub \cup \ieq$ for problem~\cref{eq:problem-introduction} at a point~$x \in \Omega$ is defined by
+    The \emph{active set}~$\mathcal{A}(x) \subseteq \iub \cup \ieq$ for problem~\cref{eq:problem-introduction} at a point~$x \in \R^n$ is defined as
     \begin{equation*}
         \mathcal{A}(x) \eqdef \ieq \cup \set{i \in \iub : \con{i}(x) \ge 0}.
     \end{equation*}
 \end{definition}
 
-If a constraint belong to the active set at a given point, it is said to be \emph{active} at this point, and \emph{inactive} otherwise.
+If a constraint belongs to the active set\footnote{For simplicity, we do not distinguish a constraint from its index.} at a given point, it is said to be \emph{active} at this point, and \emph{inactive} otherwise.
 Note that a violated constraint is always considered active.
+
 We introduce hereinafter two classical constraint qualifications.
 
-\begin{definition}[Constraint qualification]
+\begin{definition}[Constraint qualifications]
     Given~$x \in \Omega$, denote~$\mathcal{A}(x)$ the active set for problem~\cref{eq:problem-introduction} at~$x$, and assume that the constraint functions~$\con{i}$ are differentiable at~$x$ for all~$i \in \mathcal{A}(x)$.
     We say that
     \begin{itemize}
@@ -344,39 +346,20 @@ We introduce hereinafter two classical constraint qualifications.
     \end{itemize}
 \end{definition}
 
-\Cref{prop:licq-implies-mfcq} shows that although \gls{licq} is simpler to verify in practice, it is stronger than the \gls{mfcq}.
-
-\begin{proposition}
-    \label{prop:licq-implies-mfcq}
-    Given~$x \in \Omega$, if the \gls{licq} holds at~$x$, then the \gls{mfcq} holds at~$x$.
-\end{proposition}
-
-\begin{proof}
-    Let~$\mathcal{A}(x)$ be the active set for problem~\cref{eq:problem-introduction} at~$x$, and let~$\Gamma(x)$ be the real matrix with rows~$\nabla \con{i}(x)^{\T}$ for~$i \in \mathcal{A}(x)$.
-    According to the \gls{licq}, the system~$\Gamma(x) z = v$ must have a solution for any right-hand side~$v$.
-    Let, therefore,~$v$ be the vector defined by
-    \begin{empheq}[left={v_i = \empheqlbrace}]{alignat*=2}
-        & -1    && \quad \text{if~$i \in \mathcal{A}(x) \cap \iub$, and}\\
-        & 0     && \quad \text{if~$i \in \ieq$},
-    \end{empheq}
-    and let~$z \in \R^n$ satisfy~$\Gamma(x) z = v$.
-    Then~$z$ also satisfy the system~\cref{eq:mangasarian-fromovitz}.
-\end{proof}
+The \gls{licq} is stronger than the \gls{mfcq}.
+If the \gls{licq} holds at~$x \in \Omega$, then the system~\cref{eq:mangasarian-fromovitz} is consistent because of the linear independance of all~$\nabla \con{i}(x)$ for~$i \in \mathcal{A}(x)$.
 
 Many other constraint qualifications exist.
-Some of the weakest constraint qualifications used in theoretical analyses are the \gls{acq} and the \gls{gcq}.
-They are defined using tangent and linear cones and are hard to verify in practice.
+Examples include the \gls{acq} and the \gls{gcq}, which are formulated using tangent and linearized cones of the feasible set.
 There also exist several traditional constraint qualifications weaker than the \gls{mfcq}, such as the \gls{crcq}, the \gls{cpld}, or the \gls{qncq}.
-However, considering such constraint qualifications usually complexifies theoretical analyses.
-Therefore, we will consider the \gls{licq} and the \gls{mfcq} in this thesis.
 We also note that when the problem has a particular structure, such as convexity, dedicated constraint qualifications may exist, such as the \gls{sc}.
-However, we do not assume any particular structure in this thesis.
+In this thesis, we will focus on the \gls{licq} and the \gls{mfcq}.
 
 \subsection{First-order optimality conditions}
 
 \subsubsection{Statement of the optimality conditions}
 
-Let~$\lag$ be the \emph{Lagrangian function} to problem~\cref{eq:problem-introduction}, defined by
+Let~$\lag$ be the \emph{Lagrangian function} to problem~\cref{eq:problem-introduction}, defined as
 \begin{equation*}
     \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x),
 \end{equation*}
@@ -385,7 +368,7 @@ where~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \in \R$ for
 
 \begin{theorem}[First-order necessary conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.1
     \label{thm:first-order-necessary-conditions}
-    Let~$x^{\ast} \in \Omega$ be a local solution to problem~\cref{eq:problem-introduction}, assume that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are continuously differentiable in a neighborhood of~$x^{\ast}$, and that \gls{licq} holds at~$x^{\ast}$.
+    Let~$x^{\ast} \in \Omega$ be a local solution to problem~\cref{eq:problem-introduction}, assume that the functions~$\obj$ and~$\con{i}$ are continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$x^{\ast}$.
     Then there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
     \begin{subequations}
         \label{eq:kkt-introduction}
@@ -399,13 +382,13 @@ where~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \in \R$ for
     \end{subequations}
 \end{theorem}
 
+We present~\cref{thm:first-order-necessary-conditions} with the \gls{licq} as an example, but similar conclusion can be established with other constraint qualifications, such as the \gls{mfcq} (see, e.g.,~\cite[p.~339]{Nocedal_Wright_2006}).
 The conditions~\cref{eq:kkt-introduction} are commonly referred to as the \gls{kkt} conditions~\cite{Karush_1939,Kuhn_Tucker_1951}.
 More specifically, condition~\cref{eq:kkt-introduction-stationarity} is referred to as the \emph{stationarity} condition, conditions~\cref{eq:kkt-introduction-primal-feasibility-ub,eq:kkt-introduction-primal-feasibility-eq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-introduction-complementary-slackness} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-introduction-dual-feasibility} as the \emph{dual feasibility} condition.
-Note that this theorem holds for more general constraint qualifications, such as the \gls{mfcq} (see, e.g.,~\cite[p.~339]{Nocedal_Wright_2006}).
-Any point~$x \in \Omega$ is referred to as a \emph{first-order stationary point} if it satisfies the \gls{kkt} conditions~\cref{eq:kkt-introduction}.
-We emphasize however that a first-order stationary point may not be a local solution as \cref{thm:first-order-necessary-conditions} does not state any sufficient condition.
+Any point~$x \in \R^n$ is referred to as a \emph{first-order stationary point} if it satisfies the \gls{kkt} conditions~\cref{eq:kkt-introduction}.
+Such a point may not be a local solution.
 
-\subsubsection{Graphical insight of the first-order optimality conditions}
+\subsubsection{An illustration of the first-order optimality conditions}
 
 We do not provide a proof of \cref{thm:first-order-necessary-conditions}, but we illustrate graphically the main idea on the simple~$2$-dimensional example
 \begin{subequations}
@@ -451,7 +434,7 @@ A graphical representation of problem~\cref{eq:kkt-description} is given in \cre
     \label{fig:kkt-description}
 \end{figure}
 
-As manifest on \cref{fig:kkt-description}, there is no direction~$d \in \R^2$ such as
+As manifest in \cref{fig:kkt-description}, there does not exist any direction~$d \in \R^2$ satisfying
 \begin{subequations}
     \label{eq:kkt-proof}
     \begin{empheq}[left=\empheqlbrace]{alignat=1}
@@ -460,23 +443,25 @@ As manifest on \cref{fig:kkt-description}, there is no direction~$d \in \R^2$ su
         & \inner{\nabla \con{2}(x^{\ast}), d} \le 0.
     \end{empheq}
 \end{subequations}
-This is because the direction~$d$ would be feasible and would progress towards a point with a least objective function value.
-The constraint qualification assumption is necessary to prove this statement.
-The Farkas' lemma~\cite{Farkas_1902} shows actually that no vector~$d \in \R^2$ satisfy system~\cref{eq:kkt-proof} only when there exists a nonnegative Lagrange multiplier~$\lambda^{\ast} = (\lambda_1^{\ast}, \lambda_2^{\ast})$ such that~$\nabla_x \lag(x^{\ast}, \lambda^{\ast}) = 0$, since
+The Farkas' lemma~\cite{Farkas_1902} ensures, therefore, that there exists a nonnegative Lagrange multiplier~$\lambda^{\ast} = (\lambda_1^{\ast}, \lambda_2^{\ast})$ such that
 \begin{equation*}
-    \nabla_x \lag(x^{\ast}, \lambda^{\ast}) = \nabla \obj(x^{\ast}) + \lambda_1^{\ast} \nabla \con{i}(x^{\ast}) + \lambda_1^{\ast} \nabla \con{i}(x^{\ast}).
+    \nabla \obj(x^{\ast}) + \lambda_1^{\ast} \nabla \con{1}(x^{\ast}) + \lambda_2^{\ast} \nabla \con{2}(x^{\ast}) = 0.
 \end{equation*}
-For a formal proof of \cref{thm:first-order-necessary-conditions}, see, e.g.,~\cite[\S~12.4]{Nocedal_Wright_2006}.
+This validates condition~\cref{eq:kkt-introduction-stationarity}, while~\cref{eq:kkt-introduction-primal-feasibility-ub,eq:kkt-introduction-primal-feasibility-eq,eq:kkt-introduction-complementary-slackness,eq:kkt-introduction-dual-feasibility} are obvious.
+A solution to system~\cref{eq:kkt-proof} is both a descent direction for~$\obj$ and a linearized feasible direction for the constraints.
+In the context of~\cref{thm:first-order-necessary-conditions}, the nonexistence of such a direction is guaranteed by the \gls{licq}.
+See~\cite[\S~12.4]{Nocedal_Wright_2006} for a complete proof of \cref{thm:first-order-necessary-conditions}.
 
 \subsection{Second-order optimality conditions}
 
 It is known that at a local solution of a smooth unconstrained optimization problem, the gradient of the objective function is zero and its Hessian matrix is positive semidefinite.
-\Cref{thm:second-order-necessary-conditions} generalizes this fact for the constrained optimization problem~\cref{eq:problem-introduction}.
+\Cref{thm:second-order-necessary-conditions} generalizes this fact to the optimization problem~\cref{eq:problem-introduction}.
 
 \begin{theorem}[Second-order necessary conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.5
     \label{thm:second-order-necessary-conditions}
-    Let~$x^{\ast} \in \Omega$ be a local solution to problem~\cref{eq:problem-introduction}, assume that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are twice continuously differentiable in a neighborhood or~$x^{\ast}$, and that \gls{licq} holds at~$x^{\ast}$.
-    Denote~$\mathcal{A}(x^{\ast})$ the active set for problem~\cref{eq:problem-introduction} at~$x^{\ast}$.
+    Let~$x^{\ast} \in \Omega$ be a local solution to problem~\cref{eq:problem-introduction}.
+    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood or~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that \gls{licq} holds at~$x^{\ast}$.
+    Denote the active set for problem~\cref{eq:problem-introduction} at~$x^{\ast}$ by~$\mathcal{A}(x^{\ast})$.
     Let~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ be a Lagrange multiplier satisfying the KKT condition~\cref{eq:kkt-introduction}, and let~$z \in \R^n$ be any vector such that
     \begin{subequations}
         \label{eq:second-order-introduction}
@@ -486,21 +471,20 @@ It is known that at a local solution of a smooth unconstrained optimization prob
             & \inner{\nabla \con{i}(x^{\ast}), z} \ge 0,    && \quad \text{if~$i \in \mathcal{A}(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} = 0$.}
         \end{empheq}
     \end{subequations}
-    Then~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} \ge 0$.
+    Then~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} \ge 0$. 
 \end{theorem}
 
-A first-order stationary point~$x \in \Omega$ is referred to as a \emph{second-order stationary point} if it satisfies the conclusion of \cref{thm:second-order-necessary-conditions}.
-We emphasize again that a second-order stationary point may not be a local solution as \cref{thm:second-order-necessary-conditions} does not state any sufficient condition.
+A first-order stationary point~$x \in \Omega$ is called a \emph{second-order stationary point} if it satisfies the conclusion of \cref{thm:second-order-necessary-conditions}.
+We emphasize that a second-order stationary point may not be a local solution.
 However, it is known in smooth unconstrained optimization that a point at which the gradient of the objective function is zero and its Hessian matrix is positive definite is a strict local solution.
-\Cref{thm:second-order-sufficient-conditions} generalizes this fact for the constrained optimization problem~\cref{eq:problem-introduction}.
+\Cref{thm:second-order-sufficient-conditions} generalizes this fact to the optimization problem~\cref{eq:problem-introduction}.
 
 \begin{theorem}[Second-order sufficient conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.6
     \label{thm:second-order-sufficient-conditions}
-    Let~$x^{\ast} \in \Omega$ be a given point, and assume that the functions~$\obj$ and~$\con{i}$, for all~$i \in \iub \cup \ieq$, are twice continuously differentiable in a neighborhood of~$x^{\ast}$, that \gls{licq} holds at~$x^{\ast}$, and that there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-introduction}.
+    Let~$x^{\ast} \in \Omega$ be a given point.
+    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-introduction}.
     If for all nonzero vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-introduction} we have~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} > 0$, then~$x^{\ast}$ is a strict local solution to problem~\cref{eq:problem-introduction}.
 \end{theorem}
-
-However, as of today, no necessary and sufficient condition is known for a point to be a local solution to problem~\cref{eq:problem-introduction} in the general case.
 
 \section{Methodology of \glsfmtlong{dfo}}
 
@@ -520,8 +504,9 @@ For more information on these methods, we refer to the review~\cite{Larson_Menic
 An early example of \gls{dfo} is a method from \citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed in \citeyear{Fermi_Metropolis_1952} a nonlinear least-squares solver on MANIAC, an computer based on the von Neumann architecture.
 From a modern viewpoint, this method is a coordinate search method, a particular example of direct-search methods, where the search directions are defined to be the coordinate axes.
 
-Several direct-search methods appeared to solve general and dedicated optimization problems in the next few years.
-\citeauthor{Rosenbrock_1960}, for example, designed an unconstrained direct-search method, which chooses the search directions among linear combinations of previous steps that led to actual reductions of the objective function~\cite{Rosenbrock_1960}.
+Several direct-search methods appeared after the work of \citeauthor{Fermi_Metropolis_1952}.
+\citeauthor{Rosenbrock_1960} designed an direct-search method for unconstrained problems.
+It constructs an orthogonal basis using previous steps and searching along the directions in this basis~\cite{Rosenbrock_1960}.
 Another famous early direct-search method is the Hooke-Jeeves method~\cite{Hooke_Jeeves_1961}.
 This method combines exploratory moves toward coordinates axes with pattern moves, aiming to reuse the previously computed directions.
 In \citeyear{Nelder_Mead_1965}, \citeauthor{Nelder_Mead_1965} introduced a method for solving unconstrained optimization problems, which evaluates the objective function at the vertices of a given simplex, and modifies this simplex, using reflection, expansion, contraction, and shink steps, one vertex at a time~\cite{Nelder_Mead_1965}.
@@ -629,7 +614,7 @@ In fact, performance profiles provide a clear measure when comparing two solvers
 
 We can also use data profiles~\cite{More_Wild_2009} to compare different solvers.
 Unlike performance profiles, data profiles provide an absolute comparison.
-For any fixed solver~$\hat{s} \in \mathcal{S}$ and threshold~$\alpha \ge 0$, the \emph{data profile} of~$\hat{s}$ is defined by
+For any fixed solver~$\hat{s} \in \mathcal{S}$ and threshold~$\alpha \ge 0$, the \emph{data profile} of~$\hat{s}$ is defined as
 \begin{equation*}
     d_{\hat{s}}(\alpha) \eqdef \frac{1}{\card \mathcal{P}} \card \set[\bigg]{p \in \mathcal{P} : \frac{t_{p, \hat{s}}}{n_p + 1} \le \alpha}.
 \end{equation*}
@@ -638,4 +623,11 @@ Therefore,~$d_{\hat{s}}(0) = 0$ and~$d_{\hat{s}}(\alpha) = \rho_{\hat{s}}(\alpha
     \alpha \ge \max \set[\bigg]{\max \set[\bigg]{r_{p, \hat{s}}, \frac{t_{p, \hat{s}}}{n_p + 1}} : p \in \mathcal{P}}.
 \end{equation*}
 The denominator~$n_p + 1$ serves to homogenize the problems and defines the data profiles in terms of simplex gradient evaluations (see \cref{sec:multivariate-interpolation}).
-A graphical representation of the data profiles of the experiment described in \cref{subsec:performance-profiles} is given in ...
+A graphical representation of the data profiles of the experiment described in \cref{subsec:performance-profiles} is given in~\cref{fig:data-profile-example}.
+
+\begin{figure}[ht]
+    \centering
+    \drawdataprofiles{{"NEWUOA","BFGS","CG"}}{plain-1-50-data-bfgs-cg-newuoa-U.csv}{5}
+    \caption{Example of data profiles}
+    \label{fig:data-profile-example}
+\end{figure}
