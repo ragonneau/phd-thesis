@@ -12,8 +12,19 @@
 % This work has the LPPL maintenance status `maintained'.
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
-
 \chapter{Interpolation models for \glsfmtlong{dfo}}
+
+We study in this thesis model-based \gls{dfo} methods (see \cref{subsec:model-based-methods}).
+These methods necessitate approximating locally the functions involved in the optimization problem by some models, using only function evaluations.
+Thoughout this section, we denote by~$\obj$ the real-valued function on~$\R^n$ to be approximated and~$\mathcal{Y} \subseteq \R^n$ the set of points at which this function is to be evaluated.
+We also denote~$\mathcal{F}_{n, m}$ the space of real-valued polynomial functions on~$\R^n$ of degree at most~$m \ge 0$.
+In this chapter, we aim at finding a function~$\objm \in \mathcal{F}_{n, m}$ for some fixed~$m$ that approximates~$\obj$ on the set~$\mathcal{Y}$.
+
+These models are generally obtained by interpolation or regression.
+
+\begin{equation*}
+    \objm(y) = \obj(y), \quad y \in \mathcal{Y}
+\end{equation*}
 
 \section{Elementary concepts of multivariate interpolation}
 \label{sec:multivariate-interpolation}
@@ -22,6 +33,10 @@
     \item Linear models, quadratic models, RBF models, \dots
     \item What is a simplex gradient? (Needed in the introduction)
 \end{itemize}
+
+% Perhaps the simplest models we encounter are linear models.
+% These models have~$n + 1$ parameters and they may be obtained by interpolation.
+% Several model-based methods use linear models, including \gls{cobyla} (see \cref{subsec:cobyla}).
 
 \section{Overview of the Lagrange polynomials}
 
