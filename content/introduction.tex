@@ -198,7 +198,7 @@ Derivatives of~$C$ cannot be evaluated if they even exist.
 Such a problem is then solved using \gls{dfo} methods, for example using the \gls{mads} method~\cite{Audet_Orban_2006}.
 \Citeauthor{Audet_Digabel_Tribes_2019} modified the \gls{mads} method to solve problem~\cref{eq:tuning-algorithms-problem} with a controlled number of significant digits~\cite{Audet_Digabel_Tribes_2019}, to determine parameters that can be used by practitioners.
 Interestingly, \gls{dfo} methods can be self-tuned using the method presented above.
-The \gls{bfo} solver~\cite{Porcelli_Toint_2017}, a method for bound-constrained problems mixing continuous and discrete variables, is an example of self-tuned \gls{dfo} methods.
+The \gls{bfo}~\cite{Porcelli_Toint_2017}, a method for bound-constrained problems mixing continuous and discrete variables, is an example of self-tuned \gls{dfo} methods.
 
 \subsection{Hyperparameter tuning in machine learning}
 \label{subsec:machine-learning}
@@ -508,55 +508,110 @@ Several direct-search methods appeared thereafter.
 \citeauthor{Rosenbrock_1960} designed an direct-search method for unconstrained problems.
 It constructs an orthogonal basis using previous steps and searching along the directions in this basis~\cite{Rosenbrock_1960}.
 Another famous early direct-search method is the Hooke-Jeeves method~\cite{Hooke_Jeeves_1961}.
-This method combines exploratory moves toward coordinates axes with pattern moves, aiming to reuse the previously computed directions.
-In \citeyear{Nelder_Mead_1965}, \citeauthor{Nelder_Mead_1965} introduced a method for solving unconstrained optimization problems, which evaluates the objective function at the vertices of a given simplex, and modifies this simplex, using reflection, expansion, contraction, and shink steps, one vertex at a time~\cite{Nelder_Mead_1965}.
-Among the various direct-search solvers, this method is interesting as it is still used today, underlying the MATLAB function \verb|fminsearch|.
-Many other works on direct search appeared in these years.
-These comprise, for example, the works of \citeauthor{Powell_1964}~\cite{Powell_1964,Powell_1975a}, \citeauthor{Matyas_1965}~\cite{Matyas_1965}, \citeauthor{Fletcher_1965}~\cite{Fletcher_1965}, and \citeauthor{Box_1966}~\cite{Box_1966}, for instance.
-At the end of the millennium, with the notable works of \citeauthor{Wright_1995}~\cite{Wright_1995} and others, \gls{dfo} became the broad research area that exists today, encouraged by recent engineering needs.
-Nowadays, the direct-search paradigm offers many other algorithms, such as the \gls{gps} methods~\cite{Booker_Etal_1999}, later extended to the \gls{mads} methods~\cite{Abramson_Audet_2006,Abramson_Etal_2009,Audet_Dennis_2006,Audet_Dennis_Digabel_2008,Digabel_2011}, the implicit filtering method~\cite{Kelley_2011}, and \gls{bfo}~\cite{Porcelli_Toint_2017}.
-A more recent work by \citeauthor{Porcelli_Toint_2022} attempts to incorporate partial separability knowledge in a direct-search framework~\cite{Porcelli_Toint_2022}.
+This method combines exploratory moves along coordinates axes with pattern moves, aiming to exploit the pattern revealed by previous successful directions.
+In \citeyear{Nelder_Mead_1965}, \citeauthor{Nelder_Mead_1965}~\cite{Nelder_Mead_1965} introduced the simplex method\footnote{Note that it is different from the simplex method in linear programming.}, which evaluates the objective function at the vertices of a simplex, and updates this simplex according to these function values, one vertex at each iteration.
+It is arguably the most widely used \gls{dfo} method, available as the \verb|fminsearch| function in MATLAB, and many variation exist~\cite{Wright_2012}.
+Many other works on direct search appeared in the same period and summaries can be found in~\cite{Fletcher_1965,Box_1966}.
+Nowadays, the direct-search paradigm offers an abundance of algorithms~\cite{Kolda_Lewis_Torczon_2003}, such as the \gls{gps} methods~\cite{Booker_Etal_1999}, later extended to the \gls{mads} methods~\cite{Audet_Dennis_2006,Abramson_Audet_2006,Abramson_Etal_2009,Audet_Dennis_Digabel_2008,Digabel_2011}.
+A very recent example of direct-search methods is the \gls{bfo}~\cite{Porcelli_Toint_2017,Porcelli_Toint_2022}, which handles integer and categorical variables, and can be self-tuned.
+
+\Citeauthor{Gratton_Etal_2015} recently proposed to incorporate stochastic strategies in direct-search methods~\cite{Gratton_Etal_2015,Gratton_Etal_2019}.
+This improves both the performance and the worst-case complexity bounds compared with traditional direct-search methods.
 
 \subsection{Model-based methods}
 \label{subsec:model-based-methods}
 
-Unlike direct-search methods, model-based methods approximate locally the functions involved in the optimization problems.
-To globalize their convergence properties, the approximated problems are usually embedded in a globalization strategy, such as a \emph{line-search} method~\cite[ch.~3]{Nocedal_Wright_2006} or a \emph{trust-region} methods~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
-Most of the existing model-based methods use linear or quadratic approximations, although attempts have been made to use other functions, such as \gls{rbf}~\cite{Oeuvray_2005}.
+Unlike direct-search methods, model-based methods approximate locally the functions involved in the optimization problems by simple functions, called \emph{models} or \emph{surrogates}.
+To make the methods globally convergent, the models are exploited by a globalization strategy, such as a \emph{line-search} framework~\cite[ch.~3]{Nocedal_Wright_2006} or a \emph{trust-region} framework~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
+Most of the existing model-based methods use linear or quadratic approximations~\cite{Powell_1994,Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b}, although other models have also been successfully used, such as \glspl{rbf}~\cite{Oeuvray_2005}.
 
-From an empirical viewpoint, the model-based methods are highly appealing, as they have excellent performances in real applications.
-Examples of such algorithms include the method of \citeauthor{Conn_Toint_1996}~\cite{Conn_Toint_1996} for unconstrained optimization, which models the objective function with either sub-quadratic or quadratic functions obtained by underdetermined interpolations (see \cref{sec:underdetermined-interpolation}), for which the freedom bequeathed by the interpolation conditions is taken out by minimizing the~$\ell_2$-norm of the coefficients of the models.
-Particular care is given to the geometry of the interpolation set to attempt to maintain models with reasonable accuracies.
-Another example of such algorithms for unconstrained optimization is \gls{mnh}~\cite{Wild_2008}, whose models are also quadratic functions obtained by underdetermined interpolation.
-However, these models do not minimize the~$\ell_2$-norm of the coefficients but rather the Frobenius norm of their Hessian matrices.
-The Wedge method~\cite{Marazzi_Nocedal_2002} of \citeauthor{Marazzi_Nocedal_2002} is another instance of \gls{dfo} trust-region solvers.
-It has, however, the unique feature that it does not include any geometry-improvement steps, as most solvers do.
-Instead, it adds a new constraint to the trust-region subproblems to prevent the trial steps from lying in a region that is likely to worsen the geometry of the interpolation set.
-Other examples of trust-region methods are \gls{csv2}~\cite{Billups_Larson_Graf_2013}, which determines its models by regression and not interpolation, \gls{dfols}~\cite{Cartis_Etal_2019}, which aims at solving nonlinear least-squares problems, or the Powell's \gls{dfo} solvers, presented later in this document.
-We thus heed that some solvers use nonpolynomial models, such as \gls{orbit}~\cite{Wild_Regis_Shoemaker_2008}, \gls{conorbit}~\cite{Regis_Wild_2017}, and \gls{boosters}~\cite{Oeuvray_Bierlaire_2009}, which use cubic \gls{rbf}.
+Model-based methods are highly appealing in practice, as they provide excellent performances in real applications.
+Compared with direct-search methods, the information contained in the function values is better exploited due to the use of models.
+The first trust-region \gls{dfo} method was developed by~\citeauthor{Winfield_1969}~\cite{Winfield_1969,Winfield_1973} in \citeyear{Winfield_1969}.
+This is also regarded as the first trust-region method with or without derivatives~\cite[\S~1.2]{Conn_Gould_Toint_2000}.
+A similar method was later developed by \citeauthor{Powell_2002}, namely \gls{uobyqa}~\cite{Powell_2002}.
+Both methods use fully-determined quadratic interpolating models (see \cref{sec:multivariate-interpolation} for detailed discussions).
+By updating the Lagrange functions of the interpolation problem, \gls{uobyqa} needs only~$\mathcal{O}(n^4)$ computer operations to obtain each quadratic interpolant, whereas the complexity is~$\mathcal{O}(n^6)$ in \citeauthor{Winfield_1969}'s method.
 
-\subsection{Comment on finite-difference approximations}
+The methods of both \citeauthor{Winfield_1969} and \citeauthor{Powell_2002} require~$\mathcal{O}(n^2)$ function evaluations to establish each quadratic model.
+Such an amount of function values are needed to initialize the methods, although most of them will be reused at subsequent iterations.
+This amount of function evaluations is however not scalable to moderately large problems.
+This motivates methods that use underdetermined quadratic interpolating models.
+Such models typically require~$\mathcal{O}(n)$ function values to be built, and the remaining freedom bequeathed by the interpolation conditions is taken up by minimizing a functional that reflects the regularity of the model.
+For example, the method of \citeauthor{Conn_Toint_1996}~\cite{Conn_Toint_1996} uses such models with least~$\ell_2$-norm of the coefficients.
+Powell's methods, namely \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}~\cite{Powell_2015}, use models that minimize the Frobenius norm of the change to their Hessian matrices.
+Another example of such algorithms is \gls{mnh}~\cite{Wild_2008}, whose models are underdetermined quadratic interpolants with least Frobenius norm of their Hessian matrices.
+
+Particular care must be given to the geometry of the interpolation set in order to maintain reasonable accuracies of the models (see \cref{sec:poisedness}).
+Most model-based methods make explicit geometry-improving steps when it is necessary~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b}.
+The Wedge method~\cite{Marazzi_Nocedal_2002} of \citeauthor{Marazzi_Nocedal_2002}, however, does not include such steps.
+Instead, it adds a so-called wedge constraint to the trust-region subproblems to prevent the trial steps from lying in a region that is likely to worsen the geometry of the interpolation set.
+The method of \citeauthor{Fasano_Morales_Nocedal_2009}~\cite{Fasano_Morales_Nocedal_2009} does not include geometry-improving steps either but performs surprisingly well.
+The authors conjecture that a self-correcting mechanism may be at play and prevents the geometry from deterioring.
+\citeauthor{Scheinberg_Toint_2010}~\cite{Scheinberg_Toint_2010} point out that the geometry improvement cannot be dispensed in general, but a slight modification of the algorithm in~\cite{Fasano_Morales_Nocedal_2009} does enjoy a self-correcting mechanism that garantees the convergence without taking explicit geometry-improving steps.
+
+There are many other trust-region \gls{dfo} methods.
+For instance, \gls{csv2}~\cite{Billups_Larson_Graf_2013}, which determines its models by regression and not interpolation.
+Examples of solvers that use nonpolynomial models include \gls{orbit}~\cite{Wild_Regis_Shoemaker_2008}, \gls{conorbit}~\cite{Regis_Wild_2017}, and \gls{boosters}~\cite{Oeuvray_Bierlaire_2009}, which use cubic \gls{rbf}.
+There also exist methods for more specific problems, such as \gls{dfls}~\cite{Zhang_Conn_Scheinberg_2010} and \gls{dfols}~\cite{Cartis_Etal_2019}, which aim at solving nonlinear least-squares problems without using derivatives.
+
+Randomization is also exploited to improve the performance of trust-region \gls{dfo} methods.
+This idea is first proposed by \citeauthor{Bandeira_Scheinberg_Vicente_2012}~\cite{Bandeira_Scheinberg_Vicente_2012}, who establish the global convergence of a trust-region method based on random models.
+They only require to approximate the objective function well enough with a certain probability, and such models can be obtained by interpolation on randomly selected points~\cite{Bandeira_Scheinberg_Vicente_2014}.
+The global convergence rate of this method is established by \citeauthor{Gratton_Etal_2018}~\cite{Gratton_Etal_2018}, using an idea elaborated earlier in~\cite[\S~6]{Gratton_Etal_2015}.
+Similar results are established independently by \citeauthor{Cartis_Scheinberg_2018}~\cite{Cartis_Scheinberg_2018}, but for a more general class of methods.
+The work of \citeauthor{Bandeira_Scheinberg_Vicente_2012} has motivated many investigations on methods that use randomized models, such as~\cite{Chen_Menickelly_Scheinberg_2018}.
+
+\subsection{Comments on methods based on finite differences}
 \label{subsec:finite-difference}
 
-Perhaps to simplest approach for solving \gls{dfo} problems is to use derivative-based methods with finite-difference approximations of the derivatives (see, e.g.,~\cite{Shi_Etal_2021}).
-For example, the~$i$th coordinate of the gradient of a differentiable function~$\obj : \R^n \to \R$ at a point~$x \in \R^n$ can be approximated by the forward difference
-\begin{equation*}
-    \frac{\partial \obj}{\partial x_i}(x) \approx \frac{\obj(x + h e_i) - \obj(x)}{h},
-\end{equation*}
+Perhaps the most straightforward approach to solving \gls{dfo} problems is to make finite-difference approximations of the derivatives and then employ derivative-based methods (see, e.g.,~\cite{Shi_Etal_2021}).
+In this section, we briefly discuss the advantages and disadvantages of this approach.
+
+The~$i$th coordinate of the gradient of a smooth function~$\obj : \R^n \to \R$ at a point~$x \in \R^n$ can be approximated by the forward difference
+\begin{equation}
+    \label{eq:forward-difference}
+    \frac{\partial \obj}{\partial x_i}(x) = \frac{\obj(x + h e_i) - \obj(x)}{h} + \mathcal{O}(h),
+\end{equation}
 or the central difference
+\begin{equation}
+    \label{eq:central-difference}
+    \frac{\partial \obj}{\partial x_i}(x) = \frac{\obj(x + h e_i) - \obj(x - h e_i)}{2h} + \mathcal{O}(h^2),
+\end{equation}
+where~$h > 0$ is a given difference parameter,~$e_i \in \R^n$ is the~$i$th standard coordinate vector of~$\R^n$, and the order of precisions require standard smoothness assumptions (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006}).
+
+Methods based on finite-difference have several advantages.
+Firstly, they are relatively easy to implement, whereas the implementation of many commonly used \gls{dfo} methods is highly nontrivial and challenging\footnote{For example, \citeauthor{Powell_2006}~\cite{Powell_2006} wrote \enquote{The development of \gls{newuoa} has taken nearly three years. The work was very frustrating [\dots]}}.
+Moreover, there are a profusion of well-established derivative-based methods that can be explored with finite-difference approximations.
+Finally, we highlight that the function evaluations needed by the approximated derivatives in~\cref{eq:forward-difference,eq:central-difference} can be straightforwardly parallelized, making the resulting algorithm scalable in many situations.
+
+Meanwhile, such methods come with disadvantages as well.
+First of all, if the problem is noisy, it is nontrivial to choose the difference parameter~$h$.
+From a theoretical standpoint, the optimal choice for the difference parameter depends on the noise level and the Lipschitz constants of the derivatives of the function~$\obj$ (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006} and~\cite[eq.~(2.13) and~(2.14)]{Shi_Etal_2021}).
+There exist procedures to estimate these quantities (see, e.g.,~\cite[\S~3]{More_Wild_2011} and~\cite[proc.~I]{Shi_Etal_2021}).
+However, in practice, these procedures are often costly in terms of function evaluations.
+In addition, it is difficult to reuse the function values in methods based on finite differences.
+This is because a finite difference at~$x \in \R^n$ require the function to be evaluated on a mesh of~$\mathcal{O}(n)$ points around~$x$ oriented along the coordinate directions.
+When~$x$ changes, most of the mesh points change completely and hence, the function needs to be evaluated at another batch of~$\mathcal{O}(n)$ points.
+
+We also mention that there is no sharp division between methods based on finite difference and those based on interpolating models.
+Indeed, the forward difference~\cref{eq:forward-difference} produces the gradient of the linear function that interpolates~$f$ at
 \begin{equation*}
-    \frac{\partial \obj}{\partial x_i}(x) \approx \frac{\obj(x + h e_i) - \obj(x - h e_i)}{2h},
+    \set{x, x + h e_1, x + h e_2, \dots, x + h e_n}.
 \end{equation*}
-where~$h > 0$ is a given difference parameter and~$e_i \in \R^n$ is the~$i$th standard coordinate vector of~$\R^n$.
-It is known that such methods are competitive with \gls{dfo} methods when the problems considered are smooth and noiseless.
-However, in the presence of noise, the performance of finite-difference based methods usually drop.
-Moreover, the choice of the difference parameter~$h$ depends on the noise level, which is usually unknown.
-It is clear that estimating~$\nabla f(x)$ necessitates~$\mathcal{O}(n)$ function evaluations around~$x$ along the coordinate axes.
-Since each function evaluation is expensive, one should attempt to reuse as much as possible function evaluations.
-However, it is unlikely that these evaluations are reused by the gradient-based method without any modification.
-Thus, we do not consider finite-difference based method in this thesis.
+Similarly, the central difference~\cref{eq:central-difference} generates the gradient of the unique quadratic function with diagonal Hessian matrix that interpolates~$f$ at
+\begin{equation*}
+    \set{x, x + h e_1, x - h e_1, x + h e_2, x - h e_2, \dots, x + h e_n, x - h e_n}.
+\end{equation*}
+Interpolation can be regarded as a generalization of finite difference, in the sense that we have more freedom to choose the interpolation set.
+This freedom allows us to reuse most of the interpolation points, which is essential for the efficiency of model-based methods.
+
+In section \cref{sec:benchmarking-tools}, we will present some simple numerical experiments after introducing the benchmarking tools we use in this thesis for comparing \gls{dfo} solvers.
+These results will demonstrate that the methods based on finite difference are highly sensitive to noise.
+Unsurprisingly, the methods suffer if the difference parameter does not take into account the noise level and the smoothness of the functions.
 
 \section{Benchmarking tools for \glsfmtlong{dfo} methods}
+\label{sec:benchmarking-tools}
 
 We introduce in this section the benchmarking tools that we will use throughout this thesis to compare \gls{dfo} solvers.
 We denote by~$\mathcal{S}$ the set of solvers to benchmark and~$\mathcal{P}$ a set of problems to be solved by all solvers in~$\mathcal{S}$, assumed to represent the problems for which the solvers have been designed.
@@ -615,21 +670,21 @@ The abscissas are the performance ratios in base-$2$ logarithmic scale and the p
     \begin{subfigure}[b]{0.46\textwidth}
         \centering
         \drawperformanceprofiles{{"NEWUOA","BFGS","CG"}}{plain-1-50-perf-bfgs-cg-newuoa-u.csv}{5}
-        \caption{Smooth problems}
+        \caption{Noise-free problems}
         \label{fig:performance-profile-example-smooth}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.46\textwidth}
         \centering
         \drawperformanceprofiles{{"NEWUOA","BFGS","CG"}}{noisy-1-50-10-perf-bfgs-cg-newuoa-u.csv}{5}
-        \caption{Noised problems}
+        \caption{Noisy problems}
         \label{fig:performance-profile-example-noised}
     \end{subfigure}
     \caption{Example of performance profiles on unconstrained problems}
     \label{fig:performance-profile-example}
 \end{figure}
 
-On this example, we could argue that \gls{bfgs} provides better performance than the two other solvers on smooth problems, but \gls{newuoa} clearly overcomes the two other solvers on noised problems.
+On this example, we could argue that \gls{bfgs} provides better performance than the two other solvers on noise-free problems, but \gls{newuoa} clearly overcomes the two other solvers on noisy problems.
 This behavior is perfectly expected, and does not contradict the observations of \citeauthor{Shi_Etal_2021}~\cite{Shi_Etal_2021}, as we did not modify the difference parameters of the two finite-difference based solvers.
 We rather kept the default value provided for the solvers \gls{bfgs} and \gls{cg} by SciPy~\cite{Virtanen_Etal_2020}.
 
@@ -657,13 +712,13 @@ A graphical representation of the data profiles related to the experiment descri
     \begin{subfigure}[b]{0.46\textwidth}
         \centering
         \drawdataprofiles{{"NEWUOA","BFGS","CG"}}{plain-1-50-data-bfgs-cg-newuoa-u.csv}{5}
-        \caption{Smooth problems}
+        \caption{noise-free problems}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.46\textwidth}
         \centering
         \drawdataprofiles{{"NEWUOA","BFGS","CG"}}{noisy-1-50-10-data-bfgs-cg-newuoa-u.csv}{5}
-        \caption{Noised problems}
+        \caption{Noisy problems}
     \end{subfigure}
     \caption{Example of data profiles on unconstrained problems}
     \label{fig:data-profile-example}
