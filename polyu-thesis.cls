@@ -221,10 +221,10 @@
             rounded corners,%
             thick,%
             draw=black!15,%
-            fill opacity=0.5,%
-            draw opacity=1,%
-            text opacity=1,%
-            font=\footnotesize,%
+            % fill opacity=0.8,%
+            % draw opacity=1,%
+            % text opacity=1,%
+            font=\scriptsize,%
         },%
         tick label style={font=\footnotesize},%
     },%

@@ -33,6 +33,7 @@
 \nomenclature[Of]{$\nabla$}{Gradient operator (elements~$\partial / \partial x_i$, with~$i \in \set{1, 2, \dots, n}$)}%
 \nomenclature[Og]{$\nabla^2$}{Hessian operator (elements~$\partial^2 / \partial x_i \partial x_j$, with~$i, j \in \set{1, 2, \dots, n}$)}%
 \nomenclature[Oh]{$\land$}{Logic and operator}%
+\nomenclature[Oi]{$\card$}{Cardinal operator}%
 \nomenclature[Sa]{$\emptyset$}{Empty set}%
 \nomenclature[Sb]{$[a, b]$}{Closed set~$\set{x \in \R : a \le x \le b}$ with~$a \le b$}%
 \nomenclature[Sc]{$(a, b)$}{Open set~$\set{x \in \R : a < x < b}$ with~$a < b$}%
@@ -47,21 +48,22 @@
 \todo[noline]{Replace the nomenclature items}
 
 \section{Overview of \glsfmtlong{dfo}}
+\label{sec:overview}
 
 Optimization is the study of extremal points and values of mathematical functions.
 It aims at minimizing (or maximizing) a real-valued function~$\obj$, referred to as the \emph{objective function}, within a given set of points~$\Omega \subseteq \R^n$, referred to as the \emph{feasible set}.
-It is well known that essential information to optimization is embraced in the (possibly generalized) derivatives of the functions involved.
-However, in practice, evaluations of such derivatives may be unreliable, or prohibitively expensive, if not impossible.
+It is well known that essential information for optimization is embraced in the (possibly generalized) derivatives of the functions involved.
+However, in practice, evaluations of such derivatives may be unreliable or prohibitively expensive, if not impossible.
 It motivates the study of \gls{dfo}~\cite{Conn_Scheinberg_Vicente_2009b,Audet_Hare_2017,Custodio_Scheinberg_Vicente_2017,Larson_Menickelly_Wild_2019}, where problems are solved using only function values.
 This thesis focuses on methods and software for \gls{dfo}.
 
 \Gls{dfo} problems arise naturally when the objective function or the feasible set results from complex experiments or simulations.
-Regarding these functions as black boxes, people often refer to those problems as \gls{bbo} problems~\cite{Audet_Hare_2017}, which constitute a major type of \gls{dfo} problems in practice.
-Note that \gls{dfo} differs from nonsmooth optimization~\cite{Clark_1983,Cui_Pang_2021}, which studies problems that involve nonsmooth functions.
-In \gls{dfo}, the major difficulty is not the possible nonsmoothness of the functions involved, but the lack of knowledge about the structures of the problems.
+Regarding these functions as black boxes, people often refer to those problems as \gls{bbo} problems~\cite{Audet_Hare_2017}, which constitute a significant type of \gls{dfo} problem in practice.
+Note that \gls{dfo} differs from nonsmooth optimization~\cite{Clark_1983,Cui_Pang_2021}, which studies problems involving nonsmooth functions.
+In \gls{dfo}, the major difficulty is not the possible nonsmoothness of the functions involved but the lack of knowledge about the structures of the problems.
 In theoretical analysis of \gls{dfo} methods, it is not uncommon to assume that the underlying functions enjoy some smoothness, although algorithms cannot retrieve their (classical or generalized) derivatives.
 We emphasize that if any derivative information can be evaluated at an affordable cost or approximated well enough, \gls{dfo} methods are not recommended, as they are very unlikely to outperform methods that use derivatives.
-Consider for example minimizing an objective function defined by a sophisticated simulation whose source code is available.
+Consider, for example, minimizing an objective function defined by a sophisticated simulation whose source code is available.
 One may then attempt to evaluate derivatives using automatic differentiation tools~\cite{Griewank_2003,Griewank_Walther_2008} and apply derivative-based methods.
 
 For \gls{dfo} methods, the leading complexity measure we consider is the number of function evaluations.
@@ -84,12 +86,12 @@ The feasible set of this problem is
 \begin{equation*}
     \Omega \eqdef \set{x \in \R^n : \con{i}(x) \le 0 ~ \text{for~$i \in \iub$}, ~ \con{i}(x) = 0 ~ \text{for~$i \in \ieq$}}.
 \end{equation*}
-If~$\obj$ is convex, while~$\con{i}$ are convex for~$i \in \iub$ and affine for~$i \in \ieq$, then problem~\cref{eq:problem-introduction} is said \emph{convex}.
-However, in this thesis, we do \emph{not} assume convexity for problem~\cref{eq:problem-introduction}.
+If~$\obj$ is convex, while~$\con{i}$ is convex for all~$i \in \iub$ and affine for all~$i \in \ieq$, then problem~\cref{eq:problem-introduction} is said \emph{convex}.
+However, this thesis does \emph{not} assume convexity for problem~\cref{eq:problem-introduction}.
 
 We emphasize that~\cref{eq:problem-introduction-cub,eq:problem-introduction-ceq} may include bound constraints.
-We do not extract them explicitly in this chapter, but they may need to be handled differently from other constraints, because they often represent inalienable physical or theoretical restrictions.
-We will later in this thesis introduce a new \gls{dfo} method, namely \gls{cobyqa}, which will take this into consideration (see \cref{ch:cobyqa-introduction}).
+We do not extract them explicitly in this chapter, but they may need to be handled differently from other constraints because they often represent inalienable physical or theoretical restrictions.
+We will later in this thesis introduce a new \gls{dfo} method, namely \gls{cobyqa}, which will consider this (see \cref{ch:cobyqa-introduction}).
 
 \section{Examples of applications}
 
@@ -122,14 +124,14 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
 
 \todo[noline]{Write down explicitly the conventions on the subscripts and superscripts.}
 
-\Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of paragraph~10, and~$g$ at the end of page~97) demonstrates that the growth factor of the Gaussian elimination, defined as
+\Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of \P~10 and~$g$ at the end of p.~97) demonstrates that the growth factor of the Gaussian elimination, defined as
 \begin{equation}
     \label{eq:gaussian-elimination-growth-factor}
     \rho_n(A) \eqdef \frac{\max_{0 \le k \le n - 1} \norm{A^{(k)}}_{\max}}{\norm{A}_{\max}},
 \end{equation}
 determinates the numerical stability of \cref{alg:gaussian-elimination}, where~$\norm{\cdot}_{\max}$ denotes the max norm of a matrix, i.e., the largest absolute value of the matrix's entries.
 More specifically, the~$\ell_{\infty}$-norm of the backward error of the computed solution is bounded from above by a term proportional to~$\rho_n(A)$.
-To study the worst-case scenario, we wish to determine how large~$\rho_n$ can be and hence, to solve
+To study the worst-case scenario, we wish to determine how large\todo{Grammar checking done until here}~$\rho_n$ can be and hence, to solve
 \begin{equation}
     \label{eq:gaussian-elimination-problem}
     \max_{A \in \R^{n \times n}} \rho_n(A).
@@ -613,118 +615,172 @@ Unsurprisingly, the methods suffer if the difference parameter does not take int
 \section{Benchmarking tools for \glsfmtlong{dfo} methods}
 \label{sec:benchmarking-tools}
 
-We introduce in this section the benchmarking tools that we will use throughout this thesis to compare \gls{dfo} solvers.
-We denote by~$\mathcal{S}$ the set of solvers to benchmark and~$\mathcal{P}$ a set of problems to be solved by all solvers in~$\mathcal{S}$, assumed to represent the problems for which the solvers have been designed.
-Let~$t_{p, s}$ be the performance measure for the solver~$s \in \mathcal{S}$ to achieve a given convergence test on the problem~$p \in \mathcal{P}$.
-The performance measure of a \gls{dfo} solver we consider in this thesis is the number of function evaluations.
-Therefore,~$t_{p, s}$ usually denotes the number of function evaluations required by the solver~$s \in \mathcal{S}$ to solve the problem~$p \in \mathcal{P}$ for the given convergence test.
+We introduce in this section the benchmarking tools that we will use throughout this thesis for the comparison of \gls{dfo} solvers.
+We use the performance and data profiles~\cite{Dolan_More_2002,More_Wild_2009}, developed by \citeauthor{Dolan_More_2002} and \citeauthor{More_Wild_2009} respectively.
+Most of the information in this section can be found in the aforementioned articles.
 
-To compare the performances of the solvers in~$\mathcal{S}$, we use the concept of performance and data profiles~\cite{Dolan_More_2002,More_Wild_2009} presented hereafter.
-The numerical experiments presented in this thesis define~$\mathcal{P}$ as subsets of the CUTEst dataset~\cite{Gould_Orban_Toint_2015}.
-Traditional convergence tests necessitate derivative information, which is assumed unavailable in this work.
-We consider the following convergence test for \gls{dfo} solvers, proposed by \citeauthor{More_Wild_2009}~\cite{More_Wild_2009}.
-We assume that each problem~$p \in \mathcal{P}$ has a merit function~$\varphi_p$, i.e., a function that properly balances the possible infeasibility of a point with the corresponding value of the objective function.
-Let~$x_p^0 \in \R^{n_p}$ be the initial guess of a given problem~$p \in \mathcal{P}$ and~$x_p^{\ast} \in \R^{n_p}$ be the point that achieves the least value of~$\varphi_p$ among all iterates of all solvers in~$\mathcal{S}$, where~$n_p$ denotes the dimension of the problem~$p$.
-Given a tolerance~$\tau \in (0, 1)$, a point~$x \in \R^{n_p}$ satisfies the convergence test if
-\begin{equation*}
-    \varphi_p(x) \le \varphi_p(x_p^{\ast}) + \tau [\varphi_p(x_p^0) - \varphi_p(x_p^{\ast})].
-\end{equation*}
+\subsection{Expense measure and convergence test}
+\label{subsec:convergence-test}
+
+We denote by~$\mathcal{S}$ the set of solvers to benchmark and~$\mathcal{P}$ a set of test problems, assumed to represent the problems for which the solvers have been designed.
+Let~$t_{p, s}$ be the expense for the solver~$s \in \mathcal{S}$ to achieve a given convergence test on the problem~$p \in \mathcal{P}$.
+As mentioned in \cref{sec:overview}, the major cost of \gls{dfo} in practice is the function evaluations.
+Therefore,~$t_{p, s}$ usually\todo{Correct the sentence} denotes the number of function evaluations required by the solver~$s \in \mathcal{S}$ to solve the problem~$p \in \mathcal{P}$ up to the convergence test.
+When the solver~$s$ fails to satisfy the test for the problem~$p$ within a given budget restriction (e.g., a maximum number of function evaluations), we define~$t_{p, s} = \infty$ by convention.
+
+In this thesis, the numerical experiments select~$\mathcal{P}$ from the CUTEst set~\cite{Gould_Orban_Toint_2015}.
+We consider the following convergence test for \gls{dfo} solvers, following~\cite[\S~2]{More_Wild_2009}.
+We define for each problem~$p \in \mathcal{P}$ a merit function~$\varphi_p$, i.e., a function that measures the quality of a point, taking into account the values of both the constraint and the objective functions.
+The smaller value of~$\varphi_p$, the better.
+Let~$x_p^0$ be the initial guess of a given problem~$p \in \mathcal{P}$ and~$\varphi_p^{\ast}$ be the least value of~$\varphi_p$ obtained by the solvers in~$\mathcal{S}$.
+Given a tolerance~$\tau \in (0, 1)$, a point~$x$ satisfies the convergence test if
+\begin{equation}
+    \label{eq:convergence-test-profiles}
+    \varphi_p(x) \le \varphi_p^{\ast} + \tau [\varphi_p(x_p^0) - \varphi_p^{\ast}],
+\end{equation}
+in which case we say that~$x$ solves problem~$p$ up to the tolerance~$\tau$.
 This convergence test can be interpreted as follows.
-A point~$x \in \R^n$ satisfies the convergence test if the reduction~$\varphi_p(x_{\hat{p}}^0) - \varphi_p(x)$ is at least~$1 - \tau$ times the best possible reduction~$\varphi_p(x_p^0) - \varphi_p(x_p^{\ast})$.
-Therefore, we assume that at least one of the solvers converged for each problem, since the actual solutions of the problems may be unknown.
+A point~$x$ satisfies the convergence test if the reduction~$\varphi_p(x_{\hat{p}}^0) - \varphi_p(x)$ is at least~$1 - \tau$ times the best possible reduction~$\varphi_p(x_p^0) - \varphi_p^{\ast}$ achieved by all solvers under consideration.
 
-\subsection{An experiment example}
-\label{subsec:experiment-example}
-
-Throughout this section, we consider the following experiment as an example.
-We evaluate the performance profiles of three solvers, namely
-\begin{itemize}
-    \item \gls{newuoa} (see \cref{subsec:newuoa-bobyqa-lincoa}), a model-based \gls{dfo} method; and
-    \item \gls{bfgs} and \gls{cg}, two gradient-based solvers with forward finite-difference approximations, with the difference parameter~$h = \sqrt{u}$ where~$u$ is the unit roundoff.
-\end{itemize}
-The set~$\mathcal{P}$ is defined to be the smooth unconstrained CUTEst problems of dimension at most~$50$, and the convergence tolerance is~$\tau = 10^{-5}$.
-The first experiment is made without modifying the problems in~$\mathcal{P}$, and~$t_{p, s}$ is defined to be the number of function evaluations that the solver~$s \in \mathcal{S}$ necessitated to solve the problem~$p \in \mathcal{P}$.
-The second experiment we consider is a noised variation of the previous one.
-The objective functions of the problems in~$\mathcal{P}$ are perturbed with a relative Gaussian noise~$\mathcal{N}(0, 10^{-20})$.
-Each problem is solved ten times with each solver, and~$t_{p, s}$ is set to the average number of function evaluations that the solver~$s \in \mathcal{S}$ necessitated to solve the problem~$p \in \mathcal{P}$.
+In the convergence test~\cref{eq:convergence-test-profiles}, it is tempting to define~$\varphi_p^{\ast}$ as the merit function value at a local minimizer of~$p$, which is the case when testing derivative-based solvers~\cite{Dolan_More_2002}.
+However, according to~\cite{More_Wild_2009}, this may not be appropriate in a \gls{dfo} context, because it may happen that no solver in~$\mathcal{S}$ achieves the test within the given computational budget if the function evaluations are expensive.
 
 \subsection{Performance profiles}
 
-For any fixed solver~$\hat{s} \in \mathcal{S}$ and problem~$\hat{p} \in \mathcal{P}$, define their \emph{performance ratio} by
+Fix a~$\tau \in (0, 1)$ in the convergence test~\cref{eq:convergence-test-profiles}.
+For a solver~$\hat{s} \in \mathcal{S}$ and a problem~$\hat{p} \in \mathcal{P}$, define the \emph{performance ratio} by
 \begin{equation*}
-    r_{\hat{p}, \hat{s}} \eqdef \frac{t_{\hat{p}, \hat{s}}}{\min \set{t_{\hat{p}, s} : s \in \mathcal{S}}}.
+    r_{\hat{p}, \hat{s}} \eqdef \frac{t_{\hat{p}, \hat{s}}}{\min \set{t_{\hat{p}, s} : s \in \mathcal{S}}},
 \end{equation*}
-When the solver~$\hat{s}$ fails to solve the problem~$\hat{p}$, we use the convention~$r_{\hat{p}, \hat{s}} = \infty$.
-Given any fixed solver~$\hat{s} \in \mathcal{S}$ and a threshold~$\alpha \ge 1$, the \emph{performance profile} of~$\hat{s}$ is defined as the proportion of problems in~$\mathcal{P}$ that are solved with a performance ratio at most~$\alpha$, that is
+which is the relative expense for~$\hat{s}$ to solve~$\hat{p}$ compared with the most efficient solver in~$\mathcal{S}$ for this problem.
+The \emph{performance profile} of~$\hat{s}$ is defined as
 \begin{equation*}
-    \rho_{\hat{s}}(\alpha) \eqdef \frac{1}{\card \mathcal{P}} \card \set{p \in \mathcal{P} : r_{p, \hat{s}} \le \alpha},
+    \rho_{\hat{s}}(\alpha) \eqdef \frac{1}{\card (\mathcal{P})} \card \big(\set{p \in \mathcal{P} : r_{p, \hat{s}} \le \alpha} \big), \quad \text{for~$\alpha \ge 1$},
 \end{equation*}
-where~$\card$ denotes the cardinal operator.
-Therefore, $\rho_{\hat{s}}(1)$ is the proportion of problems in~$\mathcal{P}$ that are solved faster by the solver~$\hat{s}$ than by any other solvers in~$\mathcal{S}$, and $\rho_{\hat{s}}(\alpha)$ is the proportion of problems in~$\mathcal{P}$ that are solved by the solver~$\hat{s}$ without any budget restriction for any~$\alpha \ge \max \set{r_{p, \hat{s}} : p \in \mathcal{P}}$.
+where~$\card(\cdot)$ denotes the cardinal of a set.
+Clearly,~$\rho_{\hat{s}}(\alpha)$ is the proportion of problems in~$\mathcal{P}$ that are solved by~$\hat{s}$ with a performance ratio at most~$\alpha$.
+In particular, $\rho_{\hat{s}}(1)$ is the proportion of problems that~$\hat{s}$ solves faster than any other solver in~$\mathcal{S}$.
+Meanwhile,
+\begin{equation*}
+    \lim_{\alpha \to \infty} \rho_{\hat{s}}(\alpha)
+\end{equation*}
+is the proportion of problems that are solved by~$\hat{s}$ within the budget restriction.
 
-A graphical representation of the performance profiles related to the experiment described in~\cref{subsec:experiment-example} is given in \cref{fig:performance-profile-example}.
+\subsection{Data profiles}
+
+We now introduce data profiles, another benchmarking tool proposed by~\cite{More_Wild_2009}.
+The \emph{data profile} of a solver~$\hat{s} \in \mathcal{S}$ is defined as
+\begin{equation}
+    \label{eq:data-profile}
+    d_{\hat{s}}(\alpha) \eqdef \frac{1}{\card \mathcal{P}} \card \set[\bigg]{p \in \mathcal{P} : \frac{t_{p, \hat{s}}}{n_p + 1} \le \alpha}, \quad \text{for~$\alpha \ge 0$}.
+\end{equation}
+where~$n_p$ is the dimension of the problem~$p$.
+Therefore,~$d_{\hat{s}}(\alpha)$ is the proportion of problems in~$\mathcal{P}$ that are solved by~$\hat{s}$ with at most~$\alpha (n_p + 1)$ function evaluations\todo{Change accordingly}.
+In particular,~$d_{\hat{s}}(0) = 0$ and, the same as~$\rho_{\hat{s}}$,
+\begin{equation*}
+    \lim_{\alpha \to \infty} d_{\hat{s}}(\alpha)
+\end{equation*}
+is the proportion of problems that are solved by~$\hat{s}$ within the budget restriction.
+In equation~\cref{eq:data-profile}, the denominator~$n_p + 1$ is a unit cost that serves to normalize $t_{p, \hat{s}}$, so that the computationl expenses for different problems are comparable even if their dimensions are quite different.
+Note that~$n_p + 1$ is the number of function evaluations needed for a evaluating a simplex gradient~\cite{Bortz_Kelley_1998}.
+Therefore,~$d_{\hat{s}}(\alpha)$ is the proportion of problems solved by~$\hat{s}$ given a budget equivalent to~$\alpha$ simplex gradient estimates.
+
+\subsection{An illustrative example}
+
+In this section, as an example, we compare three solvers using performance and data profiles.
+These solvers are
+\begin{itemize}
+    \item \gls{newuoa} (see \cref{subsec:newuoa-bobyqa-lincoa}), a model-based \gls{dfo} method; and
+    \item \gls{bfgs} and \gls{cg}, two gradient-based solvers using forward finite-difference approximate gradients, with the difference parameter~$h = \sqrt{u}$, where~$u$ is the unit roundoff.
+\end{itemize}
+The set~$\mathcal{P}$ contains all the smooth unconstrained CUTEst problems of dimension at most~$50$, and the convergence tolerance in~\cref{eq:convergence-test-profiles} is~$\tau = 10^{-3}$.
+
+We conduct two experiments as follows.
+\begin{enumerate}
+    \item The first experiment is made without modifying the problems in~$\mathcal{P}$, and~$t_{p, s}$ is defined to be the number of function evaluations that the solver~$s \in \mathcal{S}$ needed to solve the problem~$p \in \mathcal{P}$.
+    \item The second experiment we consider is a noisy variation of the previous one.
+    The objective functions of the problems in~$\mathcal{P}$ are perturbed as follows.
+    The objective function~$\obj_p$ of each problem~$p \in \mathcal{P}$ are replaced by
+    \begin{equation*}
+        \tilde{\obj}_p(x) \eqdef [1 + \epsilon(x)] \obj_p(x),
+    \end{equation*}
+    where~$\epsilon(x) \sim \mathcal{N}(0, \sigma^2)$ for different values of~$\sigma > 0$.
+    Each problem is solved ten times with each solver, and the definition of~$\varphi_p^{\ast}$ described in \cref{subsec:convergence-test} is modified as follows. In this experiment, it is set to be the least value of the objective function obtained by all solvers on the noise-free problem and on the ten runs of the noisy problem.
+    Moreover,~$t_{p, s}$ is set to the average number of function evaluations that the solver~$s \in \mathcal{S}$ needed to solve the problem~$p \in \mathcal{P}$.
+\end{enumerate}
+
+We plot the performance profiles related to this experiment in \cref{fig:performance-profile-example}.
 The abscissas are the performance ratios in base-$2$ logarithmic scale and the performance profiles are on the ordinates.
 
 \begin{figure}[ht]
     \centering
-    \begin{subfigure}[b]{0.46\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"NEWUOA","BFGS","CG"}}{plain-1-50-perf-bfgs-cg-newuoa-u.csv}{5}
+        \drawperformanceprofiles{{"NEWUOA","BFGS","CG"}}{plain-1-50-perf-bfgs-cg-newuoa-u.csv}{3}
         \caption{Noise-free problems}
-        \label{fig:performance-profile-example-smooth}
+        \label{fig:performance-profile-example-noiseless}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.46\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"NEWUOA","BFGS","CG"}}{noisy-1-50-10-perf-bfgs-cg-newuoa-u.csv}{5}
-        \caption{Noisy problems}
-        \label{fig:performance-profile-example-noised}
+        \drawperformanceprofiles{{"NEWUOA","BFGS","CG"}}{noisy-1-50-10-perf-bfgs-cg-newuoa-u.csv}{3}
+        \caption{Noisy problems with~$\sigma = 10^{-10}$}
+        \label{fig:performance-profile-example-noisy-10}
     \end{subfigure}
-    \caption{Example of performance profiles on unconstrained problems}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"NEWUOA","BFGS","CG"}}{noisy-1-50-8-perf-bfgs-cg-newuoa-u.csv}{3}
+        \caption{Noisy problems with~$\sigma = 10^{-8}$}
+        \label{fig:performance-profile-example-noisy-8}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"NEWUOA","BFGS","CG"}}{noisy-1-50-6-perf-bfgs-cg-newuoa-u.csv}{3}
+        \caption{Noisy problems with~$\sigma = 10^{-6}$}
+        \label{fig:performance-profile-example-noisy-6}
+    \end{subfigure}
+    \caption{Example of performance profiles with~$\tau = 10^{-3}$}
     \label{fig:performance-profile-example}
 \end{figure}
 
 On this example, we could argue that \gls{bfgs} provides better performance than the two other solvers on noise-free problems, but \gls{newuoa} clearly overcomes the two other solvers on noisy problems.
 This behavior is perfectly expected, and does not contradict the observations of \citeauthor{Shi_Etal_2021}~\cite{Shi_Etal_2021}, as we did not modify the difference parameters of the two finite-difference based solvers.
 We rather kept the default value provided for the solvers \gls{bfgs} and \gls{cg} by SciPy~\cite{Virtanen_Etal_2020}.
-
-However, we cannot compare \gls{newuoa} and \gls{cg} on~\cref{fig:performance-profile-example-smooth} nor \gls{bfgs} and \gls{cg} on~\cref{fig:performance-profile-example-noised}.
+However, we cannot compare \gls{newuoa} and \gls{cg} on~\cref{fig:performance-profile-example-noiseless} nor \gls{bfgs} and \gls{cg} on~\cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}.
 In fact, performance profiles provide a clear measure when comparing two solvers, but they may fail comparing a solver relatively to another one that is not the best when comparing more than two solvers~\cite{Gould_Scott_2016}.
 
-\subsection{Data profiles}
-
-We can also use data profiles~\cite{More_Wild_2009} to compare different solvers.
-Unlike performance profiles, data profiles provide an absolute comparison.
-For any fixed solver~$\hat{s} \in \mathcal{S}$ and threshold~$\alpha \ge 0$, the \emph{data profile} of~$\hat{s}$ is defined as
-\begin{equation*}
-    d_{\hat{s}}(\alpha) \eqdef \frac{1}{\card \mathcal{P}} \card \set[\bigg]{p \in \mathcal{P} : \frac{t_{p, \hat{s}}}{n_p + 1} \le \alpha}.
-\end{equation*}
-Therefore,~$d_{\hat{s}}(0) = 0$ and~$d_{\hat{s}}(\alpha) = \rho_{\hat{s}}(\alpha)$ for any~$\alpha$ such that
-\begin{equation*}
-    \alpha \ge \max \set[\bigg]{\max \set[\bigg]{r_{p, \hat{s}}, \frac{t_{p, \hat{s}}}{n_p + 1}} : p \in \mathcal{P}}.
-\end{equation*}
-The denominator~$n_p + 1$ serves to homogenize the problems and defines the data profiles in terms of simplex gradient evaluations (see \cref{sec:multivariate-interpolation}).
-
-A graphical representation of the data profiles related to the experiment described in~\cref{subsec:experiment-example} is given in~\cref{fig:data-profile-example}.
+Similarly, we plot the data profiles related to this experiment in~\cref{fig:data-profile-example}.
 
 \begin{figure}[ht]
     \centering
-    \begin{subfigure}[b]{0.46\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawdataprofiles{{"NEWUOA","BFGS","CG"}}{plain-1-50-data-bfgs-cg-newuoa-u.csv}{5}
-        \caption{noise-free problems}
+        \drawdataprofiles{{"NEWUOA","BFGS","CG"}}{plain-1-50-data-bfgs-cg-newuoa-u.csv}{3}
+        \caption{Noise-free problems}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.46\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawdataprofiles{{"NEWUOA","BFGS","CG"}}{noisy-1-50-10-data-bfgs-cg-newuoa-u.csv}{5}
-        \caption{Noisy problems}
+        \drawdataprofiles{{"NEWUOA","BFGS","CG"}}{noisy-1-50-10-data-bfgs-cg-newuoa-u.csv}{3}
+        \caption{Noisy problems with~$\sigma = 10^{-10}$}
     \end{subfigure}
-    \caption{Example of data profiles on unconstrained problems}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawdataprofiles{{"NEWUOA","BFGS","CG"}}{noisy-1-50-8-data-bfgs-cg-newuoa-u.csv}{3}
+        \caption{Noisy problems with~$\sigma = 10^{-8}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawdataprofiles{{"NEWUOA","BFGS","CG"}}{noisy-1-50-6-data-bfgs-cg-newuoa-u.csv}{3}
+        \caption{Noisy problems with~$\sigma = 10^{-6}$}
+    \end{subfigure}
+    \caption{Example of data profiles with~$\tau = 10^{-3}$}
     \label{fig:data-profile-example}
 \end{figure}
 
-On this example, we could observe the same results than previously, i.e., \gls{bfgs} overcomes the two other solvers on smooth problems, but \gls{newuoa} provides better performance than the two other solvers on noised problems.
+On this example, we could observe the same results than previously.
 However, based on \cref{fig:data-profile-example}, we could also argue that \gls{newuoa} overcomes \gls{cg} on smooth problems and that \gls{bfgs} and \gls{cg} provide approximately the same performance on noised problems.
 This is because the comparisons made on data profiles are absolute, and the result of a solver does not influence the result of another, except for the convergence test.
 Throughout this thesis, we will use both performance and data profiles to compare the performances of different \gls{dfo} solvers.

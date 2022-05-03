@@ -33,13 +33,13 @@
 \newcommand{\drawprofiles}[4]{%
     \def\selectsolvers{#2}%
     \def\selectcsv{figures/#3}%
-    \def\selectprofile{#4}%
+    \def\selectprofile{#4}%`'
     \ifthenelse{\equal{#1}{performance}}{%
-        \def\selectxlabel{Logarithm of the performance ratio}%
-        \def\selectylabel{Performance profiles}%
+        \def\selectxlabel{$\log_2(\alpha), \quad \alpha \ge 1$}%
+        \def\selectylabel{Performance profiles~$\rho_s(\alpha)$}%
     }{%
-        \def\selectxlabel{Number of simplex gradients}%
-        \def\selectylabel{Data profiles}%
+        \def\selectxlabel{Number of simplex gradients~$\alpha$}%
+        \def\selectylabel{Data profiles~$d_s(\alpha)$}%
     }
     \input{utils/profiles.tex}%
 }
