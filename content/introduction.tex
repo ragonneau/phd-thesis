@@ -23,7 +23,7 @@
 \nomenclature[Nd]{$A^{\T}$,~$v^{\T}$}{Transpose of a matrix or a vector}%
 \nomenclature[Ne]{$I_n$}{Identity matrix on~$\R^{n \times n}$}%
 \nomenclature[Nf]{$e_k$}{Standard coordinate vector of~$\R^n$ ($k$-th column of~$I_n$), with~$1 \le k \le n$}%
-\nomenclature[Ng]{$\mathcal{O}(\cdot)$}{Big-O notation}%
+\nomenclature[Ng]{$\bigo(\cdot)$}{Big-O notation}%
 \nomenclature[Nh]{$o(\cdot)$}{Little-O notation}%
 \nomenclature[Oa]{$[\cdot]_{+}$}{Elementwise positive-part operator}%
 \nomenclature[Ob]{$[\cdot]_{-}$}{Elementwise negative-part operator}%
@@ -86,8 +86,8 @@ The feasible set of this problem is
 \begin{equation*}
     \Omega \eqdef \set{x \in \R^n : \con{i}(x) \le 0 ~ \text{for~$i \in \iub$}, ~ \con{i}(x) = 0 ~ \text{for~$i \in \ieq$}}.
 \end{equation*}
-If~$\obj$ is convex, while~$\con{i}$ is convex for all~$i \in \iub$ and affine for all~$i \in \ieq$, then problem~\cref{eq:problem-introduction} is said \emph{convex}.
-However, this thesis does \emph{not} assume convexity for problem~\cref{eq:problem-introduction}.
+If~$\obj$ is convex, while~$\con{i}$ is convex for all~$i \in \iub$ and affine for all~$i \in \ieq$, then the problem~\cref{eq:problem-introduction} is \emph{convex}.
+However, this thesis does \emph{not} assume convexity.
 
 We emphasize that~\cref{eq:problem-introduction-cub,eq:problem-introduction-ceq} may include bound constraints.
 We do not extract them explicitly in this chapter, but they may need to be handled differently from other constraints because they often represent inalienable physical or theoretical restrictions.
@@ -122,8 +122,6 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
     }
 \end{algorithm}
 
-\todo[noline]{Write down explicitly the conventions on the subscripts and superscripts.}
-
 \Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of \P~10 and~$g$ at the end of p.~97) demonstrates that the growth factor of the Gaussian elimination, defined as
 \begin{equation}
     \label{eq:gaussian-elimination-growth-factor}
@@ -131,22 +129,22 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
 \end{equation}
 determinates the numerical stability of \cref{alg:gaussian-elimination}, where~$\norm{\cdot}_{\max}$ denotes the max norm of a matrix, i.e., the largest absolute value of the matrix's entries.
 More specifically, the~$\ell_{\infty}$-norm of the backward error of the computed solution is bounded from above by a term proportional to~$\rho_n(A)$.
-To study the worst-case scenario, we wish to determine how large\todo{Grammar checking done until here}~$\rho_n$ can be and hence, to solve
+To study the worst-case scenario, we wish to determine how large~$\rho_n$ can be and hence, to solve
 \begin{equation}
     \label{eq:gaussian-elimination-problem}
     \max_{A \in \R^{n \times n}} \rho_n(A).
 \end{equation}
-Note that~$\R^{n \times n}$ is isomorphic to~$\R^{n^2}$ and hence, problem~\cref{eq:gaussian-elimination-problem} can straightforwardly be formulated as problem~\cref{eq:problem-introduction}.
-Besides, although the growth factor is defined everywhere, it may not be continuous at the points yielding a tie in the selection of the pivot element.
+Note that~$\R^{n \times n}$ is isomorphic to~$\R^{n^2}$; hence, the problem~\cref{eq:gaussian-elimination-problem} can be formulated as the problem~\cref{eq:problem-introduction}.
+Besides, although the growth factor is defined everywhere, it may not be continuous at the points yielding a tie in selecting the pivot element.
 Moreover, it is not differentiable at the points yielding a tie in any maximum operator in equation~\cref{eq:gaussian-elimination-growth-factor}.
 Hence, optimization methods based on derivative information cannot be used for this problem.
-In such a case, \gls{dfo} methods can help solving problem~\cref{eq:gaussian-elimination-problem}.
-Note that the optimal value and all local solutions to problem~\cref{eq:gaussian-elimination-problem} are known~\cite{Higham_Higham_1989}, but \gls{dfo} methods can be used to help the theoretical development~\cite{Higham_1993}.
+In such a case, \gls{dfo} methods can help solve the problem~\cref{eq:gaussian-elimination-problem}.
+Note that the optimal value and all local solutions to the problem~\cref{eq:gaussian-elimination-problem} are known~\cite{Higham_Higham_1989}, but \gls{dfo} methods can be used to help the theoretical development~\cite{Higham_1993}.
 
 \subsection{Tuning nonlinear optimization methods}
 
 Another well-known example of \gls{dfo} applications is the parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
-For example, consider \cref{alg:trust-region}, a basic trust-region method for solving problem~\cref{eq:problem-introduction} when~$\iub = \ieq = \emptyset$.
+For example, consider \cref{alg:trust-region}, a basic trust-region method for solving the problem~\cref{eq:problem-introduction} when~$\iub = \ieq = \emptyset$.
 
 \begin{algorithm}[ht]
     \caption{Basic trust-region method for unconstrained optimization}
@@ -181,10 +179,10 @@ For example, consider \cref{alg:trust-region}, a basic trust-region method for s
     }
 \end{algorithm}
 
-The most important simplification in \cref{alg:trust-region} lies in \cref{alg:trust-region-success}.
+The most critical simplification in \cref{alg:trust-region} lies in \cref{alg:trust-region-success}.
 A complete framework includes a parameter~$\eta_0 \ge 0$ satisfying~$\eta_0 \le \eta_1$, and the condition in \cref{alg:trust-region-success} is replaced by~$\rho_k \ge \eta_0$.
 In practice, we usually have~$\eta_0 = 0$.
-However, this parameter genuinely complexifies the theoretical analysis of the trust-region method, and hence, we omit it here for sake of simplicity.
+However, this parameter genuinely complexifies the theoretical analysis of the trust-region method, and hence, we omit it here simplicity.
 We consider only the four parameters~$\eta_1$,~$\eta_2$,~$\theta_1$, and~$\theta_2$.
 To choose those parameters, we minimize some measure of the method's expense (e.g., the \glsxtrshort{cpu} time to solve a given set of optimization problems),~$C$ say.
 In other words, we wish to solve the optimization problem
@@ -197,8 +195,8 @@ In other words, we wish to solve the optimization problem
     \end{align}
 \end{subequations}
 Derivatives of~$C$ cannot be evaluated if they even exist.
-Such a problem is then solved using \gls{dfo} methods, for example using the \gls{mads} method~\cite{Audet_Orban_2006}.
-\Citeauthor{Audet_Digabel_Tribes_2019} modified the \gls{mads} method to solve problem~\cref{eq:tuning-algorithms-problem} with a controlled number of significant digits~\cite{Audet_Digabel_Tribes_2019}, to determine parameters that can be used by practitioners.
+Such a problem is then solved using \gls{dfo} methods, such as the \gls{mads} method~\cite{Audet_Orban_2006}.
+\Citeauthor{Audet_Digabel_Tribes_2019} modified the \gls{mads} method to solve the problem~\cref{eq:tuning-algorithms-problem} with a controlled number of significant digits~\cite{Audet_Digabel_Tribes_2019} to determine parameters that practitioners can use.
 Interestingly, \gls{dfo} methods can be self-tuned using the method presented above.
 The \gls{bfo}~\cite{Porcelli_Toint_2017}, a method for bound-constrained problems mixing continuous and discrete variables, is an example of self-tuned \gls{dfo} methods.
 
@@ -208,8 +206,8 @@ The \gls{bfo}~\cite{Porcelli_Toint_2017}, a method for bound-constrained problem
 A more recent example of \gls{dfo} applications is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}.
 For instance, Google solves hyperparameter tuning problems using Google Vizier~\cite{Golovin_Etal_2017}, the Google-internal service for performing black-box optimization.
 To illustrate this example, we consider the following hyperparameter tuning problem of a \gls{svm} for binary classification.
-Given a binary-labeled dataset~$\set{(x_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$, we build a \gls{svm} to classify the data with their respective labels.
-A binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by solving the optimization problem
+Given a binary-labeled dataset~$\set{(x_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$, we build an \gls{svm} to classify the data with their respective labels.
+Binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by solving the optimization problem
 \begin{subequations}
     \label{eq:csvc}
     \begin{align}
@@ -220,7 +218,7 @@ A binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} 
     \end{align}
 \end{subequations}
 where~$\varphi_{\gamma}$ is a function mapping the data to a higher-dimensional space~$\R^{\ell}$ and~$\gamma > 0$ and~$C > 0$ are parameters.
-Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$ to problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$x \in \R^n$ according to
+Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$ to the problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$x \in \R^n$ according to
 \begin{equation}
     \label{eq:csvc-classifier}
     \delta(x) \eqdef \sgn(\beta^{\ast} + \inner{\omega^{\ast}, \varphi_{\gamma}(x)}),
@@ -240,11 +238,11 @@ The general~$k$-fold cross-validation to define~$P(C, \gamma)$ is presented in \
         Calculate~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast})$ with the all the data except those in the~$i$th group\;
         Evaluate the performance~$p_i$ of the model~\cref{eq:csvc-classifier} on the data in the~$i$th group\;
     }
-    Define~$P(C, \gamma)$ by summarizing the performances~$\set{p_1, p_2, \dots, p_k}$\;
+    Define~$P(C, \gamma)$ by summarizing the performances in~$\set{p_1, p_2, \dots, p_k}$\;
 \end{algorithm}
 
-A typical example of model's performance used in the~$k$-fold cross-validation is the model's accuracy, i.e., the percentage of data correctly classified.
-The~\gls{auc}~\cite{Hanley_Mcneil_1982} is another example of performance measure, particularly effective for imbalanced datasets~\cite{Bradley_1997}.
+A typical example of a model's performance used in the~$k$-fold cross-validation is the model's accuracy, i.e., the percentage of data correctly classified.
+The~\gls{auc}~\cite{Hanley_Mcneil_1982} is another example of performance measures, particularly effective for imbalanced datasets~\cite{Bradley_1997}.
 The hyperparameter tuning problem can be formulated as
 \begin{equation*}
     \begin{aligned}
@@ -256,36 +254,36 @@ The hyperparameter tuning problem can be formulated as
 It is clear that derivatives of the objective function of such a problem cannot be easily evaluated and may even not exist.
 This problem may be solved using \gls{dfo} methods.
 
-As in~\cite{Qian_Yu_2021}, \gls{dfo} be also be applied to reinforcement learning.
-Instead of training a model on a fixed labelled dataset, reinforcement learning bases the training process on rewarding expected behaviors and punishing undesired ones.
+As in~\cite{Qian_Yu_2021}, \gls{dfo} can also be applied to reinforcement learning.
+Instead of training a model on a fixed labeled dataset, reinforcement learning bases the training process on rewarding expected behaviors and punishing undesired ones.
 Hence, it often consists in finding optimal parameters that maximize a reward.
-However, these reward's derivatives often cannot be evaluated, and \gls{dfo} methods can be an approach to solving such problems.
+However, these reward derivatives often cannot be evaluated, and \gls{dfo} methods can be an approach to solving such problems.
 This concept is often referred to as derivative-free reinforcement learning.
 
 
 \subsection{Some industrial and engineering applications}
 
 \Gls{dfo} methods are also widely used in industry and engineering, especially for solving problems that involve heavy simulations.
-Such problems arise from helicopter rotor blade manufacturing~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, computational fluid dynamics~\cite{Duvigneau_Visonneau_2004}, worst-case analysis of analog circuit~\cite{Latorre_Etal_2019}, rapid-cycling synchrotron accelerator modeling~\cite{Eldred_Etal_2021}, nuclear energy engineering~\cite{Kortelainen_Etal_2010,Kortelainen_Etal_2012,Kortelainen_Etal_2014}, reservoir engineering and engine calibration~\cite{Langouet_2011}, and groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, to name but a few.
-In general, industrial and engineering problems that involve sophisticated models, simulations, or experiments, give rise to \gls{dfo} problems.
+Such problems arise from helicopter rotor blade manufacturing~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, computational fluid dynamics~\cite{Duvigneau_Visonneau_2004}, worst-case analysis of analog circuits~\cite{Latorre_Etal_2019}, rapid-cycling synchrotron accelerator modeling~\cite{Eldred_Etal_2021}, nuclear energy engineering~\cite{Kortelainen_Etal_2010,Kortelainen_Etal_2012,Kortelainen_Etal_2014}, reservoir engineering and engine calibration~\cite{Langouet_2011}, and groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, to name but a few.
+In general, industrial and engineering problems that involve sophisticated models, simulations, or experiments, induce \gls{dfo} problems.
 
-A particular application of \gls{dfo} comes from \gls{mdo} in industry.
-It is an field that uses optimization methods to solve design problems defined by multiple disciplines.
-The objective and constraint functions of a \gls{mdo} problem can be provided by different departments of the same company or even by different companies.
-This is the case in aircraft engine engineering~\cite{Gazaix_Etal_2019}, where the design problem of one component is solved while taking into account constraints imposed by other components handled by different departments.
-\Gls{mdo} problems often involve simulations or experiments and therefore, \gls{dfo} methods are often needed.
-We will present in \cref{ch:pdfo} of this thesis a piece of software we implemented for solving \gls{dfo} problems based on methods by Powell~\cite{Powell_1994,Powell_2002,Powell_2006,Powell_2009,Powell_2015}.
-It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry\footnote{\url{https://www.irt-saintexupery.com}} in France.
+A particular application of \gls{dfo} comes from \gls{mdo} in the industry.
+It is a field that uses optimization methods to solve design problems defined by multiple disciplines.
+The objective and constraint functions of an \gls{mdo} problem can be provided by different departments of the same company or even by different companies.
+It is the case in aircraft engine engineering~\cite{Gazaix_Etal_2019}, where the design problem of one component is solved while taking into account constraints imposed by other components handled by different departments.
+\Gls{mdo} problems often involve simulations or experiments, and therefore, \gls{dfo} methods are often needed.
+In \cref{ch:pdfo} of this thesis, we will present a piece of software we implemented for solving \gls{dfo} problems based on methods by Powell~\cite{Powell_1994,Powell_2002,Powell_2006,Powell_2009,Powell_2015}.
+It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry\footnote{See \url{https://www.irt-saintexupery.com}} in France.
 
 \section{Optimality conditions for smooth optimization}
 
-We discuss in this section optimality conditions for problem~\cref{eq:problem-introduction}.
+We discuss in this section optimality conditions for the problem~\cref{eq:problem-introduction}.
 We do not assume any structure on the objective and constraint functions, except some smoothness.
-More specialized results can be obtained by assuming that problem~\cref{eq:problem-introduction} is convex for example, but it is out of the scope of this work.
+More specialized results can be obtained by assuming that problem~\cref{eq:problem-introduction} is convex, for example, but it is out of the scope of this work.
 
 \subsection{Local and global solutions}
 
-Before solving problem~\cref{eq:problem-introduction}, we must define what a solution is.
+\todo{Continue the grammar checking from this paragraph}Before solving problem~\cref{eq:problem-introduction}, we must define what a solution is.
 \Cref{def:global-solution} presents the most natural understanding of a solution.
 
 \begin{definition}[Global solution]
@@ -321,9 +319,9 @@ They will be required for the necessary conditions to hold.
 We first introduce the notion of \emph{active set}.
 
 \begin{definition}[Active set]
-    The \emph{active set}~$\mathcal{A}(x) \subseteq \iub \cup \ieq$ for problem~\cref{eq:problem-introduction} at a point~$x \in \R^n$ is defined as
+    The \emph{active set}~$\act(x) \subseteq \iub \cup \ieq$ for problem~\cref{eq:problem-introduction} at a point~$x \in \R^n$ is defined as
     \begin{equation*}
-        \mathcal{A}(x) \eqdef \ieq \cup \set{i \in \iub : \con{i}(x) \ge 0}.
+        \act(x) \eqdef \ieq \cup \set{i \in \iub : \con{i}(x) \ge 0}.
     \end{equation*}
 \end{definition}
 
@@ -333,15 +331,15 @@ Note that a violated constraint is always considered active.
 We introduce hereinafter two classical constraint qualifications.
 
 \begin{definition}[Constraint qualifications]
-    Given~$x \in \Omega$, denote~$\mathcal{A}(x)$ the active set for problem~\cref{eq:problem-introduction} at~$x$, and assume that the constraint functions~$\con{i}$ are differentiable at~$x$ for all~$i \in \mathcal{A}(x)$.
+    Given~$x \in \Omega$, denote~$\act(x)$ the active set for problem~\cref{eq:problem-introduction} at~$x$, and assume that the constraint functions~$\con{i}$ are differentiable at~$x$ for all~$i \in \act(x)$.
     We say that
     \begin{itemize}
-        \item the \gls{licq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \mathcal{A}(x)$, and
+        \item the \gls{licq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \act(x)$, and
         \item the \gls{mfcq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \ieq$ and there exists a vector~$z \in \R^n$ such that
         \begin{subequations}
             \label{eq:mangasarian-fromovitz}
             \begin{empheq}[left=\empheqlbrace]{alignat=2}
-                & \inner{\nabla \con{i}(x), z} < 0  && \quad \text{if~$i \in \mathcal{A}(x) \cap \iub$, and}\\
+                & \inner{\nabla \con{i}(x), z} < 0  && \quad \text{if~$i \in \act(x) \cap \iub$, and}\\
                 & \inner{\nabla \con{i}(x), z} = 0  && \quad \text{if~$i \in \ieq$}.
             \end{empheq}
         \end{subequations}
@@ -349,7 +347,7 @@ We introduce hereinafter two classical constraint qualifications.
 \end{definition}
 
 The \gls{licq} is stronger than the \gls{mfcq}.
-If the \gls{licq} holds at~$x \in \Omega$, then the system~\cref{eq:mangasarian-fromovitz} is consistent because of the linear independance of all~$\nabla \con{i}(x)$ for~$i \in \mathcal{A}(x)$.
+If the \gls{licq} holds at~$x \in \Omega$, then the system~\cref{eq:mangasarian-fromovitz} is consistent because of the linear independance of all~$\nabla \con{i}(x)$ for~$i \in \act(x)$.
 
 Many other constraint qualifications exist.
 Examples include the \gls{acq} and the \gls{gcq}, which are formulated using tangent and linearized cones of the feasible set.
@@ -463,17 +461,17 @@ It is known that at a local solution of a smooth unconstrained optimization prob
     \label{thm:second-order-necessary-conditions}
     Let~$x^{\ast} \in \Omega$ be a local solution to problem~\cref{eq:problem-introduction}.
     Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood or~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that \gls{licq} holds at~$x^{\ast}$.
-    Denote the active set for problem~\cref{eq:problem-introduction} at~$x^{\ast}$ by~$\mathcal{A}(x^{\ast})$.
+    Denote the active set for problem~\cref{eq:problem-introduction} at~$x^{\ast}$ by~$\act(x^{\ast})$.
     Let~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ be a Lagrange multiplier satisfying the KKT condition~\cref{eq:kkt-introduction}, and let~$z \in \R^n$ be any vector such that
     \begin{subequations}
         \label{eq:second-order-introduction}
         \begin{empheq}[left=\empheqlbrace]{alignat=2}
             & \inner{\nabla \con{i}(x^{\ast}), z} = 0,      && \quad \text{if~$i \in \ieq$,}\\
-            & \inner{\nabla \con{i}(x^{\ast}), z} = 0,      && \quad \text{if~$i \in \mathcal{A}(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} > 0$, and}\\
-            & \inner{\nabla \con{i}(x^{\ast}), z} \ge 0,    && \quad \text{if~$i \in \mathcal{A}(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} = 0$.}
+            & \inner{\nabla \con{i}(x^{\ast}), z} = 0,      && \quad \text{if~$i \in \act(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} > 0$, and}\\
+            & \inner{\nabla \con{i}(x^{\ast}), z} \ge 0,    && \quad \text{if~$i \in \act(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} = 0$.}
         \end{empheq}
     \end{subequations}
-    Then~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} \ge 0$. 
+    Then~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} \ge 0$.
 \end{theorem}
 
 A first-order stationary point~$x \in \Omega$ is called a \emph{second-order stationary point} if it satisfies the conclusion of \cref{thm:second-order-necessary-conditions}.
@@ -533,13 +531,13 @@ The first trust-region \gls{dfo} method was developed by~\citeauthor{Winfield_19
 This is also regarded as the first trust-region method with or without derivatives~\cite[\S~1.2]{Conn_Gould_Toint_2000}.
 A similar method was later developed by \citeauthor{Powell_2002}, namely \gls{uobyqa}~\cite{Powell_2002}.
 Both methods use fully-determined quadratic interpolating models (see \cref{sec:multivariate-interpolation} for detailed discussions).
-By updating the Lagrange functions of the interpolation problem, \gls{uobyqa} needs only~$\mathcal{O}(n^4)$ computer operations to obtain each quadratic interpolant, whereas the complexity is~$\mathcal{O}(n^6)$ in \citeauthor{Winfield_1969}'s method.
+By updating the Lagrange functions of the interpolation problem, \gls{uobyqa} needs only~$\bigo(n^4)$ computer operations to obtain each quadratic interpolant, whereas the complexity is~$\bigo(n^6)$ in \citeauthor{Winfield_1969}'s method.
 
-The methods of both \citeauthor{Winfield_1969} and \citeauthor{Powell_2002} require~$\mathcal{O}(n^2)$ function evaluations to establish each quadratic model.
+The methods of both \citeauthor{Winfield_1969} and \citeauthor{Powell_2002} require~$\bigo(n^2)$ function evaluations to establish each quadratic model.
 Such an amount of function values are needed to initialize the methods, although most of them will be reused at subsequent iterations.
 This amount of function evaluations is however not scalable to moderately large problems.
 This motivates methods that use underdetermined quadratic interpolating models.
-Such models typically require~$\mathcal{O}(n)$ function values to be built, and the remaining freedom bequeathed by the interpolation conditions is taken up by minimizing a functional that reflects the regularity of the model.
+Such models typically require~$\bigo(n)$ function values to be built, and the remaining freedom bequeathed by the interpolation conditions is taken up by minimizing a functional that reflects the regularity of the model.
 For example, the method of \citeauthor{Conn_Toint_1996}~\cite{Conn_Toint_1996} uses such models with least~$\ell_2$-norm of the coefficients.
 Powell's methods, namely \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}~\cite{Powell_2015}, use models that minimize the Frobenius norm of the change to their Hessian matrices.
 Another example of such algorithms is \gls{mnh}~\cite{Wild_2008}, whose models are underdetermined quadratic interpolants with least Frobenius norm of their Hessian matrices.
@@ -573,12 +571,12 @@ In this section, we briefly discuss the advantages and disadvantages of this app
 The~$i$th coordinate of the gradient of a smooth function~$\obj : \R^n \to \R$ at a point~$x \in \R^n$ can be approximated by the forward difference
 \begin{equation}
     \label{eq:forward-difference}
-    \frac{\partial \obj}{\partial x_i}(x) = \frac{\obj(x + h e_i) - \obj(x)}{h} + \mathcal{O}(h),
+    \frac{\partial \obj}{\partial x_i}(x) = \frac{\obj(x + h e_i) - \obj(x)}{h} + \bigo(h),
 \end{equation}
 or the central difference
 \begin{equation}
     \label{eq:central-difference}
-    \frac{\partial \obj}{\partial x_i}(x) = \frac{\obj(x + h e_i) - \obj(x - h e_i)}{2h} + \mathcal{O}(h^2),
+    \frac{\partial \obj}{\partial x_i}(x) = \frac{\obj(x + h e_i) - \obj(x - h e_i)}{2h} + \bigo(h^2),
 \end{equation}
 where~$h > 0$ is a given difference parameter,~$e_i \in \R^n$ is the~$i$th standard coordinate vector of~$\R^n$, and the order of precisions require standard smoothness assumptions (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006}).
 
@@ -593,8 +591,8 @@ From a theoretical standpoint, the optimal choice for the difference parameter d
 There exist procedures to estimate these quantities (see, e.g.,~\cite[\S~3]{More_Wild_2011} and~\cite[proc.~I]{Shi_Etal_2021}).
 However, in practice, these procedures are often costly in terms of function evaluations.
 In addition, it is difficult to reuse the function values in methods based on finite differences.
-This is because a finite difference at~$x \in \R^n$ require the function to be evaluated on a mesh of~$\mathcal{O}(n)$ points around~$x$ oriented along the coordinate directions.
-When~$x$ changes, most of the mesh points change completely and hence, the function needs to be evaluated at another batch of~$\mathcal{O}(n)$ points.
+This is because a finite difference at~$x \in \R^n$ require the function to be evaluated on a mesh of~$\bigo(n)$ points around~$x$ oriented along the coordinate directions.
+When~$x$ changes, most of the mesh points change completely and hence, the function needs to be evaluated at another batch of~$\bigo(n)$ points.
 
 We also mention that there is no sharp division between methods based on finite difference and those based on interpolating models.
 Indeed, the forward difference~\cref{eq:forward-difference} produces the gradient of the linear function that interpolates~$f$ at
@@ -695,7 +693,7 @@ In this section, as an example, we compare three solvers using performance and d
 These solvers, constituting the set~$\mathcal{S}$, are
 \begin{itemize}
     \item \gls{newuoa} (see \cref{subsec:newuoa-bobyqa-lincoa}), a model-based \gls{dfo} method; and
-    \item \gls{bfgs} and \gls{cg}, two gradient-based solvers provided by SciPy~1.0~\cite{Virtanen_Etal_2020}. 
+    \item \gls{bfgs} and \gls{cg}, two gradient-based solvers provided by SciPy~1.0~\cite{Virtanen_Etal_2020}.
     When no derivatives are provided, they use forward finite-difference approximate gradients, with the difference parameter~$h = \sqrt{u}$, where~$u$ is the unit roundoff.
 \end{itemize}
 The set~$\mathcal{P}$ contains~$154$ smooth unconstrained CUTEst problems of dimension at most~$50$, and the convergence tolerance in~\cref{eq:convergence-test-profiles} is~$\tau = 10^{-3}$.
