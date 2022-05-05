@@ -25,6 +25,7 @@
 \nomenclature[Nf]{$e_k$}{Standard coordinate vector of~$\R^n$ ($k$-th column of~$I_n$), with~$1 \le k \le n$}%
 \nomenclature[Ng]{$\bigo(\cdot)$}{Big-O notation}%
 \nomenclature[Nh]{$o(\cdot)$}{Little-O notation}%
+\nomenclature[Ni]{$N(\mu, \sigma^2)$}{Gaussian distribution with mean~$\mu$ and variance~$\sigma^2$}%
 \nomenclature[Oa]{$[\cdot]_{+}$}{Elementwise positive-part operator}%
 \nomenclature[Ob]{$[\cdot]_{-}$}{Elementwise negative-part operator}%
 \nomenclature[Oc]{$\abs{\cdot}$}{Elementwise modulus operator}%
@@ -32,8 +33,7 @@
 \nomenclature[Oe]{$\norm{\cdot}$}{Norm of a vector or a matrix (may be subscripted for sake of clarity)}%
 \nomenclature[Of]{$\nabla$}{Gradient operator (elements~$\partial / \partial x_i$, with~$i \in \set{1, 2, \dots, n}$)}%
 \nomenclature[Og]{$\nabla^2$}{Hessian operator (elements~$\partial^2 / \partial x_i \partial x_j$, with~$i, j \in \set{1, 2, \dots, n}$)}%
-\nomenclature[Oh]{$\land$}{Logic and operator}%
-\nomenclature[Oi]{$\card$}{Cardinal operator}%
+\nomenclature[Oh]{$\card$}{Cardinal operator}%
 \nomenclature[Sa]{$\emptyset$}{Empty set}%
 \nomenclature[Sb]{$[a, b]$}{Closed set~$\set{x \in \R : a \le x \le b}$ with~$a \le b$}%
 \nomenclature[Sc]{$(a, b)$}{Open set~$\set{x \in \R : a < x < b}$ with~$a < b$}%
@@ -283,19 +283,18 @@ More specialized results can be obtained by assuming that problem~\cref{eq:probl
 
 \subsection{Local and global solutions}
 
-\todo{Continue the grammar checking from this paragraph}Before solving problem~\cref{eq:problem-introduction}, we must define what a solution is.
+Before solving the problem~\cref{eq:problem-introduction}, we must define what a solution is.
 \Cref{def:global-solution} presents the most natural understanding of a solution.
 
 \begin{definition}[Global solution]
     \label{def:global-solution}
-    To problem~\cref{eq:problem-introduction}, a point~$x^{\ast} \in \R^n$ is a \emph{global solution} if~$x^{\ast} \in \Omega$ and~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \Omega$.
+    To the problem~\cref{eq:problem-introduction}, a point~$x^{\ast} \in \R^n$ is a \emph{global solution} if~$x^{\ast} \in \Omega$ and~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \Omega$.
 \end{definition}
 
-The following relaxed concept of solutions to problem~\cref{eq:problem-introduction} is of interest both in theory and in practice.
+The following relaxed concepts of solutions to the problem~\cref{eq:problem-introduction} are of interest in theory and practice.
 
 \begin{definition}[Local solution]
-    % \label{def:local-solution}
-    To problem~\cref{eq:problem-introduction}, a point~$x^{\ast} \in \R^n$ is
+    To the problem~\cref{eq:problem-introduction}, a point~$x^{\ast} \in \R^n$ is
     \begin{itemize}
         \item a \emph{local solution} if~$x^{\ast} \in \Omega$ and there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega$,
         \item a \emph{strict local solution} if~$x^{\ast} \in \Omega$ and there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) > \obj(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega \setminus \set{x^{\ast}}$, and
@@ -304,34 +303,34 @@ The following relaxed concept of solutions to problem~\cref{eq:problem-introduct
 \end{definition}
 
 It is known that finding a local solution to a general nonconvex problem is NP-hard.
-In many cases, it is already NP-hard to check whether a given point is a local solution.
+It is already NP-hard to check whether a given point is a local solution in many cases.
 There also exist convex optimization problems that are NP-hard, such as copositive programming, for which checking the feasibility of a given point is indeed NP-hard.
 See~\cite{Murty_Kabadi_1987} for more discussions.
 
 The methods we consider in this thesis are local.
-They attempt to approximately find local solutions to problem~\cref{eq:problem-introduction}.
-However, in general, theoretical analyses of these methods can only guarantee approximations of stationary points, which will be introduced hereinafter.
+They attempt to find approximate local solutions to the problem~\cref{eq:problem-introduction}.
+However, in general, theoretical analyses of these methods can only guarantee approximations of stationary points, which will be introduced hereafter.
 
 \subsection{Constraint qualifications}
 
 Before introducing any necessary and sufficient conditions for local optimality, we discuss some regularity conditions on the constraints~\cref{eq:problem-introduction-cub,eq:problem-introduction-ceq}, referred to as \emph{constraint qualifications}.
 They will be required for the necessary conditions to hold.
-We first introduce the notion of \emph{active set}.
+We first introduce the notion of \emph{active sets}.
 
 \begin{definition}[Active set]
-    The \emph{active set}~$\act(x) \subseteq \iub \cup \ieq$ for problem~\cref{eq:problem-introduction} at a point~$x \in \R^n$ is defined as
+    The \emph{active set}~$\act(x) \subseteq \iub \cup \ieq$ for the problem~\cref{eq:problem-introduction} at a point~$x \in \R^n$ is defined by
     \begin{equation*}
         \act(x) \eqdef \ieq \cup \set{i \in \iub : \con{i}(x) \ge 0}.
     \end{equation*}
 \end{definition}
 
-If a constraint belongs to the active set\footnote{For simplicity, we do not distinguish a constraint from its index.} at a given point, it is said to be \emph{active} at this point, and \emph{inactive} otherwise.
+If a constraint belongs to the active set\footnote{For simplicity, we do not distinguish a constraint from its index.} at a given point, it is said to be \emph{active} at this point and \emph{inactive} otherwise.
 Note that a violated constraint is always considered active.
 
-We introduce hereinafter two classical constraint qualifications.
+We introduce hereafter two classical constraint qualifications.
 
 \begin{definition}[Constraint qualifications]
-    Given~$x \in \Omega$, denote~$\act(x)$ the active set for problem~\cref{eq:problem-introduction} at~$x$, and assume that the constraint functions~$\con{i}$ are differentiable at~$x$ for all~$i \in \act(x)$.
+    Given~$x \in \Omega$, denote~$\act(x)$ the active set for the problem~\cref{eq:problem-introduction} at~$x$, and assume that the constraint functions~$\con{i}$ are differentiable at~$x$ for all~$i \in \act(x)$.
     We say that
     \begin{itemize}
         \item the \gls{licq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \act(x)$, and
@@ -347,19 +346,18 @@ We introduce hereinafter two classical constraint qualifications.
 \end{definition}
 
 The \gls{licq} is stronger than the \gls{mfcq}.
-If the \gls{licq} holds at~$x \in \Omega$, then the system~\cref{eq:mangasarian-fromovitz} is consistent because of the linear independance of all~$\nabla \con{i}(x)$ for~$i \in \act(x)$.
+If the \gls{licq} holds at~$x \in \Omega$, then the system~\cref{eq:mangasarian-fromovitz} is consistent because of the linear independence of all~$\nabla \con{i}(x)$ for~$i \in \act(x)$.
 
 Many other constraint qualifications exist.
 Examples include the \gls{acq} and the \gls{gcq}, which are formulated using tangent and linearized cones of the feasible set.
 There also exist several traditional constraint qualifications weaker than the \gls{mfcq}, such as the \gls{crcq}, the \gls{cpld}, or the \gls{qncq}.
-We also note that when the problem has a particular structure, such as convexity, dedicated constraint qualifications may exist, such as the \gls{sc}.
-In this thesis, we will focus on the \gls{licq} and the \gls{mfcq}.
+We also note that dedicated constraint qualifications may exist when the problem has a particular structure, such as the \gls{sc} for convex problems.
 
 \subsection{First-order optimality conditions}
 
 \subsubsection{Statement of the optimality conditions}
 
-Let~$\lag$ be the \emph{Lagrangian function} to problem~\cref{eq:problem-introduction}, defined as
+Let~$\lag$ be the \emph{Lagrangian function} to the problem~\cref{eq:problem-introduction}, defined by
 \begin{equation*}
     \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x),
 \end{equation*}
@@ -368,7 +366,7 @@ where~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \in \R$ for
 
 \begin{theorem}[First-order necessary conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.1
     \label{thm:first-order-necessary-conditions}
-    Let~$x^{\ast} \in \Omega$ be a local solution to problem~\cref{eq:problem-introduction}, assume that the functions~$\obj$ and~$\con{i}$ are continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$x^{\ast}$.
+    Let~$x^{\ast} \in \Omega$ be a local solution to the problem~\cref{eq:problem-introduction}, assume that the functions~$\obj$ and~$\con{i}$ are continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$x^{\ast}$.
     Then there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
     \begin{subequations}
         \label{eq:kkt-introduction}
@@ -382,10 +380,10 @@ where~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \in \R$ for
     \end{subequations}
 \end{theorem}
 
-We present~\cref{thm:first-order-necessary-conditions} with the \gls{licq} as an example, but similar conclusion can be established with other constraint qualifications, such as the \gls{mfcq} (see, e.g.,~\cite[p.~339]{Nocedal_Wright_2006}).
+We present in this thesis~\cref{thm:first-order-necessary-conditions} with the \gls{licq} as an example, but a similar conclusion can be established with other constraint qualifications, such as the \gls{mfcq} (see, e.g.,~\cite[p.~339]{Nocedal_Wright_2006}).
 The conditions~\cref{eq:kkt-introduction} are commonly referred to as the \gls{kkt} conditions~\cite{Karush_1939,Kuhn_Tucker_1951}.
-More specifically, condition~\cref{eq:kkt-introduction-stationarity} is referred to as the \emph{stationarity} condition, conditions~\cref{eq:kkt-introduction-primal-feasibility-ub,eq:kkt-introduction-primal-feasibility-eq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-introduction-complementary-slackness} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-introduction-dual-feasibility} as the \emph{dual feasibility} condition.
-Any point~$x \in \R^n$ is referred to as a \emph{first-order stationary point} if it satisfies the \gls{kkt} conditions~\cref{eq:kkt-introduction}.
+More specifically, condition~\cref{eq:kkt-introduction-stationarity} is the \emph{stationarity} condition, conditions~\cref{eq:kkt-introduction-primal-feasibility-ub,eq:kkt-introduction-primal-feasibility-eq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-introduction-complementary-slackness} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-introduction-dual-feasibility} as the \emph{dual feasibility} condition.
+A point~$x \in \R^n$ is a \emph{first-order stationary point} if it satisfies the \gls{kkt} conditions~\cref{eq:kkt-introduction}.
 Such a point may not be a local solution.
 
 \subsubsection{An illustration of the first-order optimality conditions}
@@ -401,7 +399,7 @@ We do not provide a proof of \cref{thm:first-order-necessary-conditions}, but we
     \end{align}
 \end{subequations}
 whose solution is~$x^{\ast} = (-\sqrt{2}, 0)$.
-A graphical representation of problem~\cref{eq:kkt-description} is given in \cref{fig:kkt-description}, where the white area represents the feasible set.
+A graphical representation of the problem~\cref{eq:kkt-description} is given in \cref{fig:kkt-description}, where the white area represents the feasible set.
 
 \begin{figure}[ht]
     \centering
@@ -430,7 +428,7 @@ A graphical representation of problem~\cref{eq:kkt-description} is given in \cre
             \node[above left] at (-2^0.5,0) {$x^{\ast}$};
         \end{axis}
     \end{tikzpicture}
-    \caption{Graphical representation of problem~\cref{eq:kkt-description}}
+    \caption{Graphical representation of the problem~\cref{eq:kkt-description}}
     \label{fig:kkt-description}
 \end{figure}
 
@@ -447,8 +445,8 @@ The Farkas' lemma~\cite{Farkas_1902} ensures, therefore, that there exists a non
 \begin{equation*}
     \nabla \obj(x^{\ast}) + \lambda_1^{\ast} \nabla \con{1}(x^{\ast}) + \lambda_2^{\ast} \nabla \con{2}(x^{\ast}) = 0.
 \end{equation*}
-This validates condition~\cref{eq:kkt-introduction-stationarity}, while~\cref{eq:kkt-introduction-primal-feasibility-ub,eq:kkt-introduction-primal-feasibility-eq,eq:kkt-introduction-complementary-slackness,eq:kkt-introduction-dual-feasibility} are obvious.
-A solution to system~\cref{eq:kkt-proof} is both a descent direction for~$\obj$ and a linearized feasible direction for the constraints.
+This validates the condition~\cref{eq:kkt-introduction-stationarity}, while~\cref{eq:kkt-introduction-primal-feasibility-ub,eq:kkt-introduction-primal-feasibility-eq,eq:kkt-introduction-complementary-slackness,eq:kkt-introduction-dual-feasibility} are conspicuous.
+A solution to~\cref{eq:kkt-proof} is both a descent direction for~$\obj$ and a linearized feasible direction for the constraints.
 In the context of~\cref{thm:first-order-necessary-conditions}, the nonexistence of such a direction is guaranteed by the \gls{licq}.
 See~\cite[\S~12.4]{Nocedal_Wright_2006} for a complete proof of \cref{thm:first-order-necessary-conditions}.
 
@@ -459,10 +457,10 @@ It is known that at a local solution of a smooth unconstrained optimization prob
 
 \begin{theorem}[Second-order necessary conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.5
     \label{thm:second-order-necessary-conditions}
-    Let~$x^{\ast} \in \Omega$ be a local solution to problem~\cref{eq:problem-introduction}.
-    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood or~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that \gls{licq} holds at~$x^{\ast}$.
-    Denote the active set for problem~\cref{eq:problem-introduction} at~$x^{\ast}$ by~$\act(x^{\ast})$.
-    Let~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ be a Lagrange multiplier satisfying the KKT condition~\cref{eq:kkt-introduction}, and let~$z \in \R^n$ be any vector such that
+    Let~$x^{\ast} \in \Omega$ be a local solution to the problem~\cref{eq:problem-introduction}.
+    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood or~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$x^{\ast}$.
+    Denote the active set for the problem~\cref{eq:problem-introduction} at~$x^{\ast}$ by~$\act(x^{\ast})$.
+    Let~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ be a Lagrange multiplier with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the \gls{kkt} conditions~\cref{eq:kkt-introduction}, and let~$z \in \R^n$ be any vector such that
     \begin{subequations}
         \label{eq:second-order-introduction}
         \begin{empheq}[left=\empheqlbrace]{alignat=2}
@@ -483,7 +481,7 @@ However, it is known in smooth unconstrained optimization that a point at which 
     \label{thm:second-order-sufficient-conditions}
     Let~$x^{\ast} \in \Omega$ be a given point.
     Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-introduction}.
-    If for all nonzero vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-introduction} we have~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} > 0$, then~$x^{\ast}$ is a strict local solution to problem~\cref{eq:problem-introduction}.
+    If for all vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-introduction} we have~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} > 0$, then~$x^{\ast}$ is a strict local solution to problem~\cref{eq:problem-introduction}.
 \end{theorem}
 
 \section{Methodology of \glsfmtlong{dfo}}
@@ -493,7 +491,7 @@ One strategy consists of sampling the objective function around the current iter
 The \emph{direct-search} methods~\cite{Kolda_Lewis_Torczon_2003} are based on this framework.
 The other strategy builds iteratively models that approximate the problems (e.g., using polynomials) around the current iterate and choose the next iterate according to the approximated problems.
 These methods are referred to as \emph{model-based} methods.
-Hybrid methods also exist, such as implicit filtering~\cite{Kelley_2011}, and \gls{sidpsm}~\cite{Custodio_Rocha_Vicente_2009}, which combine direct search and models.
+Hybrid methods also exist, such as implicit filtering~\cite{Kelley_2011} and \gls{sidpsm}~\cite{Custodio_Rocha_Vicente_2009}, which combine direct search and models.
 
 Some methods can solve \gls{dfo} problems but are not covered by the above categories.
 Examples include random search methods~\cite{Zhigljavsky_1991}, simulated annealing methods~\cite{Kirkpatrick_Gelatt_Vecchi_1983}, the genetic algorithm~\cite{Jong_1975,Holland_1975}, and Bayesian optimization methods~\cite{Mockus_1975,Shahriari_Etal_2016}.
@@ -504,69 +502,68 @@ For more information on these methods, we refer to the review~\cite{Larson_Menic
 An early example of \gls{dfo} is a method from \citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed in \citeyear{Fermi_Metropolis_1952} a nonlinear least-squares solver on MANIAC, an computer based on the von Neumann architecture.
 From a modern viewpoint, this method is a coordinate search method, a particular example of direct-search methods, where the search directions are defined to be the coordinate axes.
 
-Several direct-search methods appeared thereafter.
-\citeauthor{Rosenbrock_1960} designed an direct-search method for unconstrained problems.
+Several direct-search methods appeared after that.
+\citeauthor{Rosenbrock_1960} designed a direct-search method for unconstrained problems.
 It constructs an orthogonal basis using previous steps and searching along the directions in this basis~\cite{Rosenbrock_1960}.
 Another famous early direct-search method is the Hooke-Jeeves method~\cite{Hooke_Jeeves_1961}.
-This method combines exploratory moves along coordinates axes with pattern moves, aiming to exploit the pattern revealed by previous successful directions.
+This method combines exploratory moves along coordinates axes with pattern moves, to exploit the pattern revealed by previous successful directions.
 In \citeyear{Nelder_Mead_1965}, \citeauthor{Nelder_Mead_1965}~\cite{Nelder_Mead_1965} introduced the simplex method\footnote{Note that it is different from the simplex method in linear programming.}, which evaluates the objective function at the vertices of a simplex, and updates this simplex according to these function values, one vertex at each iteration.
-It is arguably the most widely used \gls{dfo} method, available as the \verb|fminsearch| function in MATLAB, and many variation exist~\cite{Wright_2012}.
-Many other works on direct search appeared in the same period and summaries can be found in~\cite{Fletcher_1965,Box_1966}.
+It is arguably the most widely used \gls{dfo} method, available as the \verb|fminsearch| function in MATLAB, and many variations exist~\cite{Wright_2012}.
+Many other works on direct search appeared in the same period, and summaries can be found in~\cite{Fletcher_1965,Box_1966}.
 Nowadays, the direct-search paradigm offers an abundance of algorithms~\cite{Kolda_Lewis_Torczon_2003}, such as the \gls{gps} methods~\cite{Booker_Etal_1999}, later extended to the \gls{mads} methods~\cite{Audet_Dennis_2006,Abramson_Audet_2006,Abramson_Etal_2009,Audet_Dennis_Digabel_2008,Digabel_2011}.
-A very recent example of direct-search methods is the \gls{bfo}~\cite{Porcelli_Toint_2017,Porcelli_Toint_2022}, which handles integer and categorical variables, and can be self-tuned.
+A recent example of direct-search methods is the \gls{bfo}~\cite{Porcelli_Toint_2017,Porcelli_Toint_2022}, which handles integer and categorical variables and can be self-tuned.
 
-\Citeauthor{Gratton_Etal_2015} recently proposed to incorporate stochastic strategies in direct-search methods~\cite{Gratton_Etal_2015,Gratton_Etal_2019}.
+\Citeauthor{Gratton_Etal_2015} recently proposed incorporating stochastic strategies in direct-search methods~\cite{Gratton_Etal_2015,Gratton_Etal_2019}.
 This improves both the performance and the worst-case complexity bounds compared with traditional direct-search methods.
 
 \subsection{Model-based methods}
 \label{subsec:model-based-methods}
 
-Unlike direct-search methods, model-based methods approximate locally the functions involved in the optimization problems by simple functions, called \emph{models} or \emph{surrogates}.
-To make the methods globally convergent, the models are exploited by a globalization strategy, such as a \emph{line-search} framework~\cite[ch.~3]{Nocedal_Wright_2006} or a \emph{trust-region} framework~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
+Unlike direct-search methods, model-based methods approximate locally the functions involved in the optimization problems by simple functions called \emph{models} or \emph{surrogates}.
+To make model-based methods globally convergent, the models are exploited by a globalization strategy, such as a \emph{line-search} framework~\cite[ch.~3]{Nocedal_Wright_2006} or a \emph{trust-region} framework~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
 Most of the existing model-based methods use linear or quadratic approximations~\cite{Powell_1994,Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b}, although other models have also been successfully used, such as \glspl{rbf}~\cite{Oeuvray_2005}.
 
 Model-based methods are highly appealing in practice, as they provide excellent performances in real applications.
 Compared with direct-search methods, the information contained in the function values is better exploited due to the use of models.
 The first trust-region \gls{dfo} method was developed by~\citeauthor{Winfield_1969}~\cite{Winfield_1969,Winfield_1973} in \citeyear{Winfield_1969}.
-This is also regarded as the first trust-region method with or without derivatives~\cite[\S~1.2]{Conn_Gould_Toint_2000}.
+It is also regarded as the first trust-region method with or without derivatives~\cite[\S~1.2]{Conn_Gould_Toint_2000}.
 A similar method was later developed by \citeauthor{Powell_2002}, namely \gls{uobyqa}~\cite{Powell_2002}.
 Both methods use fully-determined quadratic interpolating models (see \cref{sec:multivariate-interpolation} for detailed discussions).
 By updating the Lagrange functions of the interpolation problem, \gls{uobyqa} needs only~$\bigo(n^4)$ computer operations to obtain each quadratic interpolant, whereas the complexity is~$\bigo(n^6)$ in \citeauthor{Winfield_1969}'s method.
 
 The methods of both \citeauthor{Winfield_1969} and \citeauthor{Powell_2002} require~$\bigo(n^2)$ function evaluations to establish each quadratic model.
 Such an amount of function values are needed to initialize the methods, although most of them will be reused at subsequent iterations.
-This amount of function evaluations is however not scalable to moderately large problems.
-This motivates methods that use underdetermined quadratic interpolating models.
+However, this amount of function evaluations is not scalable to moderately large problems.
+It motivates methods that use underdetermined quadratic interpolating models.
 Such models typically require~$\bigo(n)$ function values to be built, and the remaining freedom bequeathed by the interpolation conditions is taken up by minimizing a functional that reflects the regularity of the model.
-For example, the method of \citeauthor{Conn_Toint_1996}~\cite{Conn_Toint_1996} uses such models with least~$\ell_2$-norm of the coefficients.
+For example, the method of \citeauthor{Conn_Toint_1996}~\cite{Conn_Toint_1996} uses such models with the least~$\ell_2$-norm of the coefficients.
 Powell's methods, namely \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}~\cite{Powell_2015}, use models that minimize the Frobenius norm of the change to their Hessian matrices.
-Another example of such algorithms is \gls{mnh}~\cite{Wild_2008}, whose models are underdetermined quadratic interpolants with least Frobenius norm of their Hessian matrices.
+Another example of such algorithms is \gls{mnh}~\cite{Wild_2008}, whose models are underdetermined quadratic interpolants with the least Frobenius norm of their Hessian matrices.
 
 Particular care must be given to the geometry of the interpolation set in order to maintain reasonable accuracies of the models (see \cref{sec:poisedness}).
-Most model-based methods make explicit geometry-improving steps when it is necessary~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b}.
+Model-based methods usually make explicit geometry-improving steps when necessary~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b}.
 The Wedge method~\cite{Marazzi_Nocedal_2002} of \citeauthor{Marazzi_Nocedal_2002}, however, does not include such steps.
 Instead, it adds a so-called wedge constraint to the trust-region subproblems to prevent the trial steps from lying in a region that is likely to worsen the geometry of the interpolation set.
 The method of \citeauthor{Fasano_Morales_Nocedal_2009}~\cite{Fasano_Morales_Nocedal_2009} does not include geometry-improving steps either but performs surprisingly well.
-The authors conjecture that a self-correcting mechanism may be at play and prevents the geometry from deterioring.
+The authors conjecture that a self-correcting mechanism may be at play and prevents the geometry from deteriorating.
 \citeauthor{Scheinberg_Toint_2010}~\cite{Scheinberg_Toint_2010} point out that the geometry improvement cannot be dispensed in general, but a slight modification of the algorithm in~\cite{Fasano_Morales_Nocedal_2009} does enjoy a self-correcting mechanism that garantees the convergence without taking explicit geometry-improving steps.
 
-There are many other trust-region \gls{dfo} methods.
-For instance, \gls{csv2}~\cite{Billups_Larson_Graf_2013}, which determines its models by regression and not interpolation.
+There are many other trust-region \gls{dfo} methods, such as \gls{csv2}~\cite{Billups_Larson_Graf_2013}, which determines its models by regression and not interpolation.
 Examples of solvers that use nonpolynomial models include \gls{orbit}~\cite{Wild_Regis_Shoemaker_2008}, \gls{conorbit}~\cite{Regis_Wild_2017}, and \gls{boosters}~\cite{Oeuvray_Bierlaire_2009}, which use cubic \gls{rbf}.
-There also exist methods for more specific problems, such as \gls{dfls}~\cite{Zhang_Conn_Scheinberg_2010} and \gls{dfols}~\cite{Cartis_Etal_2019}, which aim at solving nonlinear least-squares problems without using derivatives.
+There also exist methods for more specific problems, such as \gls{dfls}~\cite{Zhang_Conn_Scheinberg_2010} and \gls{dfols}~\cite{Cartis_Etal_2019}, which aim at solving nonlinear least-squares \gls{dfo} problems.
 
 Randomization is also exploited to improve the performance of trust-region \gls{dfo} methods.
-This idea is first proposed by \citeauthor{Bandeira_Scheinberg_Vicente_2012}~\cite{Bandeira_Scheinberg_Vicente_2012}, who establish the global convergence of a trust-region method based on random models.
-They only require to approximate the objective function well enough with a certain probability, and such models can be obtained by interpolation on randomly selected points~\cite{Bandeira_Scheinberg_Vicente_2014}.
+This idea was first proposed by \citeauthor{Bandeira_Scheinberg_Vicente_2012}~\cite{Bandeira_Scheinberg_Vicente_2012}, who established the global convergence of a trust-region method based on random models.
+They only require approximating the objective function well enough with a certain probability, and such models can be obtained by interpolation on randomly selected points~\cite{Bandeira_Scheinberg_Vicente_2014}.
 The global convergence rate of this method is established by \citeauthor{Gratton_Etal_2018}~\cite{Gratton_Etal_2018}, using an idea elaborated earlier in~\cite[\S~6]{Gratton_Etal_2015}.
-Similar results are established independently by \citeauthor{Cartis_Scheinberg_2018}~\cite{Cartis_Scheinberg_2018}, but for a more general class of methods.
+Similar results are established independently by \citeauthor{Cartis_Scheinberg_2018}~\cite{Cartis_Scheinberg_2018} but for a more general class of methods.
 The work of \citeauthor{Bandeira_Scheinberg_Vicente_2012} has motivated many investigations on methods that use randomized models, such as~\cite{Chen_Menickelly_Scheinberg_2018}.
 
 \subsection{Comments on methods based on finite differences}
 \label{subsec:finite-difference}
 
-Perhaps the most straightforward approach to solving \gls{dfo} problems is to make finite-difference approximations of the derivatives and then employ derivative-based methods (see, e.g.,~\cite{Shi_Etal_2021}).
-In this section, we briefly discuss the advantages and disadvantages of this approach.
+Perhaps the most straightforward approach to solving \gls{dfo} problems is to make finite-difference approximations of the derivatives and then employ derivative-based methods.
+This section  briefly discusses the advantages and disadvantages of this approach.
 
 The~$i$th coordinate of the gradient of a smooth function~$\obj : \R^n \to \R$ at a point~$x \in \R^n$ can be approximated by the forward difference
 \begin{equation}
@@ -578,23 +575,23 @@ or the central difference
     \label{eq:central-difference}
     \frac{\partial \obj}{\partial x_i}(x) = \frac{\obj(x + h e_i) - \obj(x - h e_i)}{2h} + \bigo(h^2),
 \end{equation}
-where~$h > 0$ is a given difference parameter,~$e_i \in \R^n$ is the~$i$th standard coordinate vector of~$\R^n$, and the order of precisions require standard smoothness assumptions (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006}).
+where~$h > 0$ is the difference parameter,~$e_i \in \R^n$ is the~$i$th standard coordinate vector of~$\R^n$, and the order of precisions require standard assumptions (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006}).
 
-Methods based on finite-difference have several advantages.
+Methods based on finite differences have several advantages.
 Firstly, they are relatively easy to implement, whereas the implementation of many commonly used \gls{dfo} methods is highly nontrivial and challenging\footnote{For example, \citeauthor{Powell_2006}~\cite{Powell_2006} wrote \enquote{The development of \gls{newuoa} has taken nearly three years. The work was very frustrating [\dots]}}.
-Moreover, there are a profusion of well-established derivative-based methods that can be explored with finite-difference approximations.
+Moreover, there is a profusion of well-established derivative-based methods that can be explored with finite-difference approximations.
 Finally, we highlight that the function evaluations needed by the approximated derivatives in~\cref{eq:forward-difference,eq:central-difference} can be straightforwardly parallelized, making the resulting algorithm scalable in many situations.
 
 Meanwhile, such methods come with disadvantages as well.
 First of all, if the problem is noisy, it is nontrivial to choose the difference parameter~$h$.
 From a theoretical standpoint, the optimal choice for the difference parameter depends on the noise level and the Lipschitz constants of the derivatives of the function~$\obj$ (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006} and~\cite[eq.~(2.13) and~(2.14)]{Shi_Etal_2021}).
 There exist procedures to estimate these quantities (see, e.g.,~\cite[\S~3]{More_Wild_2011} and~\cite[proc.~I]{Shi_Etal_2021}).
-However, in practice, these procedures are often costly in terms of function evaluations.
+However, these procedures are often costly in terms of function evaluations in practice.
 In addition, it is difficult to reuse the function values in methods based on finite differences.
-This is because a finite difference at~$x \in \R^n$ require the function to be evaluated on a mesh of~$\bigo(n)$ points around~$x$ oriented along the coordinate directions.
-When~$x$ changes, most of the mesh points change completely and hence, the function needs to be evaluated at another batch of~$\bigo(n)$ points.
+A finite difference at~$x \in \R^n$ requires the function to be evaluated on a mesh of~$\bigo(n)$ points around~$x$ oriented along the coordinate directions.
+When~$x$ changes, most of the mesh points change completely, and hence, the function needs to be evaluated at another batch of~$\bigo(n)$ points.
 
-We also mention that there is no sharp division between methods based on finite difference and those based on interpolating models.
+There is no sharp division between methods based on finite difference and those based on interpolating models.
 Indeed, the forward difference~\cref{eq:forward-difference} produces the gradient of the linear function that interpolates~$f$ at
 \begin{equation*}
     \set{x, x + h e_1, x + h e_2, \dots, x + h e_n}.
@@ -603,34 +600,34 @@ Similarly, the central difference~\cref{eq:central-difference} generates the gra
 \begin{equation*}
     \set{x, x + h e_1, x - h e_1, x + h e_2, x - h e_2, \dots, x + h e_n, x - h e_n}.
 \end{equation*}
-Interpolation can be regarded as a generalization of finite difference, in the sense that we have more freedom to choose the interpolation set.
+Interpolation can be regarded as a generalization of finite difference because there is more freedom in choosing the interpolation set.
 This freedom allows us to reuse most of the interpolation points, which is essential for the efficiency of model-based methods.
 
-In section \cref{sec:benchmarking-tools}, we will present some simple numerical experiments after introducing the benchmarking tools we use in this thesis for comparing \gls{dfo} solvers.
-These results will demonstrate that the methods based on finite difference are highly sensitive to noise.
-Unsurprisingly, the methods suffer if the difference parameter does not take into account the noise level and the smoothness of the functions.
+\Cref{sec:benchmarking-tools} will present some simple numerical experiments after introducing the benchmarking tools we use in this thesis for comparing \gls{dfo} solvers.
+These results will demonstrate that the methods based on finite differences are highly sensitive to noise.
+Unsurprisingly, the methods suffer if the difference parameter does not consider the noise level and the smoothness of the functions.
 
 \section{Benchmarking tools for \glsfmtlong{dfo} methods}
 \label{sec:benchmarking-tools}
 
-We introduce in this section the benchmarking tools that we will use throughout this thesis for the comparison of \gls{dfo} solvers.
-We use the performance and data profiles~\cite{Dolan_More_2002,More_Wild_2009}, developed by \citeauthor{Dolan_More_2002} and \citeauthor{More_Wild_2009} respectively.
+We introduce in this section the benchmarking tools that we will use throughout this thesis to compare \gls{dfo} solvers.
+We use the performance and data profiles~\cite{Dolan_More_2002,More_Wild_2009}, developed by Dolan, Mor{\'{e}}, and Wild.
 Most of the information in this section can be found in the aforementioned articles.
 
 \subsection{Expense measure and convergence test}
 \label{subsec:convergence-test}
 
-We denote by~$\mathcal{S}$ the set of solvers to benchmark and~$\mathcal{P}$ a set of test problems, assumed to represent the problems for which the solvers have been designed.
+We denote by~$\mathcal{S}$ a set of solvers to benchmark and~$\mathcal{P}$ a set of test problems, assumed to represent the problems for which the solvers have been designed.
 Let~$t_{p, s}$ be the expense for the solver~$s \in \mathcal{S}$ to achieve a given convergence test on the problem~$p \in \mathcal{P}$.
 As mentioned in \cref{sec:overview}, the major cost of \gls{dfo} in practice is the function evaluations.
-Therefore,~$t_{p, s}$ usually\todo{Correct the sentence} denotes the number of function evaluations required by the solver~$s \in \mathcal{S}$ to solve the problem~$p \in \mathcal{P}$ up to the convergence test.
-When the solver~$s$ fails to satisfy the test for the problem~$p$ within a given budget restriction (e.g., a maximum number of function evaluations), we define~$t_{p, s} = \infty$ by convention.
+Therefore, in a \gls{dfo} context,~$t_{p, s}$ measures the number of function evaluations required by~$s \in \mathcal{S}$ to solve~$p \in \mathcal{P}$ up to the convergence test.
+When~$s$ fails to satisfy the convergence test for~$p$ within a given budget (e.g., a maximal number of function evaluations), we define~$t_{p, s} = \infty$ by convention.
 
 In this thesis, the numerical experiments select~$\mathcal{P}$ from the CUTEst set~\cite{Gould_Orban_Toint_2015}.
 We consider the following convergence test for \gls{dfo} solvers, following~\cite[\S~2]{More_Wild_2009}.
 We define for each problem~$p \in \mathcal{P}$ a merit function~$\varphi_p$, i.e., a function that measures the quality of a point, taking into account the values of both the constraint and the objective functions.
 The smaller value of~$\varphi_p$, the better.
-Let~$x_p^0$ be the initial guess of a given problem~$p \in \mathcal{P}$ and~$\varphi_p^{\ast}$ be the least value of~$\varphi_p$ obtained by the solvers in~$\mathcal{S}$.
+Let~$x_p^0$ be the initial guess for a given problem~$p \in \mathcal{P}$, and~$\varphi_p^{\ast}$ be the least value of~$\varphi_p$ obtained by the solvers in~$\mathcal{S}$.
 Given a tolerance~$\tau \in (0, 1)$, a point~$x$ satisfies the convergence test if
 \begin{equation}
     \label{eq:convergence-test-profiles}
@@ -638,54 +635,58 @@ Given a tolerance~$\tau \in (0, 1)$, a point~$x$ satisfies the convergence test 
 \end{equation}
 in which case we say that~$x$ solves problem~$p$ up to the tolerance~$\tau$.
 This convergence test can be interpreted as follows.
-A point~$x$ satisfies the test if the reduction~$\varphi_p(x_{\hat{p}}^0) - \varphi_p(x)$ is at least~$1 - \tau$ times the best possible reduction~$\varphi_p(x_p^0) - \varphi_p^{\ast}$ achieved by all solvers under consideration.
-We say that a solver solves a problem up to the tolerance~$\tau$ whenever it produces an iterate that achieves the convergence test~\cref{eq:convergence-test-profiles}.
+A point~$x$ satisfies the test if the reduction~$\varphi_p(x_{p}^0) - \varphi_p(x)$ is at least~$1 - \tau$ times the maximal reduction~$\varphi_p(x_p^0) - \varphi_p^{\ast}$ achieved by all solvers in~$\mathcal{S}$.
+We say that a solver solves the problem~$p$ up to the tolerance~$\tau$ whenever it produces an iterate that achieves the convergence test~\cref{eq:convergence-test-profiles}.
 
-In the convergence test~\cref{eq:convergence-test-profiles}, it is tempting to define~$\varphi_p^{\ast}$ as the merit function value at a local minimizer of~$p$, which is the case when testing derivative-based solvers~\cite{Dolan_More_2002}.
-However, according to~\cite{More_Wild_2009}, this may not be appropriate in a \gls{dfo} context, because it may happen that no solver in~$\mathcal{S}$ achieves the test within the given computational budget if the function evaluations are expensive.
+In the convergence test~\cref{eq:convergence-test-profiles}, it is tempting to define~$\varphi_p^{\ast}$ as the merit function value at a minimizer of~$p$, which is the case when testing derivative-based solvers~\cite{Dolan_More_2002}.
+However, according to~\cite{More_Wild_2009}, this may not be appropriate in \gls{dfo} because it may happen that no solver in~$\mathcal{S}$ achieves the test within the given computational budget if the function evaluations are expensive.
 
-\subsection{Performance profiles}
+\subsection{Performance profile}
 
-Fix a~$\tau \in (0, 1)$ in the convergence test~\cref{eq:convergence-test-profiles}.
-For a solver~$\hat{s} \in \mathcal{S}$ and a problem~$\hat{p} \in \mathcal{P}$, define the \emph{performance ratio} by
+Fix a tolerance~$\tau \in (0, 1)$ in the convergence test~\cref{eq:convergence-test-profiles}.
+For a solver~$s \in \mathcal{S}$ and a problem~$p \in \mathcal{P}$, define the \emph{performance ratio} by
 \begin{equation}
     \label{eq:performance-ratio}
-    r_{\hat{p}, \hat{s}} \eqdef \frac{t_{\hat{p}, \hat{s}}}{\min \set{t_{\hat{p}, s} : s \in \mathcal{S}}},
+    r_{p, s} \eqdef \frac{t_{p, s}}{\min \set{t_{p, \hat{s}} : \hat{s} \in \mathcal{S}}},
 \end{equation}
-which is the relative expense for~$\hat{s}$ to solve~$\hat{p}$ compared with the most efficient solver in~$\mathcal{S}$ for this problem.
-The \emph{performance profile} of~$\hat{s}$ is defined as
+which is the \emph{relative} expense for~$s$ to solve~$p$ compared with the most efficient solver in~$\mathcal{S}$ for this problem.
+The \emph{performance profile} of~$s$ is defined as
 \begin{equation*}
-    \rho_{\hat{s}}(\alpha) \eqdef \frac{1}{\card (\mathcal{P})} \card \big(\set{p \in \mathcal{P} : r_{p, \hat{s}} \le \alpha} \big), \quad \text{for~$\alpha \ge 1$},
+    \rho_{s}(\alpha) \eqdef \frac{1}{\card (\mathcal{P})} \card \big(\set{p \in \mathcal{P} : r_{p, s} \le \alpha} \big), \quad \text{for~$\alpha \ge 1$},
 \end{equation*}
 where~$\card(\cdot)$ denotes the cardinal of a set.
-Clearly,~$\rho_{\hat{s}}(\alpha)$ is the proportion of problems in~$\mathcal{P}$ that are solved by~$\hat{s}$ with a performance ratio at most~$\alpha$.
-In particular, $\rho_{\hat{s}}(1)$ is the proportion of problems that~$\hat{s}$ solves faster than any other solver in~$\mathcal{S}$.
+Clearly,~$\rho_{s}(\alpha)$ is the proportion of problems in~$\mathcal{P}$ that are solved by~$s$ with a performance ratio at most~$\alpha$.
+It can also be interpreted as the probability for the solver~$s$ to solve a random problem from~$\mathcal{P}$ under the restriction on the performance ratio.
+In particular, $\rho_{s}(1)$ is the proportion of problems that~$s$ solves faster than any other solver in~$\mathcal{S}$.
 Meanwhile,
 \begin{equation*}
-    \lim_{\alpha \to \infty} \rho_{\hat{s}}(\alpha)
+    \lim_{\alpha \to \infty} \rho_{s}(\alpha)
 \end{equation*}
-is the proportion of problems that are solved by~$\hat{s}$ within the budget restriction.
-Given a threshold~$\alpha \ge 1$ and two solvers~$s_1$ and~$s_2$,~$\rho_{s_1}(\alpha) > \rho_{s_2}(\alpha)$ means that~$s_1$ solves more problems than~$s_2$ under the constraint that~$r_{p, s_1} \le \alpha$ and~$r_{p, s_2} \le \alpha$ for~$p \in \mathcal{P}$.
+is the proportion of problems that are solved by~$s$ (within the budget restriction).
+Given two solvers~$s_1$ and~$s_2$,~$\rho_{s_1}(\alpha) > \rho_{s_2}(\alpha)$ means that~$s_1$ solves more problems than~$s_2$ under the constraint that~$r_{p, s_1} \le \alpha$ and~$r_{p, s_2} \le \alpha$ for~$p \in \mathcal{P}$.
+Therefore, a larger value of~$\rho_s$ indicates a better performance of~$s$.
 
-\subsection{Data profiles}
+\subsection{Data profile}
 
-We now introduce data profiles, another benchmarking tool proposed by~\cite{More_Wild_2009}.
-The \emph{data profile} of a solver~$\hat{s} \in \mathcal{S}$ is defined as
+We now introduce the data profile, another benchmarking tool proposed by~\cite{More_Wild_2009}.
+The \emph{data profile} of a solver~$s \in \mathcal{S}$ is defined as
 \begin{equation}
     \label{eq:data-profile}
-    d_{\hat{s}}(\alpha) \eqdef \frac{1}{\card \mathcal{P}} \card \set[\bigg]{p \in \mathcal{P} : \frac{t_{p, \hat{s}}}{n_p + 1} \le \alpha}, \quad \text{for~$\alpha \ge 0$}.
+    d_{s}(\alpha) \eqdef \frac{1}{\card(\mathcal{P})} \card\bigg(\set[\bigg]{p \in \mathcal{P} : \frac{t_{p, s}}{n_p + 1} \le \alpha}\bigg), \quad \text{for~$\alpha \ge 0$},
 \end{equation}
 where~$n_p$ is the dimension of the problem~$p$.
-Therefore,~$d_{\hat{s}}(\alpha)$ is the proportion of problems in~$\mathcal{P}$ that are solved by~$\hat{s}$ with at most~$\alpha (n_p + 1)$ function evaluations\todo{Change accordingly}.
-In particular,~$d_{\hat{s}}(0) = 0$ and, the same as~$\rho_{\hat{s}}$,
+Therefore,~$d_{s}(\alpha)$ is the proportion of problems in~$\mathcal{P}$ that are solved by~$s$ with at most~$\alpha (n_p + 1)$ function evaluations.
+It can also be interpreted as the probability for the solver~$s$ to solve a random problem from~$\mathcal{P}$, under the budget described above.
+In particular,~$d_{s}(0) = 0$ and, the same as~$\rho_{s}$,
 \begin{equation*}
-    \lim_{\alpha \to \infty} d_{\hat{s}}(\alpha)
+    \lim_{\alpha \to \infty} d_{s}(\alpha)
 \end{equation*}
-is the proportion of problems that are solved by~$\hat{s}$ within the budget restriction.
-In equation~\cref{eq:data-profile}, the denominator~$n_p + 1$ is a unit cost that serves to normalize $t_{p, \hat{s}}$, so that the computationl expenses for different problems are comparable even if their dimensions are quite different.
-Note that~$n_p + 1$ is the number of function evaluations needed for a evaluating a simplex gradient~\cite{Bortz_Kelley_1998}.
-Therefore,~$d_{\hat{s}}(\alpha)$ is the proportion of problems solved by~$\hat{s}$ given a budget equivalent to~$\alpha$ simplex gradient estimates.
-Given a threshold~$\alpha \ge 1$ and two solvers~$s_1$ and~$s_2$,~$d_{s_1}(\alpha) > d_{s_2}(\alpha)$ means that~$s_1$ solves more problems than~$s_2$ under the constraint that~$t_{p, s_1} \le \alpha (n_p + 1)$ and~$t_{p, s_2} \le \alpha (n_p + 1)$ for~$p \in \mathcal{P}$.
+is the proportion of problems that are solved by~$s$.
+In equation~\cref{eq:data-profile}, the denominator~$n_p + 1$ is a unit cost that serves to normalize $t_{p, s}$, so that the computational expenses for different problems are comparable even if their dimensions are quite different.
+Note that~$n_p + 1$ is the number of function evaluations needed for evaluating a simplex gradient~\cite{Bortz_Kelley_1998}.
+Therefore,~$d_{s}(\alpha)$ is the proportion of problems solved by~$s$ within a budget equivalent to~$\alpha$ simplex gradient estimates.
+Given two solvers~$s_1$ and~$s_2$,~$d_{s_1}(\alpha) > d_{s_2}(\alpha)$ means that~$s_1$ solves more problems than~$s_2$ using at most~$\alpha (n_p + 1)$ function evaluations for each~$p \in \mathcal{P}$.
+Therefore, a larger value of~$d_s$ indicates a better performance of~$s$.
 
 \subsection{An illustrative example}
 
@@ -694,7 +695,7 @@ These solvers, constituting the set~$\mathcal{S}$, are
 \begin{itemize}
     \item \gls{newuoa} (see \cref{subsec:newuoa-bobyqa-lincoa}), a model-based \gls{dfo} method; and
     \item \gls{bfgs} and \gls{cg}, two gradient-based solvers provided by SciPy~1.0~\cite{Virtanen_Etal_2020}.
-    When no derivatives are provided, they use forward finite-difference approximate gradients, with the difference parameter~$h = \sqrt{u}$, where~$u$ is the unit roundoff.
+    When no derivatives are provided, they use forward finite-difference to approximate gradients, with the difference parameter~$h = \sqrt{u}$, where~$u$ is the unit roundoff.
 \end{itemize}
 The set~$\mathcal{P}$ contains~$154$ smooth unconstrained CUTEst problems of dimension at most~$50$, and the convergence tolerance in~\cref{eq:convergence-test-profiles} is~$\tau = 10^{-3}$.
 Since these problems are unconstrained, the merit function~$\varphi_p$ of each problem~$p \in \mathcal{P}$ is set to be the objective function~$\obj_p$.
@@ -707,27 +708,29 @@ Therefore, the convergence test~\cref{eq:convergence-test-profiles} becomes
 We conduct two experiments as follows.
 \begin{enumerate}
     \item The first experiment is made without modifying the problems in~$\mathcal{P}$.
-    In~\cref{eq:convergence-test-profiles-unconstrained},~$\obj_p^{\ast}$ is set to be the least value of~$f_p$ obtained by all solvers in~$\mathcal{S}$.
-    The value of~$t_{p, s}$ is defined to be the number of function evaluations that the solver~$s \in \mathcal{S}$ needs to solve the problem~$p \in \mathcal{P}$ up to the tolerance~$\tau$.
+    In~\cref{eq:convergence-test-profiles-unconstrained},~$\obj_p^{\ast}$ is set to the least value of~$f_p$ obtained by all solvers in~$\mathcal{S}$.
+    The value of~$t_{p, s}$ is defined as the number of function evaluations that the solver~$s \in \mathcal{S}$ needs to solve the problem~$p \in \mathcal{P}$ up to the tolerance~$\tau$.
     \item The second experiment is a noisy variation of the previous one.
     Let~$\sigma > 0$ be the noise level.
-    For each problem~$p \in \mathcal{P}$, the objective funtion is evaluated by
+    For each problem~$p \in \mathcal{P}$, the objective function is evaluated by
     \begin{equation}
         \label{eq:relative-gaussian-noisy-objective-function}
         \tilde{\obj}_p(x) \eqdef [1 + \epsilon(x)] \obj_p(x),
     \end{equation}
-    where~$\epsilon(x) \sim \mathcal{N}(0, \sigma^2)$.
+    where~$\epsilon(x) \sim N(0, \sigma^2)$.
     Each problem is solved ten times with each solver.
     In the convergence test~\cref{eq:convergence-test-profiles-unconstrained},~$\obj_p^{\ast}$ is either the least value of~$\obj_p$ obtained by all solvers during these ten runs, or the value obtained in the previous noise-free experiment, whichever is smaller.
-    The value of~$t_{p, s}$ is set to the average number of function evaluations that the solver~$s \in \mathcal{S}$ needs to solve the problem~$p \in \mathcal{P}$ up to the tolerance~$\tau$.
+    The value of~$t_{p, s}$ is set to the average number of function evaluations that~$s \in \mathcal{S}$ needs to solve~$p \in \mathcal{P}$ up to the tolerance~$\tau$.
     Note that the convergence test~\cref{eq:convergence-test-profiles-unconstrained} uses the values of~$\obj_p$ and not those of~$\tilde{\obj}_p$.
     This means that we evaluate the solvers according to the true objective function, even though the solvers can access only the noisy values produced by~\cref{eq:relative-gaussian-noisy-objective-function}.
 \end{enumerate}
 
+\subsubsection{Performance profiles}
+
 \Cref{fig:performance-profile-example} plots the performance profiles obtained by these experiments.
 In general, the best solver is indicated by the highest curve.
 Note that~$\alpha$ is displayed in~$\log_2$-scale.
-\Cref{fig:performance-profile-example-noiseless} corresponds to the noise-free experiment, and \cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6} correspond to the noisy experiment, with~$\sigma$ being~$10^{-10}$,~$10^{-8}$, and~$10^{-6}$ respectively.
+\Cref{fig:performance-profile-example-noiseless} corresponds to the noise-free experiment and \cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6} correspond to the noisy experiment, with~$\sigma$ being~$10^{-10}$,~$10^{-8}$, and~$10^{-6}$, respectively.
 
 \begin{figure}[ht]
     \centering
@@ -762,34 +765,37 @@ Note that~$\alpha$ is displayed in~$\log_2$-scale.
     \label{fig:performance-profile-example}
 \end{figure}
 
-We can make the following observations on the noise-free experiment according to \cref{fig:performance-profile-example-noiseless}.
+We can make the following observations on the noise-free experiment in \cref{fig:performance-profile-example-noiseless}.
 \begin{enumerate}
-    \item \Gls{bfgs} solves more than~$90\%$ of the problems while the two other solvers solve slightly less problems.
-    According to the interpretation in~\cite[\S~2]{More_Wild_2009}, \gls{bfgs} is more reliable than the other two solvers on the test problems in~$\mathcal{P}$, but the margin is narrow.
-    \item \Gls{newuoa} uses the least number of function evaluations on about~$50\%$ of the problems, while the percentage for \gls{bfgs} and \gls{cg} are about~$30\%$ and~$25\%$ respectively.
+    \item \Gls{bfgs} solves more than~$90\%$ of the problems, while the two other solvers solve slightly fewer problems.
+    According to~\cite[\S~2]{More_Wild_2009}, \gls{bfgs} is said more reliable than the other two solvers on the test problems in~$\mathcal{P}$, but the margin is narrow.
+    \item \Gls{newuoa} uses the least number of function evaluations on about~$50\%$ of the problems, while the percentages for \gls{bfgs} and \gls{cg} are about~$30\%$ and~$25\%$ respectively.
 \end{enumerate}
 
 For the noisy experiments, we observe the following according to~\cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}.
 \begin{enumerate}
     \item \Gls{newuoa} solves always more than~$70\%$ of the problems while the two other solvers solve significantly less problems.
-    \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses the least number of function evaluations on more than~$55\%$ of the problems, while the percentage for \gls{bfgs} and \gls{cg} are about~$20\%$ and~$15\%$ respectively.
-    For~$\sigma \in \set{10^{-8}, 10^{-6}}$, \gls{newuoa} is the most efficient on almost all the problems that it can solve, while the other two solvers fail on most of the problems.
+    \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses the least number of function evaluations on more than~$55\%$ of the problems, while the percentages for \gls{bfgs} and \gls{cg} are about~$20\%$ and~$15\%$ respectively.
+    For~$\sigma \in \set{10^{-8}, 10^{-6}}$, \gls{newuoa} is the most efficient on almost all the problems that it can solve, while the other two solvers fail on most of the problems in~$\mathcal{P}$.
 \end{enumerate}
 
-Overall, on the noise-free experiment, \gls{bfgs} is slightly more reliable than \gls{newuoa} and \gls{cg}, while \gls{newuoa} is more efficient on about half of the problems.
-In contrast, \gls{newuoa} clearly outperforms the two other solvers on noisy problems, although the noise level~$\sigma$ is low while the convergence tolerance~$\tau$ is not demanding.
+Overall, on the noise-free problems, \gls{bfgs} is slightly more reliable than \gls{newuoa} and \gls{cg}, although \gls{newuoa} is more efficient on about half of the problems.
+In contrast, \gls{newuoa} outperforms the two other solvers on noisy problems.
+The performances of \gls{bfgs} and \gls{cg} deteriorate significantly when Gaussian noise is imposed as in~\cref{eq:relative-gaussian-noisy-objective-function}, even though the noise level is not high and the convergence tolerance is not demanding.
 
-Note that our results do not contradict the observations of \citeauthor{Shi_Etal_2021}~\cite{Shi_Etal_2021}, where they choose the difference parameter more carefully, according to the noise levels and the smoothness of the problems.
-We rather kept the default value provided for the solvers \gls{bfgs} and \gls{cg} in SciPy~1.0~\cite{Virtanen_Etal_2020}.
+Note that our results do not contradict the observations of \citeauthor{Shi_Etal_2021}~\cite{Shi_Etal_2021}, where they choose the difference parameter~$h$ more carefully, according to the noise levels and the smoothness of the problems.
+We rather keep the default value provided for the solvers \gls{bfgs} and \gls{cg} in SciPy~1.0~\cite{Virtanen_Etal_2020}.
 As commented in~\cite{Shi_Etal_2021}, the performance of methods based on finite differences is encouraging when there is no noise, yet much more care is needed when the problems are noisy.
-\Gls{newuoa} performs robustly with respect to noise according to this experiment, which agrees with the observations in~\cite{Shi_Etal_2021} on model-based methods.
+\Gls{newuoa} performs robustly with the noise according to this experiment, which agrees with the observations in~\cite{Shi_Etal_2021}.
 
 We also mention that no conclusive comparison can be made between \gls{bfgs} and \gls{cg} according to \cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}.
-In fact, as pointed out in~\cite{Gould_Scott_2016}, when there are more than two solvers to compare, performance profiles have limitations when ranking the solvers, except for the one that clearly outperforms the others (if any), such as \gls{newuoa} in \cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}.
+In fact, as pointed out in~\cite{Gould_Scott_2016}, when there are more than two solvers to compare, performance profiles have limitations when ranking the solvers, except for the one that outperforms the others (if any), such as \gls{newuoa} in \cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}.
+
+\subsubsection{Data profiles}
 
 \Cref{fig:data-profile-example} displays the data profiles obtained in these experiments.
-In general, a higher curve indicates a better performance.
-\Cref{fig:data-profile-example-noiseless} corresponds to the noise-free experiment, and \cref{fig:data-profile-example-noisy-10,fig:data-profile-example-noisy-8,fig:data-profile-example-noisy-6} correspond to the noisy experiment, with~$\sigma$ being~$10^{-10}$,~$10^{-8}$, and~$10^{-6}$ respectively.
+A higher curve indicates a better performance.
+\Cref{fig:data-profile-example-noiseless} corresponds to the noise-free experiment, and \cref{fig:data-profile-example-noisy-10,fig:data-profile-example-noisy-8,fig:data-profile-example-noisy-6} correspond to the noisy experiment, with~$\sigma$ being~$10^{-10}$,~$10^{-8}$, and~$10^{-6}$, respectively.
 
 \begin{figure}[ht]
     \centering
@@ -824,24 +830,28 @@ In general, a higher curve indicates a better performance.
     \label{fig:data-profile-example}
 \end{figure}
 
-We can make the following observations on the noise-free experiment according to \cref{fig:data-profile-example-noiseless}.
+We can make the following observations on the noise-free experiment on \cref{fig:data-profile-example-noiseless}.
 \begin{enumerate}
     \item \Gls{bfgs} solves more than~$90\%$ of the problems while the two other solvers solve slightly less problems.
-    This agrees with what is indicated by \cref{fig:performance-profile-example-noiseless}, as it should be the case.
-    \item \Gls{bfgs} uses less than~$300 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \mathcal{P}$ that it can solve, while \gls{newuoa} and \gls{cg} uses about~$400 (n_p + 1)$ function evaluations.
+    It agrees with what is indicated by \cref{fig:performance-profile-example-noiseless}, as it should be the case according to theory.
+    \item \Gls{bfgs} uses less than~$300 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \mathcal{P}$ that it can solve, while \gls{newuoa} and \gls{cg} use about~$400 (n_p + 1)$.
 \end{enumerate}
 
 For the noisy experiments, we observe the following according to~\cref{fig:data-profile-example-noisy-10,fig:data-profile-example-noisy-8,fig:data-profile-example-noisy-6}.
 \begin{enumerate}
-    \item \Gls{newuoa} solves always more than~$70\%$ of the problems while the two other solvers solve significantly less problems.
-    This agrees with what is indicated by \cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}, as it should be the case.
-    \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses less than~$200 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \mathcal{P}$ that it can solve, while \gls{bfgs} and \gls{cg} uses less than~$100 (n_p + 1)$ function evaluations, altough they solve much less problems.
-    For~$\sigma \in \set{10^{-8}, 10^{-6}}$, \gls{newuoa} uses less than~$100 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \mathcal{P}$ that it can solve, while the other two solvers fail on most of the problems.
+    \item \Gls{newuoa} solves always more than~$70\%$ of the problems while the two other solvers solve significantly fewer problems.
+    It agrees with what is indicated by \cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}, as it should be the case.
+    \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses less than~$200 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \mathcal{P}$ that it can solve, while \gls{bfgs} and \gls{cg} use less than~$100 (n_p + 1)$, altough they solve much fewer problems.
+    For~$\sigma \in \set{10^{-8}, 10^{-6}}$, \gls{newuoa} uses less than~$100 (n_p + 1)$ function evaluations\footnote{Even though the corresponding value is~$200 (n_p + 1)$ when~$\sigma = 10^{-10}$, we should not interpreted that \gls{newuoa} performs better with higher noise. When~$\sigma$ is larger, \gls{newuoa} solves fewer problems and~$\obj_p^{\ast}$ in~\cref{eq:convergence-test-profiles-unconstrained} is often larger, leading to a weaker convergence test.} to solve most of the problems that it can solve, while the other two solvers fail on most of the problems.
 \end{enumerate}
 
-Before concluding this section, we mention a major difference between performance and data profiles.
-Comparisons made on data profiles are absolute, and the result of a solver does not influence the result of another, except for the value of~$\varphi_p^{\ast}$ in the convergence test~\cref{eq:convergence-test-profiles}.
-On the other hand, comparisons made on data profiles are relative.
-The performance of one solver depends on that of all the other solvers, because the value of~$r_{\hat{p}, \hat{s}}$ in~\cref{eq:performance-ratio} depends on~$\set{t_{\hat{p}, s} : s \in \mathcal{S}}$\todo{Rewrite and point out relative and absolute comparisons}.
-For example, \cref{fig:data-profile-example-noisy-10} suggests that \gls{cg} has better performance than \gls{bfgs} during the corresponding experiment, although the comparison based on the performance profiles on \cref{fig:performance-profile-example-noisy-10} is not as conclusive.
-This is because the comparisons made on data profiles are absolute, and the result of a solver does not influence the result of another, except for the convergence test.
+\subsection{Absoluteness and relativeness of the profiles}
+
+Before concluding this section, we mention a significant difference between performance and data profiles.
+Data profiles are absolute because~\cref{eq:data-profile} compares the expense~$t_{p, s}$ with~$n_p + 1$ for each~$p \in \mathcal{P}$, which is independent of the other solvers.
+The data profile of a solver does depend weakly on the other solvers, the only dependence being the value of~$\varphi_p^{\ast}$ in the convergence test~\cref{eq:convergence-test-profiles}.
+On the other hand, performance profiles are relative because the value of~$r_{p, s}$ in~\cref{eq:performance-ratio} compares the expense of~$s$ with that of the most efficient solver on~$p$, which depends on all the other solvers. 
+For example, the data profiles in \cref{fig:data-profile-example-noisy-10} suggest that \gls{cg} outperforms \gls{bfgs} during the corresponding experiment, and the profiles are unlikely to change dramatically if \gls{newuoa} is removed from the comparison.
+In contrast, the comparison between \gls{bfgs} and \gls{cg} is not as conclusive based on the performance profiles in \cref{fig:performance-profile-example-noisy-10} because the profiles may change significantly if \gls{newuoa} is removed from the comparison.
+This phenomenon is studied in~\cite{Gould_Scott_2016}, which presents examples on which comparisons using performance profiles should be made with care.
+

@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/04/20 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/05/05 PolyU thesis document class]
 
 % Load book class as basis
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
@@ -132,7 +132,7 @@
 % Nomenclature processing
 \RequirePackage[refpage,nocfg,intoc]{nomencl}
 \setlength{\nomitemsep}{-\parsep}
-\setlength{\nomlabelwidth}{0.08\textwidth}
+\setlength{\nomlabelwidth}{0.12\textwidth}
 \makenomenclature
 
 % Cross-referencing and colorization
