@@ -18,9 +18,9 @@
 \RequirePackage{amssymb}
 \RequirePackage{mathrsfs}
 \RequirePackage{mathtools}
-\RequirePackage{dsfont}
-\RequirePackage{empheq}
 \RequirePackage{bm}
+\RequirePackage[scr=boondoxo,bb=dsfontserif]{mathalfa}
+\RequirePackage{empheq}
 \RequirePackage[breakable,skins,theorems]{tcolorbox}
 \RequirePackage{xargs}
 
@@ -28,16 +28,20 @@
 \numberwithin{equation}{section}
 
 % Mathematical constants, sets, and notations
-\newcommand{\eu}{\ensuremath{\mathrm{e}}}
-\newcommand{\iu}{\ensuremath{\mathrm{i}}}
-\newcommand{\du}{\ensuremath{\mathrm{d}}}
-\newcommand{\C}{\ensuremath{\mathds{C}}}
-\newcommand{\F}{\ensuremath{\mathds{F}}}
-\newcommand{\N}{\ensuremath{\mathds{N}}}
-\newcommand{\Q}{\ensuremath{\mathds{Q}}}
-\newcommand{\R}{\ensuremath{\mathds{R}}}
-\newcommand{\Z}{\ensuremath{\mathds{Z}}}
-\newcommand{\T}{\ensuremath{\mathsf{T}}}
+\newcommand{\eu}{\mathrm{e}}
+\newcommand{\iu}{\mathrm{i}}
+\newcommand{\du}{\mathrm{d}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\T}{\mathsf{T}}
+
+% Extra mathematical sets
+\newcommand{\lpoly}{\mathscr{L}(\R^n)}
+\newcommand{\qpoly}{\mathscr{Q}(\R^n)}
 
 % Mathematical operators
 \DeclareMathOperator{\act}{\mathcal{A}}
@@ -47,7 +51,7 @@
 \DeclareMathOperator{\bigo}{\mathcal{O}}
 \DeclareMathOperator{\range}{range}
 \DeclareMathOperator{\sgn}{sgn}
-\newcommand{\eqdef}{\ensuremath{\mathrel{\stackrel{\mathsf{def}}{=}}}}
+\newcommand{\eqdef}{\mathrel{\stackrel{\mathsf{def}}{=}}}
 
 % Mathematical macros
 \newcommand{\abs}[2][]{#1\lvert#2#1\rvert}
