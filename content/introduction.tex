@@ -648,7 +648,7 @@ Fix a tolerance~$\tau \in (0, 1)$ in the convergence test~\cref{eq:convergence-t
 For a solver~$s \in \mathcal{S}$ and a problem~$p \in \mathcal{P}$, define the \emph{performance ratio} by
 \begin{equation}
     \label{eq:performance-ratio}
-    r_{p, s} \eqdef \frac{t_{p, s}}{\min \set{t_{p, \hat{s}} : \hat{s} \in \mathcal{S}}},
+    r_{p, s} \eqdef \frac{t_{p, s}}{\min \set{t_{p, u} : u \in \mathcal{S}}},
 \end{equation}
 which is the \emph{relative} expense for~$s$ to solve~$p$ compared with the most efficient solver in~$\mathcal{S}$ for this problem.
 The \emph{performance profile} of~$s$ is defined as

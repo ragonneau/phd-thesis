@@ -12,19 +12,34 @@
 % This work has the LPPL maintenance status `maintained'.
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
-\chapter{Interpolation models for \glsfmtlong{dfo}}
+\chapter{Interpolating models for \glsfmtlong{dfo}}
 
-We mentioned in \cref{ch:introduction} that model-based \gls{dfo} methods necessitates to approximate locally the functions involved in an optimization by simple functions.
-Examples of such functions are polynomials and \glspl{rbf}.
-In this chapter, we focus on linear and quadratic polynomials.
+We mentioned in \cref{ch:introduction} that model-based \gls{dfo} methods necessitate to approximate locally the functions involved in optimization problems by simple functions, referred to as \emph{models} or \emph{surrogates}.
+These models are incorporated in subproblems that are in turn approximately minimized.
+Examples of such functions commonly used in the literature are polynomials and \glspl{rbf}.
+In this thesis, we focus on linear and quadratic polynomial functions.
+We do not use higher-degree polynomials due to the following observations.
+\begin{enumerate}
+    \item The dimension of the space of polynomials in~$\R^n$ of degree at most~$k$ is~$\bigo(n^k)$.
+    Therefore, evaluating an interpolating model from such a space necessitates~$\bigo(n^k)$ function evaluations (see \cref{sec:multivariate-interpolation}).
+    Although we can reduce this number using underdetermined interpolation schemes (see \cref{sec:underdetermined-interpolation}), this amount of function evaluations is unacceptable in a \gls{dfo} context if~$k$ is too high,~$k \ge 3$ say.
+    \item The method's subproblems are built upon these models. 
+    Therefore, the more sophisticated the models are, the more difficult it is to solve approximately these subproblems.
+    Since we are interested in numerical methods for \gls{dfo}, we want to evaluate approximate solutions to these subproblems fairly easily.
+    \item As we mentioned hereinabove, subproblems are solved only approximately.
+    They are usually approximately solved using methods that use first- and second-order derivatives of the models.
+    Therefore, building high degree polynomial models is pointless if the methods do not use high-order information.
+\end{enumerate}
+
 We denote by~$\lpoly$ and~$\qpoly$ the spaces of respectively linear and quadratic polynomials on~$\R^n$.
+We want to approximate a function~$\obj : \R^n \to \R$ with a model~$\objm$
 
 \begin{itemize}
     \item Linear models~$\lpoly$, quadratic models~$\qpoly$, RBF models, \dots
     \item Definition of interpolation and regression.
     \item Let~$\mathcal{Y} \subseteq \R^n$ be the interpolation set.
     \item Dimensions of~$\lpoly$ and~$\qpoly$.
-    \item Because of the dimensions of these space, we focus on interpolation models.
+    \item Because of the dimensions of these space, we focus on interpolating models.
 \end{itemize}
 
 \section{Elementary concepts of multivariate interpolation}
