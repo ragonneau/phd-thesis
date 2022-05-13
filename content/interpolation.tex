@@ -12,41 +12,83 @@
 % This work has the LPPL maintenance status `maintained'.
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
-\chapter{Interpolating models for \glsfmtlong{dfo}}
+\chapter{Interpolation models for \glsfmtlong{dfo}}
 
-We mentioned in \cref{ch:introduction} that model-based \gls{dfo} methods necessitate to approximate locally the functions involved in optimization problems by simple functions, referred to as \emph{models} or \emph{surrogates}.
-These models are incorporated in subproblems that are in turn approximately minimized.
-Examples of such functions commonly used in the literature are polynomials and \glspl{rbf}.
-In this thesis, we focus on linear and quadratic polynomial functions.
-We do not use higher-degree polynomials due to the following observations.
+\section{Introduction and motivation}
+
+As mentioned in \cref{ch:introduction}, model-based \gls{dfo} methods necessitate to approximate locally the functions involved in optimization problems by simple functions, referred to as \emph{models} or \emph{surrogates}.
+These models are used to construct subproblems that are in turn approximately minimized.
+Examples of such functions commonly used in the literature are polynomials and \glspl{rbf}~\cite{Powell_2004a}.
+In this thesis, we focus on linear and quadratic polynomial models.
+
+Let~$\lpoly$ and~$\qpoly$ denote the spaces of polynomials on~$\R^n$ of degree at most one and two, respectively.
+In a \gls{dfo} context, models from~$\lpoly$ or~$\qpoly$ are built for a real-valued function~$\obj$ without using derivatives.
+This can be done by interpolation schemes based on function values.
+More specifically, given a finite set of points~$\xpt \subseteq \R^n$, we construct a model~$\objm$ that interpolates the function~$\obj$ on~$\xpt$, i.e.,
+\begin{equation}
+    \label{eq:interpolation-conditions}
+    \objm(y) = \obj(y), \quad \text{for~$y \in \xpt$}.
+\end{equation}
+
+The conditions~\cref{eq:interpolation-conditions} may be inconsistent.
+In such a case, models can be built using regression schemes.
+For example, a least-square regression model~$\objm$ minimizes
+\begin{equation*}
+    \sum_{\mathclap{y \in \xpt}} [\obj(y) - \objm(y)]^2.
+\end{equation*}
+Although there are successful methods that use regression models (see, e.g.,~\cite{Billups_Larson_Graf_2013,Conn_Scheinberg_Vicente_2008b}), the \gls{dfo} methods we present and develop in this thesis use interpolation models and ensure that the interpolation conditions are consistent and well-conditioned (see \cref{ch:pdfo,ch:cobyqa-introduction}).
+
+It is also possible to use polynomials of degree higher than two.
+However, we do not consider such models in this thesis due to the following observations.
 \begin{enumerate}
-    \item The dimension of the space of polynomials in~$\R^n$ of degree at most~$k$ is~$\bigo(n^k)$.
-    Therefore, evaluating an interpolating model from such a space necessitates~$\bigo(n^k)$ function evaluations (see \cref{sec:multivariate-interpolation}).
-    Although we can reduce this number using underdetermined interpolation schemes (see \cref{sec:underdetermined-interpolation}), this amount of function evaluations is unacceptable in a \gls{dfo} context if~$k$ is too high,~$k \ge 3$ say.
-    \item The method's subproblems are built upon these models. 
-    Therefore, the more sophisticated the models are, the more difficult it is to solve approximately these subproblems.
-    Since we are interested in numerical methods for \gls{dfo}, we want to evaluate approximate solutions to these subproblems fairly easily.
-    \item As we mentioned hereinabove, subproblems are solved only approximately.
-    They are usually approximately solved using methods that use first- and second-order derivatives of the models.
-    Therefore, building high degree polynomial models is pointless if the methods do not use high-order information.
+    \item As shown in~\cite[thm.~2.5]{Wendland_2005}, the space of polynomials on~$\R^n$ of degree at most~$k$ has a dimension of
+    \begin{equation*}
+        \binom{n + k}{n} = \frac{1}{k!} \prod_{i = 1}^k (n + i) \ge \frac{n^k}{k!}.
+    \end{equation*}
+    Therefore, to determine a model from this space merely by the interpolation conditions~\cref{eq:interpolation-conditions}, we need in general~$\bigo(n^k)$ function values.
+    This amount is unacceptable in a \gls{dfo} context unless~$k$ is small.
+    It is possible to reduce this number with underdetermined interpolation, which is used by several optimization methods for~$k \le 2$ (see \cref{sec:underdetermined-interpolation}), including the method \gls{cobyqa} developed in this thesis (see \cref{ch:cobyqa-introduction}).
+    Using underdetermined interpolation models with~$k \ge 3$ is out of the scope of this thesis, although it is an interesting research direction.
+    \item The \gls{dfo} methods need to solve approximately subproblems (e.g., trust-region subproblems) built upon these models.
+    Sophisticated models usually lead to complicated subproblems to solve.
+    On the other hand, even with models that are not quadratic, practical algorithms normally solve the subproblems based on first- or second-order approximations of the models, e.g., calculate the approximate Cauchy point discussed in~\cite[\S~6.3.3]{Conn_Gould_Toint_2000}.
+    Therefore, building polynomial models of degree higher than two may not be necessary.
 \end{enumerate}
 
-We denote by~$\lpoly$ and~$\qpoly$ the spaces of respectively linear and quadratic polynomials on~$\R^n$.
-We want to approximate a function~$\obj : \R^n \to \R$ with a model~$\objm$
-
-\begin{itemize}
-    \item Linear models~$\lpoly$, quadratic models~$\qpoly$, RBF models, \dots
-    \item Definition of interpolation and regression.
-    \item Let~$\mathcal{Y} \subseteq \R^n$ be the interpolation set.
-    \item Dimensions of~$\lpoly$ and~$\qpoly$.
-    \item Because of the dimensions of these space, we focus on interpolating models.
-\end{itemize}
+Although we do not study \gls{rbf} models, we mention that there also exist many \gls{dfo} methods based on these models.
+Examples of such methods include \gls{orbit}~\cite{Wild_Regis_Shoemaker_2008}, \gls{conorbit}~\cite{Regis_Wild_2017}, and \gls{boosters}~\cite{Oeuvray_Bierlaire_2009}.
 
 \section{Elementary concepts of multivariate interpolation}
 \label{sec:multivariate-interpolation}
 
+Before studying properties of multivariate interpolation, we must introduce the following notion of poisedness, which defines uniquely interpolants.
+
+\begin{definition}
+    We say that the set~$\xpt$ is \emph{poised} if the interpolation system~\cref{eq:interpolation-conditions} is consistent and has a unique solution.
+\end{definition}
+
+Let of first consider the problem of finding a linear model~$\objm \in \lpoly$ satisfying the interpolation system~\cref{eq:interpolation-conditions} whenever~$\card \xpt = \dim \lpoly = n + 1$.
+In the natural basis of~$\lpoly$, the system~\cref{eq:interpolation-conditions} can be reformulated as
+\begin{equation}
+    \label{eq:linear-interpolation-conditions}
+    \alpha_0 + \sum_{i = 1}^n \alpha_i y_i = \obj(y), \quad \text{for~$y \in \xpt$},
+\end{equation}
+where~$y_i$ denotes the~$i$th component of~$y \in \xpt$, and where~$\alpha_i \in \R$ for~$i \in \set{0, 1, \dots, n}$.
+If~$\xpt$ is poised for linear interpolation, given~$\set{\alpha_0^{\ast}, \alpha_1^{\ast}, \dots, \alpha_n^{\ast}}$ the solution to~\cref{eq:linear-interpolation-conditions}, the linear model~$\objm$ is thus defined for~$x \in \R^n$ by
+\begin{equation*}
+    \objm(x) = \alpha_0^{\ast} + \sum_{i = 1}^n \alpha_i^{\ast} x_i,
+\end{equation*}
+and the vector~$(\alpha_i^{\ast})_{i = 1, 2, \dots, n}$ is referred to as the \emph{simplex gradient} of~$\obj$ for the interpolation set~$\xpt$.
+Such models are used for instance by \gls{cobyla}~\cite{Powell_1994}, a \gls{dfo} method for nonlinearly-constrained optimization (see \cref{subsec:cobyla}).
+
+The problem of finding a linear model~$\objm \in \qpoly$ satisfying the interpolation system~\cref{eq:interpolation-conditions} whenever~$\card \xpt = \dim \qpoly = (n + 1)(n + 2) / 2$ is very similar.
+The interpolation conditions~\cref{eq:interpolation-conditions} can be reforumulated in the natural basis of~$\qpoly$, given by
+\begin{equation*}
+    \set{1, x_1, x_2, \dots, x_n, x_1^2 / 2, x_2^2 / 2, \dots, x_n^2 / 2, x_1 x_2, x_1 x_3, \dots, x_{n - 1} x_n},
+\end{equation*}
+where each element implicitely denotes the corresponding function of~$x \in \R^n$.
+
 \begin{itemize}
-    \item What is a simplex gradient? (needed in the introduction).
     \item Bases of~$\lpoly$ and~$\qpoly$.
     \item Poised set for interpolation.
     \item Characterization of the poisedness with bases.
@@ -85,10 +127,11 @@ We want to approximate a function~$\obj : \R^n \to \R$ with a model~$\objm$
 
 \begin{itemize}
     \item We focus on quadratic polynomials.
-    \item Building a quadratic interpolating model necessitates~$\mathcal{O}(n^2)$ function evaluations.
+    \item Building a quadratic interpolation model necessitates~$\mathcal{O}(n^2)$ function evaluations.
     \item We want to reduce this number to~$\mathcal{O}(n)$.
     \item Freedom is bequeathed by minimizing a functional that reflects the regularity of the models.
     \item Two examples are given hereafter.
+    \item The new method we introduce in \cref{ch:cobyqa-introduction} also uses quadratic models obtained by underdetermined interpolation.
 \end{itemize}
 
 \subsection{Least Frobenius norm quadratic models}
@@ -97,10 +140,12 @@ We want to approximate a function~$\obj : \R^n \to \R$ with a model~$\objm$
     \item Factorization of the symmetric Broyden matrix.
     \item Updating the symmetric Broyden matrix.
     \item Decompositions of the Hessian matrices of the quadratic models.
+    \item \gls{mnh}~\cite{Wild_2008}
 \end{itemize}
 
 \subsection{Quadratic models based on symmetric Broyden updates}
 
 \begin{itemize}
     \item Explain the name.
+    \item \gls{newuoa}~\cite{Powell_2006}
 \end{itemize}

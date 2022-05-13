@@ -38,14 +38,16 @@
 \nomenclature[Sa]{$\emptyset$}{Empty set}%
 \nomenclature[Sb]{$[a, b]$}{Closed set~$\set{x \in \R : a \le x \le b}$ with~$a \le b$}%
 \nomenclature[Sc]{$(a, b)$}{Open set~$\set{x \in \R : a < x < b}$ with~$a < b$}%
-\nomenclature[Sd]{$[a, b)$}{Semi-open set~$\set{x \in \R : a \le x < b}$ with~$a < b$}%
-\nomenclature[Se]{$(a, b]$}{Semi-open set~$\set{x \in \R : a < x \le b}$ with~$a < b$}%
+\nomenclature[Sd]{$\lpoly$}{Space of linear polynomials in~$\R^n$}%
+\nomenclature[Se]{$\qpoly$}{Space of quadratic polynomials in~$\R^n$}%
 \nomenclature[Sf]{$\R$}{Set of real numbers}%
 \nomenclature[Sg]{$\R^n$}{Real coordinate space of dimension~$n$}%
 \nomenclature[Sh]{$\R^{m \times n}$}{Real matrix space of dimension~$m \times n$}%
-\nomenclature[Si]{$\Omega$}{Feasible set, included in~$\R^n$}%
-\nomenclature[Sj]{$\ieq$}{Set of indices of the equality constraints}%
-\nomenclature[Sk]{$\iub$}{Set of indices of the inequality constraints}%
+\nomenclature[Si]{$\iub$}{Set of indices of the inequality constraints}%
+\nomenclature[Sj]{$\iub$}{Set of indices of the inequality constraints}%
+\nomenclature[Sk]{$\Omega$}{Feasible set, included in~$\R^n$}%
+\nomenclature[Sl]{$\ieq$}{Set of indices of the equality constraints}%
+\nomenclature[Sm]{$\iub$}{Set of indices of the inequality constraints}%
 \todo[noline]{Replace the nomenclature items}
 
 \section{Overview of \glsfmtlong{dfo}}
@@ -85,7 +87,7 @@ In this introduction, we consider the nonlinearly-constrained problem
 where the \emph{objective} and \emph{constraint functions}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and where the sets of indices~$\iub$ and~$\ieq$ are finite (perhaps empty) and disjoint.
 The feasible set of this problem is
 \begin{equation*}
-    \Omega \eqdef \set{x \in \R^n : \con{i}(x) \le 0 ~ \text{for~$i \in \iub$}, ~ \con{i}(x) = 0 ~ \text{for~$i \in \ieq$}}.
+    \Omega \eqdef \set{x \in \R^n : \text{$\con{i}(x) \le 0$ for~$i \in \iub$ and~$\con{i}(x) = 0$ for~$i \in \ieq$}}.
 \end{equation*}
 If~$\obj$ is convex, while~$\con{i}$ is convex for all~$i \in \iub$ and affine for all~$i \in \ieq$, then the problem~\cref{eq:problem-introduction} is \emph{convex}.
 However, this thesis does \emph{not} assume convexity.
@@ -274,7 +276,7 @@ The objective and constraint functions of an \gls{mdo} problem can be provided b
 It is the case in aircraft engine engineering~\cite{Gazaix_Etal_2019}, where the design problem of one component is solved while taking into account constraints imposed by other components handled by different departments.
 \Gls{mdo} problems often involve simulations or experiments, and therefore, \gls{dfo} methods are often needed.
 In \cref{ch:pdfo} of this thesis, we will present a piece of software we implemented for solving \gls{dfo} problems based on methods by Powell~\cite{Powell_1994,Powell_2002,Powell_2006,Powell_2009,Powell_2015}.
-It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry\footnote{See \url{https://www.irt-saintexupery.com}} in France.
+It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry\footnote{\url{https://www.irt-saintexupery.com}} in France.
 
 \section{Optimality conditions for smooth optimization}
 
@@ -529,13 +531,13 @@ Compared with direct-search methods, the information contained in the function v
 The first trust-region \gls{dfo} method was developed by~\citeauthor{Winfield_1969}~\cite{Winfield_1969,Winfield_1973} in \citeyear{Winfield_1969}.
 It is also regarded as the first trust-region method with or without derivatives~\cite[\S~1.2]{Conn_Gould_Toint_2000}.
 A similar method was later developed by \citeauthor{Powell_2002}, namely \gls{uobyqa}~\cite{Powell_2002}.
-Both methods use fully-determined quadratic interpolating models (see \cref{sec:multivariate-interpolation} for detailed discussions).
+Both methods use fully-determined quadratic interpolation models (see \cref{sec:multivariate-interpolation} for detailed discussions).
 By updating the Lagrange functions of the interpolation problem, \gls{uobyqa} needs only~$\bigo(n^4)$ computer operations to obtain each quadratic interpolant, whereas the complexity is~$\bigo(n^6)$ in \citeauthor{Winfield_1969}'s method.
 
 The methods of both \citeauthor{Winfield_1969} and \citeauthor{Powell_2002} require~$\bigo(n^2)$ function evaluations to establish each quadratic model.
 Such an amount of function values are needed to initialize the methods, although most of them will be reused at subsequent iterations.
 However, this amount of function evaluations is not scalable to moderately large problems.
-It motivates methods that use underdetermined quadratic interpolating models.
+It motivates methods that use underdetermined quadratic interpolation models.
 Such models typically require~$\bigo(n)$ function values to be built, and the remaining freedom bequeathed by the interpolation conditions is taken up by minimizing a functional that reflects the regularity of the model.
 For example, the method of \citeauthor{Conn_Toint_1996}~\cite{Conn_Toint_1996} uses such models with the least~$\ell_2$-norm of the coefficients.
 Powell's methods, namely \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}~\cite{Powell_2015}, use models that minimize the Frobenius norm of the change to their Hessian matrices.
@@ -592,7 +594,7 @@ In addition, it is difficult to reuse the function values in methods based on fi
 A finite difference at~$x \in \R^n$ requires the function to be evaluated on a mesh of~$\bigo(n)$ points around~$x$ oriented along the coordinate directions.
 When~$x$ changes, most of the mesh points change completely, and hence, the function needs to be evaluated at another batch of~$\bigo(n)$ points.
 
-There is no sharp division between methods based on finite difference and those based on interpolating models.
+There is no sharp division between methods based on finite difference and those based on interpolation models.
 Indeed, the forward difference~\cref{eq:forward-difference} produces the gradient of the linear function that interpolates~$f$ at
 \begin{equation*}
     \set{x, x + h e_1, x + h e_2, \dots, x + h e_n}.
@@ -618,17 +620,17 @@ Most of the information in this section can be found in the aforementioned artic
 \subsection{Expense measure and convergence test}
 \label{subsec:convergence-test}
 
-We denote by~$\mathcal{S}$ a set of solvers to benchmark and~$\mathcal{P}$ a set of test problems, assumed to represent the problems for which the solvers have been designed.
-Let~$t_{p, s}$ be the expense for the solver~$s \in \mathcal{S}$ to achieve a given convergence test on the problem~$p \in \mathcal{P}$.
+We denote by~$\xsv$ a set of solvers to benchmark and~$\xpb$ a set of test problems, assumed to represent the problems for which the solvers have been designed.
+Let~$t_{p, s}$ be the expense for the solver~$s \in \xsv$ to achieve a given convergence test on the problem~$p \in \xpb$.
 As mentioned in \cref{sec:overview}, the major cost of \gls{dfo} in practice is the function evaluations.
-Therefore, in a \gls{dfo} context,~$t_{p, s}$ measures the number of function evaluations required by~$s \in \mathcal{S}$ to solve~$p \in \mathcal{P}$ up to the convergence test.
+Therefore, in a \gls{dfo} context,~$t_{p, s}$ measures the number of function evaluations required by~$s \in \xsv$ to solve~$p \in \xpb$ up to the convergence test.
 When~$s$ fails to satisfy the convergence test for~$p$ within a given budget (e.g., a maximal number of function evaluations), we define~$t_{p, s} = \infty$ by convention.
 
-In this thesis, the numerical experiments select~$\mathcal{P}$ from the CUTEst set~\cite{Gould_Orban_Toint_2015}.
+In this thesis, the numerical experiments select~$\xpb$ from the CUTEst set~\cite{Gould_Orban_Toint_2015}.
 We consider the following convergence test for \gls{dfo} solvers, following~\cite[\S~2]{More_Wild_2009}.
-We define for each problem~$p \in \mathcal{P}$ a merit function~$\varphi_p$, i.e., a function that measures the quality of a point, taking into account the values of both the constraint and the objective functions.
+We define for each problem~$p \in \xpb$ a merit function~$\varphi_p$, i.e., a function that measures the quality of a point, taking into account the values of both the constraint and the objective functions.
 The smaller value of~$\varphi_p$, the better.
-Let~$x_p^0$ be the initial guess for a given problem~$p \in \mathcal{P}$, and~$\varphi_p^{\ast}$ be the least value of~$\varphi_p$ obtained by the solvers in~$\mathcal{S}$.
+Let~$x_p^0$ be the initial guess for a given problem~$p \in \xpb$, and~$\varphi_p^{\ast}$ be the least value of~$\varphi_p$ obtained by the solvers in~$\xsv$.
 Given a tolerance~$\tau \in (0, 1)$, a point~$x$ satisfies the convergence test if
 \begin{equation}
     \label{eq:convergence-test-profiles}
@@ -636,70 +638,70 @@ Given a tolerance~$\tau \in (0, 1)$, a point~$x$ satisfies the convergence test 
 \end{equation}
 in which case we say that~$x$ solves problem~$p$ up to the tolerance~$\tau$.
 This convergence test can be interpreted as follows.
-A point~$x$ satisfies the test if the reduction~$\varphi_p(x_{p}^0) - \varphi_p(x)$ is at least~$1 - \tau$ times the maximal reduction~$\varphi_p(x_p^0) - \varphi_p^{\ast}$ achieved by all solvers in~$\mathcal{S}$.
+A point~$x$ satisfies the test if the reduction~$\varphi_p(x_p^0) - \varphi_p(x)$ is at least~$1 - \tau$ times the maximal reduction~$\varphi_p(x_p^0) - \varphi_p^{\ast}$ achieved by all solvers in~$\xsv$.
 We say that a solver solves the problem~$p$ up to the tolerance~$\tau$ whenever it produces an iterate that achieves the convergence test~\cref{eq:convergence-test-profiles}.
 
 In the convergence test~\cref{eq:convergence-test-profiles}, it is tempting to define~$\varphi_p^{\ast}$ as the merit function value at a minimizer of~$p$, which is the case when testing derivative-based solvers~\cite{Dolan_More_2002}.
-However, according to~\cite{More_Wild_2009}, this may not be appropriate in \gls{dfo} because it may happen that no solver in~$\mathcal{S}$ achieves the test within the given computational budget if the function evaluations are expensive.
+However, according to~\cite{More_Wild_2009}, this may not be appropriate in \gls{dfo} because it may happen that no solver in~$\xsv$ achieves the test within the given computational budget if the function evaluations are expensive.
 
 \subsection{Performance profile}
 
 Fix a tolerance~$\tau \in (0, 1)$ in the convergence test~\cref{eq:convergence-test-profiles}.
-For a solver~$s \in \mathcal{S}$ and a problem~$p \in \mathcal{P}$, define the \emph{performance ratio} by
+For a solver~$s \in \xsv$ and a problem~$p \in \xpb$, define the \emph{performance ratio} by
 \begin{equation}
     \label{eq:performance-ratio}
-    r_{p, s} \eqdef \frac{t_{p, s}}{\min \set{t_{p, u} : u \in \mathcal{S}}},
+    r_{p, s} \eqdef \frac{t_{p, s}}{\min \set{t_{p, u} : u \in \xsv}},
 \end{equation}
-which is the \emph{relative} expense for~$s$ to solve~$p$ compared with the most efficient solver in~$\mathcal{S}$ for this problem.
-The \emph{performance profile} of~$s$ is defined as
+which is the \emph{relative} expense for~$s$ to solve~$p$ compared with the most efficient solver in~$\xsv$ for this problem.
+The \emph{performance profile} of~$s$ is defined for~$\alpha \ge 1$ as
 \begin{equation*}
-    \rho_{s}(\alpha) \eqdef \frac{1}{\card (\mathcal{P})} \card \big(\set{p \in \mathcal{P} : r_{p, s} \le \alpha} \big), \quad \text{for~$\alpha \ge 1$},
+    \rho_s(\alpha) \eqdef \frac{1}{\card \xpb} \card \set{p \in \xpb : r_{p, s} \le \alpha},
 \end{equation*}
-where~$\card(\cdot)$ denotes the cardinal of a set.
-Clearly,~$\rho_{s}(\alpha)$ is the proportion of problems in~$\mathcal{P}$ that are solved by~$s$ with a performance ratio at most~$\alpha$.
-It can also be interpreted as the probability for the solver~$s$ to solve a random problem from~$\mathcal{P}$ under the restriction on the performance ratio.
-In particular, $\rho_{s}(1)$ is the proportion of problems that~$s$ solves faster than any other solver in~$\mathcal{S}$.
+where~$\card$ denotes the cardinal operator.
+Clearly,~$\rho_s(\alpha)$ is the proportion of problems in~$\xpb$ that are solved by~$s$ with a performance ratio at most~$\alpha$.
+It can also be interpreted as the probability for the solver~$s$ to solve a random problem from~$\xpb$ under the restriction on the performance ratio.
+In particular, $\rho_s(1)$ is the proportion of problems that~$s$ solves faster than any other solver in~$\xsv$.
 Meanwhile,
 \begin{equation*}
-    \lim_{\alpha \to \infty} \rho_{s}(\alpha)
+    \lim_{\alpha \to \infty} \rho_s(\alpha)
 \end{equation*}
 is the proportion of problems that are solved by~$s$ (within the budget restriction).
-Given two solvers~$s_1$ and~$s_2$,~$\rho_{s_1}(\alpha) > \rho_{s_2}(\alpha)$ means that~$s_1$ solves more problems than~$s_2$ under the constraint that~$r_{p, s_1} \le \alpha$ and~$r_{p, s_2} \le \alpha$ for~$p \in \mathcal{P}$.
+Given two solvers~$s_1$ and~$s_2$,~$\rho_{s_1}(\alpha) > \rho_{s_2}(\alpha)$ means that~$s_1$ solves more problems than~$s_2$ under the constraint that~$r_{p, s_1} \le \alpha$ and~$r_{p, s_2} \le \alpha$ for~$p \in \xpb$.
 Therefore, a larger value of~$\rho_s$ indicates a better performance of~$s$.
 
 \subsection{Data profile}
 
 We now introduce the data profile, another benchmarking tool proposed by~\cite{More_Wild_2009}.
-The \emph{data profile} of a solver~$s \in \mathcal{S}$ is defined as
+The \emph{data profile} of a solver~$s \in \xsv$ is defined for~$\alpha \ge 0$ as
 \begin{equation}
     \label{eq:data-profile}
-    d_{s}(\alpha) \eqdef \frac{1}{\card(\mathcal{P})} \card\bigg(\set[\bigg]{p \in \mathcal{P} : \frac{t_{p, s}}{n_p + 1} \le \alpha}\bigg), \quad \text{for~$\alpha \ge 0$},
+    d_s(\alpha) \eqdef \frac{1}{\xpb} \card \set[\bigg]{p \in \xpb : \frac{t_{p, s}}{n_p + 1} \le \alpha},
 \end{equation}
 where~$n_p$ is the dimension of the problem~$p$.
-Therefore,~$d_{s}(\alpha)$ is the proportion of problems in~$\mathcal{P}$ that are solved by~$s$ with at most~$\alpha (n_p + 1)$ function evaluations.
-It can also be interpreted as the probability for the solver~$s$ to solve a random problem from~$\mathcal{P}$, under the budget described above.
-In particular,~$d_{s}(0) = 0$ and, the same as~$\rho_{s}$,
+Therefore,~$d_s(\alpha)$ is the proportion of problems in~$\xpb$ that are solved by~$s$ with at most~$\alpha (n_p + 1)$ function evaluations.
+It can also be interpreted as the probability for the solver~$s$ to solve a random problem from~$\xpb$, under the budget described above.
+In particular,~$d_s(0) = 0$ and, the same as~$\rho_s$,
 \begin{equation*}
-    \lim_{\alpha \to \infty} d_{s}(\alpha)
+    \lim_{\alpha \to \infty} d_s(\alpha)
 \end{equation*}
 is the proportion of problems that are solved by~$s$.
 In equation~\cref{eq:data-profile}, the denominator~$n_p + 1$ is a unit cost that serves to normalize $t_{p, s}$, so that the computational expenses for different problems are comparable even if their dimensions are quite different.
 Note that~$n_p + 1$ is the number of function evaluations needed for evaluating a simplex gradient~\cite{Bortz_Kelley_1998}.
-Therefore,~$d_{s}(\alpha)$ is the proportion of problems solved by~$s$ within a budget equivalent to~$\alpha$ simplex gradient estimates.
-Given two solvers~$s_1$ and~$s_2$,~$d_{s_1}(\alpha) > d_{s_2}(\alpha)$ means that~$s_1$ solves more problems than~$s_2$ using at most~$\alpha (n_p + 1)$ function evaluations for each~$p \in \mathcal{P}$.
+Therefore,~$d_s(\alpha)$ is the proportion of problems solved by~$s$ within a budget equivalent to~$\alpha$ simplex gradient estimates.
+Given two solvers~$s_1$ and~$s_2$,~$d_{s_1}(\alpha) > d_{s_2}(\alpha)$ means that~$s_1$ solves more problems than~$s_2$ using at most~$\alpha (n_p + 1)$ function evaluations for each~$p \in \xpb$.
 Therefore, a larger value of~$d_s$ indicates a better performance of~$s$.
 
 \subsection{An illustrative example}
 
 In this section, as an example, we compare three solvers using performance and data profiles.
-These solvers, constituting the set~$\mathcal{S}$, are
+These solvers, constituting the set~$\xsv$, are
 \begin{itemize}
     \item \gls{newuoa} (see \cref{subsec:newuoa-bobyqa-lincoa}), a model-based \gls{dfo} method; and
     \item \gls{bfgs} and \gls{cg}, two gradient-based solvers provided by SciPy~1.0~\cite{Virtanen_Etal_2020}.
     When no derivatives are provided, they use forward finite-difference to approximate gradients, with the difference parameter~$h = \sqrt{u}$, where~$u$ is the unit roundoff.
 \end{itemize}
-The set~$\mathcal{P}$ contains~$154$ smooth unconstrained CUTEst problems of dimension at most~$50$, and the convergence tolerance in~\cref{eq:convergence-test-profiles} is~$\tau = 10^{-3}$.
-Since these problems are unconstrained, the merit function~$\varphi_p$ of each problem~$p \in \mathcal{P}$ is set to be the objective function~$\obj_p$.
+The set~$\xpb$ contains~$154$ smooth unconstrained CUTEst problems of dimension at most~$50$, and the convergence tolerance in~\cref{eq:convergence-test-profiles} is~$\tau = 10^{-3}$.
+Since these problems are unconstrained, the merit function~$\varphi_p$ of each problem~$p \in \xpb$ is set to be the objective function~$\obj_p$.
 Therefore, the convergence test~\cref{eq:convergence-test-profiles} becomes
 \begin{equation}
     \label{eq:convergence-test-profiles-unconstrained}
@@ -708,12 +710,12 @@ Therefore, the convergence test~\cref{eq:convergence-test-profiles} becomes
 
 We conduct two experiments as follows.
 \begin{enumerate}
-    \item The first experiment is made without modifying the problems in~$\mathcal{P}$.
-    In~\cref{eq:convergence-test-profiles-unconstrained},~$\obj_p^{\ast}$ is set to the least value of~$f_p$ obtained by all solvers in~$\mathcal{S}$.
-    The value of~$t_{p, s}$ is defined as the number of function evaluations that the solver~$s \in \mathcal{S}$ needs to solve the problem~$p \in \mathcal{P}$ up to the tolerance~$\tau$.
+    \item The first experiment is made without modifying the problems in~$\xpb$.
+    In~\cref{eq:convergence-test-profiles-unconstrained},~$\obj_p^{\ast}$ is set to the least value of~$f_p$ obtained by all solvers in~$\xsv$.
+    The value of~$t_{p, s}$ is defined as the number of function evaluations that the solver~$s \in \xsv$ needs to solve the problem~$p \in \xpb$ up to the tolerance~$\tau$.
     \item The second experiment is a noisy variation of the previous one.
     Let~$\sigma > 0$ be the noise level.
-    For each problem~$p \in \mathcal{P}$, the objective function is evaluated by
+    For each problem~$p \in \xpb$, the objective function is evaluated by
     \begin{equation}
         \label{eq:relative-gaussian-noisy-objective-function}
         \tilde{\obj}_p(x) \eqdef [1 + \epsilon(x)] \obj_p(x),
@@ -721,7 +723,7 @@ We conduct two experiments as follows.
     where~$\epsilon(x) \sim N(0, \sigma^2)$.
     Each problem is solved ten times with each solver.
     In the convergence test~\cref{eq:convergence-test-profiles-unconstrained},~$\obj_p^{\ast}$ is either the least value of~$\obj_p$ obtained by all solvers during these ten runs, or the value obtained in the previous noise-free experiment, whichever is smaller.
-    The value of~$t_{p, s}$ is set to the average number of function evaluations that~$s \in \mathcal{S}$ needs to solve~$p \in \mathcal{P}$ up to the tolerance~$\tau$.
+    The value of~$t_{p, s}$ is set to the average number of function evaluations that~$s \in \xsv$ needs to solve~$p \in \xpb$ up to the tolerance~$\tau$.
     Note that the convergence test~\cref{eq:convergence-test-profiles-unconstrained} uses the values of~$\obj_p$ and not those of~$\tilde{\obj}_p$.
     This means that we evaluate the solvers according to the true objective function, even though the solvers can access only the noisy values produced by~\cref{eq:relative-gaussian-noisy-objective-function}.
 \end{enumerate}
@@ -769,7 +771,7 @@ Note that~$\alpha$ is displayed in~$\log_2$-scale.
 We can make the following observations on the noise-free experiment in \cref{fig:performance-profile-example-noiseless}.
 \begin{enumerate}
     \item \Gls{bfgs} solves more than~$90\%$ of the problems, while the two other solvers solve slightly fewer problems.
-    According to~\cite[\S~2]{More_Wild_2009}, \gls{bfgs} is said more reliable than the other two solvers on the test problems in~$\mathcal{P}$, but the margin is narrow.
+    According to~\cite[\S~2]{More_Wild_2009}, \gls{bfgs} is said more reliable than the other two solvers on the test problems in~$\xpb$, but the margin is narrow.
     \item \Gls{newuoa} uses the least number of function evaluations on about~$50\%$ of the problems, while the percentages for \gls{bfgs} and \gls{cg} are about~$30\%$ and~$25\%$ respectively.
 \end{enumerate}
 
@@ -777,7 +779,7 @@ For the noisy experiments, we observe the following according to~\cref{fig:perfo
 \begin{enumerate}
     \item \Gls{newuoa} solves always more than~$70\%$ of the problems while the two other solvers solve significantly less problems.
     \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses the least number of function evaluations on more than~$55\%$ of the problems, while the percentages for \gls{bfgs} and \gls{cg} are about~$20\%$ and~$15\%$ respectively.
-    For~$\sigma \in \set{10^{-8}, 10^{-6}}$, \gls{newuoa} is the most efficient on almost all the problems that it can solve, while the other two solvers fail on most of the problems in~$\mathcal{P}$.
+    For~$\sigma \in \set{10^{-8}, 10^{-6}}$, \gls{newuoa} is the most efficient on almost all the problems that it can solve, while the other two solvers fail on most of the problems in~$\xpb$.
 \end{enumerate}
 
 Overall, on the noise-free problems, \gls{bfgs} is slightly more reliable than \gls{newuoa} and \gls{cg}, although \gls{newuoa} is more efficient on about half of the problems.
@@ -835,21 +837,21 @@ We can make the following observations on the noise-free experiment on \cref{fig
 \begin{enumerate}
     \item \Gls{bfgs} solves more than~$90\%$ of the problems while the two other solvers solve slightly less problems.
     It agrees with what is indicated by \cref{fig:performance-profile-example-noiseless}, as it should be the case according to theory.
-    \item \Gls{bfgs} uses less than~$300 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \mathcal{P}$ that it can solve, while \gls{newuoa} and \gls{cg} use about~$400 (n_p + 1)$.
+    \item \Gls{bfgs} uses less than~$300 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \xpb$ that it can solve, while \gls{newuoa} and \gls{cg} use about~$400 (n_p + 1)$.
 \end{enumerate}
 
 For the noisy experiments, we observe the following according to~\cref{fig:data-profile-example-noisy-10,fig:data-profile-example-noisy-8,fig:data-profile-example-noisy-6}.
 \begin{enumerate}
     \item \Gls{newuoa} solves always more than~$70\%$ of the problems while the two other solvers solve significantly fewer problems.
     It agrees with what is indicated by \cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}, as it should be the case.
-    \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses less than~$200 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \mathcal{P}$ that it can solve, while \gls{bfgs} and \gls{cg} use less than~$100 (n_p + 1)$, altough they solve much fewer problems.
+    \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses less than~$200 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \xpb$ that it can solve, while \gls{bfgs} and \gls{cg} use less than~$100 (n_p + 1)$, altough they solve much fewer problems.
     For~$\sigma \in \set{10^{-8}, 10^{-6}}$, \gls{newuoa} uses less than~$100 (n_p + 1)$ function evaluations\footnote{Even though the corresponding value is~$200 (n_p + 1)$ when~$\sigma = 10^{-10}$, we should not interpreted that \gls{newuoa} performs better with higher noise. When~$\sigma$ is larger, \gls{newuoa} solves fewer problems and~$\obj_p^{\ast}$ in~\cref{eq:convergence-test-profiles-unconstrained} is often larger, leading to a weaker convergence test.} to solve most of the problems that it can solve, while the other two solvers fail on most of the problems.
 \end{enumerate}
 
 \subsection{Absoluteness and relativeness of the profiles}
 
 Before concluding this section, we mention a significant difference between performance and data profiles.
-Data profiles are absolute because~\cref{eq:data-profile} compares the expense~$t_{p, s}$ with~$n_p + 1$ for each~$p \in \mathcal{P}$, which is independent of the other solvers.
+Data profiles are absolute because~\cref{eq:data-profile} compares the expense~$t_{p, s}$ with~$n_p + 1$ for each~$p \in \xpb$, which is independent of the other solvers.
 The data profile of a solver does depend weakly on the other solvers, the only dependence being the value of~$\varphi_p^{\ast}$ in the convergence test~\cref{eq:convergence-test-profiles}.
 On the other hand, performance profiles are relative because the value of~$r_{p, s}$ in~\cref{eq:performance-ratio} compares the expense of~$s$ with that of the most efficient solver on~$p$, which depends on all the other solvers. 
 For example, the data profiles in \cref{fig:data-profile-example-noisy-10} suggest that \gls{cg} outperforms \gls{bfgs} during the corresponding experiment, and the profiles are unlikely to change dramatically if \gls{newuoa} is removed from the comparison.
