@@ -35,6 +35,8 @@
 \nomenclature[Of]{$\nabla$}{Gradient operator (elements~$\partial / \partial x_i$, with~$i \in \set{1, 2, \dots, n}$)}%
 \nomenclature[Og]{$\nabla^2$}{Hessian operator (elements~$\partial^2 / \partial x_i \partial x_j$, with~$i, j \in \set{1, 2, \dots, n}$)}%
 \nomenclature[Oh]{$\card$}{Cardinal operator}%
+\nomenclature[Oi]{$\conv$}{Convex hull operator}%
+\nomenclature[Oi]{$\diam$}{Diameter operator}%
 \nomenclature[Sa]{$\emptyset$}{Empty set}%
 \nomenclature[Sb]{$[a, b]$}{Closed set~$\set{x \in \R : a \le x \le b}$ with~$a \le b$}%
 \nomenclature[Sc]{$(a, b)$}{Open set~$\set{x \in \R : a < x < b}$ with~$a < b$}%
@@ -655,7 +657,7 @@ For a solver~$s \in \xsv$ and a problem~$p \in \xpb$, define the \emph{performan
 which is the \emph{relative} expense for~$s$ to solve~$p$ compared with the most efficient solver in~$\xsv$ for this problem.
 The \emph{performance profile} of~$s$ is defined for~$\alpha \ge 1$ as
 \begin{equation*}
-    \rho_s(\alpha) \eqdef \frac{1}{\card \xpb} \card \set{p \in \xpb : r_{p, s} \le \alpha},
+    \rho_s(\alpha) \eqdef \frac{1}{\card(\xpb)} \card \set{p \in \xpb : r_{p, s} \le \alpha},
 \end{equation*}
 where~$\card$ denotes the cardinal operator.
 Clearly,~$\rho_s(\alpha)$ is the proportion of problems in~$\xpb$ that are solved by~$s$ with a performance ratio at most~$\alpha$.
@@ -675,7 +677,7 @@ We now introduce the data profile, another benchmarking tool proposed by~\cite{M
 The \emph{data profile} of a solver~$s \in \xsv$ is defined for~$\alpha \ge 0$ as
 \begin{equation}
     \label{eq:data-profile}
-    d_s(\alpha) \eqdef \frac{1}{\xpb} \card \set[\bigg]{p \in \xpb : \frac{t_{p, s}}{n_p + 1} \le \alpha},
+    d_s(\alpha) \eqdef \frac{1}{\card(\xpb)} \card \set[\bigg]{p \in \xpb : \frac{t_{p, s}}{n_p + 1} \le \alpha},
 \end{equation}
 where~$n_p$ is the dimension of the problem~$p$.
 Therefore,~$d_s(\alpha)$ is the proportion of problems in~$\xpb$ that are solved by~$s$ with at most~$\alpha (n_p + 1)$ function evaluations.

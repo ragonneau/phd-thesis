@@ -19,9 +19,9 @@
 As mentioned in \cref{ch:introduction}, model-based \gls{dfo} methods necessitate to approximate locally the functions involved in optimization problems by simple functions, referred to as \emph{models} or \emph{surrogates}.
 These models are used to construct subproblems that are in turn approximately minimized.
 Examples of such functions commonly used in the literature are polynomials and \glspl{rbf}~\cite{Powell_2004a}.
-In this thesis, we focus on linear and quadratic polynomial models.
+In this thesis, we focus on linear and quadratic polynomial models, i.e., on polynomials of degree at most one and two, respectively.
 
-Let~$\lpoly$ and~$\qpoly$ denote the spaces of polynomials on~$\R^n$ of degree at most one and two, respectively.
+Let~$\lpoly$ and~$\qpoly$ denote the spaces of linear and quadratic polynomials on~$\R^n$, respectively.
 In a \gls{dfo} context, models from~$\lpoly$ or~$\qpoly$ are built for a real-valued function~$\obj$ without using derivatives.
 This can be done by interpolation schemes based on function values.
 More specifically, given a finite set of points~$\xpt \subseteq \R^n$, we construct a model~$\objm$ that interpolates the function~$\obj$ on~$\xpt$, i.e.,
@@ -63,8 +63,8 @@ Examples of such methods include \gls{orbit}~\cite{Wild_Regis_Shoemaker_2008}, \
 
 Before studying properties of multivariate interpolation, we must introduce the following notion of poisedness, which defines uniquely interpolants.
 
-\begin{definition}
-    We say that the set~$\xpt$ is \emph{poised} if the interpolation system~\cref{eq:interpolation-conditions} is consistent and has a unique solution.
+\begin{definition}[Poisedness]
+    The set~$\xpt$ is \emph{poised} if the interpolation system~\cref{eq:interpolation-conditions} is consistent and has a unique solution for a given space in which~$\objm$ must lie.
 \end{definition}
 
 Let of first consider the problem of finding a linear model~$\objm \in \lpoly$ satisfying the interpolation system~\cref{eq:interpolation-conditions} whenever~$\card \xpt = \dim \lpoly = n + 1$.
@@ -74,35 +74,66 @@ In the natural basis of~$\lpoly$, the system~\cref{eq:interpolation-conditions} 
     \alpha_0 + \sum_{i = 1}^n \alpha_i y_i = \obj(y), \quad \text{for~$y \in \xpt$},
 \end{equation}
 where~$y_i$ denotes the~$i$th component of~$y \in \xpt$, and where~$\alpha_i \in \R$ for~$i \in \set{0, 1, \dots, n}$.
-If~$\xpt$ is poised for linear interpolation, given~$\set{\alpha_0^{\ast}, \alpha_1^{\ast}, \dots, \alpha_n^{\ast}}$ the solution to~\cref{eq:linear-interpolation-conditions}, the linear model~$\objm$ is thus defined for~$x \in \R^n$ by
+If~$\xpt$ is poised for linear interpolation, given~$\set{\alpha_0^{\ast}, \alpha_1^{\ast}, \dots, \alpha_n^{\ast}}$ the unique solution to the system~\cref{eq:linear-interpolation-conditions}, the linear model~$\objm$ is defined for~$x \in \R^n$ by
 \begin{equation*}
     \objm(x) = \alpha_0^{\ast} + \sum_{i = 1}^n \alpha_i^{\ast} x_i,
 \end{equation*}
-and the vector~$(\alpha_i^{\ast})_{i = 1, 2, \dots, n}$ is referred to as the \emph{simplex gradient} of~$\obj$ for the interpolation set~$\xpt$.
-Such models are used for instance by \gls{cobyla}~\cite{Powell_1994}, a \gls{dfo} method for nonlinearly-constrained optimization (see \cref{subsec:cobyla}).
+and the vector~$\nabla \objm \equiv (\alpha_i^{\ast})_{i = 1, 2, \dots, n}$ is referred to as the \emph{simplex gradient} of~$\obj$ for the interpolation set~$\xpt$.
+Such models are used for instance by \gls{cobyla}~\cite{Powell_1994}, a \gls{dfo} method for nonlinearly-constrained optimization detailed in \cref{subsec:cobyla}.
 
-The problem of finding a linear model~$\objm \in \qpoly$ satisfying the interpolation system~\cref{eq:interpolation-conditions} whenever~$\card \xpt = \dim \qpoly = (n + 1)(n + 2) / 2$ is very similar.
-The interpolation conditions~\cref{eq:interpolation-conditions} can be reforumulated in the natural basis of~$\qpoly$, given by
-\begin{equation*}
-    \set{1, x_1, x_2, \dots, x_n, x_1^2 / 2, x_2^2 / 2, \dots, x_n^2 / 2, x_1 x_2, x_1 x_3, \dots, x_{n - 1} x_n},
-\end{equation*}
-where each element implicitely denotes the corresponding function of~$x \in \R^n$.
-
-\begin{itemize}
-    \item Bases of~$\lpoly$ and~$\qpoly$.
-    \item Poised set for interpolation.
-    \item Characterization of the poisedness with bases.
-\end{itemize}
+The problem of finding a quadratic model~$\objm \in \qpoly$ satisfying the interpolation system~\cref{eq:interpolation-conditions} whenever~$\card \xpt = \dim \qpoly = (n + 1)(n + 2) / 2$ is very similar.
+Unlike linear model, quadratic models capture curvature information of the function~$\obj$, and are hence more precise.
+Most recent model-based \gls{dfo} methods based on polynomial models use in fact quadratic models.
+This is the case for instance for \gls{uobyqa}~\cite{Powell_2002}, a \gls{dfo} method for unconstrained optimization detailed in \cref{subsec:uobyqa}, which use the quadratic interpolation models mentioned above.
+The new method we introduce in \cref{ch:cobyqa-introduction} also uses quadratic models, described in \cref{subsec:symmetric-broyden-updates}.
+Therefore, we focus further considerations in this chapter on quadratic models.
 
 \section{Overview of the Lagrange polynomials}
+\label{sec:lagrange-polynomials}
 
-\begin{itemize}
-    \item Definition of the Lagrange polynomials.
-    \item They are well-defined if the interpolation set is poised.
-    \item The Lagrange polynomials form a basis.
-    \item Lebesgue constant and extension by~\cite{Ciarlet_Raviart_1972}.
-    \item Interpretation of the absolute value of Lagrange polynomials using volumes of simplices.
-\end{itemize}
+For simplicity, we present in this section the Lagrange quadratic polynomials only.
+Note that the theory presented below can be generalized to polynomials of any degree.
+
+\begin{definition}[Lagrange quadratic polynomials]
+    \label{def:lagrange-polynomials}
+    Given a poised interpolation set~$\xpt \subseteq \R^n$ of~$(n + 1)(n + 2) / 2$ points, the Lagrange polynomial~$\lagp[y] \in \qpoly$ for~$y \in \xpt$ is the unique quadratic polynomial satisfying~$\lagp[y](y) = 1$ and
+    \begin{equation*}
+        \lagp[y](x) = 0, \quad \text{for~$x \in \xpt \setminus \set{y}$}.
+    \end{equation*}
+\end{definition}
+
+We note that \cref{def:lagrange-polynomials} is well-defined, because the poisedness of the interpolation ensures the existence and the uniqueness of the Lagrange polynomials.
+Moreover, as decribed by \cref{thm:lagrange-polynomials-basis}, the interpolant~$\objm$ can be formulated as a linear combinaison of the Lagrange polynomials, where the coefficients of the linear combinaison are exactly the values of~$\obj$ at the interpolation points.
+
+\begin{theorem}
+    \label{thm:lagrange-polynomials-basis}
+    Given a poised interpolation set~$\xpt \subseteq \R^n$ of~$(n + 1)(n + 2) / 2$ points, the Lagrange polynomials~$\set{\lagp[y]}_{y \in \xpt}$ form a basis of~$\qpoly$.
+    Moreover, the quadratic interpolant~$\objm$ of~$\obj$ on~$\xpt$ is given for any~$x \in \R^n$ by
+    \begin{equation*}
+        \objm(x) = \sum_{y \in \xpt} \obj(y) \lagp[y](x).
+    \end{equation*}
+\end{theorem}
+
+In the context of \gls{dfo}, one of the most important application of the Lagrange polynomials is to measure the well-poisedness of the interpolation set~$\xpt$.
+More specifically, \citeauthor{Ciarlet_Raviart_1972}~\cite{Ciarlet_Raviart_1972} showed that
+\begin{equation*}
+    \sup_{x \in \conv(\xpt)} \abs{\obj(x) - \objm(x)} \le \frac{\nu}{6} \sum_{y \in \xpt} \abs{\lagp[y](x)} \norm{x - y}^3,
+\end{equation*}
+whenever~$\obj$ is thrice differentiable in~$\conv(\xpt)$, where~$\conv(\xpt)$ denotes the convex hull of~$\xpt$, and where~$\nu$ is an upper bound on the absolute value of the third-order directional derivatives of~$\obj$ in~$\conv(\xpt)$.
+Let~$\diam(\xpt)$ be the diameter of~$\xpt$, that is
+\begin{equation*}
+    \diam(\xpt) \eqdef \max_{x, y \in \xpt} \norm{x - y}.
+\end{equation*}
+We then clearly have
+\begin{equation*}
+    \sup_{x \in \conv(\xpt)} \abs{\obj(x) - \objm(x)} \le \frac{\nu}{12} (n + 1) (n + 2) \Lambda \diam(\xpt)^3,
+\end{equation*}
+where~$\Lambda$ is intimately related to the Lebesgue constant of~$\xpt$, and is defined by
+\begin{equation*}
+    \Lambda \eqdef \max_{y \in \xpt} \max_{x \in \conv(\xpt)} \abs{\lagp[y](x)}.
+\end{equation*}
+In some sense,~$\Lambda$ measures, therefore, the well-poisedness of the interpolation set~$\xpt$.
+More details on this observation is given in \cref{sec:poisedness}.
 
 \section{Poisedness of interpolation sets}
 \label{sec:poisedness}
@@ -144,6 +175,7 @@ where each element implicitely denotes the corresponding function of~$x \in \R^n
 \end{itemize}
 
 \subsection{Quadratic models based on symmetric Broyden updates}
+\label{subsec:symmetric-broyden-updates}
 
 \begin{itemize}
     \item Explain the name.
