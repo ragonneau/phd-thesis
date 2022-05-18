@@ -138,7 +138,19 @@ More details on this observation is given in \cref{sec:poisedness}.
 \section{Poisedness of interpolation sets}
 \label{sec:poisedness}
 
+As before, the theory we develop in this section assumes that~$\objm \in \qpoly$.
+It may be, however, generalized to any space of polynomials.
+
 \subsection{Measuring the well poisedness of interpolation sets}
+
+\begin{definition}[$\Lambda$-poisedness]
+    A poised interpolation set~$\xpt \subseteq \R^n$ is said to be~$\Lambda$-poised in a compact set~$\mathcal{C} \subseteq \R^n$, for some~$\Lambda > 0$, if
+    \begin{equation*}
+        \Lambda \ge \max_{y \in \xpt} \max_{x \in \mathcal{C}} \abs{\lagp[y](x)}.
+    \end{equation*}
+\end{definition}
+
+As we discussed before,~$\Lambda$ measures the quality of the interpolation set.
 
 \begin{itemize}
     \item Definition of the~$\Lambda$-poisedness.
@@ -181,3 +193,128 @@ More details on this observation is given in \cref{sec:poisedness}.
     \item Explain the name.
     \item \gls{newuoa}~\cite{Powell_2006}
 \end{itemize}
+
+\section{An optimal number of interpolation points}
+
+For~$1 \le i \le 2n + 1$ and some~$\delta > 0$, let~$y^i \in \R^n$ be the vector
+\begin{empheq}[left={y^i \eqdef \empheqlbrace}]{alignat*=2}
+    & 0,                        && \quad \text{if~$i = 1$,}\\
+    & \delta e_{i - 1},         && \quad \text{if~$2 \le i \le n + 1$, and}\\
+    & -\delta e_{i - n - 1},    && \quad \text{otherwise,}
+\end{empheq}
+where~$e_i \in \R^n$ denotes the~$i$th standard coordinate vector.
+We define the interpolation sets~$\xpt[0, m] \subseteq \R$ for~$n + 2 \le m \le 2n + 1$ by
+\begin{equation*}
+    \xpt[0, m] \eqdef \set{y^i}_{i = 1, 2, \dots, m}.
+\end{equation*}
+Further, we denote by~$\ball[p](\xpt[0, m])$ the smallest~$\ell_p$-norm ball containing~$\xpt[0, m]$, for~$p \ge 1$.
+Note that we allow~$p = \infty$.
+We remark that
+\begin{equation*}
+    \ball[p](\xpt[0, m]) \equiv \set{x \in \R^n : \norm{x}_p \le \delta}.
+\end{equation*}
+Throughout this section, we denote by~$\lagp[i]$ the Lagrange function~$\lagp[y^i]$.
+
+\begin{lemma}
+    The minimum-norm Lagrange function associated with the above-defined interpolation are defined for~$x \in \R^n$ by
+    \begin{empheq}[left={\lagp[i](x) = \empheqlbrace}]{alignat*=2}
+        & 1 - \delta^{-2} \sum_{i = 1}^{m - n - 1} x_i^2 - \delta^{-1} \sum_{i = m - n}^{n} x_i,    && \quad \text{if~$i = 1$,}\\
+        & (\sqrt{2}\delta)^{-2} x_{i - 1}^2 + (2\delta)^{-1} x_{i - 1},                             && \quad \text{if~$2 \le i \le m - n$,}\\
+        & \delta^{-1} x_{i - 1},                                                                    && \quad \text{if~$m - n + 1 \le i \le n + 1$, and}\\
+        & (\sqrt{2}\delta)^{-2} x_{i - n - 1}^2 - (2\delta)^{-1} x_{i - n - 1}.                     && \quad \text{otherwise.}
+    \end{empheq}
+\end{lemma}
+
+\begin{proof}
+    To do.
+\end{proof}
+
+\begin{theorem}
+    \label{thm:lambda-poisedness-initial}
+    For any~$n + 2 \le m \le 2n + 1$ and any~$p \in [1, \infty)$, the interpolation set~$\xpt[0, m]$ is~$\Lambda$-poised in~$\ball[p](\xpt[0, m])$ in the minimum-norm sense, with
+    \begin{equation*}
+        1 + (2n + 1 - m)^{\frac{p - 1}{p}} \le \Lambda \le n.
+    \end{equation*}
+\end{theorem}
+
+We take the convention~$0^0 = 0$ in \cref{thm:lambda-poisedness-initial}.
+
+\begin{proof}
+    To do.
+\end{proof}
+
+\begin{proposition}
+    For any~$n + 2 \le m \le 2n + 1$, the interpolation set~$\xpt[0, m]$ is~$\Lambda$-poised in~$\ball[1](\xpt[0, m])$ in the minimum-norm sense, with
+    \begin{empheq}[left={\Lambda = \empheqlbrace}]{alignat*=2}
+        & 2 && \quad \text{if~$n + 2 \le m \le 2n$, and}\\
+        & 1 && \quad \text{otherwise.}
+    \end{empheq}
+\end{proposition}
+
+\begin{proof}
+    To do.
+\end{proof}
+
+\begin{proposition}
+    For any~$n + 2 \le m \le 2n + 1$, the interpolation set~$\xpt[0, m]$ is~$\Lambda$-poised in~$\ball[2](\xpt[0, m])$ in the minimum-norm sense, with
+    \begin{equation*}
+        \Lambda = 1 + \sqrt{2n + 1 - m}.
+    \end{equation*}
+\end{proposition}
+
+\begin{proof}
+    To do.
+\end{proof}
+
+\begin{proposition}
+    For any~$n + 2 \le m \le 2n + 1$, the interpolation set~$\xpt[0, m]$ is~$\Lambda$-poised in~$\ball[\infty](\xpt[0, m])$ in the minimum-norm sense, with
+    \begin{empheq}[left={\Lambda = \empheqlbrace}]{alignat*=2}
+        & n     && \quad \text{if~$m = n + 2$, and}\\
+        & n - 1 && \quad \text{otherwise.}
+    \end{empheq}
+\end{proposition}
+
+\begin{proof}
+    To do.
+\end{proof}
+
+\begin{proposition}
+    For any~$p \in [3, \infty)$, the interpolation set~$\xpt[0, 2n + 1]$ is~$\Lambda$-poised in~$\ball[p](\xpt[0, 2n + 1])$ in the minimum-norm sense, with
+    \begin{equation*}
+        \Lambda = \max \set[\big]{1, n^{\frac{p - 2}{p}} - 1}.
+    \end{equation*}
+\end{proposition}
+
+\begin{proof}
+    To do.
+\end{proof}
+
+% \begin{proof}
+%     For simplicity, we denote in this proof~$\lagp[i]$ the polynomial~$\lagp[y^i]$ for~$1 \le i \le m$.
+%     \begin{enumerate}
+%         \item If~$n + 2 \le m \le 2n + 1$.
+%         \begin{empheq}[left={\lagp[i](x) = \empheqlbrace}]{alignat*=2}
+%             & 1 - \frac{1}{\delta^2} \sum_{i = 1}^{m - n - 1} x_i^2 - \frac{1}{\delta} \sum_{i = m - n}^{n} x_i,    && \quad \text{if~$i = 1$,}\\
+%             & \frac{x_{i - 1}^2}{2\delta^2} + \frac{x_{i - 1}}{2\delta},                                            && \quad \text{if~$2 \le i \le m - n$,}\\
+%             & \frac{x_{i - 1}}{\delta},                                                                             && \quad \text{if~$m - n + 1 \le i \le n + 1$, and}\\
+%             & \frac{x_{i - n - 1}^2}{2\delta^2} - \frac{x_{i - n - 1}}{2\delta},                                    && \quad \text{otherwise.}\\
+%         \end{empheq}
+%         Note that~$\ball[p](\xpt[0, m]) = \set{x \in \R^n : \norm{x}_p \le \delta}$ for any~$p \in [1, \infty]$.
+%         Therefore,
+%         \begin{empheq}[left={\max\limits_{x \in \ball[1](\xpt[0, m])} \abs{\lagp[i](x)} = \empheqlbrace}]{alignat*=2}
+%             & 2,    && \quad \text{if~$i = 1$ and~$n + 2 \le m \le 2n$,}\\
+%             & 1,    && \quad \text{otherwise.}
+%         \end{empheq}
+%         Moreover
+%         \begin{empheq}[left={\max\limits_{x \in \ball[2](\xpt[0, m])} \abs{\lagp[i](x)} = \empheqlbrace}]{alignat*=2}
+%             & 1 + \sqrt{2n + 1 - m},    && \quad \text{if~$i = 1$, and}\\
+%             & 1,                        && \quad \text{otherwise.}
+%         \end{empheq}
+%         Moreover,
+%         \begin{empheq}[left={\max\limits_{x \in \ball[\infty](\xpt[0, m])} \abs{\lagp[i](x)} = \empheqlbrace}]{alignat*=2}
+%             & n - 1,    && \quad \text{if~$i = 1$ and~$n + 3 \le m \le 2n + 1$,}\\
+%             & n,        && \quad \text{if~$i = 1$ and~$m = n + 2$,}\\
+%             & 1,        && \quad \text{otherwise.}
+%         \end{empheq}
+%     \end{enumerate}
+% \end{proof}

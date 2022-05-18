@@ -98,10 +98,10 @@
 \tcolorboxenvironment{example}{borderline west={4pt}{0pt}{black!30}}
 \tcolorboxenvironment{problem}{borderline west={4pt}{0pt}{black!30}}
 \tcolorboxenvironment{conjecture}{borderline west={4pt}{0pt}{black!30}}
-\tcolorboxenvironment{proposition}{borderline west={4pt}{0pt}{BlueViolet!30}}
-\tcolorboxenvironment{theorem}{borderline west={4pt}{0pt}{BlueViolet!50}}
-\tcolorboxenvironment{corollary}{borderline west={4pt}{0pt}{BlueViolet!30}}
-\tcolorboxenvironment{lemma}{borderline west={4pt}{0pt}{BlueViolet!30}}
+\tcolorboxenvironment{proposition}{borderline west={4pt}{0pt}{BlueViolet!40}}
+\tcolorboxenvironment{theorem}{borderline west={4pt}{0pt}{BlueViolet!40}}
+\tcolorboxenvironment{corollary}{borderline west={4pt}{0pt}{BlueViolet!40}}
+\tcolorboxenvironment{lemma}{borderline west={4pt}{0pt}{BlueViolet!40}}
 \tcolorboxenvironment{annotation}{borderline west={4pt}{0pt}{black!30}}
 \tcolorboxenvironment{claim}{borderline west={4pt}{0pt}{black!30}}
 \tcolorboxenvironment{note}{borderline west={4pt}{0pt}{black!30}}
@@ -112,7 +112,7 @@
 \mathcode`@="8000{\catcode`\@=\active\gdef@{\mkern1mu}}
 
 % Dedicated mathematical macros
-\newcommand{\ball}{\mathcal{B}}
+\newcommand{\ball}[1][]{\mathcal{B}\ifthenelse{\equal{#1}{}}{}{_{#1}}}
 \newcommand{\con}[1]{c_{#1}}
 \newcommand{\conm}[1][]{\hat{c}\ifthenelse{\equal{#1}{}}{}{_{#1}}}
 \newcommand{\lag}{\mathcal{L}}
