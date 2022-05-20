@@ -179,7 +179,17 @@ As we discussed before,~$\Lambda$ measures the quality of the interpolation set.
 
 \subsection{Least Frobenius norm quadratic models}
 
+\begin{definition}[$\Lambda$-poisedness]
+    \label{def:lambda-poisedness-minimum-norm}
+    A poised interpolation set~$\xpt \subseteq \R^n$ in the minimum-norm sense is said to be~$\Lambda$-poised in the minimum-norm sense in a compact set~$\mathcal{C} \subseteq \R^n$, for some~$\Lambda > 0$, if
+    \begin{equation*}
+        \Lambda \ge \max_{y \in \xpt} \max_{x \in \mathcal{C}} \abs{\lagp[y](x)}.
+    \end{equation*}
+\end{definition}
+
 \begin{itemize}
+    \item $\Lambda$-poisedness.
+    \item In the definition it is an inequality. If~$\Lambda = \max \dots$, then it is~$\Lambda$-poised.
     \item Factorization of the symmetric Broyden matrix.
     \item Updating the symmetric Broyden matrix.
     \item Decompositions of the Hessian matrices of the quadratic models.
@@ -196,32 +206,217 @@ As we discussed before,~$\Lambda$ measures the quality of the interpolation set.
 
 \section{An optimal number of interpolation points}
 
-For~$1 \le i \le 2n + 1$ and some~$\delta > 0$, let~$y^i \in \R^n$ be the vector
-\begin{empheq}[left={y^i \eqdef \empheqlbrace}]{alignat*=2}
-    & 0,                        && \quad \text{if~$i = 1$,}\\
-    & \delta e_{i - 1},         && \quad \text{if~$2 \le i \le n + 1$, and}\\
-    & -\delta e_{i - n - 1},    && \quad \text{otherwise,}
-\end{empheq}
-where~$e_i \in \R^n$ denotes the~$i$th standard coordinate vector.
-We define the interpolation sets~$\xpt[0, m] \subseteq \R$ for~$n + 2 \le m \le 2n + 1$ by
+We study in this section an interpolation set that we will use in \cref{ch:cobyqa-introduction} of this thesis, where we introduce a new model-based \gls{dfo} method.
+This interpolation set is adapted from~\cite{Powell_2001} as follows.
+Let~$\delta > 0$ be fixed and for~$j \in \set{1, 2, \dots, 2n + 1}$, let~$z^j \in \R^n$ be
+\begin{subequations}
+    \label{eq:initial-interpolation-set}
+    \begin{empheq}[left={z^j \eqdef \empheqlbrace}]{alignat=2}
+        & 0,                        && \quad \text{if~$j = 1$,}\\
+        & \delta e_{j - 1},         && \quad \text{if~$2 \le j \le n + 1$,}\\
+        & -\delta e_{j - n - 1},    && \quad \text{otherwise,}
+    \end{empheq}
+\end{subequations}
+where~$e_j \in \R^n$ denotes the~$i$th standard coordinate vector.
+We then define the interpolation set~$\mathcal{Z}_m \subseteq \R^n$ for each~$m \in \set{n + 2, n + 3, \dots, 2n + 1}$ by
 \begin{equation*}
-    \xpt[0, m] \eqdef \set{y^i}_{i = 1, 2, \dots, m}.
+    \mathcal{Z}_m \eqdef \set{z^1, z^2, \dots, z^m}.
 \end{equation*}
-Further, we denote by~$\ball[p](\xpt[0, m])$ the smallest~$\ell_p$-norm ball containing~$\xpt[0, m]$, for~$p \ge 1$.
+Further, we denote by~$\ball[p][\ast](\mathcal{Z}_m)$\todo{Rename it to~$\ball[p][m]$} the smallest~$\ell_p$-norm ball containing~$\mathcal{Z}_m$, for~$p \in [1, \infty]$.
 Note that we allow~$p = \infty$.
-We remark that
+By the construction of~$\mathcal{Z}_m$, we observe that
+\begin{equation}
+    \label{eq:ball-initial}
+    \ball[p][\ast](\mathcal{Z}_m) \equiv \ball[p](\delta) \eqdef \set{x \in \R^n : \norm{x}_p \le \delta}.
+\end{equation}
+
+Throughout this section, we denote by~$\lagp[i]$ (instead of~$\lagp[z^i]$) the minimum-norm Lagrange polynomial associated with~$\mathcal{Z}_m$ for~$z^i \in \mathcal{Z}_m$.
+According to the~\cref{def:lambda-poisedness-minimum-norm} and the equation~\cref{eq:ball-initial}, the set~$\mathcal{Z}_m$ is~$\Lambda_p$-poised in~$\ball[p][\ast](\mathcal{Z}_m)$ in the minimum-norm sense with
 \begin{equation*}
-    \ball[p](\xpt[0, m]) \equiv \set{x \in \R^n : \norm{x}_p \le \delta}.
+    \Lambda_p \eqdef \max_{1 \le i \le m} \max_{x \in \ball[p](\delta)} \abs{\lagp[i](x)}.
 \end{equation*}
-Throughout this section, we denote by~$\lagp[i]$ the Lagrange function~$\lagp[y^i]$.
+In the following, we develop bounds for~$\Lambda_p$ and we establish its value in some special cases\todo{Improve the sentence}.
+
+\Cref{lem:lagrange-polynomials-initial} provides explicit formulae for~$\lagp[i]$ for all~$i \in \set{1, 2, \dots, m}$.
+These formulae are given in~\cite[\S~3]{Powell_2006}, without a proof.
 
 \begin{lemma}
-    The minimum-norm Lagrange function associated with the above-defined interpolation are defined for~$x \in \R^n$ by
+    \label{lem:lagrange-polynomials-initial}
+    For each~$m \in \set{n + 2, n + 3, \dots,  2n + 1}$ and all~$x \in \R^n$, we have
     \begin{empheq}[left={\lagp[i](x) = \empheqlbrace}]{alignat*=2}
-        & 1 - \delta^{-2} \sum_{i = 1}^{m - n - 1} x_i^2 - \delta^{-1} \sum_{i = m - n}^{n} x_i,    && \quad \text{if~$i = 1$,}\\
-        & (\sqrt{2}\delta)^{-2} x_{i - 1}^2 + (2\delta)^{-1} x_{i - 1},                             && \quad \text{if~$2 \le i \le m - n$,}\\
-        & \delta^{-1} x_{i - 1},                                                                    && \quad \text{if~$m - n + 1 \le i \le n + 1$, and}\\
-        & (\sqrt{2}\delta)^{-2} x_{i - n - 1}^2 - (2\delta)^{-1} x_{i - n - 1}.                     && \quad \text{otherwise.}
+        & 1 - \frac{1}{\delta^2} \sum_{j = 1}^{m - n - 1} x_j^2 - \frac{1}{\delta} \sum_{j = m - n}^n x_j,  && \quad \text{if~$i = 1$,}\\
+        & \frac{x_{i - 1}^2}{2 \delta^2} + \frac{x_{i - 1}}{2 \delta},                                      && \quad \text{if~$2 \le i \le m - n$,}\\
+        & \frac{x_{i - 1}}{\delta},                                                                         && \quad \text{if~$m - n + 1 \le i \le n + 1$,}\\
+        & \frac{x_{i - 1}^2}{2 \delta^2} - \frac{x_{i - 1}}{2 \delta}.                                      && \quad \text{otherwise.}
+    \end{empheq}
+    In the formulation of~$\lagp[1]$, if~$m = 2n + 1$, we define~$\sum_{j = m - n}^n x_j = 0$.
+\end{lemma}
+
+\begin{proof}
+    Let~$i \in \set{1, 2, \dots, m}$ be fixed and let~$\lagp$ be a quadratic polynomial that satisfies
+    \begin{subequations}
+        \label{eq:lagrange-polynomials-initial-proof}
+        \begin{empheq}[left={\lagp(z^j) = \empheqlbrace}]{alignat=2}
+            & 1,    && \quad \text{if~$j = i$,}\\
+            & 0,    && \quad \text{otherwise.}
+        \end{empheq}
+    \end{subequations}
+    First, it is straightforward to verify that~$\lagp[i]$ satisfies the interpolation conditions~\cref{eq:lagrange-polynomials-initial-proof}.
+    Hence, it suffices to show that the Frobenius norm of its Hessian matrix is least.
+    According to the equation~\cref{eq:initial-interpolation-set}, for any~$j \in \set{1, 2, \dots, m - n - 1}$, we have~$z^1 = 0$,~$z^{j + 1} = \delta e_j$, and~$z^{n + j + 1} = - \delta e_j$.
+    Therefore,
+    \begin{empheq}[left=\empheqlbrace]{alignat*=1}
+        & \lagp(z^{j + 1}) = \lagp(z^1) + \delta \inner{\nabla \lagp(z^1), e_j} + \frac{\delta^2}{2} \inner{e_j, (\nabla^2 \lagp) e_j},\\
+        & \lagp(z^{n + j + 1}) = \lagp(z^1) - \delta \inner{\nabla \lagp(z^1), e_j} + \frac{\delta^2}{2} \inner{e_j, (\nabla^2 \lagp) e_j},
+    \end{empheq}
+    and hence,
+    \begin{equation*}
+        \inner{e_j, (\nabla^2 \lagp) e_j} = \frac{\lagp(z^{j + 1}) + \lagp(z^{n + j + 1}) - 2 \lagp(z^1)}{\delta^2}.
+    \end{equation*}
+    This fixes the first~$m - n - 1$ diagonal entries of~$\nabla^2 \lagp$, which are exactly those of~$\nabla^2 \lagp[i]$.
+    Since all the other entries of~$\nabla^2 \lagp[i]$ are zero, we have
+    \begin{equation*}
+        \norm{\nabla^2 \lagp[i]}_{\mathsf{F}}^2 \le \norm{\nabla^2 \lagp}_{\mathsf{F}}^2,
+    \end{equation*}
+    which completes the proof.
+\end{proof}
+
+\begin{lemma}
+    \label{lem:lambda-poisedness-initial-simple}
+    For any~$m \in \set{n + 2, n + 3, \dots, 2n + 1}$ and any~$p \in [1, \infty]$, we have
+    \begin{equation}
+        \label{eq:lambda-poisedness-initial-simple}
+        \Lambda_p = \max_{x \in \ball[p](\delta)} \abs{\lagp[1](x)}.
+    \end{equation}
+\end{lemma}
+
+\begin{proof}
+    For each~$i \in \set{2, 3, \dots, n + 1}$, according to~\cref{lem:lagrange-polynomials-initial},~$\lagp[i](x)$ depends only on~$x_{i - 1}$ for all~$x \in \R^n$, and hence
+    \begin{equation*}
+        \max_{x \in \ball[p](\delta)} \abs{\lagp[i](x)} = \max_{t \in [-\delta, \delta]} \abs{\lagp[i](t e_{i - 1})} = 1.
+    \end{equation*}
+    Similarly, for each~$i \in \set{n + 2, n + 3, \dots, m}$, since~$\lagp[i](x)$ depends only on~$x_{i - n - 1}$ for all~$x \in \R^n$, we have
+    \begin{equation*}
+        \max_{x \in \ball[p](\delta)} \abs{\lagp[i](x)} = \max_{t \in [-\delta, \delta]} \abs{\lagp[i](t e_{i - n - 1})} = 1.
+    \end{equation*}
+    Noting that~$\lagp[1](z^1) = 1$ and~$z^1 \in \ball[p](\delta)$, we thus have
+    \begin{equation*}
+        \Lambda_p = \max_{x \in \ball[p](\delta)} \abs{\lagp[1](x)}.
+    \end{equation*}
+\end{proof}
+
+\begin{theorem}
+    \label{thm:lambda-poisedness-initial}
+    For any~$m \in \set{n + 2, n + 3, \dots, 2n + 1}$ and any~$p \in [1, \infty]$, we have
+    \begin{equation*}
+        1 + (2n + 1 - m)^{\frac{p - 1}{p}} \le \Lambda_p \le n,
+    \end{equation*}
+    where we assume that~$0^0 = 0$ and that the lower bound is~$2n + 2 - m$ for~$p = \infty$.
+\end{theorem}
+
+\begin{proof}
+    We will establish the bounds using the formulation of~$\Lambda_p$ in~\cref{lem:lambda-poisedness-initial-simple}.
+    For the lower bound, by considering only the points in~$\R^n$ whose leading~$m - n - 1$ components are zeros and whose remaining~$2n + 1 - m$ components are equal, we have
+    \begin{equation*}
+        \Lambda_p \ge \max_{t \in \R} \set{1 - \delta^{-1} (2n + 1 - m) t : (2n + 1 - m) \abs{t}^p \le \delta^p} = 1 + (2n + 1 - m)^{\frac{p - 1}{p}}.
+    \end{equation*}
+    
+    We now prove the upper bound.
+    Note that for any~$p \ge 1$, we have~$\ball[p](\delta) \subseteq \ball[\infty](\delta)$, so that~$\Lambda_p \le \Lambda_{\infty}$.
+    Therefore, we only need to show that~$\Lambda_{\infty} \le n$.
+    Considering both~$\lagp[1]$ and~$-\lagp[1]$, we obtain
+    \begin{equation*}
+        \Lambda_{\infty} = \max_{x \in \ball[\infty](\delta)} \abs{\lagp[1](x)} = \max \set{2n + 2 - m, n - 1} \le n.
+    \end{equation*}
+\end{proof}
+
+\begin{proposition}
+    For any~$m \in \set{n + 2, n + 3, \dots, 2n + 1}$, we have
+    \begin{subequations}
+        \label{eq:lambda-poisedness-1}
+        \begin{empheq}[left={\Lambda_1 = \empheqlbrace}]{alignat=2}
+            & 2,    && \quad \text{if~$n + 2 \le m \le 2n$,}\\
+            & 1,    && \quad \text{otherwise.}
+        \end{empheq}
+    \end{subequations}
+\end{proposition}
+
+\begin{proof}
+    According to~\cref{thm:lambda-poisedness-initial},~$\Lambda_1$ is lower bounded by the right-hand side of~\cref{eq:lambda-poisedness-1}.
+    Therefore, we only need to prove that this right-hand side is also a lower bound for~$\Lambda_1$, using the formulation in \cref{lem:lambda-poisedness-initial-simple}.
+
+    For any~$x \in \ball[1](\delta)$, we have
+    \begin{equation*}
+        \lagp[1](x) \le 1 - \frac{1}{\delta} \sum_{j = m - n}^n x_j \le 1 + \frac{1}{\delta} \sum_{j = m - n}^n \abs{x_j}.
+    \end{equation*}
+    Therefore,
+    \begin{subequations}
+        \label{eq:eq:lambda-poisedness-1-proof-1}
+        \begin{empheq}[left={\lagp[1](x) \le \empheqlbrace}]{alignat=2}
+            & 2,    && \quad \text{if~$n + 2 \le m \le 2n$,}\\
+            & 1,    && \quad \text{otherwise.}
+        \end{empheq}
+    \end{subequations}
+    On the other hand,
+    \begin{subequations}
+        \label{eq:eq:lambda-poisedness-1-proof-2}
+        \begin{align}
+            \lagp[1](x) &= 1 - \sum_{j = 1}^{m - n - 1} \frac{x_j^2}{\delta^2} - \sum_{j = m - n}^n \frac{x_j}{\delta}\\
+                        &\ge 1 - \sum_{j = 1}^{m - n - 1} \frac{\abs{x_j}}{\delta} - \sum_{j = m - n}^n \frac{\abs{x_j}}{\delta}\\
+                        &\ge 1 - \frac{\norm{x}_1}{\delta} \ge 0.
+        \end{align}
+    \end{subequations}
+    We conclude the proof by combining~\cref{eq:eq:lambda-poisedness-1-proof-1,eq:eq:lambda-poisedness-1-proof-2} with~\cref{lem:lambda-poisedness-initial-simple}.
+\end{proof}
+
+\begin{proposition}
+    For any~$m \in \set{n + 2, n + 3, \dots, 2n + 1}$, we have
+    \begin{equation}
+        \label{eq:lambda-poisedness-2}
+        \Lambda_2 = 1 + \sqrt{2n + 1 - m}.
+    \end{equation}
+\end{proposition}
+
+\begin{proof}
+    If~$m = 2n + 1$, \cref{lem:lagrange-polynomials-initial} tells us that~$\lagp[1](x) = 1 - \delta^{-2} \norm{x}_2^2$ for~$x \in \ball[2](\delta)$.
+    Therefore, \cref{lem:lambda-poisedness-initial-simple} directly provides~$\Lambda_2 = 1$.
+    We now focus on the case with~$n + 2 \le m < 2n + 1$.
+
+    According to~\cref{thm:lambda-poisedness-initial},~$\Lambda_2$ is lower bounded by the right-hand side of~\cref{eq:lambda-poisedness-2}.
+    Therefore, we only need to prove that this right-hand side is also a lower bound for~$\Lambda_2$, using the formulation in \cref{lem:lambda-poisedness-initial-simple}.
+    
+    For any~$x \in \ball[2](\delta)$, we have
+    \begin{subequations}
+        \begin{align}
+            \lagp[1](x) &= 1 - \frac{1}{\delta^2} \sum_{j = 1}^{m - n - 1} x_j^2 - \frac{1}{\delta} \sum_{j = m - n}^n x_j\\
+                        &\ge 1 - \frac{1}{\delta^2} \bigg( \delta^2 - \sum_{j = m - n}^n x_j^2 \bigg) - \frac{1}{\delta} \sum_{j = m - n}^n x_j = \sum_{j = m - n}^n \frac{x_j}{\delta} \bigg( 1 - \frac{x_j}{\delta} \bigg)\\
+                        &\ge \min_{y \in \ball[2](1)} \sum_{j = m - n}^n y_j (1 - y_j). \label{eq:lambda-poisedness-initial-2-proof}
+        \end{align}
+    \end{subequations}
+    Let~$y^{\ast} \in \ball[2](1)$ be a minimizer in~\cref{eq:lambda-poisedness-initial-2-proof}.
+    \Cref{thm:first-order-necessary-conditions} ensures that there exists a Lagrange multiplier~$\lambda^{\ast} \ge 0$ such that~$1 - 2 y_j^{\ast} + 2 \lambda^{\ast} y_j^{\ast} = 0$ for all~$j \in \set{m - n, \dots, n}$.
+    Therefore, the last~$(2n + 1 - m)$ components of~$y^{\ast}$ are equal, and hence\todo{The~$t(1 - t)$ looks strange},
+    \begin{align*}
+        \lagp[1](x) \ge \min_{y \in \ball[2](1)} \sum_{j = m - n}^n y_j (1 - y_j)   &= \min_{t \in \R} \set{(2n + 1 - m) t (1 - t) : (2n + 1 - m) t^2 \le 1}\\
+                                                                                    &= -1 - \sqrt{2n + 1 - m}.
+    \end{align*}
+
+    Furthermore,
+    \begin{equation*}
+        \lagp[1](x) \le 1 + \sum_{j = m - n}^n \frac{\abs{x_j}}{\delta} \le 1 + \sqrt{2n + 1 - m} \sum_{j = m - n}^n \frac{x_j^2}{\delta^2} \le 1 + \sqrt{2n + 1 - m}.
+    \end{equation*}
+    Therefore,~$\abs{\lagp[1](x)} \le 1 + \sqrt{2n + 1 - m}$ and hence, according to~\cref{lem:lambda-poisedness-initial-simple,thm:lambda-poisedness-initial}, we have
+    \begin{equation*}
+        \Lambda_2 = \max_{x \in \ball[2](\delta)} \abs{\lagp[1](x)} = 1 + \sqrt{2n + 1 - m},
+    \end{equation*}
+    which concludes the proof.
+\end{proof} 
+
+\begin{lemma}
+    For any~$p \ge 1$ and~$q \ge 1$, we have
+    \begin{empheq}[left={\max\limits_{x \in \ball[q](1)} \norm{x}_p = \empheqlbrace}]{alignat*=2}
+        & 1,                    && \quad \text{if~$p \ge q$,}\\
+        & n^{\frac{q - p}{pq}}, && \quad \text{otherwise.}
     \end{empheq}
 \end{lemma}
 
@@ -229,92 +424,23 @@ Throughout this section, we denote by~$\lagp[i]$ the Lagrange function~$\lagp[y^
     To do.
 \end{proof}
 
-\begin{theorem}
-    \label{thm:lambda-poisedness-initial}
-    For any~$n + 2 \le m \le 2n + 1$ and any~$p \in [1, \infty)$, the interpolation set~$\xpt[0, m]$ is~$\Lambda$-poised in~$\ball[p](\xpt[0, m])$ in the minimum-norm sense, with
-    \begin{equation*}
-        1 + (2n + 1 - m)^{\frac{p - 1}{p}} \le \Lambda \le n.
-    \end{equation*}
-\end{theorem}
-
-We take the convention~$0^0 = 0$ in \cref{thm:lambda-poisedness-initial}.
-
-\begin{proof}
-    To do.
-\end{proof}
-
 \begin{proposition}
-    For any~$n + 2 \le m \le 2n + 1$, the interpolation set~$\xpt[0, m]$ is~$\Lambda$-poised in~$\ball[1](\xpt[0, m])$ in the minimum-norm sense, with
-    \begin{empheq}[left={\Lambda = \empheqlbrace}]{alignat*=2}
-        & 2 && \quad \text{if~$n + 2 \le m \le 2n$, and}\\
-        & 1 && \quad \text{otherwise.}
-    \end{empheq}
-\end{proposition}
-
-\begin{proof}
-    To do.
-\end{proof}
-
-\begin{proposition}
-    For any~$n + 2 \le m \le 2n + 1$, the interpolation set~$\xpt[0, m]$ is~$\Lambda$-poised in~$\ball[2](\xpt[0, m])$ in the minimum-norm sense, with
+    For any~$p \ge 1$, if~$m = 2n + 1$, then
     \begin{equation*}
-        \Lambda = 1 + \sqrt{2n + 1 - m}.
+        \Lambda_p = \max \set[\big]{1, n^{\frac{p - 2}{p}} - 1}.
     \end{equation*}
 \end{proposition}
 
 \begin{proof}
-    To do.
-\end{proof}
-
-\begin{proposition}
-    For any~$n + 2 \le m \le 2n + 1$, the interpolation set~$\xpt[0, m]$ is~$\Lambda$-poised in~$\ball[\infty](\xpt[0, m])$ in the minimum-norm sense, with
-    \begin{empheq}[left={\Lambda = \empheqlbrace}]{alignat*=2}
-        & n     && \quad \text{if~$m = n + 2$, and}\\
-        & n - 1 && \quad \text{otherwise.}
-    \end{empheq}
-\end{proposition}
-
-\begin{proof}
-    To do.
-\end{proof}
-
-\begin{proposition}
-    For any~$p \in [3, \infty)$, the interpolation set~$\xpt[0, 2n + 1]$ is~$\Lambda$-poised in~$\ball[p](\xpt[0, 2n + 1])$ in the minimum-norm sense, with
+    It is clear that
     \begin{equation*}
-        \Lambda = \max \set[\big]{1, n^{\frac{p - 2}{p}} - 1}.
+        \max_{x \in \ball[p](\delta)} \lagp[1](x) = \max_{x \in \ball[p](\delta)} 1 - \frac{\norm{x}_2^2}{\delta^2} = 1.
     \end{equation*}
-\end{proposition}
-
-\begin{proof}
-    To do.
+    Moreover, we have
+    \begin{equation*}
+        \max_{x \in \ball[p](\delta)} -\lagp[1](x) = \max_{x \in \ball[p](\delta)} \frac{\norm{x}_2^2}{\delta^2} - 1 = \max_{t \in \R} \set[\bigg]{\frac{n t^2}{\delta^2} - 1 : n \abs{t}^p \le \delta^p} = n^{\frac{p - 2}{p}} - 1,
+    \end{equation*}
+    which concludes the proof.
 \end{proof}
 
-% \begin{proof}
-%     For simplicity, we denote in this proof~$\lagp[i]$ the polynomial~$\lagp[y^i]$ for~$1 \le i \le m$.
-%     \begin{enumerate}
-%         \item If~$n + 2 \le m \le 2n + 1$.
-%         \begin{empheq}[left={\lagp[i](x) = \empheqlbrace}]{alignat*=2}
-%             & 1 - \frac{1}{\delta^2} \sum_{i = 1}^{m - n - 1} x_i^2 - \frac{1}{\delta} \sum_{i = m - n}^{n} x_i,    && \quad \text{if~$i = 1$,}\\
-%             & \frac{x_{i - 1}^2}{2\delta^2} + \frac{x_{i - 1}}{2\delta},                                            && \quad \text{if~$2 \le i \le m - n$,}\\
-%             & \frac{x_{i - 1}}{\delta},                                                                             && \quad \text{if~$m - n + 1 \le i \le n + 1$, and}\\
-%             & \frac{x_{i - n - 1}^2}{2\delta^2} - \frac{x_{i - n - 1}}{2\delta},                                    && \quad \text{otherwise.}\\
-%         \end{empheq}
-%         Note that~$\ball[p](\xpt[0, m]) = \set{x \in \R^n : \norm{x}_p \le \delta}$ for any~$p \in [1, \infty]$.
-%         Therefore,
-%         \begin{empheq}[left={\max\limits_{x \in \ball[1](\xpt[0, m])} \abs{\lagp[i](x)} = \empheqlbrace}]{alignat*=2}
-%             & 2,    && \quad \text{if~$i = 1$ and~$n + 2 \le m \le 2n$,}\\
-%             & 1,    && \quad \text{otherwise.}
-%         \end{empheq}
-%         Moreover
-%         \begin{empheq}[left={\max\limits_{x \in \ball[2](\xpt[0, m])} \abs{\lagp[i](x)} = \empheqlbrace}]{alignat*=2}
-%             & 1 + \sqrt{2n + 1 - m},    && \quad \text{if~$i = 1$, and}\\
-%             & 1,                        && \quad \text{otherwise.}
-%         \end{empheq}
-%         Moreover,
-%         \begin{empheq}[left={\max\limits_{x \in \ball[\infty](\xpt[0, m])} \abs{\lagp[i](x)} = \empheqlbrace}]{alignat*=2}
-%             & n - 1,    && \quad \text{if~$i = 1$ and~$n + 3 \le m \le 2n + 1$,}\\
-%             & n,        && \quad \text{if~$i = 1$ and~$m = n + 2$,}\\
-%             & 1,        && \quad \text{otherwise.}
-%         \end{empheq}
-%     \end{enumerate}
-% \end{proof}
+\todo[noline]{Explain how these results could be generalized}

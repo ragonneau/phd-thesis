@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/05/05 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/05/19 PolyU thesis document class]
 
 % Load book class as basis
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
@@ -189,6 +189,8 @@
 \RequirePackage[noabbrev]{cleveref}
 \crefname{equation}{}{}
 \Crefname{equation}{}{}
+\crefname{lemma}{lemma}{lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
 \crefname{problem}{problem}{problems}
 \Crefname{problem}{Problem}{Problems}
 

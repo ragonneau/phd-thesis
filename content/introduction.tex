@@ -23,7 +23,7 @@
 \nomenclature[Nc]{$\qedsymbol$}{Halmos symbol}%
 \nomenclature[Nd]{$A^{\T}$,~$v^{\T}$}{Transpose of a matrix or a vector}%
 \nomenclature[Ne]{$I_n$}{Identity matrix on~$\R^{n \times n}$}%
-\nomenclature[Nf]{$e_k$}{Standard coordinate vector of~$\R^n$ ($k$-th column of~$I_n$), with~$1 \le k \le n$}%
+\nomenclature[Nf]{$e_i$}{Standard coordinate vector of~$\R^n$ ($i$th column of~$I_n$), with~$1 \le i \le n$}%
 \nomenclature[Ng]{$\bigo(\cdot)$}{Big-O notation}%
 \nomenclature[Nh]{$o(\cdot)$}{Little-O notation}%
 \nomenclature[Ni]{$N(\mu, \sigma^2)$}{Gaussian distribution with mean~$\mu$ and variance~$\sigma^2$}%
@@ -117,7 +117,7 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
             Exchange the~$k$th and the~$j$th rows of~$A^{(k - 1)}$\;
             Evaluate the multiplier~$\tau^k \in \R^n$ with components
             \begin{algoempheq}[left={\tau_i^k = \empheqlbrace}]{alignat*=2}
-                & A_{i, k}^{(k - 1)} / A_{k, k}^{(k - 1)},  && \quad \text{if~$i > k$, and}\\
+                & A_{i, k}^{(k - 1)} / A_{k, k}^{(k - 1)},  && \quad \text{if~$i > k$,}\\
                 & 0,                                        && \quad \text{otherwise}
             \end{algoempheq}
             Update~$A^{(k)} \gets (I_n - \tau^k e_k^{\T})A^{(k - 1)}$\;
@@ -178,7 +178,7 @@ For example, consider \cref{alg:trust-region}, a basic trust-region method for s
         Update the trust-region radius
         \begin{algoempheq}[left={\Delta_{k + 1} \gets \empheqlbrace}]{alignat*=2}
             & \theta_1 \Delta_k,    && \quad \text{if~$\rho_k \le \eta_1$,}\\
-            & \Delta_k,             && \quad \text{if~$\eta_1 < \rho_k \le \eta_2$, and}\\
+            & \Delta_k,             && \quad \text{if~$\eta_1 < \rho_k \le \eta_2$,}\\
             & \theta_2 \Delta_k,    && \quad \text{otherwise}
         \end{algoempheq}
     }
@@ -343,7 +343,7 @@ We introduce hereafter two classical constraint qualifications.
         \begin{subequations}
             \label{eq:mangasarian-fromovitz}
             \begin{empheq}[left=\empheqlbrace]{alignat=2}
-                & \inner{\nabla \con{i}(x), z} < 0, && \quad \text{if~$i \in \act(x) \cap \iub$, and}\\
+                & \inner{\nabla \con{i}(x), z} < 0, && \quad \text{if~$i \in \act(x) \cap \iub$,}\\
                 & \inner{\nabla \con{i}(x), z} = 0, && \quad \text{if~$i \in \ieq$.}
             \end{empheq}
         \end{subequations}
@@ -470,7 +470,7 @@ It is known that at a local solution of a smooth unconstrained optimization prob
         \label{eq:second-order-introduction}
         \begin{empheq}[left=\empheqlbrace]{alignat=2}
             & \inner{\nabla \con{i}(x^{\ast}), z} = 0,      && \quad \text{if~$i \in \ieq$,}\\
-            & \inner{\nabla \con{i}(x^{\ast}), z} = 0,      && \quad \text{if~$i \in \act(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} > 0$, and}\\
+            & \inner{\nabla \con{i}(x^{\ast}), z} = 0,      && \quad \text{if~$i \in \act(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} > 0$,}\\
             & \inner{\nabla \con{i}(x^{\ast}), z} \ge 0,    && \quad \text{if~$i \in \act(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} = 0$.}
         \end{empheq}
     \end{subequations}
