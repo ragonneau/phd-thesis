@@ -413,15 +413,41 @@ These formulae are given in~\cite[\S~3]{Powell_2006}, without a proof.
 \end{proof} 
 
 \begin{lemma}
+    \label{lem:max-norm-pq}
     For any~$p \ge 1$ and~$q \ge 1$, we have
-    \begin{empheq}[left={\max\limits_{x \in \ball[q](1)} \norm{x}_p = \empheqlbrace}]{alignat*=2}
-        & 1,                    && \quad \text{if~$p \ge q$,}\\
-        & n^{\frac{q - p}{pq}}, && \quad \text{otherwise.}
-    \end{empheq}
+    \begin{subequations}
+        \label{eq:max-norm-pq}
+        \begin{empheq}[left={\max\limits_{x \in \ball[q](1)} \norm{x}_p = \empheqlbrace}]{alignat=2}
+            & 1,                    && \quad \text{if~$p \ge q$,}\\
+            & n^{\frac{q - p}{pq}}, && \quad \text{otherwise.}
+        \end{empheq}
+    \end{subequations}
 \end{lemma}
 
 \begin{proof}
-    To do.
+    Let us first consider the case where~$p \ge q$.
+    For~$x \in \ball[q](1)$, we have~$\norm{x}_p \le 1$, and this bound is attained at the first coordinate vector~$e_1 \in \R^n$, so that
+    \begin{equation*}
+        \max_{x \in \ball[q](1)} \norm{x}_p = 1.
+    \end{equation*}
+
+    We now consider the case where~$p < q$.
+    Let~$x^{\ast} \in \ball[q](1)$ be a minimizer in~\cref{eq:max-norm-pq}.
+    \Cref{thm:first-order-necessary-conditions} ensures that there exists a Lagrange multiplier~$\lambda^{\ast} \in \R$ such that
+    \begin{empheq}[left=\empheqlbrace]{alignat*=2}
+        & \frac{\sgn(x_j^{\ast}) \abs{x_j^{\ast}}^{p - 1}}{\norm{x^{\ast}}_p^{p - 1}} + \frac{\lambda \sgn(x_j^{\ast}) \abs{x_j^{\ast}}^{q - 1}}{\norm{x^{\ast}}_q^{q - 1}} = 0,    && \quad \text{for~$j \in \set{1, 2, \dots, n}$,}\\
+        & \norm{x^{\ast}}_q \le 1,                                                                                                                                                  && \\
+        & \lambda^{\ast} (\norm{x^{\ast}}_q - 1) = 0,                                                                                                                               && \\
+        & \lambda^{\ast} \le 0,                                                                                                                                                     &&
+    \end{empheq}
+    where~$\sgn$ denotes the sign function.
+    Therefore, all the nonzero components of~$x^{\ast}$ share the same absolute value~$\alpha > 0$, i.e., for any~$j \in \set{1, 2, \dots, n}$, we have~$\abs{x_j^{\ast}} \in \set{0, \alpha}$.
+    Moreover, it is clear that~$x^{\ast} \neq 0$, as such a point is a global minimizer of the objective function in~\cref{eq:max-norm-pq}, so that~$\norm{x}_q = 1$.
+    If~$k$ denotes the number of nonzero components of~$x^{\ast}$, we thus have
+    \begin{equation*}
+        \norm{x^{\ast}}_p = k^{\frac{q - p}{pq}},
+    \end{equation*}
+    which is maximal for~$k = n$.
 \end{proof}
 
 \begin{proposition}
@@ -436,11 +462,11 @@ These formulae are given in~\cite[\S~3]{Powell_2006}, without a proof.
     \begin{equation*}
         \max_{x \in \ball[p](\delta)} \lagp[1](x) = \max_{x \in \ball[p](\delta)} 1 - \frac{\norm{x}_2^2}{\delta^2} = 1.
     \end{equation*}
-    Moreover, we have
-    \begin{equation*}
-        \max_{x \in \ball[p](\delta)} -\lagp[1](x) = \max_{x \in \ball[p](\delta)} \frac{\norm{x}_2^2}{\delta^2} - 1 = \max_{t \in \R} \set[\bigg]{\frac{n t^2}{\delta^2} - 1 : n \abs{t}^p \le \delta^p} = n^{\frac{p - 2}{p}} - 1,
-    \end{equation*}
-    which concludes the proof.
+    Moreover, according to \cref{lem:max-norm-pq}, we have
+    \begin{empheq}[left={\max\limits_{x \in \ball[p](\delta)} -\lagp[1](x) = \max\limits_{x \in \ball[p](\delta)} \dfrac{\norm{x}_2^2}{\delta^2} - 1 = \empheqlbrace}]{alignat*=2}
+        & 0,                        && \quad \text{if~$p \le 2$,}\\
+        & n^{\frac{p - 2}{p}} - 1,  && \quad \text{otherwise.}
+    \end{empheq}
 \end{proof}
 
 \todo[noline]{Explain how these results could be generalized}
