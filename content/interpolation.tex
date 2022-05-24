@@ -64,7 +64,8 @@ Examples of such methods include \gls{orbit}~\cite{Wild_Regis_Shoemaker_2008}, \
 Before studying properties of multivariate interpolation, we must introduce the following notion of poisedness, which defines uniquely interpolants.
 
 \begin{definition}[Poisedness]
-    The set~$\xpt$ is \emph{poised} if the interpolation system~\cref{eq:interpolation-conditions} is consistent and has a unique solution for a given space in which~$\objm$ must lie.
+    Let the space in which~$\objm$ must lie be fixed.
+    The set~$\xpt$ is \emph{poised} if the interpolation system~\cref{eq:interpolation-conditions} is consistent and has a unique solution for any function~$\obj$.
 \end{definition}
 
 Let of first consider the problem of finding a linear model~$\objm \in \lpoly$ satisfying the interpolation system~\cref{eq:interpolation-conditions} whenever~$\card \xpt = \dim \lpoly = n + 1$.
@@ -78,28 +79,29 @@ If~$\xpt$ is poised for linear interpolation, given~$\set{\alpha_0^{\ast}, \alph
 \begin{equation*}
     \objm(x) = \alpha_0^{\ast} + \sum_{i = 1}^n \alpha_i^{\ast} x_i,
 \end{equation*}
-and the vector~$\nabla \objm \equiv (\alpha_i^{\ast})_{i = 1, 2, \dots, n}$ is referred to as the \emph{simplex gradient} of~$\obj$ for the interpolation set~$\xpt$.
+and the vector~$\nabla \objm \equiv (\alpha_1^{\ast}, \alpha_2^{\ast}, \dots, \alpha_n^{\ast})$ is referred to as the \emph{simplex gradient} of~$\obj$ for the interpolation set~$\xpt$.
 Such models are used for instance by \gls{cobyla}~\cite{Powell_1994}, a \gls{dfo} method for nonlinearly-constrained optimization detailed in \cref{subsec:cobyla}.
 
 The problem of finding a quadratic model~$\objm \in \qpoly$ satisfying the interpolation system~\cref{eq:interpolation-conditions} whenever~$\card \xpt = \dim \qpoly = (n + 1)(n + 2) / 2$ is very similar.
 Unlike linear model, quadratic models capture curvature information of the function~$\obj$, and are hence more precise.
 Most recent model-based \gls{dfo} methods based on polynomial models use in fact quadratic models.
 This is the case for instance for \gls{uobyqa}~\cite{Powell_2002}, a \gls{dfo} method for unconstrained optimization detailed in \cref{subsec:uobyqa}, which use the quadratic interpolation models mentioned above.
-The new method we introduce in \cref{ch:cobyqa-introduction} also uses quadratic models, described in \cref{subsec:symmetric-broyden-updates}.
+The new method we introduce in \cref{ch:cobyqa-introduction} also uses quadratic models, which are described in \cref{subsec:symmetric-broyden-updates}.
 Therefore, we focus further considerations in this chapter on quadratic models.
 
 \section{Overview of the Lagrange polynomials}
 \label{sec:lagrange-polynomials}
 
-For simplicity, we present in this section the Lagrange quadratic polynomials only.
+As mentioned above, we present in this section the Lagrange quadratic polynomials only.
 Note that the theory presented below can be generalized to polynomials of any degree.
 
 \begin{definition}[Lagrange quadratic polynomials]
     \label{def:lagrange-polynomials}
-    Given a poised interpolation set~$\xpt \subseteq \R^n$ of~$(n + 1)(n + 2) / 2$ points, the Lagrange polynomial~$\lagp[y] \in \qpoly$ for~$y \in \xpt$ is the unique quadratic polynomial satisfying~$\lagp[y](y) = 1$ and
-    \begin{equation*}
-        \lagp[y](x) = 0, \quad \text{for~$x \in \xpt \setminus \set{y}$}.
-    \end{equation*}
+    Given a poised interpolation set~$\xpt \subseteq \R^n$ of~$(n + 1)(n + 2) / 2$ points, the Lagrange polynomial~$\lagp[y] \in \qpoly$ for~$y \in \xpt$ is the unique quadratic polynomial satisfying
+    \begin{empheq}[left={\lagp[y](x) = \empheqlbrace}]{alignat*=2}
+        & 1,    && \quad \text{if~$x = y$,}\\
+        & 0,    && \quad \text{if~$x \in \xpt \setminus \set{y}$.}
+    \end{empheq}
 \end{definition}
 
 We note that \cref{def:lagrange-polynomials} is well-defined, because the poisedness of the interpolation ensures the existence and the uniqueness of the Lagrange polynomials.
@@ -116,24 +118,27 @@ Moreover, as decribed by \cref{thm:lagrange-polynomials-basis}, the interpolant~
 
 In the context of \gls{dfo}, one of the most important application of the Lagrange polynomials is to measure the well-poisedness of the interpolation set~$\xpt$.
 More specifically, \citeauthor{Ciarlet_Raviart_1972}~\cite{Ciarlet_Raviart_1972} showed that
+\begin{equation}
+    \label{eq:Ciarlet_Raviart_0}
+    \sup_{x \in \conv \xpt} \abs{\obj(x) - \objm(x)} \le \frac{\nu}{6} \sum_{y \in \xpt} \abs{\lagp[y](x)} \norm{x - y}^3,
+\end{equation}
+whenever~$\obj$ is thrice differentiable in~$\conv \xpt$, where~$\conv \xpt$ denotes the convex hull of~$\xpt$, and where~$\nu$ is an upper bound on the absolute value of the third-order directional derivatives of~$\obj$ in~$\conv \xpt$.
+We simplify this bound as follows.
+Let~$\diam \xpt$ be the diameter of~$\xpt$, that is
 \begin{equation*}
-    \sup_{x \in \conv(\xpt)} \abs{\obj(x) - \objm(x)} \le \frac{\nu}{6} \sum_{y \in \xpt} \abs{\lagp[y](x)} \norm{x - y}^3,
-\end{equation*}
-whenever~$\obj$ is thrice differentiable in~$\conv(\xpt)$, where~$\conv(\xpt)$ denotes the convex hull of~$\xpt$, and where~$\nu$ is an upper bound on the absolute value of the third-order directional derivatives of~$\obj$ in~$\conv(\xpt)$.
-Let~$\diam(\xpt)$ be the diameter of~$\xpt$, that is
-\begin{equation*}
-    \diam(\xpt) \eqdef \max_{x, y \in \xpt} \norm{x - y}.
+    \diam \xpt \eqdef \max_{x, y \in \xpt} \norm{x - y}.
 \end{equation*}
 We then clearly have
 \begin{equation*}
-    \sup_{x \in \conv(\xpt)} \abs{\obj(x) - \objm(x)} \le \frac{\nu}{12} (n + 1) (n + 2) \Lambda \diam(\xpt)^3,
+    \sup_{x \in \conv \xpt} \abs{\obj(x) - \objm(x)} \le \frac{\nu \Lambda}{6} (\card \xpt) (\diam\xpt)^3,
 \end{equation*}
 where~$\Lambda$ is intimately related to the Lebesgue constant of~$\xpt$, and is defined by
-\begin{equation*}
-    \Lambda \eqdef \max_{y \in \xpt} \max_{x \in \conv(\xpt)} \abs{\lagp[y](x)}.
-\end{equation*}
+\begin{equation}
+    \label{eq:lambda-poisedness-convex-hull}
+    \Lambda \eqdef \max_{y \in \xpt} \max_{x \in \conv \xpt} \abs{\lagp[y](x)}.
+\end{equation}
 In some sense,~$\Lambda$ measures, therefore, the well-poisedness of the interpolation set~$\xpt$.
-More details on this observation is given in \cref{sec:poisedness}.
+This observation underlies a notion presented in \cref{sec:poisedness}, namely the~$\Lambda$-poisedness.
 
 \section{Poisedness of interpolation sets}
 \label{sec:poisedness}
@@ -150,34 +155,114 @@ It may be, however, generalized to any space of polynomials.
     \end{equation*}
 \end{definition}
 
-As we discussed before,~$\Lambda$ measures the quality of the interpolation set.
+If~$\xpt$ is~$\Lambda_0$-poised in~$\mathcal{C}$, it is obviously~$\Lambda$-poised in~$\mathcal{C}$ for any~$\Lambda \ge \Lambda_0$.
+Note that the definition of~$\Lambda$-poisedness is closely related to the one in~\cref{eq:lambda-poisedness-convex-hull}, since~$\conv \xpt$ is compact.
+Therefore, to some extend,~$\Lambda$ measures the quality (in a given compact set) of the interpolant that is related to the interpolation set.
+Note that in this definition, the compact set~$\mathcal{C} \subseteq \R^n$ may or may not contain in the interpolation points in~$\xpt$.
 
-\begin{itemize}
-    \item Definition of the~$\Lambda$-poisedness.
-    \item The~$\Lambda$-poisedness measures the quality of the interpolation set.
-    \item In practice we do not use it.
-\end{itemize}
+In practice, however, we do not use the~$\Lambda$-poisedness of interpolation directly.
+This is because determining whether a set is~$\Lambda$-poised is a difficult problem, even if the compact set~$\mathcal{C} \subseteq \R^n$ is simple (e.g., a ball).
+It is a theoretical tool that we mostly use to justify some design choices of algorithms.
+More discussion on the properties of a~$\Lambda$-poised interpolation set is given in~\cite[\S~3.3]{Conn_Scheinberg_Vicente_2009b}.
 
 \subsection{Relationship with the conditioning of the interpolation system}
 
-\begin{itemize}
-    \item We consider here only the natural basis.
-    \item The condition number is bounded by something that depends on~$\Lambda$.
-\end{itemize}
+As in the linear case, a quadratic model~$\objm \in \qpoly$ satisfying the interpolation conditions~\cref{eq:interpolation-conditions} whenever~$\card \xpt = \dim \qpoly = (n + 1)(n + 2) / 2$ can be formulated as follows.
+In the natural basis of~$\qpoly$, the system~\cref{eq:interpolation-conditions} can be formulated as
+\begin{equation}
+    \label{eq:quadratic-interpolation-conditions}
+    \alpha_0 + \sum_{i = 1}^n \alpha_i y_i + \frac{1}{2} \sum_{i = 1}^n \alpha_{n + i} y_i^2 + \sum_{i = 2}^{n} \sum_{j = 1}^{i - 1} \alpha_{2n + \theta(i, j)} y_i y_j = \obj(y), \quad \text{for~$y \in \xpt$},
+\end{equation}
+where~$\theta(i, j) \eqdef j + (i - 1)(i - 2) / 2$.
+We denote by~$M \in \R^{\card \xpt \times \card \xpt}$ the matrix whose rows are defined for~$y \in \xpt$ by
+\begin{equation*}
+    \begin{bmatrix}
+        1   & y_1   & y_2   & \dots & y_n   & y_1^2 / 2 & y_2^2 / 2 & \dots & y_n^2 / 2 & y_2 y_1   & y_3 y_1   & \dots & y_n y_{n - 1}
+    \end{bmatrix}.
+\end{equation*}
+The matrix~$M$ is, therefore, the matrix representation of the linear system~\cref{eq:quadratic-interpolation-conditions}.
+In the following,~$\cond(M)$ denotes the condition number of~$M$, i.e.,
+\begin{empheq}[left={\cond(M) \eqdef \empheqlbrace}]{alignat*=2}
+    & \norm{M} \norm{M^{-1}},   && \quad \text{if~$M$ is nonsingular,}\\
+    & \infty,                   && \quad \text{otherwise.}
+\end{empheq}
+
+The following theorem highlights the relationships between the~$\Lambda$-poisedness of the interpolation set~$\xpt$ with~$\cond(M)$.
+
+\begin{theorem}
+    \label{thm:lambda-poisedness-conditioning}
+    We assume that the interpolation set~$\xpt$ satisfies~$0 \in \xpt \subseteq \ball[2](1)$ and
+    \begin{equation*}
+        \max_{y \in \xpt} \norm{y} = 1.
+    \end{equation*}
+    If the above-defined matrix~$M$ is nonsingular and~$\cond(M) \le \Lambda$, then the interpolation set~$\xpt$ is~$(\card \xpt)^{3/4} \Lambda$-poised in~$\ball[2](1)$.
+    Moreover, if the interpolation set~$\xpt$ is~$\Lambda$-poised in~$\ball[2](1)$, then the matrix~$M$ is nonsingular and
+    \begin{equation*}
+        \cond(M) \le \theta (\card \xpt)^{3/4} \Lambda,
+    \end{equation*}
+    for some~$\theta > 0$ independent of~$\xpt$ and~$\Lambda$.
+\end{theorem}
+
+A proof of \cref{thm:lambda-poisedness-conditioning} is given in~\cite[\S~3.4]{Conn_Scheinberg_Vicente_2009b}.
+Note that the assumptions on the interpolation set~$\xpt$ are weak, as any interpolation set can be shifted and scaled to satisfy such properties.
+According to \cref{thm:lambda-poisedness-conditioning}, the lower is~$\Lambda$, the better is the conditioning of the interpolation system.
+
+Long story short, if~$\xpt$ is~$\Lambda$-poised in a compact set~$\mathcal{C} \subseteq \R^n$ and~$\Lambda$ is reasonable low, then we can expect the quadratic model~$\objm$ to represent reasonably well~$\obj$ in~$\mathcal{C}$.
+This is because we can expect the right-hand side of the inequality~\cref{eq:Ciarlet_Raviart_0} to be relatively low if~$\conv \xpt \subseteq \mathcal{C}$, and because the interpolation system is then well-conditioned.
 
 \section{Underdetermined interpolation systems}
 \label{sec:underdetermined-interpolation}
 
-\begin{itemize}
-    \item We focus on quadratic polynomials.
-    \item Building a quadratic interpolation model necessitates~$\mathcal{O}(n^2)$ function evaluations.
-    \item We want to reduce this number to~$\mathcal{O}(n)$.
-    \item Freedom is bequeathed by minimizing a functional that reflects the regularity of the models.
-    \item Two examples are given hereafter.
-    \item The new method we introduce in \cref{ch:cobyqa-introduction} also uses quadratic models obtained by underdetermined interpolation.
-\end{itemize}
+As before, we focus on quadratic interpolation in this section.
+We saw that building a quadratic interpolant requires~$\mathcal{O}(n^2)$ function evaluations.
+Therefore, if a \gls{dfo} method employs such models,~$\mathcal{O}(n^2)$ function evaluations must be made only to build the first quadratic model.
+Moreover, the position of the points at which the function is evaluated are defined by~$\xpt$ before starting any evaluation.
+Hence, they are unlikely to provide good iterates for the \gls{dfo} method.
+To reduce this amount of function evaluations, we use underdetermined interpolations, as presented in this section.
+
+Underdetermined interpolation works as follows.
+Assume that we are given an interpolation set~$\xpt \subseteq \R^n$ such that the interpolation conditions~\cref{eq:interpolation-conditions} are consistent.
+The number of interpolation may however be lower than~$\dim \qpoly$.
+Further, let~$\mathcal{F}$ be a functional that reflects the regularity of the interpolants.
+Two examples of such a functional are given in \cref{subsec:least-frobenius-norm-models,subsec:symmetric-broyden-updates}.
+A quadratic model~$\objm$ of~$\obj$ can then be defined as a solution of
+\begin{align*}
+    \min        & \quad \mathcal{F}(Q)\\
+    \text{s.t.} & \quad Q(y) = \obj(y), ~ y \in \xpt\\
+                & \quad Q \in \qpoly.
+\end{align*}
+
+The notion of poisedness is adapted as follows.
+
+\begin{definition}[Poisedness]
+    The set~$\xpt$ is \emph{poised} if the interpolation system~\cref{eq:interpolation-conditions} is consistent for any function~$\obj$.
+\end{definition}
+
+Of course, we do not require the unicity of the solution to the interpolation system~\cref{eq:interpolation-conditions} because we would then have~$\card \xpt = \dim \qpoly$.
 
 \subsection{Least Frobenius norm quadratic models}
+\label{subsec:least-frobenius-norm-models}
+
+One of the simplest functional~$\mathcal{F}$ mentioned above is the norm of the Hessian matrix of the interpolants.
+In this context, a quadratic model~$\objm$ solves
+\begin{align*}
+    \min        & \quad \norm{\nabla^2 Q}_{\mathsf{F}}\\
+    \text{s.t.} & \quad Q(y) = \obj(y), ~ y \in \xpt\\
+                & \quad Q \in \qpoly,
+\end{align*}
+where~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius-norm operator.
+This norm is chosen because it can be easily numerically computed, unlike the matrix~$\ell_2$-norms for example.
+
+\begin{definition}[Minimum-norm Lagrange quadratic polynomials]
+    \label{def:lagrange-polynomials-minimum-norm}
+    For any point~$y \in \xpt$, given an interpolation set~$\xpt \subseteq \R^n$, the polynomial~$\lagp[y] \in \qpoly$ is referred to as the minimum-norm Lagrange quadratic polynomial if it solves
+    \begin{align*}
+        \min        & \quad \norm{\nabla^2 Q}_{\mathsf{F}}\\
+        \text{s.t.} & \quad Q(y) = 1,\\
+                    & \quad Q(x) = 0, ~ x \in \xpt \setminus \set{y},\\
+                    & \quad Q \in \qpoly.
+    \end{align*}
+\end{definition}
 
 \begin{definition}[$\Lambda$-poisedness]
     \label{def:lambda-poisedness-minimum-norm}
@@ -194,6 +279,7 @@ As we discussed before,~$\Lambda$ measures the quality of the interpolation set.
     \item Updating the symmetric Broyden matrix.
     \item Decompositions of the Hessian matrices of the quadratic models.
     \item \gls{mnh}~\cite{Wild_2008}
+    \item The new method we introduce in \cref{ch:cobyqa-introduction} also uses quadratic models obtained by underdetermined interpolation.
 \end{itemize}
 
 \subsection{Quadratic models based on symmetric Broyden updates}
@@ -222,16 +308,16 @@ We then define the interpolation set~$\mathcal{Z}_m \subseteq \R^n$ for each~$m 
 \begin{equation*}
     \mathcal{Z}_m \eqdef \set{z^1, z^2, \dots, z^m}.
 \end{equation*}
-Further, we denote by~$\ball[p][\ast](\mathcal{Z}_m)$\todo{Rename it to~$\ball[p][m]$} the smallest~$\ell_p$-norm ball containing~$\mathcal{Z}_m$, for~$p \in [1, \infty]$.
+Further, we denote by~$\ball[p][m]$ the smallest~$\ell_p$-norm ball containing~$\mathcal{Z}_m$, for~$p \in [1, \infty]$.
 Note that we allow~$p = \infty$.
 By the construction of~$\mathcal{Z}_m$, we observe that
 \begin{equation}
     \label{eq:ball-initial}
-    \ball[p][\ast](\mathcal{Z}_m) \equiv \ball[p](\delta) \eqdef \set{x \in \R^n : \norm{x}_p \le \delta}.
+    \ball[p][m] \equiv \ball[p](\delta) \eqdef \set{x \in \R^n : \norm{x}_p \le \delta}.
 \end{equation}
 
 Throughout this section, we denote by~$\lagp[i]$ (instead of~$\lagp[z^i]$) the minimum-norm Lagrange polynomial associated with~$\mathcal{Z}_m$ for~$z^i \in \mathcal{Z}_m$.
-According to the~\cref{def:lambda-poisedness-minimum-norm} and the equation~\cref{eq:ball-initial}, the set~$\mathcal{Z}_m$ is~$\Lambda_p$-poised in~$\ball[p][\ast](\mathcal{Z}_m)$ in the minimum-norm sense with
+According to the~\cref{def:lambda-poisedness-minimum-norm} and the equation~\cref{eq:ball-initial}, the set~$\mathcal{Z}_m$ is~$\Lambda_p$-poised in~$\ball[p][m]$ in the minimum-norm sense with
 \begin{equation*}
     \Lambda_p \eqdef \max_{1 \le i \le m} \max_{x \in \ball[p](\delta)} \abs{\lagp[i](x)}.
 \end{equation*}
@@ -395,7 +481,7 @@ These formulae are given in~\cite[\S~3]{Powell_2006}, without a proof.
     \end{subequations}
     Let~$y^{\ast} \in \ball[2](1)$ be a minimizer in~\cref{eq:lambda-poisedness-initial-2-proof}.
     \Cref{thm:first-order-necessary-conditions} ensures that there exists a Lagrange multiplier~$\lambda^{\ast} \ge 0$ such that~$1 - 2 y_j^{\ast} + 2 \lambda^{\ast} y_j^{\ast} = 0$ for all~$j \in \set{m - n, \dots, n}$.
-    Therefore, the last~$(2n + 1 - m)$ components of~$y^{\ast}$ are equal, and hence\todo{The~$t(1 - t)$ looks strange},
+    Therefore, the last~$(2n + 1 - m)$ components of~$y^{\ast}$ are equal, and hence,
     \begin{align*}
         \lagp[1](x) \ge \min_{y \in \ball[2](1)} \sum_{j = m - n}^n y_j (1 - y_j)   &= \min_{t \in \R} \set{(2n + 1 - m) t (1 - t) : (2n + 1 - m) t^2 \le 1}\\
                                                                                     &= -1 - \sqrt{2n + 1 - m}.
@@ -426,7 +512,7 @@ These formulae are given in~\cite[\S~3]{Powell_2006}, without a proof.
 
 \begin{proof}
     Let us first consider the case where~$p \ge q$.
-    For~$x \in \ball[q](1)$, we have~$\norm{x}_p \le 1$, and this bound is attained at the first coordinate vector~$e_1 \in \R^n$, so that
+    For~$x \in \ball[q](1)$, we have~$\norm{x}_p \le 1$, and this bound is attained at the first coordinate vector~$e_1 \in \ball[q](1)$, so that
     \begin{equation*}
         \max_{x \in \ball[q](1)} \norm{x}_p = 1.
     \end{equation*}
@@ -435,14 +521,14 @@ These formulae are given in~\cite[\S~3]{Powell_2006}, without a proof.
     Let~$x^{\ast} \in \ball[q](1)$ be a minimizer in~\cref{eq:max-norm-pq}.
     \Cref{thm:first-order-necessary-conditions} ensures that there exists a Lagrange multiplier~$\lambda^{\ast} \in \R$ such that
     \begin{empheq}[left=\empheqlbrace]{alignat*=2}
-        & \frac{\sgn(x_j^{\ast}) \abs{x_j^{\ast}}^{p - 1}}{\norm{x^{\ast}}_p^{p - 1}} + \frac{\lambda \sgn(x_j^{\ast}) \abs{x_j^{\ast}}^{q - 1}}{\norm{x^{\ast}}_q^{q - 1}} = 0,    && \quad \text{for~$j \in \set{1, 2, \dots, n}$,}\\
-        & \norm{x^{\ast}}_q \le 1,                                                                                                                                                  && \\
-        & \lambda^{\ast} (\norm{x^{\ast}}_q - 1) = 0,                                                                                                                               && \\
-        & \lambda^{\ast} \le 0,                                                                                                                                                     &&
+        & \frac{\sgn(x_j^{\ast}) \abs{x_j^{\ast}}^{p - 1}}{\norm{x^{\ast}}_p^{p - 1}} + \frac{\lambda^{\ast} \sgn(x_j^{\ast}) \abs{x_j^{\ast}}^{q - 1}}{\norm{x^{\ast}}_q^{q - 1}} = 0, && \quad \text{for~$j \in \set{1, 2, \dots, n}$,}\\
+        & \norm{x^{\ast}}_q \le 1,                                                                                                                                                      && \\
+        & \lambda^{\ast} (\norm{x^{\ast}}_q - 1) = 0,                                                                                                                                   && \\
+        & \lambda^{\ast} \le 0,                                                                                                                                                         &&
     \end{empheq}
     where~$\sgn$ denotes the sign function.
     Therefore, all the nonzero components of~$x^{\ast}$ share the same absolute value~$\alpha > 0$, i.e., for any~$j \in \set{1, 2, \dots, n}$, we have~$\abs{x_j^{\ast}} \in \set{0, \alpha}$.
-    Moreover, it is clear that~$x^{\ast} \neq 0$, as such a point is a global minimizer of the objective function in~\cref{eq:max-norm-pq}, so that~$\norm{x}_q = 1$.
+    Moreover, it is clear that~$x^{\ast} \neq 0$, as such a point is a global minimizer of the objective function in~\cref{eq:max-norm-pq}, so that~$\norm{x^{\ast}}_q = 1$.
     If~$k$ denotes the number of nonzero components of~$x^{\ast}$, we thus have
     \begin{equation*}
         \norm{x^{\ast}}_p = k^{\frac{q - p}{pq}},
