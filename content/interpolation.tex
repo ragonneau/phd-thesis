@@ -131,7 +131,6 @@ One of the most important application of the Lagrange polynomials is to measure 
 As we mentioned above, the interpolation set~$\xpt$ is poised if it admits a unique interpolant in~$\qpoly$.
 However, given a poised set, how good is this interpolation set?
 This section will briefly discuss this topic and introduce the concept of~$\Lambda$-poisedness.
-% In other words, would a slight perturbation to the interpolation points generate a nonpoised set?
 
 Suppose that~$\obj$ is thrice differentiable on~$\R^n$.
 It is known that for any~$x \in \R^n$, we have
@@ -163,7 +162,7 @@ This motivates the following concept of~$\Lambda$-poisedness.
 \end{definition}
 
 Note that in this definition, the compact set~$\mathcal{C} \subseteq \R^n$ may or may not contain the interpolation points in~$\xpt$.
-The compactness of~$\mathcal{C}$ can be relaxed if we take the supremum instead of the maximum over~$\mathcal{C}$. 
+The compactness of~$\mathcal{C}$ can be relaxed if we take the supremum instead of the maximum over~$\mathcal{C}$.
 If~$\xpt$ is~$\Lambda_0$-poised in the compact set~$\mathcal{C}$, it is obviously~$\Lambda$-poised in~$\mathcal{C}$ for any~$\Lambda \ge \Lambda_0$.
 Alternative definitions of the~$\Lambda$-poisedness of sets are given in~\cite[\S~3.3]{Conn_Scheinberg_Vicente_2009b}.
 
@@ -180,79 +179,12 @@ In practice, however, we do not use the~$\Lambda$-poisedness of interpolation se
 This is because determining whether a set is~$\Lambda$-poised is a difficult problem, even if the compact set~$\mathcal{C} \subseteq \R^n$ is simple (e.g., a ball).
 It is a theoretical tool that we mostly use to justify some design choices of algorithms.
 
-% \todo[noline]{Comment the whole next section and explain it simply in one sentence}
-
-% \subsection{Conditioning of the interpolation system}
-
-% As mentioned above, the~$\Lambda$-poisedness measures how good an interpolation set is.
-% In this section, we relate this notion with the condition number of a particular matrix, explaining more intrinsically why a~$\Lambda$-poised set can be considered as a good set if~$\Lambda$ is small.
-
-% The system~\cref{eq:interpolation-conditions-quadratic} can be formulated as
-% \begin{equation}
-%     \label{eq:quadratic-interpolation-conditions}
-%     \alpha + \inner{g, y^i} + \frac{1}{2} \inner{y^i, Hy^i} = \obj(y^i), \quad \text{for~$i \in \set{1, 2, \dots, m}$},
-% \end{equation}
-% where~$\alpha \in \R$,~$g \in \R^n$, and~$H \in \R^{n \times n}$ are the coefficients of~$\objm$, with~$H$ being symmetric.
-% Let~$M \in \R^{m \times m}$ be the matrix
-% \begin{equation*}
-%     M \eqdef
-%     \begin{bmatrix}
-%         1       & y_1^1     & y_2^1     & \cdots    & y_n^1     & (y_1^1)^2 / 2 & y_1^1 y_2^1   & \cdots    & (y_n^1)^2 / 2\\
-%         1       & y_1^2     & y_2^2     & \cdots    & y_n^2     & (y_1^2)^2 / 2 & y_1^2 y_2^2   & \cdots    & (y_n^2)^2 / 2\\
-%         \vdots  & \vdots    & \vdots    & \ddots    & \vdots    & \vdots        & \vdots        & \ddots    & \vdots\\
-%         1       & y_1^m     & y_2^m     & \cdots    & y_n^m     & (y_1^m)^2 / 2 & y_1^m y_2^m   & \cdots    & (y_n^m)^2 / 2
-%     \end{bmatrix},
-% \end{equation*}
-% where~$y_i$ denotes the~$i$th component of~$y \in \R^n$ for all~$i \in \set{1, 2, \dots, n}$.
-% The system~\cref{eq:quadratic-interpolation-conditions} is equivalent to
-% \begin{equation*}
-%     M
-%     \begin{bmatrix}
-%         \alpha\\
-%         g\\
-%         v
-%     \end{bmatrix}
-%     = \obj(\xpt),
-% \end{equation*}
-% where~$\obj(\xpt) \eqdef (f(y^1), f(y^2), \dots, f(y^m))$, and where~$v \in \R^{n(n + 1) / 2}$ is the vector that contains the upper-triangular part of~$H$, columnwise.
-% Clearly, the matrix~$M$ is nonsingular if and only if the interpolation set~$\xpt$ is poised.
-
-% In the following,~$\cond(M)$ denotes the spectral condition number of~$M$.
-% The following theorem highlights the relationships between the~$\Lambda$-poisedness of the interpolation set~$\xpt$ and~$\cond(M)$.
-
-% \begin{theorem}
-%     \label{thm:lambda-poisedness-conditioning}
-%     Assume that the interpolation set~$\xpt$ satisfies~$y^1 = 0$, and
-%     \begin{equation*}
-%         \max_{1 \le i \le m} \norm{y^i} = 1.
-%     \end{equation*}
-
-%     \begin{equation*}
-%         \theta m^{-2} \cond(M) \le \Lambda \le \sqrt{m} \cond(M).
-%     \end{equation*}
-%     If the above-defined matrix~$M$ is nonsingular and~$\cond(M) \le \kappa$, then the interpolation set~$\xpt$ is~$\sqrt{m} \kappa$-poised in~$\ball[2](1)$.
-%     Moreover, if the interpolation set~$\xpt$ is~$\Lambda$-poised in~$\ball[2](1)$, then the matrix~$M$ is nonsingular and
-%     \begin{equation*}
-%         \cond(M) \le \theta m^2 \Lambda,
-%     \end{equation*}
-%     for some~$\theta > 0$ independent of~$\xpt$ and~$\Lambda$.
-% \end{theorem}
-
-% A proof of \cref{thm:lambda-poisedness-conditioning} is given in~\cite[\S~3.4]{Conn_Scheinberg_Vicente_2009b}.
-% Note that the assumptions on the interpolation set~$\xpt$ are weak, as any interpolation set can be shifted and scaled to satisfy such properties.
-% According to \cref{thm:lambda-poisedness-conditioning}, the lower is~$\Lambda$, the better is the conditioning of the interpolation system and hence, the better is the interpolation set from a numerical standpoint.
-% If~$\xpt$ is~$\Lambda$-poised in a compact set~$\mathcal{C} \subseteq \R^n$ and~$\Lambda$ is reasonable low, then we thus can expect the quadratic model~$\objm$ to represent reasonably well~$\obj$ in~$\mathcal{C}$.
-% This is because we can expect the right-hand side of the inequality~\cref{eq:Ciarlet_Raviart_0} to be relatively low if~$\conv(\xpt) \subseteq \mathcal{C}$, and because the interpolation system is then well-conditioned.
-% For more properties of the~$\Lambda$-poisedness of an interpolation set, we refer to~\cite[\S~3.3]{Conn_Scheinberg_Vicente_2009b}.
-
 \section{Underdetermined quadratic interpolation}
 \label{sec:underdetermined-interpolation}
 
 As before, we focus on quadratic interpolation in this section.
 Building a quadratic model by the interpolation system~\cref{eq:interpolation-conditions-quadratic} requires~$\mathcal{O}(n^2)$ function evaluations.
 Therefore, if a \gls{dfo} method employs such models, its initialization already costs~$\mathcal{O}(n^2)$ function evaluations, which are needed to build the first model.
-% Moreover, the position of the points at which the function is evaluated are defined by~$\xpt$ before starting any evaluation.
-% Hence, they are unlikely to provide good iterates for the \gls{dfo} method.
 To reduce this amount of function evaluations, we use underdetermined interpolation, as presented in this section.
 
 Underdetermined interpolation works as follows.
@@ -270,7 +202,6 @@ An interpolation model~$\objm$ of~$\obj$ is then defined as a solution of
     \end{align}
 \end{subequations}
 Two examples of the functional~$\mathcal{F}$ are given in \cref{subsec:least-frobenius-norm-models,subsec:symmetric-broyden-updates}.
-% We do not change the notations with the case where~$m = \dim \qpoly$, because underdetermined interpolation models generalize the former.
 If~$m = \dim \qpoly$ and if~$\xpt$ is poised in the sense of \cref{def:poisedness}, then the underdetermined interpolation model reduces to the unique model that satisfies the interpolation conditions.
 
 In the remaining of this section, we adapt the definitions and some properties presented in the previous section to special cases of underdetermined interpolation.
@@ -291,7 +222,7 @@ In this context, a quadratic model~$\objm$ solves
 where~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm.
 This norm is chosen because it can be easily evaluated, unlike the spectral norm for example.
 The Frobenius norm also brings computational advantages, because~\cref{eq:least-frobenius-norm-models} is essentially a quadratic programming problem, which can be tackled by solving a linear system.
-Examples of \gls{dfo} methods that use least Frobenius norm quadratic models include \gls{mnh}~\cite{Wild_2008}\todo{Add more examples (DFO)}.
+Examples of \gls{dfo} methods that use least Frobenius norm quadratic models include \gls{mnh}~\cite{Wild_2008} and \gls{dfoalg}~\cite{Conn_Scheinberg_Toint_1997a,Conn_Scheinberg_Toint_1997b,Conn_Scheinberg_Toint_1998}.
 % https://www.zhangzk.net/docs/publications/2014snq.pdf
 We also assume that~$m \ge n + 2$ as otherwise, any solution to~\cref{eq:least-frobenius-norm-models} would be linear.
 
@@ -302,15 +233,6 @@ We first present the notion of poisedness for problem~\cref{eq:least-frobenius-n
     The set~$\xpt$ is \emph{poised} in the minimum Frobenius norm sense if the solution to problem~\cref{eq:least-frobenius-norm-models} exists and is unique for any real-valued function~$\obj$.
 \end{definition}
 
-% \begin{proposition}
-%     If the set~$\xpt$ is poised in the minimum Frobenius norm sense, then the solution to the problem~\cref{eq:least-frobenius-norm-models} is unique.
-% \end{proposition}
-
-% \begin{proof}
-%     Assume that~\cref{eq:least-frobenius-norm-models} admits two distinct solutions~$Q_1$ and~$Q_2$.
-%     The strict convexity of the Frobenius norm shows directly that~$\nabla^2 Q_1 = \nabla^2 Q_2$.
-% \end{proof}
-
 To get an in-depth view of the poisedness of~$\xpt$, let us investigate the solvability of the problem~\cref{eq:least-frobenius-norm-models}.
 We expand a quadratic polynomial~$Q \in \qpoly$ for any~$x \in \R^n$ as
 \begin{equation*}
@@ -320,7 +242,7 @@ where~$\alpha \in \R$,~$g \in \R^n$, and~$H \in \R^{n \times n}$ are the coeffic
 Note that the constraint~\cref{eq:least-frobenius-norm-models-eq} is linear with respect to~$(\alpha, g, H)$.
 Moreover, the Frobenius norm is convex, so that the problem~\cref{eq:least-frobenius-norm-models} is convex.
 In this setting, we can show that the \gls{kkt} conditions~\cref{eq:kkt-introduction} given in \cref{thm:first-order-necessary-conditions} are necessary and sufficient.
-Let~$\lambda = (\lambda_1, \lambda_2, \dots, \lambda_m)$ be the Lagrange multiplier of~\cref{eq:least-frobenius-norm-models}.
+Let~$\lambda = [\lambda_1, \lambda_2, \dots, \lambda_m]^{\top}$ be the Lagrange multiplier of~\cref{eq:least-frobenius-norm-models}.
 The stationarity condition~\cref{eq:kkt-introduction-stationarity} can be formulated as
 \begin{equation*}
     \sum_{i = 1}^m \lambda_i y^i (y^i)^{\T} = H, \quad \sum_{i = 1}^m \lambda_i = 0, \quad \text{and} \quad \sum_{i = 1}^m \lambda_i y^i = 0.
@@ -343,7 +265,7 @@ When combined with the primal feasibility condition~\cref{eq:kkt-introduction-pr
         0
     \end{bmatrix},
 \end{equation}
-where~$\obj(\xpt) \eqdef (\obj(y^1), \obj(y^2), \dots, \obj(y^m))$ and where~$Y_H \in \R^{m \times m}$ and~$Y_L \in \R^{m \times (n + 1)}$ are defined by
+where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\top}$ and where~$Y_H \in \R^{m \times m}$ and~$Y_L \in \R^{m \times (n + 1)}$ are defined by
 \begin{equation*}
     Y_H \eqdef \frac{1}{2}
     \begin{bmatrix}
@@ -413,7 +335,7 @@ We now present the notion of~$\Lambda$-poisedness in the minimum Frobenius norm 
 \end{definition}
 
 Similarly to what we mentioned before, if~$\xpt$ is~$\Lambda_0$-poised in the minimum Frobenius norm sense in~$\mathcal{C}$, it is obviously~$\Lambda$-poised in the minimum Frobenius norm sense in~$\mathcal{C}$ for all~$\Lambda \ge \Lambda_0$.
-Moreover, one can show that the set~$\xpt$ is~$\Lambda$-poised if and only if the condition number of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is bounded by some terms proportional to~$\Lambda$~\cite[thm.~5.8]{Conn_Scheinberg_Vicente_2009b}.å
+Moreover, one can show that the set~$\xpt$ is~$\Lambda$-poised if and only if the condition number of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is bounded by some terms proportional to~$\Lambda$~\cite[thm.~5.8]{Conn_Scheinberg_Vicente_2009b}.
 
 \subsection{Quadratic models based on symmetric Broyden updates}
 \label{subsec:symmetric-broyden-updates}

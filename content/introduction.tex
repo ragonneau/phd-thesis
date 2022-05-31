@@ -366,13 +366,13 @@ Let~$\lag$ be the \emph{Lagrangian function} to the problem~\cref{eq:problem-int
 \begin{equation*}
     \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x),
 \end{equation*}
-where~$\lambda = (\lambda_i)_{i \in \iub \cup \ieq}$ with~$\lambda_i \in \R$ for all~$i \in \iub \cup \ieq$.
+where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\top}$ with~$\lambda_i \in \R$ for all~$i \in \iub \cup \ieq$.
 \Cref{thm:first-order-necessary-conditions} introduces the first-order necessary conditions for a point to be a local solution of problem~\cref{eq:problem-introduction}.
 
 \begin{theorem}[First-order necessary conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.1
     \label{thm:first-order-necessary-conditions}
     Let~$x^{\ast} \in \Omega$ be a local solution to the problem~\cref{eq:problem-introduction}, assume that the functions~$\obj$ and~$\con{i}$ are continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$x^{\ast}$.
-    Then there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
+    Then there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\top}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
     \begin{subequations}
         \label{eq:kkt-introduction}
         \begin{empheq}[left=\empheqlbrace]{alignat=2}
@@ -403,7 +403,7 @@ We do not provide a proof of \cref{thm:first-order-necessary-conditions}, but we
                     & \quad x \in \R^2, \nonumber
     \end{align}
 \end{subequations}
-whose solution is~$x^{\ast} = (-\sqrt{2}, 0)$.
+whose solution is~$x^{\ast} = [-\sqrt{2}, 0]^{\top}$.
 A graphical representation of the problem~\cref{eq:kkt-description} is given in \cref{fig:kkt-description}, where the white area represents the feasible set.
 
 \begin{figure}[ht]
@@ -446,7 +446,7 @@ As manifest in \cref{fig:kkt-description}, there does not exist any direction~$d
         & \inner{\nabla \con{2}(x^{\ast}), d} \le 0.
     \end{empheq}
 \end{subequations}
-The Farkas' lemma~\cite{Farkas_1902} ensures, therefore, that there exists a nonnegative Lagrange multiplier~$\lambda^{\ast} = (\lambda_1^{\ast}, \lambda_2^{\ast})$ such that
+The Farkas' lemma~\cite{Farkas_1902} ensures, therefore, that there exists a nonnegative Lagrange multiplier~$\lambda^{\ast} = [\lambda_1^{\ast}, \lambda_2^{\ast}]^{\top}$ such that
 \begin{equation*}
     \nabla \obj(x^{\ast}) + \lambda_1^{\ast} \nabla \con{1}(x^{\ast}) + \lambda_2^{\ast} \nabla \con{2}(x^{\ast}) = 0.
 \end{equation*}
@@ -465,7 +465,7 @@ It is known that at a local solution of a smooth unconstrained optimization prob
     Let~$x^{\ast} \in \Omega$ be a local solution to the problem~\cref{eq:problem-introduction}.
     Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood or~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$x^{\ast}$.
     Denote the active set for the problem~\cref{eq:problem-introduction} at~$x^{\ast}$ by~$\act(x^{\ast})$.
-    Let~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ be a Lagrange multiplier with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the \gls{kkt} conditions~\cref{eq:kkt-introduction}, and let~$z \in \R^n$ be any vector such that
+    Let~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\top}$ be a Lagrange multiplier with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the \gls{kkt} conditions~\cref{eq:kkt-introduction}, and let~$z \in \R^n$ be any vector such that
     \begin{subequations}
         \label{eq:second-order-introduction}
         \begin{empheq}[left=\empheqlbrace]{alignat=2}
@@ -485,7 +485,7 @@ However, it is known in smooth unconstrained optimization that a point at which 
 \begin{theorem}[Second-order sufficient conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.6
     \label{thm:second-order-sufficient-conditions}
     Let~$x^{\ast} \in \Omega$ be a given point.
-    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that there exists a Lagrange multiplier~$\lambda^{\ast} = (\lambda_i^{\ast})_{i \in \iub \cup \ieq}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-introduction}.
+    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\top}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-introduction}.
     If for all vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-introduction} we have~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} > 0$, then~$x^{\ast}$ is a strict local solution to problem~\cref{eq:problem-introduction}.
 \end{theorem}
 
