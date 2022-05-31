@@ -347,10 +347,10 @@ where~$\obj(\xpt) \eqdef (\obj(y^1), \obj(y^2), \dots, \obj(y^m))$ and where~$Y_
 \begin{equation*}
     Y_H \eqdef \frac{1}{2}
     \begin{bmatrix}
-        \norm{y_1}^4        & \inner{y^1, y^2}^2    & \cdots    & \inner{y^1, y^m}^2\\
-        \inner{y^2, y^1}^2  &  \norm{y_2}^4         & \cdots    & \inner{y^2, y^m}^2\\
+        \norm{y^1}^4        & \inner{y^1, y^2}^2    & \cdots    & \inner{y^1, y^m}^2\\
+        \inner{y^2, y^1}^2  & \norm{y^2}^4          & \cdots    & \inner{y^2, y^m}^2\\
         \vdots              & \vdots                & \ddots    & \vdots\\
-        \inner{y^m, y^1}^2  & \inner{y^m, y^2}^2    & \cdots    & \norm{y_m}^4\\
+        \inner{y^m, y^1}^2  & \inner{y^m, y^2}^2    & \cdots    & \norm{y^m}^4\\
     \end{bmatrix}
     \quad \text{and} \quad Y_L \eqdef 
     \begin{bmatrix}
@@ -413,9 +413,7 @@ We now present the notion of~$\Lambda$-poisedness in the minimum Frobenius norm 
 \end{definition}
 
 Similarly to what we mentioned before, if~$\xpt$ is~$\Lambda_0$-poised in the minimum Frobenius norm sense in~$\mathcal{C}$, it is obviously~$\Lambda$-poised in the minimum Frobenius norm sense in~$\mathcal{C}$ for all~$\Lambda \ge \Lambda_0$.
-Moreover, one can show that the set~$\xpt$ is~$\Lambda$-poised if and only if the condition number of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is bounded by some terms proportional to~$\Lambda$~\cite[thm.~5.8]{Conn_Scheinberg_Vicente_2009b}.
-
-% We now introduce the underdetermined interpolation scheme that is the most important for us, as it is at the heart of the \gls{dfo} method we develop in \cref{ch:cobyqa-introduction}.
+Moreover, one can show that the set~$\xpt$ is~$\Lambda$-poised if and only if the condition number of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is bounded by some terms proportional to~$\Lambda$~\cite[thm.~5.8]{Conn_Scheinberg_Vicente_2009b}.å
 
 \subsection{Quadratic models based on symmetric Broyden updates}
 \label{subsec:symmetric-broyden-updates}
@@ -446,12 +444,151 @@ It is because if we are given a function~$\objm[\text{old}]$ such that~$H_{\text
 \end{align*}
 Therefore, the coefficients of the model obtained by least Frobenius norm updates can be evaluated by solving a linear system similar to~\cref{eq:least-frobenius-kkt-system}.
 
-\begin{itemize}
-    \item Explain the name.
-    \item Factorization of the symmetric Broyden matrix.
-    \item Updating the symmetric Broyden matrix.
-    \item Decompositions of the Hessian matrices of the quadratic models.
-\end{itemize}
+The update~\cref{eq:symmetric-broyden-models} is also referred to as the \emph{\gls{dfo} symmetric Broyden update}~\cite{Powell_2013}.
+The symmetric Broyden method~\cite{Powell_1970b} provides a mechanism for updating the Hessian matrices of the models in gradient-based optimization.
+In such a method, the~$k$th model~$\objm[k]$ of~$\obj$ is evaluated by solving the variational problem
+\begin{align*}
+    \min        & \quad \norm{\nabla^2 Q - \nabla^2 \objm[k - 1]}_{\mathsf{F}}\\
+    \text{s.t.} & \quad Q(x^k) = \obj(x^k),\\
+                & \quad \nabla Q(x^k) = \nabla \obj(x^k),\\
+                & \quad \nabla Q(x^{x - 1}) = \nabla \obj(x^{k - 1}),\\
+                & \quad Q \in \qpoly,
+\end{align*}
+where~$\set{x^k}_{k \ge 0}$ denotes the iterates of the method.
+The update~\cref{eq:symmetric-broyden-models} can therefore be seen as a \gls{dfo} variation of the symmetric Broyden update.
+
+\subsection{Implementation in \glsfmtlong{dfo} methods}
+
+We assume in this section that we are given a model-based \gls{dfo} methods that generates the iterate~$x^{k + 1} \in \R^n$ at the~$k$th iteration, with~$k \ge 0$.
+Further, we assume that it builds the models~$\objm[k] \in \qpoly$ of the objective function~$\obj$ by an underdetermined interpolation scheme on the interpolation set~$\xpt[k] = \set{y^{k, 1}, y^{k, 2}, \dots, y^{k, m}} \subseteq \R^n$, with~$x^k \in \xpt[k]$.
+The quadratic model~$\objm[k]$ is
+\begin{equation*}
+    \objm[k] = \alpha^k + \inner{g^k, x - x^k} + \frac{1}{2} \inner{x - x^k, H^k (x - x^k)}.
+\end{equation*}
+where~$\alpha^k \in \R$,~$g^k \in \R^n$, and~$H^k \in \R^{n \times n}$ are the coefficients of the model,~$H$ being symmetric
+By adapting the calculations made in~\cref{eq:least-frobenius-kkt-system}, we can show that the coefficients of~$\objm[k]$ can be evaluated by solving
+\begin{equation}
+    \label{eq:least-frobenius-kkt-system-offset}
+    \begin{bmatrix}
+        Y_H         & Y_L\\
+        Y_L^{\T}    & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+        \lambda\\
+        \alpha\\
+        g
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        v\\
+        0
+    \end{bmatrix},
+\end{equation}
+where~$\alpha \in \R$,~$g \in \R^n$, and~$H \in \R^{n \times n}$ are unknown coefficients,~$H$ being symmetric, and where~$v \in \R^m$ has the value
+\begin{equation*}
+    v \eqdef
+    \begin{bmatrix}
+        \obj(y^{k, 1})\\
+        \obj(y^{k, 2})\\
+        \vdots\\
+        \obj(y^{k, m})
+    \end{bmatrix}
+    \quad \text{or} \quad v \eqdef
+    \begin{bmatrix}
+        \obj(y^{k, 1}) - \objm[k - 1](y^{k, 1})\\
+        \obj(y^{k, 2}) - \objm[k - 1](y^{k, 2})\\
+        \vdots\\
+        \obj(y^{k, m}) - \objm[k - 1](y^{k, m})
+    \end{bmatrix},
+\end{equation*}
+the former being chosen if we want a least Frobenius norm model and the latter if we want to update the model by a \gls{dfo} symmetric Broyden update, and where
+\begin{equation*}
+    Y_H \eqdef \frac{1}{2}
+    \begin{bmatrix}
+        \norm{y^{k, 1} - x^k}^4                     & \inner{y^{k, 1} - x^k, y^{k, 2} - x^k}^2  & \cdots    & \inner{y^{k, 1} - x^k, y^{k, m} - x^k}^2\\
+        \inner{y^{k, 2} - x^k, y^{k, 1} - x^k}^2    & \norm{y^{k, 2} - x^k}^4                   & \cdots    & \inner{y^{k, 2} - x^k, y^{k, m} - x^k}^2\\
+        \vdots                                      & \vdots                                    & \ddots    & \vdots\\
+        \inner{y^{k, m} - x^k, y^{k, 1} - x^k}^2    & \inner{y^{k, m} - x^k, y^{k, 2} - x^k}^2  & \cdots    & \norm{y^{k, m} - x^k}^4\\
+    \end{bmatrix}
+\end{equation*}
+and
+\begin{equation*}
+    Y_L \eqdef
+    \begin{bmatrix}
+        1       & y_1^{k, 1} - x^k  & y_2^{k, 1} - x^k  & \cdots    & y_n^{k, 1} - x^k\\
+        1       & y_1^{k, 2} - x^k  & y_2^{k, 2} - x^k  & \cdots    & y_n^{k, 2} - x^k\\
+        \vdots  & \vdots            & \vdots            & \ddots    & \vdots\\
+        1       & y_1^{k, m} - x^k  & y_2^{k, m} - x^k  & \cdots    & y_n^{k, m} - x^k\\
+    \end{bmatrix}.
+\end{equation*}
+Further, if we want a least Frobenius norm model, we set
+\begin{empheq}[left=\empheqlbrace]{alignat*=1}
+    & \alpha^k = \alpha,\\
+    & g^k = g,\\
+    & H^k = \sum_{i = 1}^m \lambda_i (y^{k, i} - x^k) (y^{k, i} - x^k)^{\T},
+\end{empheq}
+and if we want a model obtained by the \gls{dfo} symmetric Broyden update, we set
+\begin{empheq}[left=\empheqlbrace]{alignat*=1}
+    & \alpha^k = \objm[k - 1](x^k) + \alpha,\\
+    & g^k = \nabla \objm[k - 1](x^k) + g,\\
+    & H^k = \nabla^2 \objm[k - 1] + \sum_{i = 1}^m \lambda_i (y^{k, i} - x^k) (y^{k, i} - x^k)^{\T}.
+\end{empheq}
+
+In practice, we often maintain the inverse of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system-offset} to evaluates the coefficients of the model~$\objm[k]$.
+We present in this section techniques that are used to reduce the computational cost of computing these models and to improve the stability of the methods.
+
+\subsubsection{Storage of the quadratic models}
+
+The intercepts and the gradient vectors of the models can be stored directly, as they are directly evaluated or updated by the linear system~\cref{eq:least-frobenius-kkt-system-offset}.
+However, solving this system does not provide directly the Hessian matrix, but a decomposition of it.
+Therefore, as suggested by~\cite[\S~3]{Powell_2004b}, the Hessian matrix of the model is stored as
+\begin{equation}
+    \label{eq:hessian-explicit-implicit}
+    \nabla^2 \objm[k] = \Gamma^k + \sum_{i = 1}^m \gamma_i^k (y^{k, i} - x^k) (y^{k, i} - x^k)^{\T},
+\end{equation}
+where~$\Gamma^k \in \R^{n \times n}$ is referred to as an explicit part of~$\nabla^2 \objm[k]$, and~$\set{\gamma_1^k, \gamma_2^k, \dots, \gamma_m^k} \subseteq \R$ is referred to as an implicit part of~$\nabla^2 \objm[k]$.
+In doing so, we avoid computing~$m$ outer products when~$k = 0$, by setting~$\Gamma = \nabla \objm[k - 1] = 0$ and~$\gamma_i = \lambda_i$ for~$i \in \set{1, 2, \dots, m}$.
+Evaluating the product of~$\nabla^2 \objm$ with any vector requires, therefore, to evaluate one matrix-vector product and~$m$ inner products.
+This mechanism is used for instance by \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and~\gls{lincoa}~\cite{Powell_2015}, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
+The new method we introduce in \cref{ch:cobyqa-introduction} also uses this storage techniques for the models.
+
+\subsubsection{Storage of the inverse of the coefficient matrix}
+
+As we mentioned earlier, the inverse of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system-offset} can be maintained by the \gls{dfo} method we consider.
+However, this inverse should not be stored directly for the two following reasons.
+\begin{enumerate}
+    \item The~$(m + 1)$th row of this matrix is not needed, because it provides only the value of~$\alpha$, which is not needed since~$x^k \in \xpt[k]$ and hence,~$\alpha^k = \obj(x^k)$.
+    \item As mentioned by \citeauthor{Powell_2004c}~\cite{Powell_2004c}, the leading~$m \times m$ submatrix of the inverse of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system-offset} has rank~$m - n - 1$ and is positive semi-definite.
+    He observed, however, during the development of a \gls{dfo} methods for unconstrained optimization (see \cref{subsec:newuoa-bobyqa-lincoa}) that the rank property was lost in practice.
+    Therefore, this submatrix is not stored directly, but his stored using the rank factorization~$Z D Z^{\top}$, with~$Z \in \R^{m \times (m - n - 1)}$ and~$D \in \R^{(m - n - 1) \times (m - n - 1)}$, where~$D$ is a diagonal matrix with elements~$\pm 1$ on the diagonal.
+    From the theoretical standpoint, the matrix~$D$ should always be identity.
+    However, in practice, allowing the leading~$m \times m$ submatrix of the inverse of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system-offset} to have negative eigenvalues prevent damages from computer rounding errors.
+    Details on this factorization can be found in~\cite{Powell_2004c}.
+\end{enumerate}
+
+\subsubsection{Update of the inverse of the coefficient matrix and the models}
+
+The methods we consider in this thesis that employ the inverse of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system-offset} build~$\xpt[k + 1]$ from~$\xpt[k]$ by modifying only one point.
+Therefore, only one row and one column of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system-offset} is modified from an iteration to another.
+This modification leads to an at-most rank-$2$ modification of the inverse of this matrix.
+Hence, we build do not compute explicitely the inverse matrix at each iteration, but we update it using the Sherman-Morrison-Woodbury formula.
+Such an update requires only~$\bigo(n^2)$, much less than what would be required to compute the inverse matrix from scratch.
+Details on this update can be found in~\cite[\S~2]{Powell_2004c}.
+
+An important feature of this update from a computational standpoint is the following.
+Assume that only~$y^{k + 1, \ell}$ differs from~$y^{k, \ell}$.
+If we are evaluating the minimum Frobenius norm model, we can set
+\begin{empheq}[left=\empheqlbrace]{alignat*=2}
+    & \Gamma^{k + 1} = 0,               && \\
+    & \gamma_{i}^{k + 1} = \lambda_{i}, && \quad \text{for~$i \in \set{1, 2, \dots, m}$},
+\end{empheq}
+and if we are updating the model using the \gls{dfo} symmetric Broyden update, we can set
+\begin{empheq}[left=\empheqlbrace]{alignat*=2}
+    & \Gamma^{k + 1} = \Gamma^k + \gamma_{\ell}^k (y^{k, \ell} - x^k) (y^{k, \ell} - x^k)^{\top},   && \\
+    & \gamma_{\ell}^{k + 1} = \lambda_{\ell},                                                       && \\
+    & \gamma_{i}^{k + 1} = \gamma_{i}^k + \lambda_{i},                                              && \quad \text{for~$i \in \set{1, 2, \dots, m} \setminus \set{\ell}$}.
+\end{empheq}
+This also motivates the decomposition~\cref{eq:hessian-explicit-implicit}.
 
 \section{An optimal number of interpolation points}
 
