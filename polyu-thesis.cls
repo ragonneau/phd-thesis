@@ -298,6 +298,28 @@
     \@starttoc{lot}%
 }
 
+% Insert the text 'This page intentionally left blank' on blank pages
+\renewcommand{\cleardoublepage}{%
+    \clearpage%
+    \if@twoside%
+        \ifodd%
+            \c@page%
+        \else%
+            \vspace*{5em}%
+            \hfill%
+            \begin{center}%
+                \large\textit{This page intentionally left blank}%
+            \end{center}%
+            \vspace{\fill}%
+            \thispagestyle{empty}%
+            \newpage%
+            \if@twocolumn%
+                \hbox{}\newpage%
+            \fi%
+        \fi%
+    \fi%
+}
+
 % Insert coverpage and titlepage
 \renewcommand{\maketitle}{%
     \hypersetup{pageanchor=false}%

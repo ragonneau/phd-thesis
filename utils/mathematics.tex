@@ -117,7 +117,6 @@
 \mathcode`@="8000{\catcode`\@=\active\gdef@{\mkern1mu}}
 
 % Dedicated mathematical macros
-% \newcommand{\ball}[1][]{\mathcal{B}\ifthenelse{\equal{#1}{}}{}{_{#1}}}
 \newcommandx{\ball}[2][1={},2={}]{\mathcal{B}\ifthenelse{\equal{#1}{}}{}{_{#1}}\ifthenelse{\equal{#2}{}}{}{^{#2}}}
 \newcommand{\con}[1]{c_{#1}}
 \newcommand{\conm}[1][]{\hat{c}\ifthenelse{\equal{#1}{}}{}{_{#1}}}

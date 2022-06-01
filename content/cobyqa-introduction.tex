@@ -17,9 +17,60 @@
 
 \section{Statement of the problem}
 
+In this chapter, we introduce a new model-based \gls{dfo} method for solving nonlinearly-constrained problems of the form
+\begin{subequations}
+    \label{eq:problem-cobyqa}
+    \begin{align}
+        \min        & \quad \obj(x)\\
+        \text{s.t.} & \quad \con{i}(x) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-ub}\\
+                    & \quad \con{i}(x) = 0, ~ i \in \ieq,\\
+                    & \quad \xl \le x \le \xu, \label{eq:problem-cobyqa-bd}\\
+                    & \quad x \in \R^n, \nonumber
+    \end{align}
+\end{subequations}
+where the objective and constraint functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, with the sets of indices~$\iub$ and~$\ieq$ being finite (perhaps empty) and disjoint, and where the bounds~$\xl \in (\R \cup \set{-\infty})^n$ and~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl < \xu$.
+The requirement on the bounds is weak, as otherwise, the problem~\cref{eq:problem-cobyqa} would be either infeasible, or would admit a fix variables.
+The solver we develop, named~\gls{cobyqa} after \emph{\glsdesc{cobyqa}}, uses only function values of~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, but not derivatives.
+
 \section{Management of the bound constraints}
 
-\section{The \glsfmtlong{sqp} framework}
+\begin{itemize}
+    \item Theoretically, they could be included in~\cref{eq:problem-cobyqa-ub}.
+    \item They are very simple constraints: it is trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-bd}, it is easy to project any point onto the bound constraints, etc.
+    \item \gls{cobyqa} nevers violates the bound constraints~\cref{eq:problem-cobyqa-bd}, as they often represent inalienable physical or theoretical restrictions.
+\end{itemize}
+
+\section{The \glsfmtlong{sqp} method}
+
+For sake of clarity we assume in this section that no bound constraint is provided.
+Therefore, the problem we consider is of the form~\cref{eq:problem-introduction}.
+As we mentioned earlier, if bound constraints are supplied, they can be included in the inequality constraints~\cref{eq:problem-cobyqa-ub} for theoretical purposes.
+The Lagrangian function that we consider is defined by
+\begin{equation*}
+    \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$ for~$i \in \iub \cup \ieq$},
+\end{equation*}
+where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\top}$.
+
+\subsection{Overview of the method}
+
+The \gls{sqp} method of \citeauthor{Wilson_1963}~\cite{Wilson_1963}, \citeauthor{Han_1976}~\cite{Han_1976,Han_1977}, and \citeauthor{Powell_1978a}~\cite{Powell_1978a,Powell_1978b} is known to be one of the most powerful method for solving the problem~\cref{eq:problem-cobyqa} in a gradient-based setting.
+Given an iterate~$x^k \in \R^n$, it generates a step~$d^k \in \R^n$ by solving approximately
+\begin{align}
+    \min        & \quad \inner{\nabla \obj(x^k), d} + \frac{1}{2} \inner{d, H^k d}\\
+    \text{s.t.} & \quad \con{i}(x^k) + \inner{\nabla \con{i}(x^k), d} \le 0, ~ i \in \iub,\\
+                & \quad \con{i}(x^k) + \inner{\nabla \con{i}(x^k), d} = 0, ~ i \in \ieq,\\
+                & \quad d \in \R^n,
+\end{align}
+with~$H^k \approx \nabla^2 \lag_{x, x}(x^k, \lambda^k)$ for some Lagrange multiplier~$\lambda^k = [\lambda_i^k]_{i \in \iub \cup \ieq}^{\top}$ with~$\lambda_i^k \in \R$ for~$i \in \iub \cup \ieq$.
+Further, it sets the next iterate~$x^{k + 1}$ to~$x^k + d^k$.
+
+\subsection{Interpretation of the subproblem}
+
+\subsubsection{Approximation of the \glsfmtlong{kkt} conditions}
+
+\subsubsection{Approximation of a modified Lagrangian}
+
+\subsubsection{Approximation of the augmented Lagrangian}
 
 \section{The trust-region framework}
 

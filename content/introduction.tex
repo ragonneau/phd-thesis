@@ -364,9 +364,9 @@ We also note that dedicated constraint qualifications may exist when the problem
 
 Let~$\lag$ be the \emph{Lagrangian function} to the problem~\cref{eq:problem-introduction}, defined by
 \begin{equation*}
-    \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x),
+    \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$ for~$i \in \iub \cup \ieq$},
 \end{equation*}
-where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\top}$ with~$\lambda_i \in \R$ for all~$i \in \iub \cup \ieq$.
+where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\top}$.
 \Cref{thm:first-order-necessary-conditions} introduces the first-order necessary conditions for a point to be a local solution of problem~\cref{eq:problem-introduction}.
 
 \begin{theorem}[First-order necessary conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.1
