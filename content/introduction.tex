@@ -655,9 +655,9 @@ For a solver~$s \in \xsv$ and a problem~$p \in \xpb$, define the \emph{performan
     r_{p, s} \eqdef \frac{t_{p, s}}{\min \set{t_{p, u} : u \in \xsv}},
 \end{equation}
 which is the \emph{relative} expense for~$s$ to solve~$p$ compared with the most efficient solver in~$\xsv$ for this problem.
-The \emph{performance profile} of~$s$ is defined for~$\alpha \ge 1$ as
+The \emph{performance profile} of~$s$ is defined as
 \begin{equation*}
-    \rho_s(\alpha) \eqdef \frac{1}{\card(\xpb)} \card (\set{p \in \xpb : r_{p, s} \le \alpha}),
+    \rho_s(\alpha) \eqdef \frac{1}{\card(\xpb)} \card (\set{p \in \xpb : r_{p, s} \le \alpha}), \quad \text{for~$\alpha \ge 1$},
 \end{equation*}
 where~$\card(\cdot)$ denotes the cardinal number of a set.
 Clearly,~$\rho_s(\alpha)$ is the proportion of problems in~$\xpb$ that are solved by~$s$ with a performance ratio at most~$\alpha$.
@@ -674,10 +674,10 @@ Therefore, a larger value of~$\rho_s$ indicates a better performance of~$s$.
 \subsection{Data profile}
 
 We now introduce the data profile, another benchmarking tool proposed by~\cite{More_Wild_2009}.
-The \emph{data profile} of a solver~$s \in \xsv$ is defined for~$\alpha \ge 0$ as
+The \emph{data profile} of a solver~$s \in \xsv$ is defined as
 \begin{equation}
     \label{eq:data-profile}
-    d_s(\alpha) \eqdef \frac{1}{\card(\xpb)} \card \bigg(\set[\bigg]{p \in \xpb : \frac{t_{p, s}}{n_p + 1} \le \alpha}\bigg),
+    d_s(\alpha) \eqdef \frac{1}{\card(\xpb)} \card \bigg(\set[\bigg]{p \in \xpb : \frac{t_{p, s}}{n_p + 1} \le \alpha}\bigg), \quad \text{for~$\alpha \ge 0$},
 \end{equation}
 where~$n_p$ is the dimension of the problem~$p$.
 Therefore,~$d_s(\alpha)$ is the proportion of problems in~$\xpb$ that are solved by~$s$ with at most~$\alpha (n_p + 1)$ function evaluations.
