@@ -120,7 +120,7 @@
 \newcommandx{\ball}[2][1={},2={}]{\mathcal{B}\ifthenelse{\equal{#1}{}}{}{_{#1}}\ifthenelse{\equal{#2}{}}{}{^{#2}}}
 \newcommand{\con}[1]{c_{#1}}
 \newcommand{\conm}[1][]{\hat{c}\ifthenelse{\equal{#1}{}}{}{_{#1}}}
-\newcommand{\lag}{\mathcal{L}}
+\newcommand{\lag}[1][]{\mathcal{L}\ifthenelse{\equal{#1}{}}{}{_{#1}}}
 \newcommand{\lagm}[1][]{\widehat{\mathcal{L}}\ifthenelse{\equal{#1}{}}{}{_{#1}}}
 \newcommand{\lagp}[1][]{L\ifthenelse{\equal{#1}{}}{}{_{#1}}}
 \newcommand{\obj}{f}

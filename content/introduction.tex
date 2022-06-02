@@ -369,7 +369,7 @@ Let~$\lag$ be the \emph{Lagrangian function} to the problem~\cref{eq:problem-int
 where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\top}$.
 \Cref{thm:first-order-necessary-conditions} introduces the first-order necessary conditions for a point to be a local solution of problem~\cref{eq:problem-introduction}.
 
-\begin{theorem}[First-order necessary conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.1
+\begin{theorem}[First-order necessary conditions~{\cite[thm.~12.1]{Nocedal_Wright_2006}}]
     \label{thm:first-order-necessary-conditions}
     Let~$x^{\ast} \in \Omega$ be a local solution to the problem~\cref{eq:problem-introduction}, assume that the functions~$\obj$ and~$\con{i}$ are continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$x^{\ast}$.
     Then there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\top}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
@@ -460,7 +460,7 @@ See~\cite[\S~12.4]{Nocedal_Wright_2006} for a complete proof of \cref{thm:first-
 It is known that at a local solution of a smooth unconstrained optimization problem, the gradient of the objective function is zero and its Hessian matrix is positive semidefinite.
 \Cref{thm:second-order-necessary-conditions} generalizes this fact to the optimization problem~\cref{eq:problem-introduction}.
 
-\begin{theorem}[Second-order necessary conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.5
+\begin{theorem}[Second-order necessary conditions~{\cite[thm.~12.5]{Nocedal_Wright_2006}}]
     \label{thm:second-order-necessary-conditions}
     Let~$x^{\ast} \in \Omega$ be a local solution to the problem~\cref{eq:problem-introduction}.
     Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood or~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$x^{\ast}$.
@@ -482,7 +482,7 @@ We emphasize that a second-order stationary point may not be a local solution.
 However, it is known in smooth unconstrained optimization that a point at which the gradient of the objective function is zero and its Hessian matrix is positive definite is a strict local solution.
 \Cref{thm:second-order-sufficient-conditions} generalizes this fact to the optimization problem~\cref{eq:problem-introduction}.
 
-\begin{theorem}[Second-order sufficient conditions~\cite{Nocedal_Wright_2006}] % Theorem 12.6
+\begin{theorem}[Second-order sufficient conditions~{\cite[thm.~12.6]{Nocedal_Wright_2006}}]
     \label{thm:second-order-sufficient-conditions}
     Let~$x^{\ast} \in \Omega$ be a given point.
     Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\top}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-introduction}.
