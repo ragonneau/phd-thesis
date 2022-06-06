@@ -77,12 +77,12 @@ Let us first consider the problem of finding a linear model~$\objm \in \lpoly$ s
 In the natural basis of~$\lpoly$, the system~\cref{eq:interpolation-conditions} can be reformulated as
 \begin{equation}
     \label{eq:linear-interpolation-conditions}
-    \alpha + \inner{g, y^i} = \obj(y^i), \quad \text{for~$i \in \set{1, 2, \dots, m}$},
+    \alpha + g^{\T} y^i = \obj(y^i), \quad \text{for~$i \in \set{1, 2, \dots, m}$},
 \end{equation}
 where~$\alpha \in \R$ and~$g \in \R^n$ are the coefficients to determine.
 If~$\xpt$ is poised for linear interpolation, given~$(\alpha^{\ast}, g^{\ast})$ the unique solution to the system~\cref{eq:linear-interpolation-conditions}, the linear model~$\objm$ is defined by
 \begin{equation*}
-    \objm(x) = \alpha^{\ast} + \inner{g^{\ast}, x}, \quad \text{for~$x \in \R^n$},
+    \objm(x) = \alpha^{\ast} + (g^{\ast})^{\T} x, \quad \text{for~$x \in \R^n$},
 \end{equation*}
 and the vector~$\nabla \objm \equiv g^{\ast}$ is referred to as the \emph{simplex gradient} of~$\obj$ for the interpolation set~$\xpt$.
 Such models are used for instance by \gls{cobyla}~\cite{Powell_1994}, a \gls{dfo} method for nonlinearly-constrained optimization detailed in \cref{subsec:cobyla}.
@@ -236,7 +236,7 @@ We first present the notion of poisedness for problem~\cref{eq:least-frobenius-n
 To get an in-depth view of the poisedness of~$\xpt$, let us investigate how to solve the problem~\cref{eq:least-frobenius-norm-models}.
 Given any fix~$\bar{x} \in \R^n$, we expand a quadratic polynomial~$Q \in \qpoly$ for any~$x \in \R^n$ as
 \begin{equation*}
-    Q(x) = \alpha + \inner{g, x - \bar{x}} + \frac{1}{2} \inner{x - \bar{x}, H(x - \bar{x})},
+    Q(x) = \alpha + g^{\T} (x - \bar{x}) + \frac{1}{2} (x - \bar{x})^{\T} H(x - \bar{x}),
 \end{equation*}
 where~$\alpha \in \R$,~$g \in \R^n$, and~$H \in \R^{n \times n}$ are the coefficients of~$Q$, with~$H$ being symmetric.
 Note that the constraint~\cref{eq:least-frobenius-norm-models-eq} is linear with respect to~$(\alpha, g, H)$.
@@ -278,14 +278,14 @@ where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\T}$,~$e \in 
         y^1 - \bar{x}   & y^2 - \bar{x} & \cdots    & y^m - \bar{x}
     \end{bmatrix} \quad \text{and} \quad Y_H \eqdef \frac{1}{2} (Y_L^{\T} Y_L) \circ (Y_L^{\T} Y_L).
 \end{equation}
-In~\cref{eq:least-frobenius-kkt-system-matrices},~$\circ$ denotes the Hadamard product and hence, the~$(i, j)$ entry of~$Y_H$ is given by~$\inner{y^i - \bar{x}, y^j - \bar{x}}^2 / 2$.
+In~\cref{eq:least-frobenius-kkt-system-matrices},~$\circ$ denotes the Hadamard product and hence, the~$(i, j)$ entry of~$Y_H$ is given by~$[(y^i - \bar{x})^{\T} (y^j - \bar{x})]^2 / 2$.
 In fact, the problem~\cref{eq:least-frobenius-norm-models} is equivalent to the linear system~\cref{eq:least-frobenius-kkt-system}, where the matrix~$H$ can be retrieved from the value of~$\lambda$ by~\cref{eq:least-frobenius-norm-kkt}~\cite[\S~2]{Powell_2004b}, and the interpolation set~$\xpt$ is poised if and only if the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is nonsingular~\cite[\S~5.3]{Conn_Scheinberg_Vicente_2009b}.
 Since the poisedness of~$\xpt$ does not depends on the choice of~$\bar{x}$, neither does the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
 % In fact,~\cite{Conn_Scheinberg_Vicente_2009b} defines the poisedness of~$\xpt$ as the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
 
 Any interpolation set that is poised in the sense of \cref{def:poisedness} must be affinely independent, i.e., it does not lie in a low-dimensional affine subset of~$\R^n$, because the matrix~$[e, Y_L^{\T}]$ has full-column rank according to the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
 Even if~$\xpt$ is not poised, the full-rankness of~$[e, Y_L^{\T}]$ holds as long as the solution to~\cref{eq:least-frobenius-norm-models} is unique when~$f \equiv 0$.
-This is because~$\alpha + \inner{g, x - \bar{x}}$ is a nonzero linear polynomial that interpolates the zero function on~$\xpt$ if~$[\alpha, g^{\T}]^{\T} \in \R^{n + 1}$ is a nonzero vector in~$\ker([e, Y_L^{\T}])$.
+This is because~$\alpha + g^{\T} (x - \bar{x})$ is a nonzero linear polynomial that interpolates the zero function on~$\xpt$ if~$[\alpha, g^{\T}]^{\T} \in \R^{n + 1}$ is a nonzero vector in~$\ker([e, Y_L^{\T}])$.
 Such a polynomial should not exist because of the aforementioned uniqueness, since the zero polynomial should be the only solution.
 
 \subsubsection{Minimum Frobenius norm Lagrange polynomials}
@@ -351,24 +351,27 @@ The new method we introduce in \cref{ch:cobyqa-introduction} also uses this upda
 
 The discussions we had on the minimum Frobenius norm models can be easily adapted to the least Frobenius norm updating.
 It is because if we are given a function~$\objm[\text{old}]$ such that~$H_{\text{old}} = \nabla^2 \objm[\text{old}]$, then~$\objm - \objm[\text{old}]$ solves
-\begin{align*}
-    \min        & \quad \norm{\nabla^2 Q}_{\mathsf{F}}\\
-    \text{s.t.} & \quad Q(y^i) = \obj(y^i) - \objm[\text{old}](y^i), ~ i \in \set{1, 2, \dots, m},\\
-                & \quad Q \in \qpoly.
-\end{align*}
+\begin{subequations}
+    \label{eq:symmetric-broyden-models-reformulation}
+    \begin{align}
+        \min        & \quad \norm{\nabla^2 Q}_{\mathsf{F}}\\
+        \text{s.t.} & \quad Q(y^i) = \obj(y^i) - \objm[\text{old}](y^i), ~ i \in \set{1, 2, \dots, m},\\
+                    & \quad Q \in \qpoly.
+    \end{align}
+\end{subequations}
 Therefore, the coefficients of the model obtained by least Frobenius norm updates can be evaluated by solving a linear system similar to~\cref{eq:least-frobenius-kkt-system}.
 
 The minimum Frobenius norm update can be regarded as a derivative-free variation of the symmetric Broyden update in the quasi-Newton method.
 The symmetric Broyden method~\cite{Powell_1970b} approximates the function~$\obj$ at a point~$y^1 \in \R^n$ by the quadratic function
 \begin{align*}
-    \objm(x) = \objm(y^1) + \inner{\nabla \objm(y^1), x - y^1} + \frac{1}{2} \inner{x - y^1, H (x - y^1)},
+    \objm(x) = \objm(y^1) + \nabla \objm(y^1)^{\T} (x - y^1) + \frac{1}{2} (x - y^1)^{\T} H (x - y^1),
 \end{align*}
 where, as shown in~\cite[thm.~4.2]{Dennis_Schnabel_1979},~$H \in \R^{n \times n}$ is the unique solution to
-\begin{align}
+\begin{align*}
     \min        & \quad \norm{H - H_{\text{old}}}_{\mathsf{F}}\\
     \text{s.t.} & \quad H (y^1 - y^2) = \nabla \objm(y^1) - \nabla \objm(y^2),\\
                 & \quad H^{\T} = H,
-\end{align}
+\end{align*}
 where~$H_{\text{old}} \in \R^{n \times n}$ is a prior estimation of~$\nabla^2 \obj(y^1)$, and~$y^2 \in \R^n$ is a point that differs from~$y^1$.
 In an optimization context,~$y^1$ and~$y^2$ are respectively the current and the previous iterate generated by the optimization method.
 Clearly, the function~$\objm$ solves
@@ -387,10 +390,10 @@ Therefore, following \citeauthor{Powell_2013}~\cite{Powell_2013}, we will also r
 \subsection{Implementation in \glsfmtlong{dfo} methods}
 
 We assume in this section that we are given a model-based \gls{dfo} method, and we denote by~$x^k \in \R^n$ the~$k$th iterate, with~$k \ge 0$.
-Further, we assume that it builds the model~$\objm[k] \in \qpoly$ of the objective function~$\obj$ by an underdetermined interpolation scheme on the interpolation set~$\xpt[k] = \set{y^{k, 1}, y^{k, 2}, \dots, y^{k, m}} \subseteq \R^n$, with~$x^k \in \xpt[k]$.
+Further, it builds the model~$\objm[k] \in \qpoly$ of the objective function~$\obj$ by an underdetermined interpolation scheme on the interpolation set~$\xpt[k] = \set{y^{k, 1}, y^{k, 2}, \dots, y^{k, m}} \subseteq \R^n$, with~$x^k \in \xpt[k]$.
 The quadratic model~$\objm[k]$ is
 \begin{equation*}
-    \objm[k](x) = \alpha^k + \inner{g^k, x - x^k} + \frac{1}{2} \inner{x - x^k, H^k (x - x^k)}, \quad \text{for~$x \in \R^n$}.
+    \objm[k](x) = \alpha^k + (g^k)^{\T} (x - x^k) + \frac{1}{2} (x - x^k)^{\T} H^k (x - x^k), \quad \text{for~$x \in \R^n$}.
 \end{equation*}
 where~$\alpha^k \in \R$,~$g^k \in \R^n$, and~$H^k \in \R^{n \times n}$ are the coefficients of the model,~$H^k$ being symmetric.
 As we mentioned in~\cref{eq:least-frobenius-kkt-system}, the coefficients of~$\objm[k]$ can be evaluated by solving
@@ -413,7 +416,11 @@ As we mentioned in~\cref{eq:least-frobenius-kkt-system}, the coefficients of~$\o
         0
     \end{bmatrix},
 \end{equation}
-where~$v \in \R^m$ has the value
+for some~$v \in \R^m$, detailed below.
+
+\subsubsection{Minimum Frobenius norm model}
+
+As mentioned earlier, to obtain a minimum Frobenius norm model, we set
 \begin{equation*}
     v \eqdef
     \begin{bmatrix}
@@ -421,21 +428,26 @@ where~$v \in \R^m$ has the value
         \obj(y^{k, 2})\\
         \vdots\\
         \obj(y^{k, m})
-    \end{bmatrix}
-    \quad \text{or} \quad v \eqdef
+    \end{bmatrix}.
+\end{equation*}
+Further, we clearly set~$\alpha^k = \alpha$,~$g^k = g$, and
+\begin{equation*}
+    H^k = \sum_{i = 1}^m \lambda_i (y^{k, i} - x^k) (y^{k, i} - x^k)^{\T}.
+\end{equation*}
+
+\subsubsection{Model based on the derivative-free symmetric Broyden update}
+
+Thanks to~\cref{eq:symmetric-broyden-models-reformulation}, to build a model based on the derivative-free symmetric Broyden update, we set
+\begin{equation*}
+    v \eqdef
     \begin{bmatrix}
         \obj(y^{k, 1}) - \objm[k - 1](y^{k, 1})\\
         \obj(y^{k, 2}) - \objm[k - 1](y^{k, 2})\\
         \vdots\\
         \obj(y^{k, m}) - \objm[k - 1](y^{k, m})
-    \end{bmatrix},
+    \end{bmatrix}.
 \end{equation*}
-the former being chosen if we want a least Frobenius norm model and the latter if we want to update the model by a derivative-free symmetric Broyden update, and where the matrices~$Y_H \in \R^{m \times m}$ and~$Y_L \in \R^{n \times m}$ are defined by~\cref{eq:least-frobenius-kkt-system-matrices}.
-Further, if we want a least Frobenius norm model, we set~$\alpha^k = \alpha$,~$g^k = g$, and
-\begin{equation*}
-    H^k = \sum_{i = 1}^m \lambda_i (y^{k, i} - x^k) (y^{k, i} - x^k)^{\T},
-\end{equation*}
-and if we want a model obtained by the derivative-free symmetric Broyden update, we set
+In such a case, the model's coefficients are
 \begin{empheq}[left=\empheqlbrace]{alignat*=1}
     & \alpha^k = \objm[k - 1](x^k) + \alpha,\\
     & g^k = \nabla \objm[k - 1](x^k) + g,\\
@@ -443,7 +455,7 @@ and if we want a model obtained by the derivative-free symmetric Broyden update,
 \end{empheq}
 
 In practice, we often maintain the inverse of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system-2} to evaluates the coefficients of the model~$\objm[k]$.
-We present in this section techniques that are used to reduce the computational cost of computing these models and to improve the stability of the methods.
+We present in what follows techniques that are used to reduce the computational cost of computing these models and to improve the stability of the methods.
 
 \subsubsection{Storage of the quadratic models}
 
@@ -561,12 +573,12 @@ These formulae are given in~\cite[\S~3]{Powell_2006}, without a proof.
     According to the equation~\cref{eq:initial-interpolation-set}, for any~$j \in \set{1, 2, \dots, m - n - 1}$, we have~$z^1 = 0$,~$z^{j + 1} = \delta e_j$, and~$z^{n + j + 1} = - \delta e_j$.
     Therefore,
     \begin{empheq}[left=\empheqlbrace]{alignat*=1}
-        & \lagp(z^{j + 1}) = \lagp(z^1) + \delta \inner{\nabla \lagp(z^1), e_j} + \frac{\delta^2}{2} \inner{e_j, (\nabla^2 \lagp) e_j},\\
-        & \lagp(z^{n + j + 1}) = \lagp(z^1) - \delta \inner{\nabla \lagp(z^1), e_j} + \frac{\delta^2}{2} \inner{e_j, (\nabla^2 \lagp) e_j},
+        & \lagp(z^{j + 1}) = \lagp(z^1) + \delta \nabla \lagp(z^1)^{\T} e_j + \frac{\delta^2}{2} e_j^{\T} (\nabla^2 \lagp) e_j,\\
+        & \lagp(z^{n + j + 1}) = \lagp(z^1) - \delta \nabla \lagp(z^1)^{\T} e_j + \frac{\delta^2}{2} e_j^{\T} (\nabla^2 \lagp) e_j,
     \end{empheq}
     and hence,
     \begin{equation*}
-        \inner{e_j, (\nabla^2 \lagp) e_j} = \frac{\lagp(z^{j + 1}) + \lagp(z^{n + j + 1}) - 2 \lagp(z^1)}{\delta^2}.
+        e_j^{\T} (\nabla^2 \lagp) e_j = \frac{\lagp(z^{j + 1}) + \lagp(z^{n + j + 1}) - 2 \lagp(z^1)}{\delta^2}.
     \end{equation*}
     This fixes the first~$m - n - 1$ diagonal entries of~$\nabla^2 \lagp$, which are exactly those of~$\nabla^2 \lagp[i]$.
     Since all the other entries of~$\nabla^2 \lagp[i]$ are zero, we have
@@ -736,7 +748,7 @@ Before developing the last special value of~$\Lambda_p$ we introduce the followi
     For~$x \in \ball[q](1)$, define~$y = (\abs{x_1}^p, \abs{x_2}^p, \dots, \abs{x_n}^p)$.
     According to the H{\"{o}}lder inequality, we have
     \begin{equation*}
-        \norm{x}_p  = \inner{e, y}^{\frac{1}{p}} \le (\norm{e}_s \norm{y}_r)^{\frac{1}{p}} = n^{\frac{q - p}{pq}} \norm{x}_q \le n^{\frac{q - p}{pq}}.
+        \norm{x}_p  = (e^{\T} y)^{\frac{1}{p}} \le (\norm{e}_s \norm{y}_r)^{\frac{1}{p}} = n^{\frac{q - p}{pq}} \norm{x}_q \le n^{\frac{q - p}{pq}}.
     \end{equation*}
     Moreover, this bound is attained by~$x = n^{-\frac{1}{q}}e$, which proves~\cref{eq:max-norm-pq-2}.
 \end{proof}

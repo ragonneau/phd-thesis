@@ -148,6 +148,7 @@ In such a case, \gls{dfo} methods can help solve the problem~\cref{eq:gaussian-e
 Note that the optimal value and all local solutions to the problem~\cref{eq:gaussian-elimination-problem} are known~\cite{Higham_Higham_1989}, but \gls{dfo} methods can be used to help the theoretical development~\cite{Higham_1993}.
 
 \subsection{Tuning nonlinear optimization methods}
+\label{subsec:tuning-nonlinear-optimization-methods}
 
 Another well-known example of \gls{dfo} applications is the parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
 For example, consider \cref{alg:trust-region}, a basic trust-region method for solving the problem~\cref{eq:problem-introduction} when~$\iub = \ieq = \emptyset$.
@@ -218,7 +219,7 @@ Binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by
     \label{eq:csvc}
     \begin{align}
         \min        & \quad \frac{1}{2} \norm{\omega}_2^2 + C \norm{\xi}_1\\
-        \text{s.t.} & \quad y_i (\beta + \inner{\omega, \varphi_{\gamma}(x_i)}) \ge 1 - \xi_i, ~ i \in \set{1, 2, \dots, m},\\
+        \text{s.t.} & \quad y_i (\beta + \omega^{\T} \varphi_{\gamma}(x_i)) \ge 1 - \xi_i, ~ i \in \set{1, 2, \dots, m},\\
                     & \quad \xi \ge 0,\\
                     & \quad (\omega, \beta, \xi) \in \R^{\ell} \times \R \times \R^m,
     \end{align}
@@ -227,7 +228,7 @@ where~$\varphi_{\gamma}$ is a function mapping the data to a higher-dimensional 
 Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$ to the problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$x \in \R^n$ according to
 \begin{equation}
     \label{eq:csvc-classifier}
-    \delta(x) \eqdef \sgn(\beta^{\ast} + \inner{\omega^{\ast}, \varphi_{\gamma}(x)}),
+    \delta(x) \eqdef \sgn(\beta^{\ast} + (\omega^{\ast})^{\T} \varphi_{\gamma}(x)),
 \end{equation}
 which maps an observation~$x \in \R^n$ to a label in~$\set{\pm 1}$.
 It is clear that~$\delta$ depends on the two parameters~$C$ and~$\gamma$, which can be chosen by solving an optimization problem.
@@ -344,8 +345,8 @@ We introduce hereafter two classical constraint qualifications.
         \begin{subequations}
             \label{eq:mangasarian-fromovitz}
             \begin{empheq}[left=\empheqlbrace]{alignat=2}
-                & \inner{\nabla \con{i}(x), z} < 0, && \quad \text{if~$i \in \act(x) \cap \iub$,}\\
-                & \inner{\nabla \con{i}(x), z} = 0, && \quad \text{if~$i \in \ieq$.}
+                & \nabla \con{i}(x)^{\T} z < 0, && \quad \text{if~$i \in \act(x) \cap \iub$,}\\
+                & \nabla \con{i}(x)^{\T} z = 0, && \quad \text{if~$i \in \ieq$.}
             \end{empheq}
         \end{subequations}
     \end{itemize}
@@ -442,9 +443,9 @@ As manifest in \cref{fig:kkt-description}, there does not exist any direction~$d
 \begin{subequations}
     \label{eq:kkt-proof}
     \begin{empheq}[left=\empheqlbrace]{alignat=1}
-        & \inner{\nabla \obj(x^{\ast}), d} < 0,\\
-        & \inner{\nabla \con{1}(x^{\ast}), d} \le 0,\\
-        & \inner{\nabla \con{2}(x^{\ast}), d} \le 0.
+        & \nabla \obj(x^{\ast})^{\T} d < 0,\\
+        & \nabla \con{1}(x^{\ast})^{\T} d \le 0,\\
+        & \nabla \con{2}(x^{\ast})^{\T} d \le 0.
     \end{empheq}
 \end{subequations}
 The Farkas' lemma~\cite{Farkas_1902} ensures, therefore, that there exists a nonnegative Lagrange multiplier~$\lambda^{\ast} = [\lambda_1^{\ast}, \lambda_2^{\ast}]^{\T}$ such that
@@ -470,12 +471,12 @@ It is known that at a local solution of a smooth unconstrained optimization prob
     \begin{subequations}
         \label{eq:second-order-introduction}
         \begin{empheq}[left=\empheqlbrace]{alignat=2}
-            & \inner{\nabla \con{i}(x^{\ast}), z} = 0,      && \quad \text{if~$i \in \ieq$,}\\
-            & \inner{\nabla \con{i}(x^{\ast}), z} = 0,      && \quad \text{if~$i \in \act(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} > 0$,}\\
-            & \inner{\nabla \con{i}(x^{\ast}), z} \ge 0,    && \quad \text{if~$i \in \act(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} = 0$.}
+            & \nabla \con{i}(x^{\ast})^{\T} z = 0,      && \quad \text{if~$i \in \ieq$,}\\
+            & \nabla \con{i}(x^{\ast})^{\T} z = 0,      && \quad \text{if~$i \in \act(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} > 0$,}\\
+            & \nabla \con{i}(x^{\ast})^{\T} z \ge 0,    && \quad \text{if~$i \in \act(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} = 0$.}
         \end{empheq}
     \end{subequations}
-    Then~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} \ge 0$.
+    Then~$z^{\T} \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z \ge 0$.
 \end{theorem}
 
 A first-order stationary point~$x \in \Omega$ is called a \emph{second-order stationary point} if it satisfies the conclusion of \cref{thm:second-order-necessary-conditions}.
@@ -487,7 +488,7 @@ However, it is known in smooth unconstrained optimization that a point at which 
     \label{thm:second-order-sufficient-conditions}
     Let~$x^{\ast} \in \Omega$ be a given point.
     Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\T}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-introduction}.
-    If for all vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-introduction} we have~$\inner{z, \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z} > 0$, then~$x^{\ast}$ is a strict local solution to problem~\cref{eq:problem-introduction}.
+    If for all vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-introduction} we have~$z^{\T} \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z > 0$, then~$x^{\ast}$ is a strict local solution to problem~\cref{eq:problem-introduction}.
 \end{theorem}
 
 \section{Methodology of \glsfmtlong{dfo}}

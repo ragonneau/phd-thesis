@@ -21,7 +21,7 @@ In this chapter, we introduce a new model-based \gls{dfo} method for solving non
 \begin{subequations}
     \label{eq:problem-cobyqa}
     \begin{align}
-        \min        & \quad \obj(x)\\
+        \min        & \quad \obj(x) \label{eq:problem-cobyqa-obj}\\
         \text{s.t.} & \quad \con{i}(x) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-ub}\\
                     & \quad \con{i}(x) = 0, ~ i \in \ieq,\\
                     & \quad \xl \le x \le \xu, \label{eq:problem-cobyqa-bd}\\
@@ -29,20 +29,27 @@ In this chapter, we introduce a new model-based \gls{dfo} method for solving non
     \end{align}
 \end{subequations}
 where the objective and constraint functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, with the sets of indices~$\iub$ and~$\ieq$ being finite (perhaps empty) and disjoint, and where the bounds~$\xl \in (\R \cup \set{-\infty})^n$ and~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl < \xu$.
-The requirement on the bounds is weak, as otherwise, the problem~\cref{eq:problem-cobyqa} would be either infeasible, or would admit a fix variables.
+The requirement on the bounds is weak, as otherwise, the problem~\cref{eq:problem-cobyqa} would be either infeasible, or would admit fix variables.
 The solver we develop, named~\gls{cobyqa} after \emph{\glsdesc{cobyqa}}, uses only function values of~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, but not derivatives.
 
 \section{Management of the bound constraints}
 
-\begin{itemize}
-    \item Theoretically, they could be included in~\cref{eq:problem-cobyqa-ub}.
-    \item They are very simple constraints: it is trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-bd}, it is easy to project any point onto the bound constraints, etc.
-    \item \gls{cobyqa} nevers violates the bound constraints~\cref{eq:problem-cobyqa-bd}, as they often represent inalienable physical or theoretical restrictions.
-\end{itemize}
+From a theoretical standpoint, the bound constraints~\cref{eq:problem-cobyqa-bd} could be included in the general inequality constraints~\cref{eq:problem-cobyqa-ub}.
+However, we consider them separatly, because they often represent inalienable physical or theoretical restrictions.
+In other words, in many applications, the objective function~\cref{eq:problem-cobyqa-obj} is not defined if the bounds constraints~\cref{eq:problem-cobyqa-bd} are violated.
+For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods}) involves a bounds that cannot be violated, as the optimization methods that are tuned may not be defined otherwise.
+Very similar observations can be made on hyperparameter tuning in machine learning (see \cref{subsec:machine-learning}).
+
+Therefore, every point that \gls{cobyqa} encounters always respects these bounds.
+This is also the case for the \gls{bobyqa} method, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
+Note that they are very simple constraints.
+It is, for example, trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-bd}, and easy to project any point onto the bound constraints.
+
 
 \section{The \glsfmtlong{sqp} method}
+\label{sec:sqp-method}
 
-For sake of clarity we assume in this section that no bound constraint is provided.
+For sake of clarity we assume throughout the \cref{sec:sqp-method} that no bound constraint is provided.
 Therefore, the problem we consider is of the form
 \begin{subequations}
     \label{eq:problem-cobyqa-no-bounds}
@@ -58,7 +65,7 @@ The Lagrangian function that we consider is defined by
 \begin{equation*}
     \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$ for~$i \in \iub \cup \ieq$},
 \end{equation*}
-where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\T}$.
+where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\T}$ is the dual variable of the considered problem.
 
 \subsection{Overview of the method}
 
@@ -67,9 +74,9 @@ Given an iterate~$x^k \in \R^n$, it generates a step~$d^k \in \R^n$ by solving a
 \begin{subequations}
     \label{eq:sqp-subproblem}
     \begin{align}
-        \min        & \quad \inner{\nabla \obj(x^k), d} + \frac{1}{2} \inner{d, \nabla_{x, x}^2 \lag(x^k, \lambda^k) d} \label{eq:sqp-subproblem-obj}\\
-        \text{s.t.} & \quad \con{i}(x^k) + \inner{\nabla \con{i}(x^k), d} \le 0, ~ i \in \iub,\\
-                    & \quad \con{i}(x^k) + \inner{\nabla \con{i}(x^k), d} = 0, ~ i \in \ieq,\\
+        \min        & \quad \nabla \obj(x^k)^{\T} d + \frac{1}{2} d^{\T} \nabla_{x, x}^2 \lag(x^k, \lambda^k) d \label{eq:sqp-subproblem-obj}\\
+        \text{s.t.} & \quad \con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d \le 0, ~ i \in \iub,\\
+                    & \quad \con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d = 0, ~ i \in \ieq,\\
                     & \quad d \in \R^n,
     \end{align}
 \end{subequations}
@@ -97,6 +104,8 @@ Given a perturbation~$\epsilon > 0$ and an iterate~$x^k = [1 + \epsilon, 0]^{\T}
                 & \quad d \in \R^2,
 \end{align*}
 which is unbounded from below, regardless of the magnitude of~$\epsilon$.
+Therefore, in this example, including the Lagrangian function in the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} is crucial.
+This behavior is in fact not specific to this example, but is much more general (see, e.g., \cite[ch.~18]{Nocedal_Wright_2006}).
 
 \subsubsection{Approximation of the \glsfmtlong{kkt} conditions}
 
@@ -115,14 +124,14 @@ Let~$(x^k, \lambda^k)$ be some approximation of~$(x^{\ast}, \lambda^{\ast})$, an
     \label{eq:sqp-kkt-step}
     \begin{empheq}[left=\empheqlbrace]{alignat=2}
         & \nabla_x \lag(x^{k}, \lambda^{k} + u^k) + \nabla_{x, x}^2 \lag(x^{k}, \lambda^{k}) d^k = 0,   && \\
-        & \con{i}(x^k) + \inner{\nabla \con{i}(x^k), d^k} \le 0,                                        && \quad \text{if~$i \in \iub$,}\\
-        & \con{i}(x^k) + \inner{\nabla \con{i}(x^k), d^k} = 0,                                          && \quad \text{if~$i \in \ieq$,}\\
-        & (\lambda_i^{k} + u_i^k) [\con{i}(x^k) + \inner{\nabla \con{i}(x^k), d^k}] = 0,                && \quad \text{if~$i \in \iub$,} \label{eq:sqp-kkt-step-complementary-slackness}\\
+        & \con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d^k \le 0,                                            && \quad \text{if~$i \in \iub$,}\\
+        & \con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d^k = 0,                                              && \quad \text{if~$i \in \ieq$,}\\
+        & (\lambda_i^{k} + u_i^k) [\con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d^k] = 0,                && \quad \text{if~$i \in \iub$,} \label{eq:sqp-kkt-step-complementary-slackness}\\
         & \lambda_i^{k} + u_i^k \ge 0,                                                                  && \quad \text{if~$i \in \iub$.}
     \end{empheq}
 \end{subequations}
 Note that this conditions resemble the first-order Taylor approximation at~$(x^k, \lambda^k)$, in which case~$(d^k, u^k)$ would be a Newton step.
-However, the condition~\cref{eq:sqp-kkt-step-complementary-slackness} is not directly the linearization of~\cref{eq:sqp-kkt-complementary-slackness}, but it includes the second-order term~$u_i^k \inner{\nabla \con{i}(x^k), d^k}$.
+However, the condition~\cref{eq:sqp-kkt-step-complementary-slackness} is not directly the linearization of~\cref{eq:sqp-kkt-complementary-slackness}, but it includes the second-order term~$u_i^k \nabla \con{i}(x^k)^{\T} d^k$.
 We remark that the conditions~\cref{eq:sqp-kkt-step} are nothing but the \gls{kkt} conditions of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} associated with the Lagrange multiplier~$\lambda^k + u^k$.
 
 \subsubsection{Approximation of a modified Lagrangian}
@@ -134,13 +143,13 @@ Given an iterate~$x^k \in \R^n$, let~$\lag[k]$ be the modified Lagrangian functi
 \end{equation*}
 where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\T}$, and where~$\delta_i^k$, for~$i \in \iub \cup \ieq$, denotes the departure from linearity\footnote{When~$\con{i}$ is strictly convex, it is the Bregman distance~\cite{Bregman_1967} associated with~$\con{i}$ for the point~$x^k$.}~\cite{Robinson_1972,Hoek_1982} associated with~$\con{i}$ for the point~$x^k$, defined by
 \begin{equation*}
-    \delta_i^k(x) \eqdef \con{i}(x) - \con{i}(x^k) - \inner{\nabla \con{i}(x^k), x - x^k}, \quad \text{for~$x \in \R^n$.}
+    \delta_i^k(x) \eqdef \con{i}(x) - \con{i}(x^k) - \nabla \con{i}(x^k)^{\T} (x - x^k), \quad \text{for~$x \in \R^n$.}
 \end{equation*}
 The \gls{sqp} subproblem~\cref{eq:sqp-subproblem} can then be seen as the minimization of the second-order Taylor approximation of~$\lag[k]$ subject to the linearized constraints, i.e.,
 \begin{align}
-    \min        & \quad \inner{\nabla_x \lag[k](x^k, \lambda^k), d} + \frac{1}{2} \inner{d, \nabla_{x, x}^2 \lag[k](x^k, \lambda^k) d}\\
-    \text{s.t.} & \quad \con{i}(x^k) + \inner{\nabla \con{i}(x^k), d} \le 0, ~ i \in \iub,\\
-                & \quad \con{i}(x^k) + \inner{\nabla \con{i}(x^k), d} = 0, ~ i \in \ieq,\\
+    \min        & \quad \nabla_x \lag[k](x^k, \lambda^k)^{\T} d + \frac{1}{2} d^{\T} \nabla_{x, x}^2 \lag[k](x^k, \lambda^k) d\\
+    \text{s.t.} & \quad \con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d \le 0, ~ i \in \iub,\\
+                & \quad \con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d = 0, ~ i \in \ieq,\\
                 & \quad d \in \R^n.
 \end{align}
 
@@ -159,8 +168,49 @@ Let~$\lag[\mathsf{A}]$ be the augmented Lagrangian of this problem, i.e.,
     \lag[\mathsf{A}](x, s, \lambda) \eqdef \obj(x) + \sum_{i \in \iub} \bigg[ \lambda_i (\con{i}(x) + s_i) + \frac{\gamma}{2} (\con{i}(x) + s_i)^2 \bigg],
 \end{equation*}
 for~$x \in \R^n$ and~$s_i, \lambda_i \in \R$ for~$i \in \iub$, where~$\gamma \ge 0$ is a given penalty parameter.
+We then remark that the augmented Lagrangian function of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} is the Taylor-like approximation of~$\lag[\textsf{A}]$ obtained by replacing~$\obj$ by its second-order approximation,~$\con{i}$ in the left part of the summed term by its second-order approximation, and~$\con{i}$ in the right part of the summed term by its first-order approximation. The function~$\con{i}$, with~$i \in \iub$, in the right part of the summed term is replaced only a linear function to obtain a quadratic approximation of~$\lag[\mathsf{A}]$, and not a quartic one.
+
+\subsection{A derivative-free \glsfmtlong{sqp} method}
+
+At the~$k$th iteration, \gls{cobyqa} builds the models~$\objm[k]$ and~$\conm[k]{i}$ of the objective function~$\obj$ and the constraints functions~$\con{i}$, with~$i \in \iub \cup \ieq$, using the derivative-free Broyden updates presented in~\cref{subsec:symmetric-broyden-updates}.
+A poised interpolation set~$\xpt[k] \subseteq \R^n$ is maintained, whose cardinal number is fixed.
+The only restriction is
+\begin{equation*}
+    n + 2 \le \card(\xpt[k]) \le \frac{1}{2} (n + 1) (n + 2),
+\end{equation*}
+as otherwise, the set~$\xpt[k]$ cannot be poised (see \cref{subsec:symmetric-broyden-updates} for details).
+The derivative-free variation of the \gls{sqp} method we consider then has the subproblem
+\begin{align*}
+    \min        & \quad \nabla \objm[k](x^k)^{\T} d + \frac{1}{2} d^{\T} \nabla_{x, x}^2 \lagm[k](x^k, \lambda^k) d \label{eq:sqp-subproblem-obj}\\
+    \text{s.t.} & \quad \conm[k]{i}(x^k) + \nabla \conm[k]{i}(x^k)^{\T} d \le 0, ~ i \in \iub,\\
+                & \quad \conm[k]{i}(x^k) + \nabla \conm[k]{i}(x^k)^{\T} d = 0, ~ i \in \ieq,\\
+                & \quad d \in \R^n,
+\end{align*}
+where~$\lagm[k]$ is defined by
+\begin{equation*}
+    \lagm[k](x, \lambda) \eqdef \objm[k](x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \conm[k]{i}(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$ for~$i \in \iub \cup \ieq$}.
+\end{equation*}
 
 \section{The trust-region framework}
+
+The \gls{sqp} framework suffers from one major deffect: it is a local method.
+Therefore, the convergence of the method cannot be ensured for any initial guess~$x^0 \in \R^n$.
+To cope with this difficulty, the method is usually embedded in a globalization strategy, such as a line-search or a trust-region framework.
+We consider in this thesis trust-region methods only.
+When combining all the information, the trust-region \gls{sqp} subproblem considered by \gls{cobyqa} is
+\begin{subequations}
+    \begin{align}
+        \min        & \quad \nabla \objm[k](x^k)^{\T} d + \frac{1}{2} d^{\T} \nabla_{x, x}^2 \lagm[k](x^k, \lambda^k) d \label{derivative-free-trust-region-sqp-subproblem-obj}\\
+        \text{s.t.} & \quad \conm[k]{i}(x^k) + \nabla \conm[k]{i}(x^k)^{\T} d \le 0, ~ i \in \iub,\\
+                    & \quad \conm[k]{i}(x^k) + \nabla \conm[k]{i}(x^k)^{\T} d = 0, ~ i \in \ieq,\\
+                    & \quad \xl \le x^k + d \le \xu,\\
+                    & \quad \norm{d} \le \Delta^k,\\
+                    & \quad d \in \R^n,
+    \end{align}
+\end{subequations}
+where~$\norm{\cdot}$ denotes the Euclidean norm,~$\Delta^k > 0$ is the current trust-region radius, and~$\lagm[k]$ denotes the Lagrangian function of the problem~\cref{eq:problem-cobyqa}.
+Note that only the second-order derivative of this Lagrangian with respect to~$x$ intervene in this subproblem.
+Therefore, the bound constraints do not play any role in the objective function~\cref{derivative-free-trust-region-sqp-subproblem-obj}.
 
 \subsection{Merit functions and penalty coefficients}
 

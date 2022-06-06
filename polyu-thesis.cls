@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/05/19 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/06/06 PolyU thesis document class]
 
 % Load book class as basis
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
@@ -58,6 +58,11 @@
     Extension=.otf,%
     UprightFont=*-Medium,%
     BoldFont=*-Bold,%
+]{NotoSerifTC}
+\setCJKsansfont[%
+    Path=fonts/NotoSerifTC/,%
+    Extension=.otf,%
+    UprightFont=*-Medium,%
 ]{NotoSerifTC}
 \setCJKmonofont[%
     Path=fonts/NotoSerifTC/,%
