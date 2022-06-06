@@ -233,26 +233,30 @@ We first present the notion of poisedness for problem~\cref{eq:least-frobenius-n
     The set~$\xpt$ is \emph{poised} in the minimum Frobenius norm sense if the solution to problem~\cref{eq:least-frobenius-norm-models} exists and is unique for any real-valued function~$\obj$.
 \end{definition}
 
-To get an in-depth view of the poisedness of~$\xpt$, let us investigate the solvability of the problem~\cref{eq:least-frobenius-norm-models}.
+To get an in-depth view of the poisedness of~$\xpt$, let us investigate how to solve the problem~\cref{eq:least-frobenius-norm-models}.
 Given any fix~$\bar{x} \in \R^n$, we expand a quadratic polynomial~$Q \in \qpoly$ for any~$x \in \R^n$ as
 \begin{equation*}
     Q(x) = \alpha + \inner{g, x - \bar{x}} + \frac{1}{2} \inner{x - \bar{x}, H(x - \bar{x})},
 \end{equation*}
 where~$\alpha \in \R$,~$g \in \R^n$, and~$H \in \R^{n \times n}$ are the coefficients of~$Q$, with~$H$ being symmetric.
 Note that the constraint~\cref{eq:least-frobenius-norm-models-eq} is linear with respect to~$(\alpha, g, H)$.
-Moreover, the Frobenius norm is convex, so that the problem~\cref{eq:least-frobenius-norm-models} is convex.
-In this setting, we can show that the \gls{kkt} conditions~\cref{eq:kkt-introduction} given in \cref{thm:first-order-necessary-conditions} are necessary and sufficient.
-Let~$\lambda = [\lambda_1, \lambda_2, \dots, \lambda_m]^{\top}$ be the Lagrange multiplier of~\cref{eq:least-frobenius-norm-models}.
+% Moreover, the Frobenius norm is convex, so that the problem~\cref{eq:least-frobenius-norm-models} is convex.
+% In this setting, we can show that the \gls{kkt} conditions~\cref{eq:kkt-introduction} given in \cref{thm:first-order-necessary-conditions} are necessary and sufficient.
+Consequently, the problem~\cref{eq:least-frobenius-norm-models} is a convex quadratic problem with equality constraints.
+We then consider its \gls{kkt} system.
+Let~$\lambda = [\lambda_1, \lambda_2, \dots, \lambda_m]^{\T}$ be the Lagrange multiplier of~\cref{eq:least-frobenius-norm-models}.
 The stationarity condition~\cref{eq:kkt-introduction-stationarity} can be formulated as
-\begin{equation*}
+\begin{equation}
+    \label{eq:least-frobenius-norm-kkt}
     \sum_{i = 1}^m \lambda_i (y^i - \bar{x}) (y^i - \bar{x})^{\T} = H, \quad \sum_{i = 1}^m \lambda_i = 0, \quad \text{and} \quad \sum_{i = 1}^m \lambda_i (y^i - \bar{x}) = 0.
-\end{equation*}
-When combined with the primal feasibility condition~\cref{eq:kkt-introduction-primal-feasibility-eq}, the coefficients of~$Q$ can be evaluated by solving the system
+\end{equation}
+Combining~\cref{eq:least-frobenius-norm-kkt} with the primal feasibility condition~\cref{eq:kkt-introduction-primal-feasibility-eq}, we obtain
 \begin{equation}
     \label{eq:least-frobenius-kkt-system}
     \begin{bmatrix}
-        Y_H         & Y_L\\
-        Y_L^{\T}    & 0
+        Y_H     & e & Y_L^{\T}\\
+        e^{\T}  & 0 & 0\\
+        Y_L     & 0 & 0
     \end{bmatrix}
     \begin{bmatrix}
         \lambda\\
@@ -262,44 +266,31 @@ When combined with the primal feasibility condition~\cref{eq:kkt-introduction-pr
     =
     \begin{bmatrix}
         \obj(\xpt)\\
+        0\\
         0
     \end{bmatrix},
 \end{equation}
-where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\top}$ and where~$Y_H \in \R^{m \times m}$ and~$Y_L \in \R^{m \times (n + 1)}$ are defined by
+where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\T}$,~$e \in \R^m$ is the all-one vector, while~$Y_L \in \R^{n \times m}$ and~$Y_H \in \R^{m \times m}$ are defined by
 \begin{equation}
-    \label{eq:least-frobenius-kkt-system-matrice-1}
-    Y_H \eqdef \frac{1}{2}
-    \begin{bmatrix}
-        \norm{y^1 - \bar{x}}^4                  & \inner{y^1 - \bar{x}, y^2 - \bar{x}}^2    & \cdots    & \inner{y^1 - \bar{x}, y^m - \bar{x}}^2\\
-        \inner{y^2 - \bar{x}, y^1 - \bar{x}}^2  & \norm{y^2 - \bar{x}}^4                    & \cdots    & \inner{y^2 - \bar{x}, y^m - \bar{x}}^2\\
-        \vdots                                  & \vdots                                    & \ddots    & \vdots\\
-        \inner{y^m - \bar{x}, y^1 - \bar{x}}^2  & \inner{y^m - \bar{x}, y^2 - \bar{x}}^2    & \cdots    & \norm{y^m - \bar{x}}^4\\
-    \end{bmatrix}
-\end{equation}
-and
-\begin{equation}
-    \label{eq:least-frobenius-kkt-system-matrice-2}
+    \label{eq:least-frobenius-kkt-system-matrices}
     Y_L \eqdef 
     \begin{bmatrix}
-        1       & y_1^1 - \bar{x}   & y_2^1 - \bar{x}   & \cdots    & y_n^1 - \bar{x}\\
-        1       & y_1^2 - \bar{x}   & y_2^2 - \bar{x}   & \cdots    & y_n^2 - \bar{x}\\
-        \vdots  & \vdots            & \vdots            & \ddots    & \vdots\\
-        1       & y_1^m - \bar{x}   & y_2^m - \bar{x}   & \cdots    & y_n^m - \bar{x}\\
-    \end{bmatrix}.
+        y^1 - \bar{x}   & y^2 - \bar{x} & \cdots    & y^m - \bar{x}
+    \end{bmatrix} \quad \text{and} \quad Y_H \eqdef \frac{1}{2} (Y_L^{\T} Y_L) \circ (Y_L^{\T} Y_L).
 \end{equation}
-The Hessian matrix~$H$ can then be retrieved from the value of~$\lambda$.
-Thus, the interpolation set~$\xpt$ is poised if and only if the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is nonsingular~\cite[\S~5.3]{Conn_Scheinberg_Vicente_2009b}.
-We can show that this nonsingularity does not depend on the choice of~$\bar{x}$.
-In fact,~\cite{Conn_Scheinberg_Vicente_2009b} defines the poisedness of~$\xpt$ as the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
+In~\cref{eq:least-frobenius-kkt-system-matrices},~$\circ$ denotes the Hadamard product and hence, the~$(i, j)$ entry of~$Y_H$ is given by~$\inner{y^i - \bar{x}, y^j - \bar{x}}^2 / 2$.
+In fact, the problem~\cref{eq:least-frobenius-norm-models} is equivalent to the linear system~\cref{eq:least-frobenius-kkt-system}, where the matrix~$H$ can be retrieved from the value of~$\lambda$ by~\cref{eq:least-frobenius-norm-kkt}~\cite[\S~2]{Powell_2004b}, and the interpolation set~$\xpt$ is poised if and only if the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is nonsingular~\cite[\S~5.3]{Conn_Scheinberg_Vicente_2009b}.
+Since the poisedness of~$\xpt$ does not depends on the choice of~$\bar{x}$, neither does the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
+% In fact,~\cite{Conn_Scheinberg_Vicente_2009b} defines the poisedness of~$\xpt$ as the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
 
-The uniqueness of the solution to~\cref{eq:least-frobenius-norm-models} implies that the matrix~$Y_L$ has full-column rank.
-This is because~$\alpha + \inner{g, x - \bar{x}}$ is a nonzero linear polynomial that interpolates the zero function on~$\xpt$ if~$(\alpha, g^{\top})^{\top} \in \R^{n + 1}$ is a nonzero vector in~$\ker(Y_L)$.
-Such a polynomial should not exist because of the uniqueness of the solution in the case~$\obj \equiv 0$, since the zero polynomial should be the only solution.
-Therefore, any interpolation set that is poised in the sense of \cref{def:poisedness} must be affinely independent, i.e., it does not lie in a low-dimensional affine subset of~$\R^n$.
+Any interpolation set that is poised in the sense of \cref{def:poisedness} must be affinely independent, i.e., it does not lie in a low-dimensional affine subset of~$\R^n$, because the matrix~$[e, Y_L^{\T}]$ has full-column rank according to the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
+Even if~$\xpt$ is not poised, the full-rankness of~$[e, Y_L^{\T}]$ holds as long as the solution to~\cref{eq:least-frobenius-norm-models} is unique when~$f \equiv 0$.
+This is because~$\alpha + \inner{g, x - \bar{x}}$ is a nonzero linear polynomial that interpolates the zero function on~$\xpt$ if~$[\alpha, g^{\T}]^{\T} \in \R^{n + 1}$ is a nonzero vector in~$\ker([e, Y_L^{\T}])$.
+Such a polynomial should not exist because of the aforementioned uniqueness, since the zero polynomial should be the only solution.
 
-\subsubsection{Overview of the minimum Frobenius norm Lagrange polynomials}
+\subsubsection{Minimum Frobenius norm Lagrange polynomials}
 
-Throughout this section, we fix a poised interpolation set~$\xpt \subseteq \R^n$ of~$m$ points in the minimum Frobenius norm sense, with~$n + 2 \le m \le \dim \qpoly$.
+Let~$\xpt \subseteq \R^n$ be a poised interpolation set of~$m$ points in the minimum Frobenius norm sense, with~$n + 2 \le m \le \dim \qpoly$.
 We now present the minimum Frobenius norm Lagrange polynomials for the interpolation system~\cref{eq:interpolation-conditions-quadratic}.
 
 \begin{definition}[Minimum Frobenius norm Lagrange polynomials for~\cref{eq:interpolation-conditions-quadratic}]
@@ -313,7 +304,7 @@ We now present the minimum Frobenius norm Lagrange polynomials for the interpola
     \end{align*}
 \end{definition}
 
-As in the case where~$m = \dim \qpoly$, any minimum Frobenius norm interpolant can be expressed as a linear combinaison of minimum Frobenius norm Lagrange polynomials, as described by \cref{thm:lagrange-polynomials-basis-minimum-norm} (see~\cite[\S~3]{Powell_2004b}).
+As in the case where~$m = \dim \qpoly$, any minimum Frobenius norm interpolant can be expressed as a linear combinaison of minimum Frobenius norm Lagrange polynomials, as described by \cref{thm:lagrange-polynomials-basis-minimum-norm} (see~\cite[\S~3]{Powell_2004b}), even though the set of all minimum Frobenius norm Lagrange polynomials is not a basis of~$\qpoly$ if~$m < \dim \qpoly$.
 
 \begin{theorem}
     \label{thm:lagrange-polynomials-basis-minimum-norm}
@@ -322,9 +313,6 @@ As in the case where~$m = \dim \qpoly$, any minimum Frobenius norm interpolant c
         \objm(x) = \sum_{i = 1}^m \obj(y^i) \lagp[i](x).
     \end{equation*}
 \end{theorem}
-
-However, the set of all minimum Frobenius norm Lagrange polynomials is not a basis of~$\qpoly$ if~$m < \dim \qpoly$.
-Now that we defined the minimum Frobenius norm Lagrange polynomials, we are equiped to set up the~$\Lambda$-poisedness of the interpolation set~$\xpt$ in the minimum Frobenius norm sense.
 
 \subsubsection{Poisedness of interpolation sets in the minimum Frobenius norm sense}
 
@@ -365,39 +353,53 @@ The discussions we had on the minimum Frobenius norm models can be easily adapte
 It is because if we are given a function~$\objm[\text{old}]$ such that~$H_{\text{old}} = \nabla^2 \objm[\text{old}]$, then~$\objm - \objm[\text{old}]$ solves
 \begin{align*}
     \min        & \quad \norm{\nabla^2 Q}_{\mathsf{F}}\\
-    \text{s.t.} & \quad Q(y^i) = \obj(y^i) - \objm[\text{old}](y^i), ~ i \in \set{1, 2, \dots, m}\\
+    \text{s.t.} & \quad Q(y^i) = \obj(y^i) - \objm[\text{old}](y^i), ~ i \in \set{1, 2, \dots, m},\\
                 & \quad Q \in \qpoly.
 \end{align*}
 Therefore, the coefficients of the model obtained by least Frobenius norm updates can be evaluated by solving a linear system similar to~\cref{eq:least-frobenius-kkt-system}.
 
-The update~\cref{eq:symmetric-broyden-models} is also referred to as the \emph{\gls{dfo} symmetric Broyden update}~\cite{Powell_2013}.
-The symmetric Broyden method~\cite{Powell_1970b} provides a mechanism for updating the Hessian matrices of the models in gradient-based optimization.
-In such a method, the~$k$th model~$\objm[k]$ of~$\obj$ is evaluated by solving the variational problem
+The minimum Frobenius norm update can be regarded as a derivative-free variation of the symmetric Broyden update in the quasi-Newton method.
+The symmetric Broyden method~\cite{Powell_1970b} approximates the function~$\obj$ at a point~$y^1 \in \R^n$ by the quadratic function
 \begin{align*}
-    \min        & \quad \norm{\nabla^2 Q - \nabla^2 \objm[k - 1]}_{\mathsf{F}}\\
-    \text{s.t.} & \quad Q(x^k) = \obj(x^k),\\
-                & \quad \nabla Q(x^k) = \nabla \obj(x^k),\\
-                & \quad \nabla Q(x^{x - 1}) = \nabla \obj(x^{k - 1}),\\
-                & \quad Q \in \qpoly,
+    \objm(x) = \objm(y^1) + \inner{\nabla \objm(y^1), x - y^1} + \frac{1}{2} \inner{x - y^1, H (x - y^1)},
 \end{align*}
-where~$\set{x^k}_{k \ge 0}$ denotes the iterates of the method.
-The update~\cref{eq:symmetric-broyden-models} can therefore be seen as a \gls{dfo} variation of the symmetric Broyden update.
+where, as shown in~\cite[thm.~4.2]{Dennis_Schnabel_1979},~$H \in \R^{n \times n}$ is the unique solution to
+\begin{align}
+    \min        & \quad \norm{H - H_{\text{old}}}_{\mathsf{F}}\\
+    \text{s.t.} & \quad H (y^1 - y^2) = \nabla \objm(y^1) - \nabla \objm(y^2),\\
+                & \quad H^{\T} = H,
+\end{align}
+where~$H_{\text{old}} \in \R^{n \times n}$ is a prior estimation of~$\nabla^2 \obj(y^1)$, and~$y^2 \in \R^n$ is a point that differs from~$y^1$.
+In an optimization context,~$y^1$ and~$y^2$ are respectively the current and the previous iterate generated by the optimization method.
+Clearly, the function~$\objm$ solves
+\begin{subequations}
+    \label{eq:psb-variational-problem}
+    \begin{align}
+        \min        & \quad \norm{\nabla^2 Q - H_{\text{old}}}_{\mathsf{F}}\\
+        \text{s.t.} & \quad Q(y^1) = \obj(y^1),\\
+                    & \quad \nabla Q(y^i) = \nabla \obj(y^i), ~ i \in \set{1, 2},\\
+                    & \quad Q \in \qpoly,
+    \end{align}
+\end{subequations}
+The variational problem~\cref{eq:symmetric-broyden-models} is a derivative-free analog of~\cref{eq:psb-variational-problem}.
+Therefore, following \citeauthor{Powell_2013}~\cite{Powell_2013}, we will also refer to the minimum Frobenius norm update as the \emph{derivative-free symmetric Broyden update}.
 
 \subsection{Implementation in \glsfmtlong{dfo} methods}
 
-We assume in this section that we are given a model-based \gls{dfo} methods that generates the iterate~$x^{k + 1} \in \R^n$ at the~$k$th iteration, with~$k \ge 0$.
-Further, we assume that it builds the models~$\objm[k] \in \qpoly$ of the objective function~$\obj$ by an underdetermined interpolation scheme on the interpolation set~$\xpt[k] = \set{y^{k, 1}, y^{k, 2}, \dots, y^{k, m}} \subseteq \R^n$, with~$x^k \in \xpt[k]$.
+We assume in this section that we are given a model-based \gls{dfo} method, and we denote by~$x^k \in \R^n$ the~$k$th iterate, with~$k \ge 0$.
+Further, we assume that it builds the model~$\objm[k] \in \qpoly$ of the objective function~$\obj$ by an underdetermined interpolation scheme on the interpolation set~$\xpt[k] = \set{y^{k, 1}, y^{k, 2}, \dots, y^{k, m}} \subseteq \R^n$, with~$x^k \in \xpt[k]$.
 The quadratic model~$\objm[k]$ is
 \begin{equation*}
     \objm[k](x) = \alpha^k + \inner{g^k, x - x^k} + \frac{1}{2} \inner{x - x^k, H^k (x - x^k)}, \quad \text{for~$x \in \R^n$}.
 \end{equation*}
-where~$\alpha^k \in \R$,~$g^k \in \R^n$, and~$H^k \in \R^{n \times n}$ are the coefficients of the model,~$H$ being symmetric.
-As we shown before, the coefficients of~$\objm[k]$ can be evaluated by solving
+where~$\alpha^k \in \R$,~$g^k \in \R^n$, and~$H^k \in \R^{n \times n}$ are the coefficients of the model,~$H^k$ being symmetric.
+As we mentioned in~\cref{eq:least-frobenius-kkt-system}, the coefficients of~$\objm[k]$ can be evaluated by solving
 \begin{equation}
     \label{eq:least-frobenius-kkt-system-2}
     \begin{bmatrix}
-        Y_H         & Y_L\\
-        Y_L^{\T}    & 0
+        Y_H     & e & Y_L^{\T}\\
+        e^{\T}  & 0 & 0\\
+        Y_L     & 0 & 0
     \end{bmatrix}
     \begin{bmatrix}
         \lambda\\
@@ -407,10 +409,11 @@ As we shown before, the coefficients of~$\objm[k]$ can be evaluated by solving
     =
     \begin{bmatrix}
         v\\
+        0\\
         0
     \end{bmatrix},
 \end{equation}
-where~$\alpha \in \R$,~$g \in \R^n$, and~$H \in \R^{n \times n}$ are unknown coefficients,~$H$ being symmetric, and where~$v \in \R^m$ has the value
+where~$v \in \R^m$ has the value
 \begin{equation*}
     v \eqdef
     \begin{bmatrix}
@@ -427,12 +430,12 @@ where~$\alpha \in \R$,~$g \in \R^n$, and~$H \in \R^{n \times n}$ are unknown coe
         \obj(y^{k, m}) - \objm[k - 1](y^{k, m})
     \end{bmatrix},
 \end{equation*}
-the former being chosen if we want a least Frobenius norm model and the latter if we want to update the model by a \gls{dfo} symmetric Broyden update, and where the matrices~$Y_H \in \R^{m \times m}$ and~$Y_L \in \R^{m \times (n + 1)}$ are defined by~\cref{eq:least-frobenius-kkt-system-matrice-1,eq:least-frobenius-kkt-system-matrice-2}, respectively.
+the former being chosen if we want a least Frobenius norm model and the latter if we want to update the model by a derivative-free symmetric Broyden update, and where the matrices~$Y_H \in \R^{m \times m}$ and~$Y_L \in \R^{n \times m}$ are defined by~\cref{eq:least-frobenius-kkt-system-matrices}.
 Further, if we want a least Frobenius norm model, we set~$\alpha^k = \alpha$,~$g^k = g$, and
 \begin{equation*}
     H^k = \sum_{i = 1}^m \lambda_i (y^{k, i} - x^k) (y^{k, i} - x^k)^{\T},
 \end{equation*}
-and if we want a model obtained by the \gls{dfo} symmetric Broyden update, we set
+and if we want a model obtained by the derivative-free symmetric Broyden update, we set
 \begin{empheq}[left=\empheqlbrace]{alignat*=1}
     & \alpha^k = \objm[k - 1](x^k) + \alpha,\\
     & g^k = \nabla \objm[k - 1](x^k) + g,\\
@@ -465,7 +468,7 @@ However, this inverse should not be stored directly for the two following reason
     \item The~$(m + 1)$th row of this matrix is not needed, because it provides only the value of~$\alpha$, which is not needed since~$x^k \in \xpt[k]$ and hence,~$\alpha^k = \obj(x^k)$.
     \item As mentioned by \citeauthor{Powell_2004c}~\cite{Powell_2004c}, the leading~$m \times m$ submatrix of the inverse of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system-2} has rank~$m - n - 1$ and is positive semi-definite.
     He observed, however, during the development of a \gls{dfo} methods for unconstrained optimization (see \cref{subsec:newuoa-bobyqa-lincoa}) that the rank property was lost in practice.
-    Therefore, this submatrix is not stored directly, but using the rank factorization~$Z D Z^{\top}$, with~$Z \in \R^{m \times (m - n - 1)}$ and~$D \in \R^{(m - n - 1) \times (m - n - 1)}$, where~$D$ is a diagonal matrix with elements~$\pm 1$ on the diagonal.
+    Therefore, this submatrix is not stored directly, but using the rank factorization~$Z D Z^{\T}$, with~$Z \in \R^{m \times (m - n - 1)}$ and~$D \in \R^{(m - n - 1) \times (m - n - 1)}$, where~$D$ is a diagonal matrix with elements~$\pm 1$ on the diagonal.
     From the theoretical standpoint, the matrix~$D$ should always be identity.
     However, in practice, allowing the leading~$m \times m$ submatrix of the inverse of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system-2} to have negative eigenvalues prevent damages from computer rounding errors.
     Details on this factorization can be found in~\cite{Powell_2004c}.
@@ -488,9 +491,9 @@ If we are evaluating the minimum Frobenius norm model, we can set
     & \Gamma^{k + 1} = 0,               && \\
     & \gamma_{i}^{k + 1} = \lambda_{i}, && \quad \text{for~$i \in \set{1, 2, \dots, m}$},
 \end{empheq}
-and if we are updating the model using the \gls{dfo} symmetric Broyden update, we can set
+and if we are updating the model using the derivative-free symmetric Broyden update, we can set
 \begin{empheq}[left=\empheqlbrace]{alignat*=2}
-    & \Gamma^{k + 1} = \Gamma^k + \gamma_{\ell}^k (y^{k, \ell} - x^k) (y^{k, \ell} - x^k)^{\top},   && \\
+    & \Gamma^{k + 1} = \Gamma^k + \gamma_{\ell}^k (y^{k, \ell} - x^k) (y^{k, \ell} - x^k)^{\T},   && \\
     & \gamma_{\ell}^{k + 1} = \lambda_{\ell},                                                       && \\
     & \gamma_{i}^{k + 1} = \gamma_{i}^k + \lambda_{i},                                              && \quad \text{for~$i \in \set{1, 2, \dots, m} \setminus \set{\ell}$}.
 \end{empheq}

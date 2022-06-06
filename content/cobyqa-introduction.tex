@@ -58,7 +58,7 @@ The Lagrangian function that we consider is defined by
 \begin{equation*}
     \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$ for~$i \in \iub \cup \ieq$},
 \end{equation*}
-where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\top}$.
+where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\T}$.
 
 \subsection{Overview of the method}
 
@@ -73,7 +73,7 @@ Given an iterate~$x^k \in \R^n$, it generates a step~$d^k \in \R^n$ by solving a
                     & \quad d \in \R^n,
     \end{align}
 \end{subequations}
-for some Lagrange multiplier~$\lambda^k = [\lambda_i^k]_{i \in \iub \cup \ieq}^{\top}$ with~$\lambda_i^k \in \R$ for~$i \in \iub \cup \ieq$.
+for some Lagrange multiplier~$\lambda^k = [\lambda_i^k]_{i \in \iub \cup \ieq}^{\T}$ with~$\lambda_i^k \in \R$ for~$i \in \iub \cup \ieq$.
 Further, it sets the next iterate~$x^{k + 1}$ to~$x^k + d^k$.
 If the second-order derivative of~$\lag$ with respect to the decision variables is unavailable, the term~$\nabla^2 \lag_{x, x}(x^k, \lambda^k)$ can be replace with an approximation of it (e.g., a quasi-Newton approximation).
 Under some mild assumptions on the regularity of the objective and constraint functions, the \gls{sqp} method is locally Q-superlinearly convergent.
@@ -89,8 +89,8 @@ To comprehend this fact, we consider the~$2$-dimensional example of \citeauthor{
     \text{s.t.} & \quad \norm{x}^2 - 1 = 0,\\
                 & \quad x \in \R^2,
 \end{align*}
-whose solution is~$[1, 0]^{\top}$.
-Given a perturbation~$\epsilon > 0$ and an iterate~$x^k = [1 + \epsilon, 0]^{\top}$, if the second-order term in~\cref{eq:sqp-subproblem-obj} included only~$\nabla^2 \obj(x^k)$, the \gls{sqp} subproblem would be
+whose solution is~$[1, 0]^{\T}$.
+Given a perturbation~$\epsilon > 0$ and an iterate~$x^k = [1 + \epsilon, 0]^{\T}$, if the second-order term in~\cref{eq:sqp-subproblem-obj} included only~$\nabla^2 \obj(x^k)$, the \gls{sqp} subproblem would be
 \begin{align*}
     \min        & \quad -d_1 - \frac{d_2^2}{2}\\
     \text{s.t.} & \quad d_1 = -\frac{\epsilon (2 + \epsilon)}{2 (1 + \epsilon)},\\
@@ -100,7 +100,7 @@ which is unbounded from below, regardless of the magnitude of~$\epsilon$.
 
 \subsubsection{Approximation of the \glsfmtlong{kkt} conditions}
 
-According to \cref{thm:first-order-necessary-conditions}, if~$x^{\ast} \in \R^n$ is a local solution to the problem~\cref{eq:problem-cobyqa-no-bounds}, under some mild assumptions, there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\top}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
+According to \cref{thm:first-order-necessary-conditions}, if~$x^{\ast} \in \R^n$ is a local solution to the problem~\cref{eq:problem-cobyqa-no-bounds}, under some mild assumptions, there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\T}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
 \begin{subequations}
     \begin{empheq}[left=\empheqlbrace]{alignat=2}
         & \nabla_x \lag(x^{\ast}, \lambda^{\ast}) = 0,  && \\
@@ -132,7 +132,7 @@ Given an iterate~$x^k \in \R^n$, let~$\lag[k]$ be the modified Lagrangian functi
 \begin{equation*}
     \lag[k](x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \delta_i^k(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$ for~$i \in \iub \cup \ieq$},
 \end{equation*}
-where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\top}$, and where~$\delta_i^k$, for~$i \in \iub \cup \ieq$, denotes the departure from linearity\footnote{When~$\con{i}$ is strictly convex, it is the Bregman distance~\cite{Bregman_1967} associated with~$\con{i}$ for the point~$x^k$.}~\cite{Robinson_1972,Hoek_1982} associated with~$\con{i}$ for the point~$x^k$, defined by
+where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\T}$, and where~$\delta_i^k$, for~$i \in \iub \cup \ieq$, denotes the departure from linearity\footnote{When~$\con{i}$ is strictly convex, it is the Bregman distance~\cite{Bregman_1967} associated with~$\con{i}$ for the point~$x^k$.}~\cite{Robinson_1972,Hoek_1982} associated with~$\con{i}$ for the point~$x^k$, defined by
 \begin{equation*}
     \delta_i^k(x) \eqdef \con{i}(x) - \con{i}(x^k) - \inner{\nabla \con{i}(x^k), x - x^k}, \quad \text{for~$x \in \R^n$.}
 \end{equation*}
