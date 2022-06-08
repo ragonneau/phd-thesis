@@ -136,14 +136,14 @@ Suppose that~$\obj$ is thrice differentiable on~$\R^n$.
 It is well-known that for any~$x \in \R^n$, we have
 \begin{equation}
     \label{eq:Ciarlet_Raviart_0}
-    \abs{\obj(x) - \objm(x)} \le \frac{\nu}{6} \sum_{i = 1}^m \abs{\lagp[i](x)} \norm{x - y^i}^3,
+    \abs{\obj(x) - \objm(x)} \le \frac{\theta}{6} \sum_{i = 1}^m \abs{\lagp[i](x)} \norm{x - y^i}^3,
 \end{equation}
-where~$\nu$ is an upper bound on the absolute value of the third-order directional derivatives of~$\obj$~\cite[thm.~2]{Powell_2001}.
+where~$\theta$ is an upper bound on the absolute value of the third-order directional derivatives of~$\obj$~\cite[thm.~2]{Powell_2001}.
 A similar bound is established in~\cite[thm.~2]{Ciarlet_Raviart_1972}.
 For any compact set~$\mathcal{C} \subseteq \R^n$, we then clearly have
 \begin{equation}
     \label{eq:ciarlet-raviard-bound}
-    \max_{x \in \mathcal{C}} \abs{\obj(x) - \objm(x)} \le \frac{m \nu \Lambda}{6} \max_{1 \le i \le m} \max_{x \in \mathcal{C}} \norm{x - y^i}^3,
+    \max_{x \in \mathcal{C}} \abs{\obj(x) - \objm(x)} \le \frac{m \theta \Lambda}{6} \max_{1 \le i \le m} \max_{x \in \mathcal{C}} \norm{x - y^i}^3,
 \end{equation}
 where~$\Lambda$ is defined by
 \begin{equation}
@@ -575,7 +575,7 @@ These formulae are given in~\cite[\S~3]{Powell_2006}, without a proof.
     which completes the proof.
 \end{proof}
 
-\subsection{Bounds for the~\textLambda-poisedness}
+\subsection{Bounds for the~\texorpdfstring{$\Lambda$}{\textLambda}-poisedness}
 
 The next lemma simplifies the value of~$\Lambda_p$ for further computations.
 
@@ -774,11 +774,13 @@ Before developing the last special value of~$\Lambda_p$ we introduce the followi
 It is important to note that the last three proposition overlap in the case~$m = 2n + 1$.
 The three of them show that in such a case,~$\Lambda_1 = \Lambda_2 = 1$.
 In fact, the \cref{prop:lambda-poisedness-initial-optimal} shows that~$\Lambda_p = 1$ for all~$p \in [1, 2]$.
-In this sense,~$\mathcal{Z}_{2n + 1}$ in an optimal interpolation set in~$\ball[p][2n + 1]$ for~$p \in [1, 2]$.
+In this sense,~$\mathcal{Z}_{2n + 1}$ in an optimal interpolation set in~$\ball[p][2n + 1]$ for~$p \in [1, 2]$, because~$\Lambda_p$ attains its lower bound.
 
 In addition,~$m = 2n + 1$ is optimal for~$\mathcal{Z}_m$ in the sense that~$\Lambda_p$ attains the minimum in such a case, when~$p \in [1, 2]$.
 We conjecture that this property is true for all~$\ell_p$-norms, with~$p \ge 1$, but we do not provide any proof of such statement.
 
-Moreover\todo{Rewrite},~\cite{Powell_2001} proposes an extension of~$\mathcal{Z}_m$ in the case~$2n + 1 \le m \le (n + 1)(n + 2) / 2$.
-Numerical experiments made by the author showed that the value of~$\Lambda_p$ seems to the least also for~$m = 2n + 1$.
-This conjecture is an interesting future research direction.
+Thus, \citeauthor{Powell_2001}~\cite{Powell_2001} proposed an extension of~$\mathcal{Z}_m$ in the case~$m > 2n + 1$, which is used by the new method that we introduce in \cref{ch:cobyqa-introduction}.
+Using this extension, the interpolation set~$\mathcal{Z}_m$ is defined for any~$m \in \set{1, 2, \dots, (n + 1) (n + 2) / 2}$.
+Some numerical experiments showed that the value of~$\Lambda_p$ seems to the least also for~$m = 2n + 1$ in this extension.
+However, \cref{lem:lambda-poisedness-initial-simple} does not hold in the case~$m > 2n + 1$, which hence makes the computations substantially more demanding.
+This conjecture is nonetheless an interesting future research direction.

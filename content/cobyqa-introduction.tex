@@ -24,52 +24,52 @@ In this chapter, we introduce a new model-based \gls{dfo} method for solving non
         \min        & \quad \obj(x) \label{eq:problem-cobyqa-obj}\\
         \text{s.t.} & \quad \con{i}(x) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-ub}\\
                     & \quad \con{i}(x) = 0, ~ i \in \ieq,\\
-                    & \quad \xl \le x \le \xu, \label{eq:problem-cobyqa-bd}\\
                     & \quad x \in \R^n, \nonumber
     \end{align}
 \end{subequations}
-where the objective and constraint functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, with the sets of indices~$\iub$ and~$\ieq$ being finite (perhaps empty) and disjoint, and where the bounds~$\xl \in (\R \cup \set{-\infty})^n$ and~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl < \xu$.
-The requirement on the bounds is weak, as otherwise, the problem~\cref{eq:problem-cobyqa} would be either infeasible, or would admit fix variables.
+where the objective and constraint functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, with the sets of indices~$\iub$ and~$\ieq$ being finite (perhaps empty) and disjoint.
 The solver we develop, named~\gls{cobyqa} after \emph{\glsdesc{cobyqa}}, uses only function values of~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, but not derivatives.
 
-\section{Management of the bound constraints}
+\section{Management of bound constraints}
 
-From a theoretical standpoint, the bound constraints~\cref{eq:problem-cobyqa-bd} could be included in the general inequality constraints~\cref{eq:problem-cobyqa-ub}.
-However, we consider them separatly, because they often represent inalienable physical or theoretical restrictions.
-In other words, in many applications, the objective function~\cref{eq:problem-cobyqa-obj} is not defined if the bounds constraints~\cref{eq:problem-cobyqa-bd} are violated.
-For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods}) involves a bounds that cannot be violated, as the optimization methods that are tuned may not be defined otherwise.
-Very similar observations can be made on hyperparameter tuning in machine learning (see \cref{subsec:machine-learning}).
-
-Therefore, every point that \gls{cobyqa} encounters always respects these bounds.
-This is also the case for the \gls{bobyqa} method, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
-Note that they are very simple constraints.
-It is, for example, trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-bd}, and easy to project any point onto the bound constraints.
-
-
-\section{The \glsfmtlong{sqp} method}
-\label{sec:sqp-method}
-
-For sake of clarity we assume throughout the \cref{sec:sqp-method} that no bound constraint is provided.
-Therefore, the problem we consider is of the form
+Note that the general inequality constraints~\cref{eq:problem-cobyqa-ub} may include bound constraints.
+In general, the problem~\cref{eq:problem-cobyqa} can be formulated as
 \begin{subequations}
-    \label{eq:problem-cobyqa-no-bounds}
+    \label{eq:problem-cobyqa-bounds}
     \begin{align}
-        \min        & \quad \obj(x)\\
-        \text{s.t.} & \quad \con{i}(x) \le 0, ~ i \in \iub,\\
+        \min        & \quad \obj(x) \label{eq:problem-cobyqa-bounds-obj}\\
+        \text{s.t.} & \quad \con{i}(x) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-bounds-ub}\\
                     & \quad \con{i}(x) = 0, ~ i \in \ieq,\\
-                    & \quad x \in \R^n. \nonumber
+                    & \quad \xl \le x \le \xu, \label{eq:problem-cobyqa-bounds-bd}\\
+                    & \quad x \in \R^n, \nonumber
     \end{align}
 \end{subequations}
-As we mentioned earlier, if bound constraints are supplied, they can be included in the inequality constraints~\cref{eq:problem-cobyqa-ub} for theoretical purposes.
-The Lagrangian function that we consider is defined by
+where the bounds~$\xl \in (\R \cup \set{-\infty})^n$ and~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl < \xu$.
+The requirement on the bounds is weak, as otherwise, the problem~\cref{eq:problem-cobyqa-bounds} would be either infeasible, or would admit fix variables.
+Of course, when written in this form, the indices of the inequality constraints in~$\iub$ might be different from the one in~\cref{eq:problem-cobyqa}, not to include the bound constraints anymore.
+Note that they are very simple constraints.
+It is, for example, trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-bounds-bd}, and easy to project any point onto the bound constraints.
+
+In the theoretical development presented hereinafter, we consider problems of the form~\cref{eq:problem-cobyqa} for clarity.
+However, when developing the implementation of \gls{cobyqa}, we consider the bound constraints separatly from the inequality constraints~\cref{eq:problem-cobyqa-bounds-ub}, because they often represent inalienable physical or theoretical restrictions.
+In other words, in many applications, the objective function~\cref{eq:problem-cobyqa-bounds-obj} is not defined if the bounds constraints~\cref{eq:problem-cobyqa-bounds-bd} are violated.
+For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods}) involves a bounds that cannot be violated, as the optimization methods that are tuned may not be defined otherwise.
+Very similar observations can be made on hyperparameter tuning in machine learning (see \cref{subsec:machine-learning}).
+Therefore, every point that \gls{cobyqa} encounters always respects these bounds.
+This is also the case for the \gls{bobyqa} method, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
+
+\section{The \glsfmtlong{sqp} method}
+
+Throughout this section, we consider problems of the form~\cref{eq:problem-cobyqa}.
+The Lagrangian function of the problem~\cref{eq:problem-cobyqa} is defined by
 \begin{equation*}
-    \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$ for~$i \in \iub \cup \ieq$},
+    \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$, with~$i \in \iub \cup \ieq$,}
 \end{equation*}
 where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\T}$ is the dual variable of the considered problem.
 
 \subsection{Overview of the method}
 
-The \gls{sqp} method of \citeauthor{Wilson_1963}~\cite{Wilson_1963}, \citeauthor{Han_1976}~\cite{Han_1976,Han_1977}, and \citeauthor{Powell_1978a}~\cite{Powell_1978a,Powell_1978b} is known to be one of the most powerful method for solving the problem~\cref{eq:problem-cobyqa-no-bounds} when derivatives of~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are available.
+The \gls{sqp} method of \citeauthor{Wilson_1963}~\cite{Wilson_1963}, \citeauthor{Han_1976}~\cite{Han_1976,Han_1977}, and \citeauthor{Powell_1978a}~\cite{Powell_1978a,Powell_1978b} is known to be one of the most powerful method for solving the problem~\cref{eq:problem-cobyqa} when derivatives of~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are available.
 Given an iterate~$x^k \in \R^n$, it generates a step~$d^k \in \R^n$ by solving approximately
 \begin{subequations}
     \label{eq:sqp-subproblem}
@@ -88,8 +88,8 @@ Under some mild assumptions on the regularity of the objective and constraint fu
 \subsection{Interpretation of the subproblem}
 
 To get some insight into the origin of the \gls{sqp} method, we now interpret the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}.
-Note that the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} involves the Lagrangian function of problem~\cref{eq:problem-cobyqa-no-bounds} and not only its objective function.
-It is in fact necessary due to the nonlinearity of the constraints.
+Note that the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} involves the Lagrangian function of problem~\cref{eq:problem-cobyqa} and not only its objective function.
+It is in fact necessary due to the possible nonlinearity of the constraints.
 To comprehend this fact, we consider the~$2$-dimensional example of \citeauthor{Boggs_Tolle_1995}~\cite{Boggs_Tolle_1995}
 \begin{align*}
     \min        & \quad -x_1 - \frac{x_2^2}{2}\\
@@ -109,8 +109,9 @@ This behavior is in fact not specific to this example, but is much more general 
 
 \subsubsection{Approximation of the \glsfmtlong{kkt} conditions}
 
-According to \cref{thm:first-order-necessary-conditions}, if~$x^{\ast} \in \R^n$ is a local solution to the problem~\cref{eq:problem-cobyqa-no-bounds}, under some mild assumptions, there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\T}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
+According to \cref{thm:first-order-necessary-conditions}, if~$x^{\ast} \in \R^n$ is a local solution to the problem~\cref{eq:problem-cobyqa}, under some mild assumptions, there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\T}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
 \begin{subequations}
+    \label{eq:sqp-kkt}
     \begin{empheq}[left=\empheqlbrace]{alignat=2}
         & \nabla_x \lag(x^{\ast}, \lambda^{\ast}) = 0,  && \\
         & \con{i}(x^{\ast}) \le 0,                      && \quad \text{if~$i \in \iub$,}\\
@@ -130,16 +131,16 @@ Let~$(x^k, \lambda^k)$ be some approximation of~$(x^{\ast}, \lambda^{\ast})$, an
         & \lambda_i^{k} + u_i^k \ge 0,                                                                  && \quad \text{if~$i \in \iub$.}
     \end{empheq}
 \end{subequations}
-Note that this conditions resemble the first-order Taylor approximation at~$(x^k, \lambda^k)$, in which case~$(d^k, u^k)$ would be a Newton step.
+Note that this conditions resemble closely the first-order Taylor approximation at~$(x^k, \lambda^k)$ of~\cref{eq:sqp-kkt}, in which case~$(d^k, u^k)$ would be a Newton-Raphson step.
 However, the condition~\cref{eq:sqp-kkt-step-complementary-slackness} is not directly the linearization of~\cref{eq:sqp-kkt-complementary-slackness}, but it includes the second-order term~$u_i^k \nabla \con{i}(x^k)^{\T} d^k$.
-We remark that the conditions~\cref{eq:sqp-kkt-step} are nothing but the \gls{kkt} conditions of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} associated with the Lagrange multiplier~$\lambda^k + u^k$.
+We thus remark that the conditions~\cref{eq:sqp-kkt-step} are nothing but the \gls{kkt} conditions of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} associated with the Lagrange multiplier~$\lambda^k + u^k$.
 
 \subsubsection{Approximation of a modified Lagrangian}
 
 A second interpretation of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} is as follows.
 Given an iterate~$x^k \in \R^n$, let~$\lag[k]$ be the modified Lagrangian function
 \begin{equation*}
-    \lag[k](x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \delta_i^k(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$ for~$i \in \iub \cup \ieq$},
+    \lag[k](x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \delta_i^k(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$, with~$i \in \iub \cup \ieq$},
 \end{equation*}
 where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\T}$, and where~$\delta_i^k$, for~$i \in \iub \cup \ieq$, denotes the departure from linearity\footnote{When~$\con{i}$ is strictly convex, it is the Bregman distance~\cite{Bregman_1967} associated with~$\con{i}$ for the point~$x^k$.}~\cite{Robinson_1972,Hoek_1982} associated with~$\con{i}$ for the point~$x^k$, defined by
 \begin{equation*}
@@ -155,20 +156,49 @@ The \gls{sqp} subproblem~\cref{eq:sqp-subproblem} can then be seen as the minimi
 
 \subsubsection{Approximation of the augmented Lagrangian}
 
-The original problem~\cref{eq:problem-cobyqa-no-bounds} can be reformulated by introducing a slack variable~$s$ as
-\begin{align}
+For clarity, we assume here without loss of generality that~$\ieq = \emptyset$.
+The problem~\cref{eq:problem-cobyqa} can be reformulated by introducing a slack variable~$s = [s_i]_{i \in \iub}^{\T}$ as
+\begin{align*}
     \min        & \quad \obj(x)\\
     \text{s.t.} & \quad \con{i}(x) + s_i = 0, ~ i \in \iub,\\
-                & \quad \con{i}(x) = 0, ~ i \in \ieq,\\
-                & \quad x \in \R^n, ~ s \ge 0.
-\end{align}
-We assume here without loss of generality that~$\ieq = \emptyset$.
-Let~$\lag[\mathsf{A}]$ be the augmented Lagrangian of this problem, i.e.,
-\begin{equation*}
-    \lag[\mathsf{A}](x, s, \lambda) \eqdef \obj(x) + \sum_{i \in \iub} \bigg[ \lambda_i (\con{i}(x) + s_i) + \frac{\gamma}{2} (\con{i}(x) + s_i)^2 \bigg],
-\end{equation*}
+                & \quad s_i \ge 0, ~ i \in \iub,\\
+                & \quad x \in \R^n.
+\end{align*}
+Let~$\lag[\mathsf{A}]$ be the augmented Lagrangian function of this problem, i.e.,
+\begin{equation}
+    \label{eq:augmented-lagrangian-inequality}
+    \lag[\mathsf{A}](x, s, \lambda) \eqdef \obj(x) + \sum_{i \in \iub} \lambda_i [\con{i}(x) + s_i] + \frac{\gamma}{2} \sum_{i \in \iub} [\con{i}(x) + s_i]^2,
+\end{equation}
 for~$x \in \R^n$ and~$s_i, \lambda_i \in \R$ for~$i \in \iub$, where~$\gamma \ge 0$ is a given penalty parameter.
-We then remark that the augmented Lagrangian function of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} is the Taylor-like approximation of~$\lag[\textsf{A}]$ obtained by replacing~$\obj$ by its second-order approximation,~$\con{i}$ in the left part of the summed term by its second-order approximation, and~$\con{i}$ in the right part of the summed term by its first-order approximation. The function~$\con{i}$, with~$i \in \iub$, in the right part of the summed term is replaced only a linear function to obtain a quadratic approximation of~$\lag[\mathsf{A}]$, and not a quartic one.
+Given an iterate~$x^k \in \R^n$, a slack variable~$s = [s_i]_{i \in \iub}^{\T}$, and a Lagrange multiplier~$\lambda^k = [\lambda_i^k]_{i \in \iub}^{\T}$, we approximate the augmented Lagrangian function~\cref{eq:augmented-lagrangian-inequality} by the following Taylor-like development.
+We replace~$\obj$ by its second-order approximation, and~$\con{i}$ by its second-order approximation in the first sum and by its first-order approximation in the second sum, that is,
+\begin{align*}
+    \lag[\mathsf{A}](x^k + d, s^k, \lambda^k)   & \approx \obj(x^k) + \nabla \obj(x^k)^{\T} d + \frac{1}{2} d^{\T} \nabla^2 \obj(x^k) d\\
+                                                & \qquad + \sum_{i \in \iub} \lambda_i^k \bigg[ \con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d + \frac{1}{2} d^{\T} \nabla^2 \con{i}(x^k) d + s_i \bigg]\\
+                                                & \qquad + \frac{\gamma}{2} \sum_{i \in \iub} [\con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d + s_i]^2\\
+                                                & \approx \obj(x^k) + \nabla \obj(x^k)^{\T} d + \frac{1}{2} d^{\T} \nabla^2 \lag(x^k, \lambda^k) d\\
+                                                & \qquad + \sum_{i \in \iub} \lambda_i^k [\con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d + s_i]\\
+                                                & \qquad + \frac{\gamma}{2} \sum_{i \in \iub} [\con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d + s_i]^2,
+\end{align*}
+for~$d \in \R^n$.
+We thus remark the right-hand side of this equation is nothing but the augmented Lagrangian function of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}.
+
+Moreover, the second-order Taylor approximation of~$\lag[\mathsf{A}]$ provides
+\begin{align*}
+    \lag[\mathsf{A}](x^k + d, s^k, \lambda^k)   & \approx \obj(x^k) + \nabla \obj(x^k)^{\T} d + \frac{1}{2} d^{\T} B_k(\Lambda^k) d\\
+                                                & \qquad + \sum_{i \in \iub} \lambda_i^k [\con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d + s_i]\\
+                                                & \qquad + \frac{\gamma}{2} \sum_{i \in \iub} [\con{i}(x^k) + \nabla \con{i}(x^k)^{\T} d + s_i]^2\\
+\end{align*}
+where~$B_k$ is defined by
+\begin{equation*}
+    B_k(\lambda) \eqdef \nabla \obj(x^k) + \sum_{i \in \iub} [\lambda_i + \gamma (\con{i}(x^k) + s_i)] \nabla^2 \con{i}(x^k), \quad \text{for~$\lambda_i \in \R$, with~$i \in \iub$.}
+\end{equation*}
+This approximation of~$\lag[\mathsf{A}]$ is the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} if the second-order term in~\cref{eq:sqp-subproblem-obj} included~$B_k(\lambda^k)$ instead of~$\nabla_{x, x}^2 \lag(x^k, \lambda^k)$.
+Interestingly, a traditional augmented Lagrangian method for solving the problem~\cref{eq:problem-cobyqa} would update the dual variable~$\lambda^k$ as
+\begin{equation*}
+    \lambda_i^{k + 1} = \lambda_i^k + \gamma (\con{i}(x^k) + s_i), \quad \text{for~$i \in \iub$}.
+\end{equation*}
+Therefore, this approximation of~$\lag[\mathsf{A}]$ can be interpreted as the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} if the second-order term in~\cref{eq:sqp-subproblem-obj} included the updated term~$\nabla_{x, x}^2 \lag(x^k, \lambda^{k + 1})$ instead of~$\nabla_{x, x}^2 \lag(x^k, \lambda^k)$.
 
 \subsection{A derivative-free \glsfmtlong{sqp} method}
 
@@ -179,6 +209,7 @@ The only restriction is
     n + 2 \le \card(\xpt[k]) \le \frac{1}{2} (n + 1) (n + 2),
 \end{equation*}
 as otherwise, the set~$\xpt[k]$ cannot be poised (see \cref{subsec:symmetric-broyden-updates} for details).
+More details on this interpolation set is given in \cref{subsec:cobyqa-models}.
 The derivative-free variation of the \gls{sqp} method we consider then has the subproblem
 \begin{align*}
     \min        & \quad \nabla \objm[k](x^k)^{\T} d + \frac{1}{2} d^{\T} \nabla_{x, x}^2 \lagm[k](x^k, \lambda^k) d\\
@@ -188,7 +219,7 @@ The derivative-free variation of the \gls{sqp} method we consider then has the s
 \end{align*}
 where~$\lagm[k]$ is defined by
 \begin{equation*}
-    \lagm[k](x, \lambda) \eqdef \objm[k](x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \conm[k]{i}(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$ for~$i \in \iub \cup \ieq$}.
+    \lagm[k](x, \lambda) \eqdef \objm[k](x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \conm[k]{i}(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$, with~$i \in \iub \cup \ieq$}.
 \end{equation*}
 
 \section{The trust-region framework}
@@ -203,22 +234,44 @@ When combining all the information, the trust-region \gls{sqp} subproblem consid
         \min        & \quad \nabla \objm[k](x^k)^{\T} d + \frac{1}{2} d^{\T} \nabla_{x, x}^2 \lagm[k](x^k, \lambda^k) d \label{derivative-free-trust-region-sqp-subproblem-obj}\\
         \text{s.t.} & \quad \conm[k]{i}(x^k) + \nabla \conm[k]{i}(x^k)^{\T} d \le 0, ~ i \in \iub,\\
                     & \quad \conm[k]{i}(x^k) + \nabla \conm[k]{i}(x^k)^{\T} d = 0, ~ i \in \ieq,\\
-                    & \quad \xl \le x^k + d \le \xu,\\
                     & \quad \norm{d} \le \Delta^k,\\
                     & \quad d \in \R^n,
     \end{align}
 \end{subequations}
 where~$\norm{\cdot}$ denotes the Euclidean norm,~$\Delta^k > 0$ is the current trust-region radius, and~$\lagm[k]$ denotes the Lagrangian function of the problem~\cref{eq:problem-cobyqa}.
-Note that only the second-order derivative of this Lagrangian with respect to~$x$ intervene in this subproblem.
-Therefore, the bound constraints do not play any role in the objective function~\cref{derivative-free-trust-region-sqp-subproblem-obj}.
+
+A solution to this subproblem provides a trial step~$d^k \in \R^k$.
+Further, this trial step is either accepted or not, i.e.,~$x^{k + 1}$ is either set to~$x^k + d^k$ or to~$x^k$, depending on the value of the trust-region ratio.
+Details on this ratio is given hereinafter.
 
 \subsection{Merit functions and penalty coefficients}
 
+\begin{itemize}
+    \item What is a merit function?
+    \item Examples of merit functions (smooth, exact nonsmooth, augmented Lagrangian).
+    \item We choose the~$\ell_2$-merit function (exact nonsmooth).
+    \item The modeled merit function we choose is not directly the Taylor approximation.
+    \item The modeled merit function must ensure a crucial decrease property (holds because of what follows).
+    \item The best point so far considered by \gls{cobyqa} is the one with the least merit value.
+    \item \Cite[thm.~14.5.1]{Conn_Gould_Toint_2000} provides a lower bound on the penalty coefficient.
+    \item Detail the algorithm for increasing the penalty parameter.
+    \item We decrease the penalty parameter as in~\cite{Powell_1994} (detail the modification made for the equality constraints).
+\end{itemize}
+
 \subsection{Composite-step approach}
+
+\subsection{Updating the trust-region radii}
 
 \section{Outline of the \glsfmttext{cobyqa} method}
 
 \subsection{Interpolation-based quadratic models}
+\label{subsec:cobyqa-models}
+
+\begin{itemize}
+    \item What is the initial interpolation set?
+    \item How is this interpolation set updated?
+    \item Approximations of linear function are exact (theorem).
+\end{itemize}
 
 \subsection{Geometry of the interpolation set}
 
