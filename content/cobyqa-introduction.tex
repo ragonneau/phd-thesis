@@ -181,7 +181,7 @@ The only restriction is
 as otherwise, the set~$\xpt[k]$ cannot be poised (see \cref{subsec:symmetric-broyden-updates} for details).
 The derivative-free variation of the \gls{sqp} method we consider then has the subproblem
 \begin{align*}
-    \min        & \quad \nabla \objm[k](x^k)^{\T} d + \frac{1}{2} d^{\T} \nabla_{x, x}^2 \lagm[k](x^k, \lambda^k) d \label{eq:sqp-subproblem-obj}\\
+    \min        & \quad \nabla \objm[k](x^k)^{\T} d + \frac{1}{2} d^{\T} \nabla_{x, x}^2 \lagm[k](x^k, \lambda^k) d\\
     \text{s.t.} & \quad \conm[k]{i}(x^k) + \nabla \conm[k]{i}(x^k)^{\T} d \le 0, ~ i \in \iub,\\
                 & \quad \conm[k]{i}(x^k) + \nabla \conm[k]{i}(x^k)^{\T} d = 0, ~ i \in \ieq,\\
                 & \quad d \in \R^n,
