@@ -39,8 +39,8 @@
 \nomenclature[Oj]{$\conv$}{Convex hull operator}%
 % \nomenclature[Oi]{$\diam$}{Diameter operator}%
 \nomenclature[Sa]{$\emptyset$}{Empty set}%
-\nomenclature[Sb]{$[a, b]$}{Closed set~$\set{x \in \R : a \le x \le b}$ with~$a \le b$}%
-\nomenclature[Sc]{$(a, b)$}{Open set~$\set{x \in \R : a < x < b}$ with~$a < b$}%
+\nomenclature[Sb]{$[a, b]$}{Closed set~$\set{\iter \in \R : a \le \iter \le b}$ with~$a \le b$}%
+\nomenclature[Sc]{$(a, b)$}{Open set~$\set{\iter \in \R : a < \iter < b}$ with~$a < b$}%
 \nomenclature[Sd]{$\lpoly$}{Space of linear polynomials in~$\R^n$}%
 \nomenclature[Se]{$\qpoly$}{Space of quadratic polynomials in~$\R^n$}%
 \nomenclature[Sf]{$\R$}{Set of real numbers}%
@@ -48,7 +48,7 @@
 \nomenclature[Sh]{$\R^{m \times n}$}{Real matrix space of dimension~$m \times n$}%
 \nomenclature[Si]{$\iub$}{Set of indices of the inequality constraints}%
 \nomenclature[Sj]{$\iub$}{Set of indices of the inequality constraints}%
-\nomenclature[Sk]{$\Omega$}{Feasible set, included in~$\R^n$}%
+\nomenclature[Sk]{$\fset$}{Feasible set, included in~$\R^n$}%
 \nomenclature[Sl]{$\ieq$}{Set of indices of the equality constraints}%
 \nomenclature[Sm]{$\iub$}{Set of indices of the inequality constraints}%
 \todo[noline]{Replace the nomenclature items}
@@ -57,7 +57,7 @@
 \label{sec:overview}
 
 Optimization is the study of extremal points and values of mathematical functions.
-It aims at minimizing (or maximizing) a real-valued function~$\obj$, referred to as the \emph{objective function}, within a given set of points~$\Omega \subseteq \R^n$, referred to as the \emph{feasible set}.
+It aims at minimizing (or maximizing) a real-valued function~$\obj$, referred to as the \emph{objective function}, within a given set of points~$\fset \subseteq \R^n$, referred to as the \emph{feasible set}.
 It is well known that essential information for optimization is embraced in the (possibly generalized) derivatives of the functions involved.
 However, in practice, evaluations of such derivatives may be unreliable or prohibitively expensive, if not impossible.
 It motivates the study of \gls{dfo}~\cite{Conn_Scheinberg_Vicente_2009b,Audet_Hare_2017,Custodio_Scheinberg_Vicente_2017,Larson_Menickelly_Wild_2019}, where problems are solved using only function values.
@@ -81,16 +81,16 @@ In this introduction, we consider the nonlinearly-constrained problem
 \begin{subequations}
     \label{eq:problem-introduction}
     \begin{align}
-        \min        & \quad \obj(x)\\
-        \text{s.t.} & \quad \con{i}(x) \le 0, ~ i \in \iub, \label{eq:problem-introduction-cub}\\
-                    & \quad \con{i}(x) = 0, ~ i \in \ieq, \label{eq:problem-introduction-ceq}\\
-                    & \quad x \in \R^n, \nonumber
+        \min        & \quad \obj(\iter)\\
+        \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-introduction-cub}\\
+                    & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:problem-introduction-ceq}\\
+                    & \quad \iter \in \R^n, \nonumber
     \end{align}
 \end{subequations}
 where the \emph{objective} and \emph{constraint functions}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and where the sets of indices~$\iub$ and~$\ieq$ are finite (perhaps empty) and disjoint.
 The feasible set of this problem is
 \begin{equation*}
-    \Omega \eqdef \set{x \in \R^n : \text{$\con{i}(x) \le 0$ for~$i \in \iub$ and~$\con{i}(x) = 0$ for~$i \in \ieq$}}.
+    \fset \eqdef \set{\iter \in \R^n : \text{$\con{i}(\iter) \le 0$ for~$i \in \iub$ and~$\con{i}(\iter) = 0$ for~$i \in \ieq$}}.
 \end{equation*}
 If~$\obj$ is convex, while~$\con{i}$ is convex for all~$i \in \iub$ and affine for all~$i \in \ieq$, then the problem~\cref{eq:problem-introduction} is \emph{convex}.
 However, this thesis does \emph{not} assume convexity.
@@ -157,37 +157,37 @@ For example, consider \cref{alg:trust-region}, a basic trust-region method for s
     \caption{Basic trust-region method for unconstrained optimization}
     \label{alg:trust-region}
     \DontPrintSemicolon
-    \KwData{Objective function~$\obj$, initial guess~$x^0 \in \R^n$, initial trust-region radius~$\Delta_0 > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
+    \KwData{Objective function~$\obj$, initial guess~$\iter[0] \in \R^n$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
     \For{$k = 0, 1, \dots$}{
-        Define a simple function~$m_k$ such that~$m_k(d) \approx f(x^k + d)$ for~$\norm{d} \le \Delta_k$\;
-        Set the trial step~$d^k$ to an approximate solution to
+        Define a simple function~$m_k$ such that~$m_k(d) \approx f(\iter[k] + d)$ for~$\norm{d} \le \rad[k]$\;
+        Set the trial step~$\step[k]$ to an approximate solution to
         \begin{algomathdisplay}
             \begin{aligned}
-                \min        & \quad m_k(d)\\
-                \text{s.t.} & \quad \norm{d} \le \Delta_k,\\
-                            & \quad d \in \R^n
+                \min        & \quad m_k(\step)\\
+                \text{s.t.} & \quad \norm{\step} \le \rad[k],\\
+                            & \quad \step \in \R^n
             \end{aligned}
         \end{algomathdisplay}
         Evaluate the trust-region ratio
         \begin{algomathdisplay}
-            \rho_k \gets \frac{\obj(x^k) - \obj(x^k + d^k)}{m_k(0) - m_k(d^k)}
+            \ratio[k] \gets \frac{\obj(\iter[k]) - \obj(\iter[k] + \step[k])}{m_k(0) - m_k(\step[k])}
         \end{algomathdisplay}
-        \eIf{$\rho_k \ge \eta_1$}{ \nllabel{alg:trust-region-success}
-            Update the trial point~$x^{k + 1} \gets x^k + d^k$\;
+        \eIf{$\ratio[k] \ge \eta_1$}{ \nllabel{alg:trust-region-success}
+            Update the trial point~$\iter[k + 1] \gets \iter[k] + \step[k]$\;
         }{
-            Retain the trial point~$x^{k + 1} \gets x^k$\;
+            Retain the trial point~$\iter[k + 1] \gets \iter[k]$\;
         }
         Update the trust-region radius
-        \begin{algoempheq}[left={\Delta_{k + 1} \gets \empheqlbrace}]{alignat*=2}
-            & \theta_1 \Delta_k,    && \quad \text{if~$\rho_k \le \eta_1$,}\\
-            & \Delta_k,             && \quad \text{if~$\eta_1 < \rho_k \le \eta_2$,}\\
-            & \theta_2 \Delta_k,    && \quad \text{otherwise}
+        \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
+            & \theta_1 \rad[k],  && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
+            & \rad[k],           && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
+            & \theta_2 \rad[k],  && \quad \text{otherwise}
         \end{algoempheq}
     }
 \end{algorithm}
 
 The most critical simplification in \cref{alg:trust-region} lies in \cref{alg:trust-region-success}.
-A complete framework includes a parameter~$\eta_0 \ge 0$ satisfying~$\eta_0 \le \eta_1$, and the condition in \cref{alg:trust-region-success} is replaced by~$\rho_k \ge \eta_0$.
+A complete framework includes a parameter~$\eta_0 \ge 0$ satisfying~$\eta_0 \le \eta_1$, and the condition in \cref{alg:trust-region-success} is replaced by~$\ratio[k] \ge \eta_0$.
 In practice, we usually have~$\eta_0 = 0$.
 However, this parameter genuinely complexifies the theoretical analysis of the trust-region method, and hence, we omit it here simplicity.
 We consider only the four parameters~$\eta_1$,~$\eta_2$,~$\theta_1$, and~$\theta_2$.
@@ -213,24 +213,24 @@ The \gls{bfo}~\cite{Porcelli_Toint_2017}, a method for bound-constrained problem
 A more recent example of \gls{dfo} applications is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}.
 For instance, Google solves hyperparameter tuning problems using Google Vizier~\cite{Golovin_Etal_2017}, the Google-internal service for performing black-box optimization.
 To illustrate this example, we consider the following hyperparameter tuning problem of a \gls{svm} for binary classification.
-Given a binary-labeled dataset~$\set{(x_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$, we build an \gls{svm} to classify the data with their respective labels.
+Given a binary-labeled dataset~$\set{(\iter_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$, we build an \gls{svm} to classify the data with their respective labels.
 Binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by solving the optimization problem
 \begin{subequations}
     \label{eq:csvc}
     \begin{align}
         \min        & \quad \frac{1}{2} \norm{\omega}_2^2 + C \norm{\xi}_1\\
-        \text{s.t.} & \quad y_i (\beta + \omega^{\T} \varphi_{\gamma}(x_i)) \ge 1 - \xi_i, ~ i \in \set{1, 2, \dots, m},\\
+        \text{s.t.} & \quad y_i (\beta + \omega^{\T} \varphi_{\gamma}(\iter_i)) \ge 1 - \xi_i, ~ i \in \set{1, 2, \dots, m},\\
                     & \quad \xi \ge 0,\\
                     & \quad (\omega, \beta, \xi) \in \R^{\ell} \times \R \times \R^m,
     \end{align}
 \end{subequations}
 where~$\varphi_{\gamma}$ is a function mapping the data to a higher-dimensional space~$\R^{\ell}$ and~$\gamma > 0$ and~$C > 0$ are parameters.
-Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$ to the problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$x \in \R^n$ according to
+Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$ to the problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$\iter \in \R^n$ according to
 \begin{equation}
     \label{eq:csvc-classifier}
-    \delta(x) \eqdef \sgn(\beta^{\ast} + (\omega^{\ast})^{\T} \varphi_{\gamma}(x)),
+    \delta(\iter) \eqdef \sgn(\beta^{\ast} + (\omega^{\ast})^{\T} \varphi_{\gamma}(\iter)),
 \end{equation}
-which maps an observation~$x \in \R^n$ to a label in~$\set{\pm 1}$.
+which maps an observation~$\iter \in \R^n$ to a label in~$\set{\pm 1}$.
 It is clear that~$\delta$ depends on the two parameters~$C$ and~$\gamma$, which can be chosen by solving an optimization problem.
 The objective function~$P$ of this problem is a~$5$-fold cross-validation based on some performance measure of the model~\cref{eq:csvc-classifier}.
 The general~$k$-fold cross-validation to define~$P(C, \gamma)$ is presented in \cref{alg:cross-validation}.
@@ -239,7 +239,7 @@ The general~$k$-fold cross-validation to define~$P(C, \gamma)$ is presented in \
     \caption{$k$-fold cross-validation of an \glsfmtshort{svc} with parameters~$C$ and~$\gamma$}
     \label{alg:cross-validation}
     \DontPrintSemicolon
-    \KwData{Labeled dataset~$\set{(x_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$ and fold number~$k > 0$.}
+    \KwData{Labeled dataset~$\set{(\iter_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$ and fold number~$k > 0$.}
     Split the dataset into~$k$ balanced groups\;
     \For{$i = 1, 2, \dots, k$}{
         Calculate~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast})$ with the all the data except those in the~$i$th group\;
@@ -295,17 +295,17 @@ Before solving the problem~\cref{eq:problem-introduction}, we must define what a
 
 \begin{definition}[Global solution]
     \label{def:global-solution}
-    To the problem~\cref{eq:problem-introduction}, a point~$x^{\ast} \in \R^n$ is a \emph{global solution} if~$x^{\ast} \in \Omega$ and~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \Omega$.
+    To the problem~\cref{eq:problem-introduction}, a point~$\iter[\ast] \in \R^n$ is a \emph{global solution} if~$\iter[\ast] \in \fset$ and~$\obj(\iter) \ge \obj(\iter[\ast])$ for all~$\iter \in \fset$.
 \end{definition}
 
 The following relaxed concepts of solutions to the problem~\cref{eq:problem-introduction} are of interest in theory and practice.
 
 \begin{definition}[Local solution]
-    To the problem~\cref{eq:problem-introduction}, a point~$x^{\ast} \in \R^n$ is
+    To the problem~\cref{eq:problem-introduction}, a point~$\iter[\ast] \in \R^n$ is
     \begin{itemize}
-        \item a \emph{local solution} if~$x^{\ast} \in \Omega$ and there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) \ge \obj(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega$,
-        \item a \emph{strict local solution} if~$x^{\ast} \in \Omega$ and there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that~$\obj(x) > \obj(x^{\ast})$ for all~$x \in \mathcal{N} \cap \Omega \setminus \set{x^{\ast}}$, and
-        \item an \emph{isolated local solution} if there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$x^{\ast}$ such that it is the only local solution in~$\mathcal{N} \cap \Omega$.
+        \item a \emph{local solution} if~$\iter[\ast] \in \fset$ and there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$\iter[\ast]$ such that~$\obj(\iter) \ge \obj(\iter[\ast])$ for all~$\iter \in \mathcal{N} \cap \fset$,
+        \item a \emph{strict local solution} if~$\iter[\ast] \in \fset$ and there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$\iter[\ast]$ such that~$\obj(\iter) > \obj(\iter[\ast])$ for all~$\iter \in \mathcal{N} \cap \fset \setminus \set{\iter[\ast]}$, and
+        \item an \emph{isolated local solution} if there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$\iter[\ast]$ such that it is the only local solution in~$\mathcal{N} \cap \fset$.
     \end{itemize}
 \end{definition}
 
@@ -325,9 +325,9 @@ They will be required for the necessary conditions to hold.
 We first introduce the notion of \emph{active sets}.
 
 \begin{definition}[Active set]
-    The \emph{active set}~$\act(x) \subseteq \iub \cup \ieq$ for the problem~\cref{eq:problem-introduction} at a point~$x \in \R^n$ is defined by
+    The \emph{active set}~$\act(\iter) \subseteq \iub \cup \ieq$ for the problem~\cref{eq:problem-introduction} at a point~$\iter \in \R^n$ is defined by
     \begin{equation*}
-        \act(x) \eqdef \ieq \cup \set{i \in \iub : \con{i}(x) \ge 0}.
+        \act(\iter) \eqdef \ieq \cup \set{i \in \iub : \con{i}(\iter) \ge 0}.
     \end{equation*}
 \end{definition}
 
@@ -337,23 +337,23 @@ Note that a violated constraint is always considered active.
 We introduce hereafter two classical constraint qualifications.
 
 \begin{definition}[Constraint qualifications]
-    Given~$x \in \Omega$, denote~$\act(x)$ the active set for the problem~\cref{eq:problem-introduction} at~$x$, and assume that the constraint functions~$\con{i}$ are differentiable at~$x$ for all~$i \in \act(x)$.
+    Given~$\iter \in \fset$, denote~$\act(\iter)$ the active set for the problem~\cref{eq:problem-introduction} at~$x$, and assume that the constraint functions~$\con{i}$ are differentiable at~$x$ for all~$i \in \act(\iter)$.
     We say that
     \begin{itemize}
-        \item the \gls{licq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \act(x)$, and
-        \item the \gls{mfcq} holds at~$x$ if the gradients~$\nabla \con{i}(x)$ are linearly independent for all~$i \in \ieq$ and there exists a vector~$z \in \R^n$ such that
+        \item the \gls{licq} holds at~$x$ if the gradients~$\nabla \con{i}(\iter)$ are linearly independent for all~$i \in \act(\iter)$, and
+        \item the \gls{mfcq} holds at~$x$ if the gradients~$\nabla \con{i}(\iter)$ are linearly independent for all~$i \in \ieq$ and there exists a vector~$z \in \R^n$ such that
         \begin{subequations}
             \label{eq:mangasarian-fromovitz}
             \begin{empheq}[left=\empheqlbrace]{alignat=2}
-                & \nabla \con{i}(x)^{\T} z < 0, && \quad \text{if~$i \in \act(x) \cap \iub$,}\\
-                & \nabla \con{i}(x)^{\T} z = 0, && \quad \text{if~$i \in \ieq$.}
+                & \nabla \con{i}(\iter)^{\T} z < 0, && \quad \text{if~$i \in \act(\iter) \cap \iub$,}\\
+                & \nabla \con{i}(\iter)^{\T} z = 0, && \quad \text{if~$i \in \ieq$.}
             \end{empheq}
         \end{subequations}
     \end{itemize}
 \end{definition}
 
 The \gls{licq} is stronger than the \gls{mfcq}.
-If the \gls{licq} holds at~$x \in \Omega$, then the system~\cref{eq:mangasarian-fromovitz} is consistent because of the linear independence of all~$\nabla \con{i}(x)$ for~$i \in \act(x)$.
+If the \gls{licq} holds at~$\iter \in \fset$, then the system~\cref{eq:mangasarian-fromovitz} is consistent because of the linear independence of all~$\nabla \con{i}(\iter)$ for~$i \in \act(\iter)$.
 
 Many other constraint qualifications exist.
 Examples include the \gls{acq} and the \gls{gcq}, which are formulated using tangent and linearized cones of the feasible set.
@@ -366,22 +366,22 @@ We also note that dedicated constraint qualifications may exist when the problem
 
 Let~$\lag$ be the \emph{Lagrangian function} to the problem~\cref{eq:problem-introduction}, defined by
 \begin{equation*}
-    \lag(x, \lambda) \eqdef \obj(x) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(x), \quad \text{for~$x \in \R^n$ and~$\lambda_i \in \R$ for~$i \in \iub \cup \ieq$},
+    \lag(\iter, \lambda) \eqdef \obj(\iter) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lambda_i \in \R$ for~$i \in \iub \cup \ieq$},
 \end{equation*}
 where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\T}$.
 \Cref{thm:first-order-necessary-conditions} introduces the first-order necessary conditions for a point to be a local solution of problem~\cref{eq:problem-introduction}.
 
 \begin{theorem}[First-order necessary conditions~{\cite[thm.~12.1]{Nocedal_Wright_2006}}]
     \label{thm:first-order-necessary-conditions}
-    Let~$x^{\ast} \in \Omega$ be a local solution to the problem~\cref{eq:problem-introduction}, assume that the functions~$\obj$ and~$\con{i}$ are continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$x^{\ast}$.
+    Let~$\iter[\ast] \in \fset$ be a local solution to the problem~\cref{eq:problem-introduction}, assume that the functions~$\obj$ and~$\con{i}$ are continuously differentiable in a neighborhood of~$\iter[\ast]$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$\iter[\ast]$.
     Then there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\T}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
     \begin{subequations}
         \label{eq:kkt-introduction}
         \begin{empheq}[left=\empheqlbrace]{alignat=2}
-            & \nabla_x \lag(x^{\ast}, \lambda^{\ast}) = 0,  && \label{eq:kkt-introduction-stationarity}\\
-            & \con{i}(x^{\ast}) \le 0,                      && \quad \text{if~$i \in \iub$,} \label{eq:kkt-introduction-primal-feasibility-ub}\\
-            & \con{i}(x^{\ast}) = 0,                        && \quad \text{if~$i \in \ieq$,} \label{eq:kkt-introduction-primal-feasibility-eq}\\
-            & \lambda_i^{\ast} \con{i}(x^{\ast}) = 0,       && \quad \text{if~$i \in \iub$,} \label{eq:kkt-introduction-complementary-slackness}\\
+            & \nabla_x \lag(\iter[\ast], \lambda^{\ast}) = 0,  && \label{eq:kkt-introduction-stationarity}\\
+            & \con{i}(\iter[\ast]) \le 0,                      && \quad \text{if~$i \in \iub$,} \label{eq:kkt-introduction-primal-feasibility-ub}\\
+            & \con{i}(\iter[\ast]) = 0,                        && \quad \text{if~$i \in \ieq$,} \label{eq:kkt-introduction-primal-feasibility-eq}\\
+            & \lambda_i^{\ast} \con{i}(\iter[\ast]) = 0,       && \quad \text{if~$i \in \iub$,} \label{eq:kkt-introduction-complementary-slackness}\\
             & \lambda_i^{\ast} \ge 0,                       && \quad \text{if~$i \in \iub$.} \label{eq:kkt-introduction-dual-feasibility}
         \end{empheq}
     \end{subequations}
@@ -390,7 +390,7 @@ where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\T}$.
 We present in this thesis~\cref{thm:first-order-necessary-conditions} with the \gls{licq} as an example, but a similar conclusion can be established with other constraint qualifications, such as the \gls{mfcq} (see, e.g.,~\cite[p.~339]{Nocedal_Wright_2006}).
 The conditions~\cref{eq:kkt-introduction} are commonly referred to as the \gls{kkt} conditions~\cite{Karush_1939,Kuhn_Tucker_1951}.
 More specifically, condition~\cref{eq:kkt-introduction-stationarity} is the \emph{stationarity} condition, conditions~\cref{eq:kkt-introduction-primal-feasibility-ub,eq:kkt-introduction-primal-feasibility-eq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-introduction-complementary-slackness} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-introduction-dual-feasibility} as the \emph{dual feasibility} condition.
-A point~$x \in \R^n$ is a \emph{first-order stationary point} if it satisfies the \gls{kkt} conditions~\cref{eq:kkt-introduction}.
+A point~$\iter \in \R^n$ is a \emph{first-order stationary point} if it satisfies the \gls{kkt} conditions~\cref{eq:kkt-introduction}.
 Such a point may not be a local solution.
 
 \subsubsection{An illustration of the first-order optimality conditions}
@@ -399,13 +399,13 @@ We do not provide a proof of \cref{thm:first-order-necessary-conditions}, but we
 \begin{subequations}
     \label{eq:kkt-description}
     \begin{align}
-        \min        & \quad \obj(x) = x_1 + x_2\\
-        \text{s.t.} & \quad \con{1}(x) = x_1^2 + x_2^2 - 2 \le 0, \label{eq:kkt-description-c1}\\
-                    & \quad \con{2}(x) = -x_2 \le 0, \label{eq:kkt-description-c2}\\
-                    & \quad x \in \R^2, \nonumber
+        \min        & \quad \obj(\iter) = x_1 + x_2\\
+        \text{s.t.} & \quad \con{1}(\iter) = x_1^2 + x_2^2 - 2 \le 0, \label{eq:kkt-description-c1}\\
+                    & \quad \con{2}(\iter) = -x_2 \le 0, \label{eq:kkt-description-c2}\\
+                    & \quad \iter \in \R^2, \nonumber
     \end{align}
 \end{subequations}
-whose solution is~$x^{\ast} = [-\sqrt{2}, 0]^{\T}$.
+whose solution is~$\iter[\ast] = [-\sqrt{2}, 0]^{\T}$.
 A graphical representation of the problem~\cref{eq:kkt-description} is given in \cref{fig:kkt-description}, where the white area represents the feasible set.
 
 \begin{figure}[ht]
@@ -428,29 +428,29 @@ A graphical representation of the problem~\cref{eq:kkt-description} is given in 
         ]
             \draw[dashed] (0,0) circle[radius=2^0.5];
             \draw[dashed] (-5,0) -- (2,0);
-            \draw[-latex] (-2^0.5,0) -- (-3*2^0.5,0) node[above right] {$\nabla \con{1}(x^{\ast})$};
-            \draw[-latex] (-2^0.5,0) -- (-2^0.5,-1) node[below left] {$\nabla \con{2}(x^{\ast})$};
-            \draw[-latex] (-2^0.5,0) -- (1-2^0.5,1) node[below right] {$\nabla \obj(x^{\ast})$};
+            \draw[-latex] (-2^0.5,0) -- (-3*2^0.5,0) node[above right] {$\nabla \con{1}(\iter[\ast])$};
+            \draw[-latex] (-2^0.5,0) -- (-2^0.5,-1) node[below left] {$\nabla \con{2}(\iter[\ast])$};
+            \draw[-latex] (-2^0.5,0) -- (1-2^0.5,1) node[below right] {$\nabla \obj(\iter[\ast])$};
             \addplot[BrickRed,mark=*,only marks] coordinates {(-2^0.5,0)};
-            \node[above left] at (-2^0.5,0) {$x^{\ast}$};
+            \node[above left] at (-2^0.5,0) {$\iter[\ast]$};
         \end{axis}
     \end{tikzpicture}
     \caption{Graphical representation of the problem~\cref{eq:kkt-description}}
     \label{fig:kkt-description}
 \end{figure}
 
-As manifest in \cref{fig:kkt-description}, there does not exist any direction~$d \in \R^2$ satisfying
+As manifest in \cref{fig:kkt-description}, there does not exist any direction~$\step \in \R^2$ satisfying
 \begin{subequations}
     \label{eq:kkt-proof}
     \begin{empheq}[left=\empheqlbrace]{alignat=1}
-        & \nabla \obj(x^{\ast})^{\T} d < 0,\\
-        & \nabla \con{1}(x^{\ast})^{\T} d \le 0,\\
-        & \nabla \con{2}(x^{\ast})^{\T} d \le 0.
+        & \nabla \obj(\iter[\ast])^{\T} \step < 0,\\
+        & \nabla \con{1}(\iter[\ast])^{\T} \step \le 0,\\
+        & \nabla \con{2}(\iter[\ast])^{\T} \step \le 0.
     \end{empheq}
 \end{subequations}
 The Farkas' lemma~\cite{Farkas_1902} ensures, therefore, that there exists a nonnegative Lagrange multiplier~$\lambda^{\ast} = [\lambda_1^{\ast}, \lambda_2^{\ast}]^{\T}$ such that
 \begin{equation*}
-    \nabla \obj(x^{\ast}) + \lambda_1^{\ast} \nabla \con{1}(x^{\ast}) + \lambda_2^{\ast} \nabla \con{2}(x^{\ast}) = 0.
+    \nabla \obj(\iter[\ast]) + \lambda_1^{\ast} \nabla \con{1}(\iter[\ast]) + \lambda_2^{\ast} \nabla \con{2}(\iter[\ast]) = 0.
 \end{equation*}
 This validates the condition~\cref{eq:kkt-introduction-stationarity}, while~\cref{eq:kkt-introduction-primal-feasibility-ub,eq:kkt-introduction-primal-feasibility-eq,eq:kkt-introduction-complementary-slackness,eq:kkt-introduction-dual-feasibility} are conspicuous.
 A solution to~\cref{eq:kkt-proof} is both a descent direction for~$\obj$ and a linearized feasible direction for the constraints.
@@ -464,31 +464,31 @@ It is known that at a local solution of a smooth unconstrained optimization prob
 
 \begin{theorem}[Second-order necessary conditions~{\cite[thm.~12.5]{Nocedal_Wright_2006}}]
     \label{thm:second-order-necessary-conditions}
-    Let~$x^{\ast} \in \Omega$ be a local solution to the problem~\cref{eq:problem-introduction}.
-    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood or~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$x^{\ast}$.
-    Denote the active set for the problem~\cref{eq:problem-introduction} at~$x^{\ast}$ by~$\act(x^{\ast})$.
+    Let~$\iter[\ast] \in \fset$ be a local solution to the problem~\cref{eq:problem-introduction}.
+    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood or~$\iter[\ast]$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$\iter[\ast]$.
+    Denote the active set for the problem~\cref{eq:problem-introduction} at~$\iter[\ast]$ by~$\act(\iter[\ast])$.
     Let~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\T}$ be a Lagrange multiplier with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the \gls{kkt} conditions~\cref{eq:kkt-introduction}, and let~$z \in \R^n$ be any vector such that
     \begin{subequations}
         \label{eq:second-order-introduction}
         \begin{empheq}[left=\empheqlbrace]{alignat=2}
-            & \nabla \con{i}(x^{\ast})^{\T} z = 0,      && \quad \text{if~$i \in \ieq$,}\\
-            & \nabla \con{i}(x^{\ast})^{\T} z = 0,      && \quad \text{if~$i \in \act(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} > 0$,}\\
-            & \nabla \con{i}(x^{\ast})^{\T} z \ge 0,    && \quad \text{if~$i \in \act(x^{\ast}) \cap \iub$ and~$\lambda_i^{\ast} = 0$.}
+            & \nabla \con{i}(\iter[\ast])^{\T} z = 0,      && \quad \text{if~$i \in \ieq$,}\\
+            & \nabla \con{i}(\iter[\ast])^{\T} z = 0,      && \quad \text{if~$i \in \act(\iter[\ast]) \cap \iub$ and~$\lambda_i^{\ast} > 0$,}\\
+            & \nabla \con{i}(\iter[\ast])^{\T} z \ge 0,    && \quad \text{if~$i \in \act(\iter[\ast]) \cap \iub$ and~$\lambda_i^{\ast} = 0$.}
         \end{empheq}
     \end{subequations}
-    Then~$z^{\T} \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z \ge 0$.
+    Then~$z^{\T} \nabla_{x, x}^2 \lag(\iter[\ast], \lambda^{\ast}) z \ge 0$.
 \end{theorem}
 
-A first-order stationary point~$x \in \Omega$ is called a \emph{second-order stationary point} if it satisfies the conclusion of \cref{thm:second-order-necessary-conditions}.
+A first-order stationary point~$\iter \in \fset$ is called a \emph{second-order stationary point} if it satisfies the conclusion of \cref{thm:second-order-necessary-conditions}.
 We emphasize that a second-order stationary point may not be a local solution.
 However, it is known in smooth unconstrained optimization that a point at which the gradient of the objective function is zero and its Hessian matrix is positive definite is a strict local solution.
 \Cref{thm:second-order-sufficient-conditions} generalizes this fact to the optimization problem~\cref{eq:problem-introduction}.
 
 \begin{theorem}[Second-order sufficient conditions~{\cite[thm.~12.6]{Nocedal_Wright_2006}}]
     \label{thm:second-order-sufficient-conditions}
-    Let~$x^{\ast} \in \Omega$ be a given point.
-    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood of~$x^{\ast}$ for all~$i \in \iub \cup \ieq$, and that there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\T}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-introduction}.
-    If for all vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-introduction} we have~$z^{\T} \nabla_{x, x}^2 \lag(x^{\ast}, \lambda^{\ast}) z > 0$, then~$x^{\ast}$ is a strict local solution to problem~\cref{eq:problem-introduction}.
+    Let~$\iter[\ast] \in \fset$ be a given point.
+    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood of~$\iter[\ast]$ for all~$i \in \iub \cup \ieq$, and that there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\T}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-introduction}.
+    If for all vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-introduction} we have~$z^{\T} \nabla_{x, x}^2 \lag(\iter[\ast], \lambda^{\ast}) z > 0$, then~$\iter[\ast]$ is a strict local solution to problem~\cref{eq:problem-introduction}.
 \end{theorem}
 
 \section{Methodology of \glsfmtlong{dfo}}
@@ -572,15 +572,15 @@ The work of \citeauthor{Bandeira_Scheinberg_Vicente_2012} has motivated many inv
 Perhaps the most straightforward approach to solving \gls{dfo} problems is to make finite-difference approximations of the derivatives and then employ derivative-based methods.
 This section  briefly discusses the advantages and disadvantages of this approach.
 
-The~$i$th coordinate of the gradient of a smooth function~$\obj : \R^n \to \R$ at a point~$x \in \R^n$ can be approximated by the forward difference
+The~$i$th coordinate of the gradient of a smooth function~$\obj : \R^n \to \R$ at a point~$\iter \in \R^n$ can be approximated by the forward difference
 \begin{equation}
     \label{eq:forward-difference}
-    \frac{\partial \obj}{\partial x_i}(x) = \frac{\obj(x + h e_i) - \obj(x)}{h} + \bigo(h),
+    \frac{\partial \obj}{\partial x_i}(\iter) = \frac{\obj(\iter + h e_i) - \obj(\iter)}{h} + \bigo(h),
 \end{equation}
 or the central difference
 \begin{equation}
     \label{eq:central-difference}
-    \frac{\partial \obj}{\partial x_i}(x) = \frac{\obj(x + h e_i) - \obj(x - h e_i)}{2h} + \bigo(h^2),
+    \frac{\partial \obj}{\partial x_i}(\iter) = \frac{\obj(\iter + h e_i) - \obj(\iter - h e_i)}{2h} + \bigo(h^2),
 \end{equation}
 where~$h > 0$ is the difference parameter,~$e_i \in \R^n$ is the~$i$th standard coordinate vector of~$\R^n$, and the order of precisions require standard assumptions (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006}).
 
@@ -638,11 +638,11 @@ Let~$x_p^0$ be the initial guess for a given problem~$p \in \xpb$, and~$\varphi_
 Given a tolerance~$\tau \in (0, 1)$, a point~$x$ satisfies the convergence test if
 \begin{equation}
     \label{eq:convergence-test-profiles}
-    \varphi_p(x) \le \varphi_p^{\ast} + \tau [\varphi_p(x_p^0) - \varphi_p^{\ast}],
+    \varphi_p(\iter) \le \varphi_p^{\ast} + \tau [\varphi_p(\iter_p^0) - \varphi_p^{\ast}],
 \end{equation}
 in which case we say that~$x$ solves problem~$p$ up to the tolerance~$\tau$.
 This convergence test can be interpreted as follows.
-A point~$x$ satisfies the test if the reduction~$\varphi_p(x_p^0) - \varphi_p(x)$ is at least~$1 - \tau$ times the maximal reduction~$\varphi_p(x_p^0) - \varphi_p^{\ast}$ achieved by all solvers in~$\xsv$.
+A point~$x$ satisfies the test if the reduction~$\varphi_p(\iter_p^0) - \varphi_p(\iter)$ is at least~$1 - \tau$ times the maximal reduction~$\varphi_p(\iter_p^0) - \varphi_p^{\ast}$ achieved by all solvers in~$\xsv$.
 We say that a solver solves the problem~$p$ up to the tolerance~$\tau$ whenever it produces an iterate that achieves the convergence test~\cref{eq:convergence-test-profiles}.
 
 In the convergence test~\cref{eq:convergence-test-profiles}, it is tempting to define~$\varphi_p^{\ast}$ as the merit function value at a minimizer of~$p$, which is the case when testing derivative-based solvers~\cite{Dolan_More_2002}.
@@ -709,7 +709,7 @@ Since these problems are unconstrained, the merit function~$\varphi_p$ of each p
 Therefore, the convergence test~\cref{eq:convergence-test-profiles} becomes
 \begin{equation}
     \label{eq:convergence-test-profiles-unconstrained}
-    \obj_p(x) \le \obj_p^{\ast} + \tau [\obj_p(x_p^0) - \obj_p^{\ast}].
+    \obj_p(\iter) \le \obj_p^{\ast} + \tau [\obj_p(\iter_p^0) - \obj_p^{\ast}].
 \end{equation}
 
 We conduct two experiments as follows.
@@ -722,9 +722,9 @@ We conduct two experiments as follows.
     For each problem~$p \in \xpb$, the objective function is evaluated by
     \begin{equation}
         \label{eq:relative-gaussian-noisy-objective-function}
-        \tilde{\obj}_p(x) \eqdef [1 + \epsilon(x)] \obj_p(x),
+        \tilde{\obj}_p(\iter) \eqdef [1 + \epsilon(\iter)] \obj_p(\iter),
     \end{equation}
-    where~$\epsilon(x) \sim N(0, \sigma^2)$.
+    where~$\epsilon(\iter) \sim N(0, \sigma^2)$.
     Each problem is solved ten times with each solver.
     In the convergence test~\cref{eq:convergence-test-profiles-unconstrained},~$\obj_p^{\ast}$ is either the least value of~$\obj_p$ obtained by all solvers during these ten runs, or the value obtained in the previous noise-free experiment, whichever is smaller.
     The value of~$t_{p, s}$ is set to the average number of function evaluations that~$s \in \xsv$ needs to solve~$p \in \xpb$ up to the tolerance~$\tau$.

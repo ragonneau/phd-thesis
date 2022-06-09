@@ -82,7 +82,7 @@ In the natural basis of~$\lpoly$, the system~\cref{eq:interpolation-conditions} 
 where~$\alpha \in \R$ and~$g \in \R^n$ are the coefficients to determine.
 If~$\xpt$ is poised for linear interpolation, given~$(\alpha^{\ast}, g^{\ast})$ the unique solution to the system~\cref{eq:linear-interpolation-conditions}, the linear model~$\objm$ is defined by
 \begin{equation*}
-    \objm(x) = \alpha^{\ast} + (g^{\ast})^{\T} x, \quad \text{for~$x \in \R^n$},
+    \objm(\iter) = \alpha^{\ast} + (g^{\ast})^{\T} x, \quad \text{for~$\iter \in \R^n$},
 \end{equation*}
 and the vector~$\nabla \objm \equiv g^{\ast}$ is referred to as the \emph{simplex gradient} of~$\obj$ for the interpolation set~$\xpt$.
 Such models are used for instance by \gls{cobyla}~\cite{Powell_1994}, a \gls{dfo} method for nonlinearly-constrained optimization detailed in \cref{subsec:cobyla}.
@@ -119,7 +119,7 @@ Further, it is well-known that the interpolant~$\objm \in \qpoly$ of~$\obj$ on~$
     The Lagrange polynomials~$\set{\lagp[1], \lagp[2], \dots, \lagp[m]}$ form a basis of~$\qpoly$.
     Moreover, the quadratic interpolant~$\objm$ of~$\obj$ on~$\xpt$ is given by
     \begin{equation*}
-        \objm(x) = \sum_{i = 1}^m \obj(y^i) \lagp[i](x), \quad \text{for~$x \in \R^n$}.
+        \objm(\iter) = \sum_{i = 1}^m \obj(y^i) \lagp[i](\iter), \quad \text{for~$\iter \in \R^n$}.
     \end{equation*}
 \end{theorem}
 
@@ -133,22 +133,22 @@ However, given a poised set, how good is this interpolation set?
 This section will briefly discuss this topic and introduce the concept of~$\Lambda$-poisedness.
 
 Suppose that~$\obj$ is thrice differentiable on~$\R^n$.
-It is well-known that for any~$x \in \R^n$, we have
+It is well-known that for any~$\iter \in \R^n$, we have
 \begin{equation}
     \label{eq:Ciarlet_Raviart_0}
-    \abs{\obj(x) - \objm(x)} \le \frac{\theta}{6} \sum_{i = 1}^m \abs{\lagp[i](x)} \norm{x - y^i}^3,
+    \abs{\obj(\iter) - \objm(\iter)} \le \frac{\theta}{6} \sum_{i = 1}^m \abs{\lagp[i](\iter)} \norm{x - y^i}^3,
 \end{equation}
 where~$\theta$ is an upper bound on the absolute value of the third-order directional derivatives of~$\obj$~\cite[thm.~2]{Powell_2001}.
 A similar bound is established in~\cite[thm.~2]{Ciarlet_Raviart_1972}.
 For any compact set~$\mathcal{C} \subseteq \R^n$, we then clearly have
 \begin{equation}
     \label{eq:ciarlet-raviard-bound}
-    \max_{x \in \mathcal{C}} \abs{\obj(x) - \objm(x)} \le \frac{m \theta \Lambda}{6} \max_{1 \le i \le m} \max_{x \in \mathcal{C}} \norm{x - y^i}^3,
+    \max_{\iter \in \mathcal{C}} \abs{\obj(\iter) - \objm(\iter)} \le \frac{m \theta \Lambda}{6} \max_{1 \le i \le m} \max_{\iter \in \mathcal{C}} \norm{x - y^i}^3,
 \end{equation}
 where~$\Lambda$ is defined by
 \begin{equation}
     \label{eq:lambda-poisedness-convex-hull}
-    \Lambda \eqdef \max_{1 \le i \le m} \max_{x \in \mathcal{C}} \abs{\lagp[i](x)}.
+    \Lambda \eqdef \max_{1 \le i \le m} \max_{\iter \in \mathcal{C}} \abs{\lagp[i](\iter)}.
 \end{equation}
 In this sense,~$\Lambda$ measures the well-poisedness of the interpolation set~$\xpt$ with respect to the set~$\mathcal{C}$.
 This motivates the following concept of~$\Lambda$-poisedness.
@@ -157,7 +157,7 @@ This motivates the following concept of~$\Lambda$-poisedness.
     \label{def:lambda-poisedness}
     A poised interpolation set~$\xpt \subseteq \R^n$ is said to be~$\Lambda$-poised in a compact set~$\mathcal{C} \subseteq \R^n$, for some~$\Lambda > 0$, if
     \begin{equation*}
-        \Lambda \ge \max_{1 \le i \le m} \max_{x \in \mathcal{C}} \abs{\lagp[i](x)}.
+        \Lambda \ge \max_{1 \le i \le m} \max_{\iter \in \mathcal{C}} \abs{\lagp[i](\iter)}.
     \end{equation*}
 \end{definition}
 
@@ -234,9 +234,9 @@ We first present the notion of poisedness for problem~\cref{eq:least-frobenius-n
 \end{definition}
 
 To get an in-depth view of the poisedness of~$\xpt$, let us investigate how to solve the problem~\cref{eq:least-frobenius-norm-models}.
-Given any fix~$\bar{x} \in \R^n$, we expand a quadratic polynomial~$Q \in \qpoly$ for any~$x \in \R^n$ as
+Given any fix~$\bar{x} \in \R^n$, we expand a quadratic polynomial~$Q \in \qpoly$ for any~$\iter \in \R^n$ as
 \begin{equation*}
-    Q(x) = \alpha + g^{\T} (x - \bar{x}) + \frac{1}{2} (x - \bar{x})^{\T} H(x - \bar{x}),
+    Q(\iter) = \alpha + g^{\T} (\iter - \bar{x}) + \frac{1}{2} (\iter - \bar{x})^{\T} H(\iter - \bar{x}),
 \end{equation*}
 where~$\alpha \in \R$,~$g \in \R^n$, and~$H \in \R^{n \times n}$ are the coefficients of~$Q$, with~$H$ being symmetric.
 Note that the constraint~\cref{eq:least-frobenius-norm-models-eq} is linear with respect to~$(\alpha, g, H)$.
@@ -285,7 +285,7 @@ Since the poisedness of~$\xpt$ does not depends on the choice of~$\bar{x}$, neit
 
 Any interpolation set that is poised in the sense of \cref{def:poisedness} must be affinely independent, i.e., it does not lie in a low-dimensional affine subset of~$\R^n$, because the matrix~$[e, Y_L^{\T}]$ has full-column rank according to the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
 Even if~$\xpt$ is not poised, the full-rankness of~$[e, Y_L^{\T}]$ holds as long as the solution to~\cref{eq:least-frobenius-norm-models} is unique when~$f \equiv 0$.
-This is because~$\alpha + g^{\T} (x - \bar{x})$ is a nonzero linear polynomial that interpolates the zero function on~$\xpt$ if~$[\alpha, g^{\T}]^{\T} \in \R^{n + 1}$ is a nonzero vector in~$\ker([e, Y_L^{\T}])$.
+This is because~$\alpha + g^{\T} (\iter - \bar{x})$ is a nonzero linear polynomial that interpolates the zero function on~$\xpt$ if~$[\alpha, g^{\T}]^{\T} \in \R^{n + 1}$ is a nonzero vector in~$\ker([e, Y_L^{\T}])$.
 Such a polynomial should not exist because of the aforementioned uniqueness, since the zero polynomial should be the only solution.
 
 \subsubsection{Minimum Frobenius norm Lagrange polynomials}
@@ -308,9 +308,9 @@ As in the case where~$m = \dim \qpoly$, any minimum Frobenius norm interpolant c
 
 \begin{theorem}
     \label{thm:lagrange-polynomials-basis-minimum-norm}
-    The minimum Frobenius norm quadratic interpolant~$\objm$ of~$\obj$ on~$\xpt$ is given for any~$x \in \R^n$ by
+    The minimum Frobenius norm quadratic interpolant~$\objm$ of~$\obj$ on~$\xpt$ is given for any~$\iter \in \R^n$ by
     \begin{equation*}
-        \objm(x) = \sum_{i = 1}^m \obj(y^i) \lagp[i](x).
+        \objm(\iter) = \sum_{i = 1}^m \obj(y^i) \lagp[i](\iter).
     \end{equation*}
 \end{theorem}
 
@@ -322,7 +322,7 @@ We now present the notion of~$\Lambda$-poisedness in the minimum Frobenius norm 
     \label{def:lambda-poisedness-minimum-norm}
     A poised interpolation set~$\xpt \subseteq \R^n$ in the minimum Frobenius norm sense is said to be~$\Lambda$-poised in the minimum Frobenius norm sense in a compact set~$\mathcal{C} \subseteq \R^n$, for some~$\Lambda > 0$, if
     \begin{equation*}
-        \Lambda \ge \max_{1 \le i \le m} \max_{x \in \mathcal{C}} \abs{\lagp[i](x)}.
+        \Lambda \ge \max_{1 \le i \le m} \max_{\iter \in \mathcal{C}} \abs{\lagp[i](\iter)}.
     \end{equation*}
 \end{definition}
 
@@ -365,7 +365,7 @@ Therefore, the coefficients of the model obtained by least Frobenius norm update
 The minimum Frobenius norm update can be regarded as a derivative-free variation of the symmetric Broyden update in the quasi-Newton method.
 The symmetric Broyden method~\cite{Powell_1970b} approximates the function~$\obj$ at a point~$y^1 \in \R^n$ by a quadratic function
 \begin{align*}
-    \objm(x) = \objm(y^1) + \nabla \objm(y^1)^{\T} (x - y^1) + \frac{1}{2} (x - y^1)^{\T} \hat{H} (x - y^1),
+    \objm(\iter) = \objm(y^1) + \nabla \objm(y^1)^{\T} (\iter - y^1) + \frac{1}{2} (\iter - y^1)^{\T} \hat{H} (\iter - y^1),
 \end{align*}
 and, as shown in~\cite[thm.~4.2]{Dennis_Schnabel_1979},~$\hat{H} \in \R^{n \times n}$ is the unique solution to
 \begin{align*}
@@ -394,11 +394,11 @@ Therefore, following \citeauthor{Powell_2013}~\cite{Powell_2013}, we will also r
 We consider in this section a model-based \gls{dfo} algorithm that builds models by the derivative-free symmetric Broyden update, and we summarize the implementation of this update, as proposed by \citeauthor{Powell_2004b}~\cite{Powell_2004b,Powell_2004c}.
 The implementation can straightforwardly be adapted to construct minimum Frobenius norm models.
 
-For each~$k \ge 0$, we denote by~$x^k \in \R^n$ and the~$k$th iterate, and the~$k$th interpolation set is~$\xpt[k] = \set{y^{k, 1}, y^{k, 2}, \dots, y^{k, m}} \subseteq \R^n$, with~$x^k \in \xpt[k]$.
+For each~$k \ge 0$, we denote by~$\iter[k] \in \R^n$ and the~$k$th iterate, and the~$k$th interpolation set is~$\xpt[k] = \set{y^{k, 1}, y^{k, 2}, \dots, y^{k, m}} \subseteq \R^n$, with~$\iter[k] \in \xpt[k]$.
 The \gls{dfo} algorithm builds a quadratic model~$\objm[k] \in \qpoly$ of the objective function~$\obj$ by the derivative-free symmetric Broyden update~\cref{eq:symmetric-broyden-models}, with~$H_{\text{old}} = \nabla^2 \objm[k - 1]$ and~$\xpt = \xpt[k]$.
 The model~$\objm[k]$ is
 \begin{equation*}
-    \objm[k](x) = \alpha^k + (g^k)^{\T} (x - x^k) + \frac{1}{2} (x - x^k)^{\T} H^k (x - x^k), \quad \text{for~$x \in \R^n$},
+    \objm[k](\iter) = \alpha^k + (g^k)^{\T} (\iter - \iter[k]) + \frac{1}{2} (\iter - \iter[k])^{\T} H^k (\iter - \iter[k]), \quad \text{for~$\iter \in \R^n$},
 \end{equation*}
 where~$\alpha^k \in \R$,~$g^k \in \R^n$, and~$H^k \in \R^{n \times n}$ are the coefficients,~$H^k$ being symmetric.
 As discussed in \cref{subsec:least-frobenius-norm-models}, thanks to~\cref{eq:symmetric-broyden-models-reformulation},~$\alpha^k$,~$g^k$, and~$H^k$ can be calculated by solving
@@ -434,9 +434,9 @@ where~$v \in \R^m$ is defined by
 If~$\lambda$,~$\alpha$, and~$g$ solve the system~\cref{eq:least-frobenius-kkt-system-2}, then the model's coefficients can be evaluated by
 \begin{subequations}
     \begin{empheq}[left=\empheqlbrace]{alignat=1}
-        & \alpha^k = \objm[k - 1](x^k) + \alpha,\\
-        & g^k = \nabla \objm[k - 1](x^k) + g,\\
-        & H^k = \nabla^2 \objm[k - 1] + \sum_{i = 1}^m \lambda_i (y^{k, i} - x^k) (y^{k, i} - x^k)^{\T}. \label{eq:derivative-free-symmetric-broyden-hessian}
+        & \alpha^k = \objm[k - 1](\iter[k]) + \alpha,\\
+        & g^k = \nabla \objm[k - 1](\iter[k]) + g,\\
+        & H^k = \nabla^2 \objm[k - 1] + \sum_{i = 1}^m \lambda_i (y^{k, i} - \iter[k]) (y^{k, i} - \iter[k])^{\T}. \label{eq:derivative-free-symmetric-broyden-hessian}
     \end{empheq}
 \end{subequations}
 
@@ -450,7 +450,7 @@ However, forming its Hessian matrix~$H^k$ using~\cref{eq:derivative-free-symmetr
 To reduce this cost, as suggested by \citeauthor{Powell_2004b}~\cite[\S~3]{Powell_2004b}, we decompose the Hessian matrix as
 \begin{equation}
     \label{eq:hessian-explicit-implicit}
-    H^k = \Gamma^k + \sum_{i = 1}^m \gamma_i^k (y^{k, i} - x^k) (y^{k, i} - x^k)^{\T},
+    H^k = \Gamma^k + \sum_{i = 1}^m \gamma_i^k (y^{k, i} - \iter[k]) (y^{k, i} - \iter[k])^{\T},
 \end{equation}
 where~$\Gamma^k \in \R^{n \times n}$ is referred to as an explicit part of~$H^k$, and~$[\gamma_1^k, \gamma_2^k, \dots, \gamma_m^k]^{\T} \in \R^m$ is referred to as an implicit part of~$H^k$, which are both stored.
 Recall that~$\xpt[k + 1]$ differs from~$\xpt[k]$ by only one point.
@@ -459,7 +459,7 @@ The explicit and implicit parts of~$H^k$ can then be updated as
 \begin{subequations}
     \label{eq:hessian-explicit-implicit-update}
     \begin{empheq}[left=\empheqlbrace]{alignat=1}
-        & \Gamma^{k + 1} = \Gamma^k + \gamma_{\ell}^k (y^{k, \ell} - x^k) (y^{k, \ell} - x^k)^{\T},\\
+        & \Gamma^{k + 1} = \Gamma^k + \gamma_{\ell}^k (y^{k, \ell} - \iter[k]) (y^{k, \ell} - \iter[k])^{\T},\\
         & \gamma_{i}^{k + 1} = \gamma_{i}^k + \lambda_{i}, \quad \text{for~$i \in \set{1, 2, \dots, m} \setminus \set{\ell}$},\\
         & \gamma_{\ell}^{k + 1} = \lambda_{\ell}.
     \end{empheq}
@@ -515,7 +515,7 @@ Note that we allow~$p = \infty$.
 By the construction of~$\mathcal{Z}_m$, we observe that
 \begin{equation}
     \label{eq:ball-initial}
-    \ball[p][m] \equiv \ball[p](\delta) \eqdef \set{x \in \R^n : \norm{x}_p \le \delta}.
+    \ball[p][m] \equiv \ball[p](\delta) \eqdef \set{\iter \in \R^n : \norm{x}_p \le \delta}.
 \end{equation}
 
 In the sequel, we study the~$\Lambda$-poisedness of the set~$\mathcal{Z}_m$ in~$\ball[p][m]$ for~$p \ge 1$.
@@ -527,7 +527,7 @@ In this sense,~$\mathcal{Z}_{2n + 1}$ is an optimal interpolation set.
 
 According to the~\cref{def:lambda-poisedness-minimum-norm} and the equation~\cref{eq:ball-initial}, the set~$\mathcal{Z}_m$ is~$\Lambda_p$-poised in~$\ball[p][m]$ in the minimum Frobenius norm sense with
 \begin{equation*}
-    \Lambda_p \eqdef \max_{1 \le i \le m} \max_{x \in \ball[p](\delta)} \abs{\lagp[i](x)},
+    \Lambda_p \eqdef \max_{1 \le i \le m} \max_{\iter \in \ball[p](\delta)} \abs{\lagp[i](\iter)},
 \end{equation*}
 where~$\lagp[i]$ is the~$i$th minimum Frobenius norm Lagrange polynomial associated with~$\mathcal{Z}_m$ for~$i \in \set{1, 2, \dots, m}$.
 
@@ -536,8 +536,8 @@ These formulae are given in~\cite[\S~3]{Powell_2006}, without a proof.
 
 \begin{lemma}
     \label{lem:lagrange-polynomials-initial}
-    For each~$m \in \set{n + 2, n + 3, \dots,  2n + 1}$ and all~$x \in \R^n$, we have
-    \begin{empheq}[left={\lagp[i](x) = \empheqlbrace}]{alignat*=2}
+    For each~$m \in \set{n + 2, n + 3, \dots,  2n + 1}$ and all~$\iter \in \R^n$, we have
+    \begin{empheq}[left={\lagp[i](\iter) = \empheqlbrace}]{alignat*=2}
         & 1 - \delta^{-2} \sum_{j = 1}^{m - n - 1} x_j^2 - \delta^{-1} \sum_{j = m - n}^n x_j,  && \quad \text{if~$i = 1$,}\\
         & (\sqrt{2} \delta)^{-2} x_{i - 1}^2 + (2 \delta)^{-1} x_{i - 1},                       && \quad \text{if~$2 \le i \le m - n$,}\\
         & \delta^{-1} x_{i - 1},                                                                && \quad \text{if~$m - n + 1 \le i \le n + 1$,}\\
@@ -584,22 +584,22 @@ The next lemma simplifies the value of~$\Lambda_p$ for further computations.
     For any~$m \in \set{n + 2, n + 3, \dots, 2n + 1}$ and any~$p \in [1, \infty]$, we have
     \begin{equation}
         \label{eq:lambda-poisedness-initial-simple}
-        \Lambda_p = \max_{x \in \ball[p](\delta)} \abs{\lagp[1](x)}.
+        \Lambda_p = \max_{\iter \in \ball[p](\delta)} \abs{\lagp[1](\iter)}.
     \end{equation}
 \end{lemma}
 
 \begin{proof}
-    For each~$i \in \set{2, 3, \dots, n + 1}$, according to~\cref{lem:lagrange-polynomials-initial},~$\lagp[i](x)$ depends only on~$x_{i - 1}$ for all~$x \in \R^n$, and hence
+    For each~$i \in \set{2, 3, \dots, n + 1}$, according to~\cref{lem:lagrange-polynomials-initial},~$\lagp[i](\iter)$ depends only on~$x_{i - 1}$ for all~$\iter \in \R^n$, and hence
     \begin{equation*}
-        \max_{x \in \ball[p](\delta)} \abs{\lagp[i](x)} = \max_{t \in [-\delta, \delta]} \abs{\lagp[i](t e_{i - 1})} = 1.
+        \max_{\iter \in \ball[p](\delta)} \abs{\lagp[i](\iter)} = \max_{t \in [-\delta, \delta]} \abs{\lagp[i](t e_{i - 1})} = 1.
     \end{equation*}
-    Similarly, for each~$i \in \set{n + 2, n + 3, \dots, m}$, since~$\lagp[i](x)$ depends only on~$x_{i - n - 1}$ for all~$x \in \R^n$, we have
+    Similarly, for each~$i \in \set{n + 2, n + 3, \dots, m}$, since~$\lagp[i](\iter)$ depends only on~$x_{i - n - 1}$ for all~$\iter \in \R^n$, we have
     \begin{equation*}
-        \max_{x \in \ball[p](\delta)} \abs{\lagp[i](x)} = \max_{t \in [-\delta, \delta]} \abs{\lagp[i](t e_{i - n - 1})} = 1.
+        \max_{\iter \in \ball[p](\delta)} \abs{\lagp[i](\iter)} = \max_{t \in [-\delta, \delta]} \abs{\lagp[i](t e_{i - n - 1})} = 1.
     \end{equation*}
     Noting that~$\lagp[1](z^1) = 1$ and~$z^1 \in \ball[p](\delta)$, we thus have
     \begin{equation*}
-        \Lambda_p = \max_{x \in \ball[p](\delta)} \abs{\lagp[1](x)}.
+        \Lambda_p = \max_{\iter \in \ball[p](\delta)} \abs{\lagp[1](\iter)}.
     \end{equation*}
 \end{proof}
 
@@ -626,7 +626,7 @@ We are now equiped to develop bounds on~$\Lambda_p$ in the general case.
     Therefore, we only need to show that~$\Lambda_{\infty} \le n$.
     Considering both~$\lagp[1]$ and~$-\lagp[1]$, we obtain
     \begin{equation*}
-        \Lambda_{\infty} = \max_{x \in \ball[\infty](\delta)} \abs{\lagp[1](x)} = \max \set{2n + 2 - m, n - 1} \le n.
+        \Lambda_{\infty} = \max_{\iter \in \ball[\infty](\delta)} \abs{\lagp[1](\iter)} = \max \set{2n + 2 - m, n - 1} \le n.
     \end{equation*}
 \end{proof}
 
@@ -649,14 +649,14 @@ We now calculate the exact value of~$\Lambda_p$ in some special cases.
     According to~\cref{thm:lambda-poisedness-initial},~$\Lambda_1$ is lower bounded by the right-hand side of~\cref{eq:lambda-poisedness-1}.
     Therefore, we only need to prove that this right-hand side is also a lower bound for~$\Lambda_1$, using the formulation in \cref{lem:lambda-poisedness-initial-simple}.
 
-    For any~$x \in \ball[1](\delta)$, we have
+    For any~$\iter \in \ball[1](\delta)$, we have
     \begin{equation*}
-        \lagp[1](x) \le 1 - \frac{1}{\delta} \sum_{j = m - n}^n x_j \le 1 + \frac{1}{\delta} \sum_{j = m - n}^n \abs{x_j}.
+        \lagp[1](\iter) \le 1 - \frac{1}{\delta} \sum_{j = m - n}^n x_j \le 1 + \frac{1}{\delta} \sum_{j = m - n}^n \abs{x_j}.
     \end{equation*}
     Therefore,
     \begin{subequations}
         \label{eq:eq:lambda-poisedness-1-proof-1}
-        \begin{empheq}[left={\lagp[1](x) \le \empheqlbrace}]{alignat=2}
+        \begin{empheq}[left={\lagp[1](\iter) \le \empheqlbrace}]{alignat=2}
             & 2,    && \quad \text{if~$n + 2 \le m \le 2n$,}\\
             & 1,    && \quad \text{otherwise.}
         \end{empheq}
@@ -665,7 +665,7 @@ We now calculate the exact value of~$\Lambda_p$ in some special cases.
     \begin{subequations}
         \label{eq:eq:lambda-poisedness-1-proof-2}
         \begin{align}
-            \lagp[1](x) &= 1 - \sum_{j = 1}^{m - n - 1} \frac{x_j^2}{\delta^2} - \sum_{j = m - n}^n \frac{x_j}{\delta}\\
+            \lagp[1](\iter) &= 1 - \sum_{j = 1}^{m - n - 1} \frac{x_j^2}{\delta^2} - \sum_{j = m - n}^n \frac{x_j}{\delta}\\
                         &\ge 1 - \sum_{j = 1}^{m - n - 1} \frac{\abs{x_j}}{\delta} - \sum_{j = m - n}^n \frac{\abs{x_j}}{\delta}\\
                         &\ge 1 - \frac{\norm{x}_1}{\delta} \ge 0.
         \end{align}
@@ -682,17 +682,17 @@ We now calculate the exact value of~$\Lambda_p$ in some special cases.
 \end{proposition}
 
 \begin{proof}
-    If~$m = 2n + 1$, \cref{lem:lagrange-polynomials-initial} tells us that~$\lagp[1](x) = 1 - \delta^{-2} \norm{x}_2^2$ for~$x \in \ball[2](\delta)$.
+    If~$m = 2n + 1$, \cref{lem:lagrange-polynomials-initial} tells us that~$\lagp[1](\iter) = 1 - \delta^{-2} \norm{x}_2^2$ for~$\iter \in \ball[2](\delta)$.
     Therefore, \cref{lem:lambda-poisedness-initial-simple} directly provides the desired result~$\Lambda_2 = 1$.
     We now focus on the case with~$n + 2 \le m < 2n + 1$.
 
     According to~\cref{thm:lambda-poisedness-initial},~$\Lambda_2$ is lower bounded by the right-hand side of~\cref{eq:lambda-poisedness-2}.
     Therefore, we only need to prove that this right-hand side is also an upper bound for~$\Lambda_2$, using the formulation in \cref{lem:lambda-poisedness-initial-simple}.
     
-    For any~$x \in \ball[2](\delta)$, we have
+    For any~$\iter \in \ball[2](\delta)$, we have
     \begin{subequations}
         \begin{align}
-            \lagp[1](x) &= 1 - \frac{1}{\delta^2} \sum_{j = 1}^{m - n - 1} x_j^2 - \frac{1}{\delta} \sum_{j = m - n}^n x_j\\
+            \lagp[1](\iter) &= 1 - \frac{1}{\delta^2} \sum_{j = 1}^{m - n - 1} x_j^2 - \frac{1}{\delta} \sum_{j = m - n}^n x_j\\
                         &\ge 1 - \frac{1}{\delta^2} \bigg( \delta^2 - \sum_{j = m - n}^n x_j^2 \bigg) - \frac{1}{\delta} \sum_{j = m - n}^n x_j = \sum_{j = m - n}^n \frac{x_j}{\delta} \bigg( 1 - \frac{x_j}{\delta} \bigg)\\
                         &\ge \min_{y \in \ball[2](1)} \sum_{j = m - n}^n y_j (1 - y_j). \label{eq:lambda-poisedness-initial-2-proof}
         \end{align}
@@ -701,17 +701,17 @@ We now calculate the exact value of~$\Lambda_p$ in some special cases.
     \Cref{thm:first-order-necessary-conditions} ensures that there exists a Lagrange multiplier~$\lambda^{\ast} \ge 0$ such that~$1 - 2 y_j^{\ast} + 2 \lambda^{\ast} y_j^{\ast} = 0$ for all~$j \in \set{m - n, \dots, n}$.
     Therefore, the last~$(2n + 1 - m)$ components of~$y^{\ast}$ are equal, and hence,
     \begin{align*}
-        \lagp[1](x) \ge \min_{y \in \ball[2](1)} \sum_{j = m - n}^n y_j (1 - y_j)   &= \min_{t \in \R} \set{(2n + 1 - m) t (1 - t) : (2n + 1 - m) t^2 \le 1}\\
+        \lagp[1](\iter) \ge \min_{y \in \ball[2](1)} \sum_{j = m - n}^n y_j (1 - y_j)   &= \min_{t \in \R} \set{(2n + 1 - m) t (1 - t) : (2n + 1 - m) t^2 \le 1}\\
                                                                                     &= -1 - \sqrt{2n + 1 - m}.
     \end{align*}
 
     Furthermore,
     \begin{equation*}
-        \lagp[1](x) \le 1 + \sum_{j = m - n}^n \frac{\abs{x_j}}{\delta} \le 1 + \sqrt{2n + 1 - m} \sum_{j = m - n}^n \frac{x_j^2}{\delta^2} \le 1 + \sqrt{2n + 1 - m}.
+        \lagp[1](\iter) \le 1 + \sum_{j = m - n}^n \frac{\abs{x_j}}{\delta} \le 1 + \sqrt{2n + 1 - m} \sum_{j = m - n}^n \frac{x_j^2}{\delta^2} \le 1 + \sqrt{2n + 1 - m}.
     \end{equation*}
-    Therefore,~$\abs{\lagp[1](x)} \le 1 + \sqrt{2n + 1 - m}$ and hence, according to~\cref{lem:lambda-poisedness-initial-simple,thm:lambda-poisedness-initial}, we have
+    Therefore,~$\abs{\lagp[1](\iter)} \le 1 + \sqrt{2n + 1 - m}$ and hence, according to~\cref{lem:lambda-poisedness-initial-simple,thm:lambda-poisedness-initial}, we have
     \begin{equation*}
-        \Lambda_2 = \max_{x \in \ball[2](\delta)} \abs{\lagp[1](x)} = 1 + \sqrt{2n + 1 - m},
+        \Lambda_2 = \max_{\iter \in \ball[2](\delta)} \abs{\lagp[1](\iter)} = 1 + \sqrt{2n + 1 - m},
     \end{equation*}
     which concludes the proof.
 \end{proof}
@@ -723,7 +723,7 @@ Before developing the last special value of~$\Lambda_p$ we introduce the followi
     For any~$p \ge 1$ and~$q \ge 1$, we have
     \begin{subequations}
         \label{eq:max-norm-pq}
-        \begin{empheq}[left={\max\limits_{x \in \ball[q](1)} \norm{x}_p = \empheqlbrace}]{alignat=2}
+        \begin{empheq}[left={\max\limits_{\iter \in \ball[q](1)} \norm{x}_p = \empheqlbrace}]{alignat=2}
             & 1,                    && \quad \text{if~$p \ge q$,} \label{eq:max-norm-pq-1}\\
             & n^{\frac{q - p}{pq}}, && \quad \text{otherwise.} \label{eq:max-norm-pq-2}
         \end{empheq}
@@ -732,11 +732,11 @@ Before developing the last special value of~$\Lambda_p$ we introduce the followi
 
 \begin{proof}
     Let us first consider the case where~$p \ge q$.
-    For~$x \in \ball[q](1)$, we have~$\norm{x}_p \le 1$, and this bound is attained at the first coordinate vector~$e_1 \in \ball[q](1)$, so that~\cref{eq:max-norm-pq-1} holds.
+    For~$\iter \in \ball[q](1)$, we have~$\norm{x}_p \le 1$, and this bound is attained at the first coordinate vector~$e_1 \in \ball[q](1)$, so that~\cref{eq:max-norm-pq-1} holds.
 
     We now consider the case where~$p < q$.
     Let~$e \in \R^n$ be the all-one vector,~$r = q/p$, and~$s = r / (r - 1) = q / (q - p)$.
-    For~$x \in \ball[q](1)$, define~$y = (\abs{x_1}^p, \abs{x_2}^p, \dots, \abs{x_n}^p)$.
+    For~$\iter \in \ball[q](1)$, define~$y = (\abs{x_1}^p, \abs{x_2}^p, \dots, \abs{x_n}^p)$.
     According to the H{\"{o}}lder inequality, we have
     \begin{equation*}
         \norm{x}_p  = (e^{\T} y)^{\frac{1}{p}} \le (\norm{e}_s \norm{y}_r)^{\frac{1}{p}} = n^{\frac{q - p}{pq}} \norm{x}_q \le n^{\frac{q - p}{pq}}.
@@ -756,12 +756,12 @@ Before developing the last special value of~$\Lambda_p$ we introduce the followi
     It is clear that
     \begin{equation}
         \label{eq:lambda-poisedness-infty-proof-1}
-        \max_{x \in \ball[p](\delta)} \lagp[1](x) = \max_{x \in \ball[p](\delta)} \bigg( 1 - \frac{\norm{x}_2^2}{\delta^2} \bigg) = 1.
+        \max_{\iter \in \ball[p](\delta)} \lagp[1](\iter) = \max_{\iter \in \ball[p](\delta)} \bigg( 1 - \frac{\norm{x}_2^2}{\delta^2} \bigg) = 1.
     \end{equation}
     Moreover, according to \cref{lem:max-norm-pq}, we have
     \begin{subequations}
         \label{eq:lambda-poisedness-infty-proof-2}
-        \begin{empheq}[left={\max\limits_{x \in \ball[p](\delta)} -\lagp[1](x) = \max\limits_{x \in \ball[p](\delta)} \dfrac{\norm{x}_2^2}{\delta^2} - 1 = \empheqlbrace}]{alignat=2}
+        \begin{empheq}[left={\max\limits_{\iter \in \ball[p](\delta)} -\lagp[1](\iter) = \max\limits_{\iter \in \ball[p](\delta)} \dfrac{\norm{x}_2^2}{\delta^2} - 1 = \empheqlbrace}]{alignat=2}
             & 0,                        && \quad \text{if~$p \le 2$,}\\
             & n^{\frac{p - 2}{p}} - 1,  && \quad \text{otherwise.}
         \end{empheq}
