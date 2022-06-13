@@ -12,7 +12,7 @@
 % This work has the LPPL maintenance status `maintained'.
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
-\chapter{\glsfmttext{cobyqa} \textemdash\ a constrained \glsfmtlong{dfo} method}
+\chapter{\glsfmttext{cobyqa} \textemdash\ a new \glsfmtlong{dfo} method}
 \label{ch:cobyqa-introduction}
 
 \section{Statement of the problem}
@@ -21,47 +21,48 @@ In this chapter, we introduce a new model-based \gls{dfo} method for solving non
 \begin{subequations}
     \label{eq:problem-cobyqa}
     \begin{align}
-        \min        & \quad \obj(\iter) \label{eq:problem-cobyqa-obj}\\
+        \min        & \quad \obj(\iter)\\
         \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-ub}\\
                     & \quad \con{i}(\iter) = 0, ~ i \in \ieq,\\
+                    & \quad \xl \le x \le \xu, \label{eq:problem-cobyqa-bd}\\
                     & \quad \iter \in \R^n, \nonumber
     \end{align}
 \end{subequations}
-where the objective and constraint functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, with the sets of indices~$\iub$ and~$\ieq$ being finite (perhaps empty) and disjoint.
-The solver we develop, named~\gls{cobyqa} after \emph{\glsdesc{cobyqa}}, uses only function values of~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, but not derivatives.
+where~$\obj$ and~$\con{i}$ represent the objective and constraint functions ($i \in \iub \cup \ieq$), with the sets of indices~$\iub$ and~$\ieq$ being finite and disjoint, but possibly empty. 
+The bounds~$\xl \in (\R \cup \set{-\infty})^n$ and~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl < \xu$.
 
-\section{Management of bound constraints}
+We will develop a derivative-free trust-region \gls{sqp} method for solving the problem~\cref{eq:problem-cobyqa}.
+The method, named~\gls{cobyqa} after \emph{\glsdesc{cobyqa}}, does not use derivatives of the objective function and the nonlinear constraint functions, but models them using underdetermined interpolation based on the derivative-free symmetric Broyden update (see \cref{subsec:symmetric-broyden-updates}).
+This chapter presents the framework of the method, while the subproblems and the Python implementation will be discussed in \cref{ch:cobyqa-subproblems,ch:cobyqa-implementation}, respectively.
 
-Note that the general inequality constraints~\cref{eq:problem-cobyqa-ub} may include bound constraints.
-In general, the problem~\cref{eq:problem-cobyqa} can be formulated as
+\section{The \glsfmtlong{sqp} (\glsfmtshort{sqp}) method}
+
+We present in this section the basic idea behind the \gls{sqp} method.
+For this discussion, we assume that the derivatives of the objective and constraints functions are available, as is the case in the classical \gls{sqp} method.
+However, we will extend the method to the derivative-free context in \cref{subsec:derivative-free-sqp}.
+
+Note that the problem~\cref{eq:problem-cobyqa} formulates the bound constraints~\cref{eq:problem-cobyqa-bd} explicitely.
+This is important in computation, because it may not be reasonable to handle the bounds in the same way as the others due to their different natures (see \cref{subsec:bound-constraints} for details).
+However, in the theoretical development of this section and the next one (\cref{sec:trust-region}), it is not necessary to distinguish bound constraints from the others.
+Therefore, throughout these two sections, we consider for simplicity a problem of the form
 \begin{subequations}
-    \label{eq:problem-cobyqa-bounds}
+    \label{eq:problem-cobyqa-sqp}
     \begin{align}
-        \min        & \quad \obj(\iter) \label{eq:problem-cobyqa-bounds-obj}\\
-        \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-bounds-ub}\\
+        \min        & \quad \obj(\iter) \label{eq:problem-cobyqa-sqp-obj}\\
+        \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-sqp-ub}\\
                     & \quad \con{i}(\iter) = 0, ~ i \in \ieq,\\
-                    & \quad \xl \le x \le \xu, \label{eq:problem-cobyqa-bounds-bd}\\
-                    & \quad \iter \in \R^n, \nonumber
+                    & \quad \iter \in \R^n. \nonumber
     \end{align}
 \end{subequations}
-where the bounds~$\xl \in (\R \cup \set{-\infty})^n$ and~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl < \xu$.
-The requirement on the bounds is weak, as otherwise, the problem~\cref{eq:problem-cobyqa-bounds} would be either infeasible, or would admit fix variables.
-Of course, when written in this form, the indices of the inequality constraints in~$\iub$ might be different from the one in~\cref{eq:problem-cobyqa}, not to include the bound constraints anymore.
-Note that they are very simple constraints.
-It is, for example, trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-bounds-bd}, and easy to project any point onto the bound constraints.
+where~$\iub$ contains the bound constraints, if any.
 
-In the theoretical development presented hereinafter, we consider problems of the form~\cref{eq:problem-cobyqa} for clarity.
-However, when developing the implementation of \gls{cobyqa}, we consider the bound constraints separatly from the inequality constraints~\cref{eq:problem-cobyqa-bounds-ub}, because they often represent inalienable physical or theoretical restrictions.
-In other words, in many applications, the objective function~\cref{eq:problem-cobyqa-bounds-obj} is not defined if the bounds constraints~\cref{eq:problem-cobyqa-bounds-bd} are violated.
-For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods}) involves a bounds that cannot be violated, as the optimization methods that are tuned may not be defined otherwise.
-Very similar observations can be made on hyperparameter tuning in machine learning (see \cref{subsec:machine-learning}).
-Therefore, every point that \gls{cobyqa} encounters always respects these bounds.
-This is also the case for the \gls{bobyqa} method, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
+\begin{remark}
+    Comparing~\cref{eq:problem-cobyqa} with~\cref{eq:problem-cobyqa-sqp}, we are abusing the notations, because~$\iub$ does not represent the same set of constraints in both.
+    However, this will not generate any confusion in our discussions.
+\end{remark}
 
-\section{The \glsfmtlong{sqp} method}
-
-Throughout this section, we consider problems of the form~\cref{eq:problem-cobyqa}.
-The Lagrangian function of the problem~\cref{eq:problem-cobyqa} is defined by
+Note that the problem~\cref{eq:problem-cobyqa-sqp} is exactly the problem~\cref{eq:problem-introduction} discussed in \cref{ch:introduction} and hence, all the theory mentioned is applicable.
+For our later discussion, recall in particular that the Lagrangian function of this problem is defined by
 \begin{equation*}
     \lag(\iter, \lambda) \eqdef \obj(\iter) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lambda_i \con{i}(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lambda_i \in \R$, with~$i \in \iub \cup \ieq$,}
 \end{equation*}
@@ -69,7 +70,7 @@ where~$\lambda = [\lambda_i]_{i \in \iub \cup \ieq}^{\T}$ is the dual variable o
 
 \subsection{Overview of the method}
 
-The \gls{sqp} method of \citeauthor{Wilson_1963}~\cite{Wilson_1963}, \citeauthor{Han_1976}~\cite{Han_1976,Han_1977}, and \citeauthor{Powell_1978a}~\cite{Powell_1978a,Powell_1978b} is known to be one of the most powerful method for solving the problem~\cref{eq:problem-cobyqa} when derivatives of~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are available.
+The \gls{sqp} method of \citeauthor{Wilson_1963}~\cite{Wilson_1963}, \citeauthor{Han_1976}~\cite{Han_1976,Han_1977}, and \citeauthor{Powell_1978a}~\cite{Powell_1978a,Powell_1978b} is known to be one of the most powerful method for solving the problem~\cref{eq:problem-cobyqa-sqp} when derivatives of~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are available.
 Given an iterate~$\iter[k] \in \R^n$, it generates a step~$d^k \in \R^n$ by solving approximately
 \begin{subequations}
     \label{eq:sqp-subproblem}
@@ -82,13 +83,13 @@ Given an iterate~$\iter[k] \in \R^n$, it generates a step~$d^k \in \R^n$ by solv
 \end{subequations}
 for some Lagrange multiplier~$\lambda^k = [\lambda_i^k]_{i \in \iub \cup \ieq}^{\T}$ with~$\lambda_i^k \in \R$ for~$i \in \iub \cup \ieq$.
 Further, it sets the next iterate~$\iter[k + 1]$ to~$\iter[k] + d^k$.
-If the second-order derivative of~$\lag$ with respect to the decision variables is unavailable, the term~$\nabla^2 \lag_{x, x}(\iter[k], \lambda^k)$ can be replace with an approximation of it (e.g., a quasi-Newton approximation).
-Under some mild assumptions on the regularity of the objective and constraint functions, the \gls{sqp} method is locally Q-superlinearly convergent.
+If~$\nabla_{x, x}^2 \lag(\iter[k], \lambda^k)$ is unavailable or expensive, it can be replaced with an approximation (e.g., a quasi-Newton approximation\todo{Who did it?}).
+Under some mild assumptions on the regularity of the objective and constraint functions, the \gls{sqp} method is locally Q-superlinearly convergent\todo{Who did it? Say that it is also quadratic}.
 
 \subsection{Interpretation of the subproblem}
 
 To get some insight into the origin of the \gls{sqp} method, we now interpret the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}.
-Note that the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} involves the Lagrangian function of problem~\cref{eq:problem-cobyqa} and not only its objective function.
+Note that the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} involves the Lagrangian function of problem~\cref{eq:problem-cobyqa-sqp} and not only its objective function.
 It is in fact necessary due to the possible nonlinearity of the constraints.
 To comprehend this fact, we consider the~$2$-dimensional example of \citeauthor{Boggs_Tolle_1995}~\cite{Boggs_Tolle_1995}
 \begin{align*}
@@ -109,7 +110,7 @@ This behavior is in fact not specific to this example, but is much more general 
 
 \subsubsection{Approximation of the \glsfmtlong{kkt} conditions}
 
-According to \cref{thm:first-order-necessary-conditions}, if~$\iter[\ast] \in \R^n$ is a local solution to the problem~\cref{eq:problem-cobyqa}, under some mild assumptions, there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\T}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
+According to \cref{thm:first-order-necessary-conditions}, if~$\iter[\ast] \in \R^n$ is a local solution to the problem~\cref{eq:problem-cobyqa-sqp}, under some mild assumptions, there exists a Lagrange multiplier~$\lambda^{\ast} = [\lambda_i^{\ast}]_{i \in \iub \cup \ieq}^{\T}$ with~$\lambda_i^{\ast} \in \R$ for all~$i \in \iub \cup \ieq$ such that
 \begin{subequations}
     \label{eq:sqp-kkt}
     \begin{empheq}[left=\empheqlbrace]{alignat=2}
@@ -157,7 +158,7 @@ The \gls{sqp} subproblem~\cref{eq:sqp-subproblem} can then be seen as the minimi
 \subsubsection{Approximation of the augmented Lagrangian}
 
 For clarity, we assume here without loss of generality that~$\ieq = \emptyset$.
-The problem~\cref{eq:problem-cobyqa} can be reformulated by introducing a slack variable~$s = [s_i]_{i \in \iub}^{\T}$ as
+The problem~\cref{eq:problem-cobyqa-sqp} can be reformulated by introducing a slack variable~$s = [s_i]_{i \in \iub}^{\T}$ as
 \begin{align*}
     \min        & \quad \obj(\iter)\\
     \text{s.t.} & \quad \con{i}(\iter) + s_i = 0, ~ i \in \iub,\\
@@ -194,13 +195,14 @@ where~$B_k$ is defined by
     B_k(\lambda) \eqdef \nabla \obj(\iter[k]) + \sum_{i \in \iub} [\lambda_i + \gamma (\con{i}(\iter[k]) + s_i)] \nabla^2 \con{i}(\iter[k]), \quad \text{for~$\lambda_i \in \R$, with~$i \in \iub$.}
 \end{equation*}
 This approximation of~$\lag[\mathsf{A}]$ is the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} if the second-order term in~\cref{eq:sqp-subproblem-obj} included~$B_k(\lambda^k)$ instead of~$\nabla_{x, x}^2 \lag(\iter[k], \lambda^k)$.
-Interestingly, a traditional augmented Lagrangian method for solving the problem~\cref{eq:problem-cobyqa} would update the dual variable~$\lambda^k$ as
+Interestingly, a traditional augmented Lagrangian method for solving the problem~\cref{eq:problem-cobyqa-sqp} would update the dual variable~$\lambda^k$ as
 \begin{equation*}
     \lambda_i^{k + 1} = \lambda_i^k + \gamma (\con{i}(\iter[k]) + s_i), \quad \text{for~$i \in \iub$}.
 \end{equation*}
 Therefore, this approximation of~$\lag[\mathsf{A}]$ can be interpreted as the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} if the second-order term in~\cref{eq:sqp-subproblem-obj} included the updated term~$\nabla_{x, x}^2 \lag(\iter[k], \lambda^{k + 1})$ instead of~$\nabla_{x, x}^2 \lag(\iter[k], \lambda^k)$.
 
 \subsection{A derivative-free \glsfmtlong{sqp} method}
+\label{subsec:derivative-free-sqp}
 
 At the~$k$th iteration, \gls{cobyqa} builds the models~$\objm[k]$ and~$\conm[k]{i}$ of the objective function~$\obj$ and the constraints functions~$\con{i}$, with~$i \in \iub \cup \ieq$, using the derivative-free Broyden updates presented in~\cref{subsec:symmetric-broyden-updates}.
 A poised interpolation set~$\xpt[k] \subseteq \R^n$ is maintained, whose cardinal number is fixed.
@@ -223,6 +225,7 @@ where~$\lagm[k]$ is defined by
 \end{equation*}
 
 \section{The trust-region framework}
+\label{sec:trust-region}
 
 The \gls{sqp} framework suffers from one major deffect: it is a local method.
 Therefore, the convergence of the method cannot be ensured for any initial guess~$\iter[0] \in \R^n$.
@@ -238,7 +241,7 @@ When combining all the information, the trust-region \gls{sqp} subproblem consid
                     & \quad \step \in \R^n,
     \end{align}
 \end{subequations}
-where~$\norm{\cdot}$ denotes the Euclidean norm,~$\rad[k] > 0$ is the current trust-region radius, and~$\lagm[k]$ denotes the Lagrangian function of the problem~\cref{eq:problem-cobyqa}.
+where~$\norm{\cdot}$ denotes the Euclidean norm,~$\rad[k] > 0$ is the current trust-region radius, and~$\lagm[k]$ denotes the Lagrangian function of the problem~\cref{eq:problem-cobyqa-sqp}.
 
 A solution to this subproblem provides a trial step~$d^k \in \R^k$.
 Further, this trial step is either accepted or not, i.e.,~$\iter[k + 1]$ is either set to~$\iter[k] + d^k$ or to~$\iter[k]$, depending on the value of the trust-region ratio.
@@ -309,6 +312,35 @@ The closer from one~$\ratio[k]$ is, the best the~$k$th models perform.
 \subsection{Composite-step approach}
 
 \section{Outline of the \glsfmttext{cobyqa} method}
+
+\subsection{Management of bound constraints}
+\label{subsec:bound-constraints}
+
+Note that the general inequality constraints~\cref{eq:problem-cobyqa-sqp-ub} may include bound constraints.
+In general, the problem~\cref{eq:problem-cobyqa-sqp} can be formulated as
+\begin{subequations}
+    \label{eq:problem-cobyqa-bounds}
+    \begin{align}
+        \min        & \quad \obj(\iter) \label{eq:problem-cobyqa-bounds-obj}\\
+        \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-bounds-ub}\\
+                    & \quad \con{i}(\iter) = 0, ~ i \in \ieq,\\
+                    & \quad \xl \le x \le \xu, \label{eq:problem-cobyqa-bounds-bd}\\
+                    & \quad \iter \in \R^n, \nonumber
+    \end{align}
+\end{subequations}
+where the bounds~$\xl \in (\R \cup \set{-\infty})^n$ and~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl < \xu$.
+The requirement on the bounds is weak, as otherwise, the problem~\cref{eq:problem-cobyqa-sqp-bounds} would be either infeasible, or would admit fix variables.
+Of course, when written in this form, the indices of the inequality constraints in~$\iub$ might be different from the one in~\cref{eq:problem-cobyqa-sqp}, not to include the bound constraints anymore.
+Note that they are very simple constraints.
+It is, for example, trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-sqp-bounds-bd}, and easy to project any point onto the bound constraints.
+
+In the theoretical development presented hereinafter, we consider problems of the form~\cref{eq:problem-cobyqa-sqp} for clarity.
+However, when developing the implementation of \gls{cobyqa}, we consider the bound constraints separatly from the inequality constraints~\cref{eq:problem-cobyqa-sqp-bounds-ub}, because they often represent inalienable physical or theoretical restrictions.
+In other words, in many applications, the objective function~\cref{eq:problem-cobyqa-sqp-bounds-obj} is not defined if the bounds constraints~\cref{eq:problem-cobyqa-sqp-bounds-bd} are violated.
+For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods}) involves a bounds that cannot be violated, as the optimization methods that are tuned may not be defined otherwise.
+Very similar observations can be made on hyperparameter tuning in machine learning (see \cref{subsec:machine-learning}).
+Therefore, every point that \gls{cobyqa} encounters always respects these bounds.
+This is also the case for the \gls{bobyqa} method, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
 
 \subsection{Interpolation-based quadratic models}
 \label{subsec:cobyqa-models}

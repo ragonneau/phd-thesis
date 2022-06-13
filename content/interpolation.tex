@@ -507,9 +507,10 @@ Let~$\delta > 0$ be fixed and for~$j \in \set{1, 2, \dots, 2n + 1}$, let~$z^j \i
 \end{subequations}
 where~$e_j \in \R^n$ denotes the~$j$th standard coordinate vector.
 We then define the interpolation set~$\mathcal{Z}_m \subseteq \R^n$ for each~$m \in \set{n + 2, n + 3, \dots, 2n + 1}$ by
-\begin{equation*}
+\begin{equation}
+    \label{eq:initial-interpolation-set-def}
     \mathcal{Z}_m \eqdef \set{z^1, z^2, \dots, z^m}.
-\end{equation*}
+\end{equation}
 Further, we denote by~$\ball[p][m]$ the smallest~$\ell_p$-norm ball containing~$\mathcal{Z}_m$, for~$p \in [1, \infty]$.
 Note that we allow~$p = \infty$.
 By the construction of~$\mathcal{Z}_m$, we observe that
@@ -525,7 +526,7 @@ In this sense,~$\mathcal{Z}_{2n + 1}$ is an optimal interpolation set.
 
 \subsection{Formulation of the Lagrange polynomials}
 
-According to the~\cref{def:lambda-poisedness-minimum-norm} and the equation~\cref{eq:ball-initial}, the set~$\mathcal{Z}_m$ is~$\Lambda_p$-poised in~$\ball[p][m]$ in the minimum Frobenius norm sense with
+According to \cref{def:lambda-poisedness-minimum-norm} and the equation~\cref{eq:ball-initial}, the set~$\mathcal{Z}_m$ is~$\Lambda_p$-poised in~$\ball[p][m]$ in the minimum Frobenius norm sense with
 \begin{equation*}
     \Lambda_p \eqdef \max_{1 \le i \le m} \max_{\iter \in \ball[p](\delta)} \abs{\lagp[i](\iter)},
 \end{equation*}
@@ -635,6 +636,7 @@ We are now equiped to develop bounds on~$\Lambda_p$ in the general case.
 We now calculate the exact value of~$\Lambda_p$ in some special cases.
 
 \begin{proposition}
+    \label{prop:lambda-poisedness-1}
     For any~$m \in \set{n + 2, n + 3, \dots, 2n + 1}$, we have
     \begin{subequations}
         \label{eq:lambda-poisedness-1}
@@ -674,6 +676,7 @@ We now calculate the exact value of~$\Lambda_p$ in some special cases.
 \end{proof}
 
 \begin{proposition}
+    \label{prop:lambda-poisedness-2}
     For any~$m \in \set{n + 2, n + 3, \dots, 2n + 1}$, we have
     \begin{equation}
         \label{eq:lambda-poisedness-2}
@@ -771,16 +774,16 @@ Before developing the last special value of~$\Lambda_p$ we introduce the followi
 
 \subsection{Concluding remarks}
 
-It is important to note that the last three proposition overlap in the case~$m = 2n + 1$.
-The three of them show that in such a case,~$\Lambda_1 = \Lambda_2 = 1$.
-In fact, the \cref{prop:lambda-poisedness-initial-optimal} shows that~$\Lambda_p = 1$ for all~$p \in [1, 2]$.
+Note that~$\Lambda_p \ge 1$ for any~$p \ge 1$.
+\Cref{prop:lambda-poisedness-initial-optimal} shows that~$\Lambda_p = 1$ for all~$p \in [1, 2]$.
 In this sense,~$\mathcal{Z}_{2n + 1}$ in an optimal interpolation set in~$\ball[p][2n + 1]$ for~$p \in [1, 2]$, because~$\Lambda_p$ attains its lower bound.
+The fact that~$\Lambda_p = 1$ for all~$p \in \set{1, 2}$ is in fact shown also by \cref{prop:lambda-poisedness-1,prop:lambda-poisedness-2}.
 
-In addition,~$m = 2n + 1$ is optimal for~$\mathcal{Z}_m$ in the sense that~$\Lambda_p$ attains the minimum in such a case, when~$p \in [1, 2]$.
-We conjecture that this property is true for all~$\ell_p$-norms, with~$p \ge 1$, but we do not provide any proof of such statement.
+In addition,~$m = 2n + 1$ is optimal for~$\mathcal{Z}_m$ in the sense that~$\Lambda_p$ attains the lower bound~$1$ in such a case, when~$p \in [1, 2]$.
+We conjecture that~$\Lambda_p$ is minimized when~$m = 2n + 1$ for any~$p \ge 1$, but we do not have any proof of such a statement yet.
 
-Thus, \citeauthor{Powell_2001}~\cite{Powell_2001} proposed an extension of~$\mathcal{Z}_m$ in the case~$m > 2n + 1$, which is used by the new method that we introduce in \cref{ch:cobyqa-introduction}.
-Using this extension, the interpolation set~$\mathcal{Z}_m$ is defined for any~$m \in \set{1, 2, \dots, (n + 1) (n + 2) / 2}$.
-Some numerical experiments showed that the value of~$\Lambda_p$ seems to the least also for~$m = 2n + 1$ in this extension.
-However, \cref{lem:lambda-poisedness-initial-simple} does not hold in the case~$m > 2n + 1$, which hence makes the computations substantially more demanding.
-This conjecture is nonetheless an interesting future research direction.
+Note that the definition of~$\mathcal{Z}_m$ in~\cref{eq:initial-interpolation-set,eq:initial-interpolation-set-def} assumes that~$m \le 2n + 1$.
+\Citeauthor{Powell_2001}~\cite{Powell_2001} proposed an extension of~$\mathcal{Z}_m$ in the case~$m > 2n + 1$, and hence,~$\mathcal{Z}_m$ is defined for any~$m \in \set{1, 2, \dots, (n + 1) (n + 2) / 2}$.
+With such an extension, it is interesting to ask whether~$m = 2n + 1$ still minimizes~$\Lambda_p$, which seems to be true according to some numerical experiments.
+We leave this problem open and expect the analysis to be more challenging than what we have done.
+One of the challenges is that \cref{lem:lambda-poisedness-initial-simple} does not hold in the case~$m > 2n + 1$, and hence, the calculations will become more involving.

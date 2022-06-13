@@ -191,13 +191,9 @@
 
 % Automatic references
 % Note: cleveref must be imported after hyperref and algorithm2e
-\RequirePackage[noabbrev]{cleveref}
+\RequirePackage[noabbrev,capitalize]{cleveref}
 \crefname{equation}{}{}
 \Crefname{equation}{}{}
-\crefname{lemma}{lemma}{lemmas}
-\Crefname{lemma}{Lemma}{Lemmas}
-\crefname{problem}{problem}{problems}
-\Crefname{problem}{Problem}{Problems}
 
 % Plots and graphs
 \RequirePackage{tikz}
