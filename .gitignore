@@ -311,3 +311,9 @@ fabric.properties
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# vsCode
+.vscode/
+.history/
+*.vsix
+
