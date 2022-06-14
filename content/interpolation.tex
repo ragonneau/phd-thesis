@@ -223,7 +223,6 @@ where~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm.
 This norm is chosen because it can be easily evaluated, unlike the spectral norm for example.
 The Frobenius norm also brings computational advantages, because~\cref{eq:least-frobenius-norm-models} is essentially a quadratic programming problem, which can be tackled by solving a linear system.
 Examples of \gls{dfo} methods that use least Frobenius norm quadratic models include \gls{mnh}~\cite{Wild_2008} and \gls{dfoalg}~\cite{Conn_Scheinberg_Toint_1997a,Conn_Scheinberg_Toint_1997b,Conn_Scheinberg_Toint_1998}.
-% https://www.zhangzk.net/docs/publications/2014snq.pdf
 We also assume hereafter that~$m \ge n + 2$ as otherwise, any solution to~\cref{eq:least-frobenius-norm-models} would be linear.
 
 We first present the notion of poisedness for problem~\cref{eq:least-frobenius-norm-models} as follows.
@@ -240,15 +239,13 @@ Given any fix~$\bar{x} \in \R^n$, we expand a quadratic polynomial~$Q \in \qpoly
 \end{equation*}
 where~$\alpha \in \R$,~$g \in \R^n$, and~$H \in \R^{n \times n}$ are the coefficients of~$Q$, with~$H$ being symmetric.
 Note that the constraint~\cref{eq:least-frobenius-norm-models-eq} is linear with respect to~$(\alpha, g, H)$.
-% Moreover, the Frobenius norm is convex, so that the problem~\cref{eq:least-frobenius-norm-models} is convex.
-% In this setting, we can show that the \gls{kkt} conditions~\cref{eq:kkt-introduction} given in \cref{thm:first-order-necessary-conditions} are necessary and sufficient.
 Consequently, the problem~\cref{eq:least-frobenius-norm-models} is a convex quadratic problem with equality constraints.
 We then consider its \gls{kkt} system.
-Let~$\lambda = [\lambda_1, \lambda_2, \dots, \lambda_m]^{\T}$ be the Lagrange multiplier of~\cref{eq:least-frobenius-norm-models}.
+Let~$\lm = [\lm_1, \lm_2, \dots, \lm_m]^{\T}$ be the Lagrange multiplier of~\cref{eq:least-frobenius-norm-models}.
 The stationarity condition~\cref{eq:kkt-introduction-stationarity} can be formulated as
 \begin{equation}
     \label{eq:least-frobenius-norm-kkt}
-    \sum_{i = 1}^m \lambda_i (y^i - \bar{x}) (y^i - \bar{x})^{\T} = H, \quad \sum_{i = 1}^m \lambda_i = 0, \quad \text{and} \quad \sum_{i = 1}^m \lambda_i (y^i - \bar{x}) = 0.
+    \sum_{i = 1}^m \lm_i (y^i - \bar{x}) (y^i - \bar{x})^{\T} = H, \quad \sum_{i = 1}^m \lm_i = 0, \quad \text{and} \quad \sum_{i = 1}^m \lm_i (y^i - \bar{x}) = 0.
 \end{equation}
 Combining~\cref{eq:least-frobenius-norm-kkt} with the primal feasibility condition~\cref{eq:kkt-introduction-primal-feasibility-eq}, we obtain
 \begin{equation}
@@ -259,7 +256,7 @@ Combining~\cref{eq:least-frobenius-norm-kkt} with the primal feasibility conditi
         Y_L     & 0 & 0
     \end{bmatrix}
     \begin{bmatrix}
-        \lambda\\
+        \lm\\
         \alpha\\
         g
     \end{bmatrix}
@@ -279,9 +276,8 @@ where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\T}$,~$e \in 
     \end{bmatrix} \quad \text{and} \quad Y_H \eqdef \frac{1}{2} (Y_L^{\T} Y_L) \circ (Y_L^{\T} Y_L).
 \end{equation}
 In~\cref{eq:least-frobenius-kkt-system-matrices},~$\circ$ denotes the Hadamard product and hence, the~$(i, j)$ entry of~$Y_H$ is given by~$[(y^i - \bar{x})^{\T} (y^j - \bar{x})]^2 / 2$.
-In fact, the problem~\cref{eq:least-frobenius-norm-models} is equivalent to the linear system~\cref{eq:least-frobenius-kkt-system}, where the matrix~$H$ can be retrieved from the value of~$\lambda$ by~\cref{eq:least-frobenius-norm-kkt}~\cite[\S~2]{Powell_2004b}, and the interpolation set~$\xpt$ is poised if and only if the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is nonsingular~\cite[\S~5.3]{Conn_Scheinberg_Vicente_2009b}.
+In fact, the problem~\cref{eq:least-frobenius-norm-models} is equivalent to the linear system~\cref{eq:least-frobenius-kkt-system}, where the matrix~$H$ can be retrieved from the value of~$\lm$ by~\cref{eq:least-frobenius-norm-kkt}~\cite[\S~2]{Powell_2004b}, and the interpolation set~$\xpt$ is poised if and only if the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is nonsingular~\cite[\S~5.3]{Conn_Scheinberg_Vicente_2009b}.
 Since the poisedness of~$\xpt$ does not depends on the choice of~$\bar{x}$, neither does the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
-% In fact,~\cite{Conn_Scheinberg_Vicente_2009b} defines the poisedness of~$\xpt$ as the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
 
 Any interpolation set that is poised in the sense of \cref{def:poisedness} must be affinely independent, i.e., it does not lie in a low-dimensional affine subset of~$\R^n$, because the matrix~$[e, Y_L^{\T}]$ has full-column rank according to the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
 Even if~$\xpt$ is not poised, the full-rankness of~$[e, Y_L^{\T}]$ holds as long as the solution to~\cref{eq:least-frobenius-norm-models} is unique when~$f \equiv 0$.
@@ -410,7 +406,7 @@ As discussed in \cref{subsec:least-frobenius-norm-models}, thanks to~\cref{eq:sy
         Y_L     & 0 & 0
     \end{bmatrix}
     \begin{bmatrix}
-        \lambda\\
+        \lm\\
         \alpha\\
         g
     \end{bmatrix}
@@ -431,12 +427,12 @@ where~$v \in \R^m$ is defined by
         \obj(y^{k, m}) - \objm[k - 1](y^{k, m})
     \end{bmatrix}.
 \end{equation*}
-If~$\lambda$,~$\alpha$, and~$g$ solve the system~\cref{eq:least-frobenius-kkt-system-2}, then the model's coefficients can be evaluated by
+If~$\lm$,~$\alpha$, and~$g$ solve the system~\cref{eq:least-frobenius-kkt-system-2}, then the model's coefficients can be evaluated by
 \begin{subequations}
     \begin{empheq}[left=\empheqlbrace]{alignat=1}
         & \alpha^k = \objm[k - 1](\iter[k]) + \alpha,\\
         & g^k = \nabla \objm[k - 1](\iter[k]) + g,\\
-        & H^k = \nabla^2 \objm[k - 1] + \sum_{i = 1}^m \lambda_i (y^{k, i} - \iter[k]) (y^{k, i} - \iter[k])^{\T}. \label{eq:derivative-free-symmetric-broyden-hessian}
+        & H^k = \nabla^2 \objm[k - 1] + \sum_{i = 1}^m \lm_i (y^{k, i} - \iter[k]) (y^{k, i} - \iter[k])^{\T}. \label{eq:derivative-free-symmetric-broyden-hessian}
     \end{empheq}
 \end{subequations}
 
@@ -460,8 +456,8 @@ The explicit and implicit parts of~$H^k$ can then be updated as
     \label{eq:hessian-explicit-implicit-update}
     \begin{empheq}[left=\empheqlbrace]{alignat=1}
         & \Gamma^{k + 1} = \Gamma^k + \gamma_{\ell}^k (y^{k, \ell} - \iter[k]) (y^{k, \ell} - \iter[k])^{\T},\\
-        & \gamma_{i}^{k + 1} = \gamma_{i}^k + \lambda_{i}, \quad \text{for~$i \in \set{1, 2, \dots, m} \setminus \set{\ell}$},\\
-        & \gamma_{\ell}^{k + 1} = \lambda_{\ell}.
+        & \gamma_{i}^{k + 1} = \gamma_{i}^k + \lm_i, \quad \text{for~$i \in \set{1, 2, \dots, m} \setminus \set{\ell}$},\\
+        & \gamma_{\ell}^{k + 1} = \lm_{\ell}.
     \end{empheq}
 \end{subequations}
 In doing so, updating a quadratic model requires only~$\bigo(n^2)$ basic operations, after solving the linear system~\cref{eq:least-frobenius-kkt-system-2}.
@@ -668,8 +664,8 @@ We now calculate the exact value of~$\Lambda_p$ in some special cases.
         \label{eq:eq:lambda-poisedness-1-proof-2}
         \begin{align}
             \lagp[1](\iter) &= 1 - \sum_{j = 1}^{m - n - 1} \frac{x_j^2}{\delta^2} - \sum_{j = m - n}^n \frac{x_j}{\delta}\\
-                        &\ge 1 - \sum_{j = 1}^{m - n - 1} \frac{\abs{x_j}}{\delta} - \sum_{j = m - n}^n \frac{\abs{x_j}}{\delta}\\
-                        &\ge 1 - \frac{\norm{x}_1}{\delta} \ge 0.
+                            &\ge 1 - \sum_{j = 1}^{m - n - 1} \frac{\abs{x_j}}{\delta} - \sum_{j = m - n}^n \frac{\abs{x_j}}{\delta}\\
+                            &\ge 1 - \frac{\norm{x}_1}{\delta} \ge 0.
         \end{align}
     \end{subequations}
     We conclude the proof by combining~\cref{eq:eq:lambda-poisedness-1-proof-1,eq:eq:lambda-poisedness-1-proof-2} with~\cref{lem:lambda-poisedness-initial-simple}.
@@ -696,12 +692,12 @@ We now calculate the exact value of~$\Lambda_p$ in some special cases.
     \begin{subequations}
         \begin{align}
             \lagp[1](\iter) &= 1 - \frac{1}{\delta^2} \sum_{j = 1}^{m - n - 1} x_j^2 - \frac{1}{\delta} \sum_{j = m - n}^n x_j\\
-                        &\ge 1 - \frac{1}{\delta^2} \bigg( \delta^2 - \sum_{j = m - n}^n x_j^2 \bigg) - \frac{1}{\delta} \sum_{j = m - n}^n x_j = \sum_{j = m - n}^n \frac{x_j}{\delta} \bigg( 1 - \frac{x_j}{\delta} \bigg)\\
-                        &\ge \min_{y \in \ball[2](1)} \sum_{j = m - n}^n y_j (1 - y_j). \label{eq:lambda-poisedness-initial-2-proof}
+                            &\ge 1 - \frac{1}{\delta^2} \bigg( \delta^2 - \sum_{j = m - n}^n x_j^2 \bigg) - \frac{1}{\delta} \sum_{j = m - n}^n x_j = \sum_{j = m - n}^n \frac{x_j}{\delta} \bigg( 1 - \frac{x_j}{\delta} \bigg)\\
+                            &\ge \min_{y \in \ball[2](1)} \sum_{j = m - n}^n y_j (1 - y_j). \label{eq:lambda-poisedness-initial-2-proof}
         \end{align}
     \end{subequations}
     Let~$y^{\ast} \in \ball[2](1)$ be a minimizer in~\cref{eq:lambda-poisedness-initial-2-proof}.
-    \Cref{thm:first-order-necessary-conditions} ensures that there exists a Lagrange multiplier~$\lambda^{\ast} \ge 0$ such that~$1 - 2 y_j^{\ast} + 2 \lambda^{\ast} y_j^{\ast} = 0$ for all~$j \in \set{m - n, \dots, n}$.
+    \Cref{thm:first-order-necessary-conditions} ensures that there exists a Lagrange multiplier~$\lm[\ast] \ge 0$ such that~$1 - 2 y_j^{\ast} + 2 \lm[\ast] y_j^{\ast} = 0$ for all~$j \in \set{m - n, \dots, n}$.
     Therefore, the last~$(2n + 1 - m)$ components of~$y^{\ast}$ are equal, and hence,
     \begin{align*}
         \lagp[1](\iter) \ge \min_{y \in \ball[2](1)} \sum_{j = m - n}^n y_j (1 - y_j)   &= \min_{t \in \R} \set{(2n + 1 - m) t (1 - t) : (2n + 1 - m) t^2 \le 1}\\

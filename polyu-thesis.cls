@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/06/13 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/06/14 PolyU thesis document class]
 
 % Load book class as basis
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
@@ -181,6 +181,7 @@
     longend,%
     linesnumbered,%
 ]{algorithm2e}
+\renewenvironment{algorithm}[1][htbp]{\begin{algocf@algorithm}[#1]\begin{onehalfspace}}{\end{onehalfspace}\end{algocf@algorithm}}
 \renewenvironment{algomathdisplay}{\begin{equation*}}{\@endalgocfline\end{equation*}\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
 \newenvironment{algomathalign}[1]{\align #1}{\@endalgocfline\endalign\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
 \newenvironment{algomathalign*}[1]{\start@align\@ne\st@rredtrue\m@ne #1}{\@endalgocfline\endalign\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}

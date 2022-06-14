@@ -1,0 +1,37 @@
+{
+    "latex-workshop.latex.autoBuild.cleanAndRetry.enabled": true,
+    "latex-workshop.latex.autoBuild.run": "onFileChange",
+    "latex-workshop.latex.autoClean.run": "onFailed",
+    "latex-workshop.latex.build.forceRecipeUsage": true,
+    "latex-workshop.latex.clean.args": [
+        "-c", 
+        "%TEX%",
+    ],
+    "latex-workshop.latex.clean.command": "latexmk",
+    "latex-workshop.latex.clean.method": "cleanCommand",
+    "latex-workshop.latex.clean.subfolder.enabled": true,
+    "latex-workshop.latex.recipes":[
+        {
+            "name": "latexmk",
+            "tools": [
+                "latexmk"
+            ],
+        },
+    ],
+    "latex-workshop.latex.tools": [
+        {
+            "name": "latexmk",
+            "command": "latexmk",
+            "args": [
+                "-file-line-error",
+                "-halt-on-error",
+                "-interaction=nonstopmode",
+                "-shell-escape",
+                "-synctex=1",
+            ],
+            "env": {},
+        },
+    ],
+    "latex-workshop.view.pdf.color.dark.backgroundColor": "rgba(42, 42, 46, 1)",
+    "latex-workshop.view.pdf.viewer": "browser",
+}
