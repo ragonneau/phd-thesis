@@ -71,18 +71,15 @@ where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$ is the dual variable of the co
 \subsection{Overview of the method}
 
 The \gls{sqp} method is known to be one of the most powerful method for solving the problem~\cref{eq:problem-cobyqa-sqp} when derivatives of~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are available.
-The first reference of such a method appears to be in the Ph.D. thesis of \citeauthor{Wilson_1963}~\cite{Wilson_1963}.
-The \gls{sqp} method was also introduced by \citeauthor{Biggs_1975}~\cite{Biggs_1975}, and later modified using quasi-Newton approximations by \citeauthor{Garcia-Palomares_Mangasarian_1976}~\cite{Garcia-Palomares_Mangasarian_1976}.
-The theoretical properties of the \gls{sqp} method were thus shown by \citeauthor{Han_1976}~\cite{Han_1976,Han_1977} and \citeauthor{Powell_1978a}~\cite{Powell_1978a,Powell_1978b,Powell_1978c}.
 The classical \gls{sqp} framework is presented in \cref{alg:sqp}.
 
 \begin{algorithm}
     \caption{Classical \glsfmtshort{sqp} method}
     \label{alg:sqp}
     \DontPrintSemicolon
-    \KwData{Initial guess~$\iter[0] \in \R^n$.}
+    \KwData{Initial guess~$\iter[0] \in \R^n$ and estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$.}
     \For{$k = 0, 1, \dots$}{
-        Define~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ for some Lagrange multiplier~$\lm[k] = [\lm[k]_i]_{i \in \iub \cup \ieq}^{\T}$ \nllabel{alg:sqp-hessian}\;
+        Define~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$\;
         Generate a step~$\step[k] \in \R^n$ by solving approximately
         \begin{subequations}
             \label{eq:sqp-subproblem}
@@ -93,35 +90,52 @@ The classical \gls{sqp} framework is presented in \cref{alg:sqp}.
                             & \quad \step \in \R^n, \nonumber
             \end{algomathalign}
         \end{subequations}
-        Set~$\iter[k + 1] \gets \iter[k] + \step[k]$\;
+        Update the iterate~$\iter[k + 1] \gets \iter[k] + \step[k]$\;
+        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$
     }
 \end{algorithm}
 
-The matrix~$H^k$ in \cref{alg:sqp-hessian} is usually either the exact Hessian, or a quasi-Newton approximation if~$\nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ is expensive.
-Under some mild assumptions on the regularity of the objective and constraint functions, the \gls{sqp} method is locally Q-superlinearly convergent.
-Moreover, if~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ and if the Lagrange multiplier~$\lm[k]$ is close enough from a true Lagrange multiplier at the solution towards which~$\set{\iter[k]}_{k \ge 0}$ converges, then the convergence is Q-quadratic.
+The ealiest reference of such a method appeared in the Ph.D. thesis of \citeauthor{Wilson_1963}~\cite{Wilson_1963}, with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
+\Citeauthor{Robinson_1974}~\cite{Robinson_1974} showed the local R-quadratic convergence rate of this method.
+% Check for Q-quadratic convergence.
+Later on, \citeauthor{Garcia-Palomares_Mangasarian_1976}~\cite{Garcia-Palomares_1973,Garcia-Palomares_Mangasarian_1976} modified it using a quasi-Newton update for calculating~$H^k$, and established a local R-superlinear convergence rate for such an algorithm.
+A similar method was introduced by \citeauthor{Han_1976}~\cite{Han_1976,Han_1977}, but he only approximated~$\nabla_{x, x}^2 \lag(\iter[k], \lm[k])$, while \citeauthor{Garcia-Palomares_Mangasarian_1976} applied quasi-Newton approximations to the whole matrix~$\nabla^2 \lag(\iter[k], \lm[k])$.
+In addition, \citeauthor{Han_1976} introduced a line-search strategy to guarantee the global convergence and local Q-superlinear convergence rate, requiring that~$\nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast])$ is positive definite at the solution~$(\iter[\ast], \lm[\ast])$.
+\Citeauthor{Powell_1978a}~\cite{Powell_1978b,Powell_1978a,Powell_1978c} studied the method along the same direction.
+In particular, he proposed to apply the damped BFGS quasi-Newton formula~\cite[eq.~(5.8),~(5.9), and~(5.10)]{Powell_1978b} to update~$H^k$.
+This formula guarantees the positive definiteness of such a matrix, which is beneficial in practice and in theory (see the comments towards the end of~\cite[\S~2]{Powell_1978a}).
+Moreover, he introduced a practical line-search technique based on a merit function suggested by \citeauthor{Han_1976}~\cite{Han_1976}.
+Furthermore, \citeauthor{Powell_1978c} established the global convergence and the local R-superlinear convergence rate for his method, without requiring the positive definiteness of~$\nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast])$ as \citeauthor{Han_1976} did.
+Recognizing the controbutions of \citeauthor{Wilson_1963}, \Citeauthor{Han_1976}, and \citeauthor{Powell_1978a}, the \gls{sqp} method is also referred to as the Wilson-Han-Powell method~\cite{Schittkowski_1981,Burke_1992}.
+See~\cite{Boggs_Tolle_1995} for a more detailed review on the history, theory, and practice of the \gls{sqp} method.
 
 \subsection{Interpretation of the subproblem}
 
 To get some insight into the origin of the \gls{sqp} method, we now interpret the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}.
-Note that the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} involves the Lagrangian function of problem~\cref{eq:problem-cobyqa-sqp} and not only its objective function.
+Note that the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} involves the Lagrangian function~$\lag$ of problem~\cref{eq:problem-cobyqa-sqp}, not only~$\obj$.
 It is in fact necessary due to the possible nonlinearity of the constraints.
-To comprehend this fact, we consider the~$2$-dimensional example of \citeauthor{Boggs_Tolle_1995}~\cite{Boggs_Tolle_1995}
+To comprehend this fact, we consider the~$2$-dimensional example of \citeauthor{Boggs_Tolle_1995}~\cite[\S~2.2]{Boggs_Tolle_1995}
 \begin{align*}
     \min        & \quad -x_1 - \frac{x_2^2}{2}\\
     \text{s.t.} & \quad \norm{x}^2 - 1 = 0,\\
                 & \quad \iter \in \R^2,
 \end{align*}
-whose solution is~$[1, 0]^{\T}$.
-Given a perturbation~$\epsilon > 0$ and an iterate~$\iter[k] = [1 + \epsilon, 0]^{\T}$, if the second-order term in~\cref{eq:sqp-subproblem-obj} included only~$\nabla^2 \obj(\iter[k])$, the \gls{sqp} subproblem would be
-\begin{align*}
-    \min        & \quad -\step_1 - \frac{\step_2^2}{2}\\
-    \text{s.t.} & \quad \step_1 = -\frac{\epsilon (2 + \epsilon)}{2 (1 + \epsilon)},\\
-                & \quad \step \in \R^2,
-\end{align*}
-which is unbounded from below, regardless of the magnitude of~$\epsilon$.
-Therefore, in this example, including the Lagrangian function in the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} is crucial.
-This behavior is in fact not specific to this example, but is much more general (see, e.g., \cite[ch.~18]{Nocedal_Wright_2006}).
+whose solution is~$\iter[\ast] = [1, 0]^{\T}$.
+Given a perturbation~$\epsilon \ge 0$ and an point~$\iter[k] = [1 + \epsilon, 0]^{\T}$, if the second-order term in~\cref{eq:sqp-subproblem-obj} included only~$\nabla^2 \obj(\iter[k])$, the \gls{sqp} subproblem would be
+\begin{subequations}
+    \begin{align}
+        \min        & \quad -\step_1 - \frac{\step_2^2}{2} \label{eq:boggs-tolle-sp-obj}\\
+        \text{s.t.} & \quad \step_1 = -\frac{\epsilon (2 + \epsilon)}{2 (1 + \epsilon)}, \label{eq:boggs-tolle-sp-eq}\\
+                    & \quad \step \in \R^2. \nonumber
+    \end{align}
+\end{subequations}
+This subproblem is unbounded from below, regardless of the magnitude of~$\epsilon$.
+In addition, the more~$\step$ reduces~\cref{eq:boggs-tolle-sp-obj}, the larger~$\norm{\iter[k] + d - \iter[\ast]}$ is.
+Moreover, if~$\epsilon = 0$, we have~$\iter[k] = \iter[\ast]$, but any feasible direction~$d$ for~\cref{eq:boggs-tolle-sp-eq} will push~$\iter[k] + d$ away from~$\iter[\ast]$, unless~$d$ is the global maximum of~\cref{eq:boggs-tolle-sp-obj} subject to~\cref{eq:boggs-tolle-sp-eq}.
+Therefore, as indicated by this example, including the Lagrangian function in the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} is crucial.
+% In addition, it seems to indicate that a large modification of the second component of~$\iter[k]$ must be made, although~$\iter[k]_2 = \iter[\ast]_2$.
+% Therefore, in this example, including the Lagrangian function in the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} is crucial.
+% This behavior is in fact not specific to this example, but is much more general (see, e.g., \cite[ch.~18]{Nocedal_Wright_2006}).
 
 \subsubsection{Approximation of the \glsfmtlong{kkt} conditions}
 
@@ -163,12 +177,12 @@ where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$, and where~$\delta_i^k$, for~$
     \delta_i^k(\iter) \eqdef \con{i}(\iter) - \con{i}(\iter[k]) - \nabla \con{i}(\iter[k])^{\T} (\iter - \iter[k]), \quad \text{for~$\iter \in \R^n$.}
 \end{equation*}
 The \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ can then be seen as the minimization of the second-order Taylor approximation of~$\lag[k]$ subject to the linearized constraints, i.e.,
-\begin{align}
+\begin{align*}
     \min        & \quad \nabla_x \lag[k](\iter[k], \lm[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag[k](\iter[k], \lm[k]) \step\\
     \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
                 & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
                 & \quad \step \in \R^n.
-\end{align}
+\end{align*}
 
 \subsubsection{Approximation of the augmented Lagrangian}
 
@@ -300,7 +314,7 @@ Details on the merit functions employed by \gls{cobyqa} is given in \cref{subsec
             Choose a point~$\bar{y} \in \xpt[k] \setminus \set{\iter[k]}$ to remove from~$\xpt[k]$\;
         }
         Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k] \setminus \set{\bar{y}}) \cup \set{\iter[k] + \step[k]}$\;
-        Update the current step~$\iter[k + 1] \gets \argmin \set{\merit[k](y)}_{y \in \xpt[k + 1]}$\;
+        Update the current iterate~$\iter[k + 1] \gets \argmin \set{\merit[k](y)}_{y \in \xpt[k + 1]}$\;
         Calculate~$\rad[k + 1]$ according to the values of~$\ratio[k]$ and~$\rad[k]$ \nllabel{alg:derivative-free-trust-region-sqp-radius}\;
     }
 \end{algorithm}
@@ -318,7 +332,7 @@ If we were naively adapting the trust-region framework for unconstrained optimiz
 However, this would not take into account the fact that~$\merit[k]$ might differ from~$\merit[k - 1]$.
 Therefore,~$\iter[k + 1]$ might not be the best point in~$\xpt[k + 1]$ according to~$\merit[k]$.
 In \cref{alg:derivative-free-trust-region-sqp} however,~$\iter[k + 1]$ is always the best point in~$\xpt[k + 1]$.
-Moreover, note that~$\iter[k + 1]$ necessarily contains~$\iter[k] + \step[k]$, and also contain~$\iter[k]$ if~$\ratio[k] < 0$.
+Moreover, note that~$\xpt[k + 1]$ necessarily contains~$\iter[k] + \step[k]$, and also contain~$\iter[k]$ if~$\ratio[k] < 0$.
 Thus, our adaptation of the trust-region framework for unconstrained optimization is reasonable.
 
 \subsection{Updating the trust-region radius}
@@ -365,6 +379,11 @@ Thus, our adaptation of the trust-region framework for unconstrained optimizatio
 \end{algorithm}
 
 \subsection{Composite-step approach}
+
+\begin{itemize}
+    \item The Vardi-like approach~\cite{Vardi_1985} is similar to an idea proposed by Powell~\cite[eq.~(2.7) and~(2.8)]{Powell_1978a}.
+    The inactive constraints are not modified by Powell.
+\end{itemize}
 
 \subsection{Geometry-improving iterations}
 \label{subsec:geometry-improving-iterations}

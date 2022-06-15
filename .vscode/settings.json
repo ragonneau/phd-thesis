@@ -33,5 +33,6 @@
         },
     ],
     "latex-workshop.view.pdf.color.dark.backgroundColor": "rgba(42, 42, 46, 1)",
+    "latex-workshop.view.pdf.color.light.backgroundColor": "rgba(128, 128, 128, 1)",
     "latex-workshop.view.pdf.viewer": "browser",
 }
