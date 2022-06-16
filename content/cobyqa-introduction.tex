@@ -121,7 +121,7 @@ To comprehend this fact, we consider the~$2$-dimensional example of \citeauthor{
                 & \quad \iter \in \R^2,
 \end{align*}
 whose solution is~$\iter[\ast] = [1, 0]^{\T}$.
-Given a perturbation~$\epsilon \ge 0$ and an point~$\iter[k] = [1 + \epsilon, 0]^{\T}$, if the second-order term in~\cref{eq:sqp-subproblem-obj} included only~$\nabla^2 \obj(\iter[k])$, the \gls{sqp} subproblem would be
+Given a perturbation~$\epsilon \ge 0$ and an iterate~$\iter[k] = [1 + \epsilon, 0]^{\T}$, if the second-order term in~\cref{eq:sqp-subproblem-obj} included only~$\nabla^2 \obj(\iter[k])$, the \gls{sqp} subproblem would be
 \begin{subequations}
     \begin{align}
         \min        & \quad -\step_1 - \frac{\step_2^2}{2} \label{eq:boggs-tolle-sp-obj}\\
@@ -133,9 +133,6 @@ This subproblem is unbounded from below, regardless of the magnitude of~$\epsilo
 In addition, the more~$\step$ reduces~\cref{eq:boggs-tolle-sp-obj}, the larger~$\norm{\iter[k] + d - \iter[\ast]}$ is.
 Moreover, if~$\epsilon = 0$, we have~$\iter[k] = \iter[\ast]$, but any feasible direction~$d$ for~\cref{eq:boggs-tolle-sp-eq} will push~$\iter[k] + d$ away from~$\iter[\ast]$, unless~$d$ is the global maximum of~\cref{eq:boggs-tolle-sp-obj} subject to~\cref{eq:boggs-tolle-sp-eq}.
 Therefore, as indicated by this example, including the Lagrangian function in the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} is crucial.
-% In addition, it seems to indicate that a large modification of the second component of~$\iter[k]$ must be made, although~$\iter[k]_2 = \iter[\ast]_2$.
-% Therefore, in this example, including the Lagrangian function in the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} is crucial.
-% This behavior is in fact not specific to this example, but is much more general (see, e.g., \cite[ch.~18]{Nocedal_Wright_2006}).
 
 \subsubsection{Approximation of the \glsfmtlong{kkt} conditions}
 
@@ -150,7 +147,7 @@ According to \cref{thm:first-order-necessary-conditions}, if~$\iter[\ast] \in \R
         & \lm[\ast]_i \ge 0,                            && \quad \text{if~$i \in \iub$.}
     \end{empheq}
 \end{subequations}
-Let~$(\iter[k], \lm[k])$ be some approximation of~$(\iter[\ast], \lm[\ast])$, and let~$(\step, u^k)$ satisfy
+Let~$(\iter[k], \lm[k])$ be some approximation of~$(\iter[\ast], \lm[\ast])$, and let~$(\step[k], u^k)$ satisfy
 \begin{subequations}
     \label{eq:sqp-kkt-step}
     \begin{empheq}[left=\empheqlbrace]{alignat=2}
@@ -164,6 +161,10 @@ Let~$(\iter[k], \lm[k])$ be some approximation of~$(\iter[\ast], \lm[\ast])$, an
 Note that this conditions resemble closely the first-order Taylor approximation at~$(\iter[k], \lm[k])$ of~\cref{eq:sqp-kkt}, in which case~$(\step, u^k)$ would be a Newton-Raphson step.
 However, the condition~\cref{eq:sqp-kkt-step-complementary-slackness} is not directly the linearization of~\cref{eq:sqp-kkt-complementary-slackness}, but it includes the second-order term~$u_i^k \nabla \con{i}(\iter[k])^{\T} \step$.
 We thus remark that the conditions~\cref{eq:sqp-kkt-step} are nothing but the \gls{kkt} conditions of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} associated with the Lagrange multiplier~$\lm[k] + u^k$ with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
+
+When~$\iub = \emptyset$, the \gls{sqp} method is exactly equivalent to the Newton-Raphson method and when~$\iub \neq \emptyset$, it is a slight modification of it.
+We finally make the two following remarks.
+We had a second-order term to the linearization of~\cref{eq:sqp-kkt-complementary-slackness}, but this term is included in the second-order development of~\cref{eq:sqp-kkt-complementary-slackness}, and make the expression~\cref{eq:sqp-kkt-step-complementary-slackness} bilinear.
 
 \subsubsection{Approximation of a modified Lagrangian}
 
@@ -256,16 +257,15 @@ The derivative-free \gls{sqp} method we consider is presented in \cref{alg:deriv
     \For{$k = 0, 1, \dots$}{
         Evaluate~$\objm[k]$ and~$\conm[k]{i}$ for~$i \in \iub \cup \ieq$ by underdetermined interpolation on~$\xpt[k]$\;
         Generate a step~$\step[k] \in \R^n$ by solving approximately
-        \begin{subequations}
-            \begin{algomathalign*}
-                \min        & \quad \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
-                \text{s.t.} & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
-                            & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
-                            & \quad \step \in \R^n,
-            \end{algomathalign*}
-        \end{subequations}
+        \begin{algomathalign*}
+            \min        & \quad \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
+            \text{s.t.} & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
+                        & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
+                        & \quad \step \in \R^n,
+        \end{algomathalign*}
         Replace a point in~$\xpt[k]$ by~$\iter[k + 1]$ to obtain~$\xpt[k + 1]$ \nllabel{alg:derivative-free-sqp-set}\;
-        Set~$\iter[k + 1] \gets \iter[k] + \step[k]$\;
+        Update the iterate~$\iter[k + 1] \gets \iter[k] + \step[k]$\;
+        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$\;
     }
 \end{algorithm}
 
@@ -296,13 +296,14 @@ Details on the merit functions employed by \gls{cobyqa} is given in \cref{subsec
         Evaluate~$\objm[k]$ and~$\conm[k]{i}$ for~$i \in \iub \cup \ieq$ by underdetermined interpolation on~$\xpt[k]$\;
         Generate a step~$\step[k] \in \R^n$ by solving approximately
         \begin{subequations}
-            \begin{algomathalign*}
+            \label{eq:trust-region-sqp-subproblem}
+            \begin{algomathalign}
                 \min        & \quad \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step \label{derivative-free-trust-region-sqp-subproblem-obj}\\
                 \text{s.t.} & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
                             & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
                             & \quad \norm{\step} \le \rad[k],\\
                             & \quad \step \in \R^n,
-            \end{algomathalign*}
+            \end{algomathalign}
         \end{subequations}
         Evaluate the trust-region ratio
         \begin{algomathdisplay}
@@ -335,17 +336,26 @@ In \cref{alg:derivative-free-trust-region-sqp} however,~$\iter[k + 1]$ is always
 Moreover, note that~$\xpt[k + 1]$ necessarily contains~$\iter[k] + \step[k]$, and also contain~$\iter[k]$ if~$\ratio[k] < 0$.
 Thus, our adaptation of the trust-region framework for unconstrained optimization is reasonable.
 
-\subsection{Updating the trust-region radius}
+\subsection{Managing the trust-region radius}
 \label{subsec:trust-region-radius}
 
-\begin{itemize}
-    \item We employ two trust-region radii.
-\end{itemize}
+Inspired by the performance of \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa} (see \cref{subsec:uobyqa,subsec:newuoa-bobyqa-lincoa}), we employ the following paradigm for managing the trust-region radius, proposed by Powell~\cite{Powell_2002,Powell_2006,Powell_2009}.
+It consists in maintaining both the trust-region radius~$\rad[k] > 0$ and a lower-bound of it~$\radlb[k] > 0$.
+The idea behind this technique is to use~$\rad[k]$ as the trust-region radius in the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem}, and~$\radlb[k]$ to maintain an adequate distance between the points in~$\xpt[k]$.
+Further, the method never increases~$\radlb[k]$, but adapt the value of~$\rad[k]$ in a typical trust-region way.
+Of course, the method always ensures that~$\rad[k] \ge \radlb[k]$.
+As noted by \citeauthor{Powell_2002}, allowing trial step to have a length larger than~$\radlb[k]$ prevent loss in efficiency that occurred otherwise in his software \gls{uobyqa}.
+
+The update of the trust-region radius~$\rad[k]$ is given in \cref{alg:update-trust-region-radius}.
+The parameters chosen in \gls{cobyqa} are~$\eta_1 = 0.1$,~$\eta_2 = 0.7$,~$\eta_3 = 1.4$,~$\theta_1 = 0.5$, and~$\theta_2 = \sqrt{2}$.
+This update is untertained at each iteration.
 
 \begin{algorithm}
     \caption{Updating the trust-region radius}
+    \label{alg:update-trust-region-radius}
     \DontPrintSemicolon
-    \KwData{Current lower bound on the trust-region radius~$\radlb[k] > 0$, current trust-region radius~$\rad[k] > 0$, current trust-region ratio~$\ratio[k] \in \R$, current trial step~$\step \in \R^n$, and parameters~$0 < \eta_1 \le \eta_2 < 1 \le \eta_3$ and~$0 < \theta_1 < 1 < \theta_2$}
+    \KwData{Current lower bound on the trust-region radius~$\radlb[k] > 0$, current trust-region radius~$\rad[k] \ge \radlb[k]$, current trust-region ratio~$\ratio[k] \in \R$, current trial step~$\step \in \R^n$, and parameters~$0 < \eta_1 \le \eta_2 < 1 \le \eta_3$ and~$0 < \theta_1 < 1 < \theta_2$.}
+    \KwResult{Updated trust-region radius~$\rad[k + 1]$.}
     Set the value of~$\rad[k + 1]$ to
     \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
         & \theta_1 \rad[k]                                                                      && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
@@ -357,15 +367,19 @@ Thus, our adaptation of the trust-region framework for unconstrained optimizatio
     }
 \end{algorithm}
 
-\begin{itemize}
-    \item \Cref{alg:reducing-lower-bound-trust-region-radius} is entertained only at the end of a trust-region iteration, if~$\rad[k] = \radlb[k]$, the trial step~$\norm{\step[k]}$ is small compared with~$\rad[k]$, and the trust-region ratio~$\ratio[k]$ is small.
-\end{itemize}
+As we mentioned already, the method maintains~$\rad[k] \ge \radlb[k]$ and it never increases~$\radlb[k]$.
+Therefore, the value of~$\radlb[k]$ is decreased only if~$\rad[k] = \radlb[k]$.
+Moreover, since~$\radlb[k]$ is designed to maintain a good distance between the interpolation points, it must be decreased only if the performance of the models is poor.
+Hence, it is decreased only if the trial step~$\norm{\step[k]}$ is small compared with~$\rad[k]$ and the trust-region ratio~$\ratio[k]$ is small.
+\Cref{alg:reducing-lower-bound-trust-region-radius} presents the method employed by \gls{cobyqa} to reduce~$\radlb[k]$.
+The parameters chosen in \gls{cobyqa} are~$\eta_4 = 16$,~$\eta_5 = 250$, and~$\theta_3 = 0.1$.
 
 \begin{algorithm}
     \caption{Reducing the lower bound on the trust-region radius}
     \label{alg:reducing-lower-bound-trust-region-radius}
     \DontPrintSemicolon
-    \KwData{Final trust-region radius~$\radlb[\infty] > 0$, current lower bound on the trust-region radius~$\radlb[k] \ge \radlb[\infty]$}
+    \KwData{Final trust-region radius~$\radlb[\infty] > 0$, current lower bound on the trust-region radius~$\radlb[k] \ge \radlb[\infty]$, updated trust-region radius~$\rad[k + 1] \ge \radlb[k]$, and parameters~$1 \le \eta_4 < \eta_5$ and~$0 < \theta_3 < 1$.}
+    \KwResult{Reduced lower bound on trust-region radius~$\radlb[k + 1]$ and modified trust-region radius~$\rad[k + 1]$.}
     \If{$\radlb[k] = \radlb[\infty]$}{
         Terminate the optimization method\;
     }

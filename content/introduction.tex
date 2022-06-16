@@ -111,6 +111,7 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
     \label{alg:gaussian-elimination}
     \DontPrintSemicolon
     \KwData{Matrix~$A \in \R^{n \times n}$.}
+    \KwResult{Factorized matrix~$A^{(n - 1)} \in \R^{n \times n}$.}
     Initialize $A^{(0)} \gets A$\;
     \For{$k = 1, 2, \dots, n - 1$}{
         Determine the pivot index~$j = \argmax \set[\big]{\abs[\big]{A_{i, k}^{(k - 1)}} : k \le i \le n}$\;
@@ -240,6 +241,7 @@ The general~$k$-fold cross-validation to define~$P(C, \gamma)$ is presented in \
     \label{alg:cross-validation}
     \DontPrintSemicolon
     \KwData{Labeled dataset~$\set{(\iter_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$ and fold number~$k > 0$.}
+    \KwResult{Performance measure~$P(C, \gamma)$.}
     Split the dataset into~$k$ balanced groups\;
     \For{$i = 1, 2, \dots, k$}{
         Calculate~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast})$ with the all the data except those in the~$i$th group\;
