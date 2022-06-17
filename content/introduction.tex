@@ -373,7 +373,7 @@ Let~$\lag$ be the \emph{Lagrangian function} to the problem~\cref{eq:problem-int
 where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
 \Cref{thm:first-order-necessary-conditions} introduces the first-order necessary conditions for a point to be a local solution of problem~\cref{eq:problem-introduction}.
 
-\begin{theorem}[First-order necessary conditions~{\cite[thm.~12.1]{Nocedal_Wright_2006}}]
+\begin{theorem}[First-order necessary conditions~{\cite[Thm.~12.1]{Nocedal_Wright_2006}}]
     \label{thm:first-order-necessary-conditions}
     Let~$\iter[\ast] \in \fset$ be a local solution to the problem~\cref{eq:problem-introduction}, assume that the functions~$\obj$ and~$\con{i}$ are continuously differentiable in a neighborhood of~$\iter[\ast]$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$\iter[\ast]$.
     Then there exists a Lagrange multiplier~$\lm[\ast] = [\lm[\ast]_i]_{i \in \iub \cup \ieq}^{\T}$ with~$\lm[\ast]_i \in \R$ for all~$i \in \iub \cup \ieq$ such that
@@ -389,7 +389,7 @@ where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
     \end{subequations}
 \end{theorem}
 
-We present in this thesis~\cref{thm:first-order-necessary-conditions} with the \gls{licq} as an example, but a similar conclusion can be established with other constraint qualifications, such as the \gls{mfcq} (see, e.g.,~\cite[p.~339]{Nocedal_Wright_2006}).
+We present in this thesis~\cref{thm:first-order-necessary-conditions} with the \gls{licq} as an example, but a similar conclusion can be established with other constraint qualifications, such as the \gls{mfcq} (see, e.g.,~\cite[P.~339]{Nocedal_Wright_2006}).
 The conditions~\cref{eq:kkt-introduction} are commonly referred to as the \gls{kkt} conditions~\cite{Karush_1939,Kuhn_Tucker_1951}.
 More specifically, condition~\cref{eq:kkt-introduction-stationarity} is the \emph{stationarity} condition, conditions~\cref{eq:kkt-introduction-primal-feasibility-ub,eq:kkt-introduction-primal-feasibility-eq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-introduction-complementary-slackness} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-introduction-dual-feasibility} as the \emph{dual feasibility} condition.
 A point~$\iter \in \R^n$ is a \emph{first-order stationary point} if it satisfies the \gls{kkt} conditions~\cref{eq:kkt-introduction}.
@@ -464,7 +464,7 @@ See~\cite[\S~12.4]{Nocedal_Wright_2006} for a complete proof of \cref{thm:first-
 It is known that at a local solution of a smooth unconstrained optimization problem, the gradient of the objective function is zero and its Hessian matrix is positive semidefinite.
 \Cref{thm:second-order-necessary-conditions} generalizes this fact to the optimization problem~\cref{eq:problem-introduction}.
 
-\begin{theorem}[Second-order necessary conditions~{\cite[thm.~12.5]{Nocedal_Wright_2006}}]
+\begin{theorem}[Second-order necessary conditions~{\cite[Thm.~12.5]{Nocedal_Wright_2006}}]
     \label{thm:second-order-necessary-conditions}
     Let~$\iter[\ast] \in \fset$ be a local solution to the problem~\cref{eq:problem-introduction}.
     Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood or~$\iter[\ast]$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$\iter[\ast]$.
@@ -486,7 +486,7 @@ We emphasize that a second-order stationary point may not be a local solution.
 However, it is known in smooth unconstrained optimization that a point at which the gradient of the objective function is zero and its Hessian matrix is positive definite is a strict local solution.
 \Cref{thm:second-order-sufficient-conditions} generalizes this fact to the optimization problem~\cref{eq:problem-introduction}.
 
-\begin{theorem}[Second-order sufficient conditions~{\cite[thm.~12.6]{Nocedal_Wright_2006}}]
+\begin{theorem}[Second-order sufficient conditions~{\cite[Thm.~12.6]{Nocedal_Wright_2006}}]
     \label{thm:second-order-sufficient-conditions}
     Let~$\iter[\ast] \in \fset$ be a given point.
     Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood of~$\iter[\ast]$ for all~$i \in \iub \cup \ieq$, and that there exists a Lagrange multiplier~$\lm[\ast] = [\lm[\ast]_i]_{i \in \iub \cup \ieq}^{\T}$ with~$\lm[\ast]_i \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-introduction}.
@@ -529,7 +529,7 @@ This improves both the performance and the worst-case complexity bounds compared
 \label{subsec:model-based-methods}
 
 Unlike direct-search methods, model-based methods approximate locally the functions involved in the optimization problems by simple functions called \emph{models} or \emph{surrogates}.
-To make model-based methods globally convergent, the models are exploited by a globalization strategy, such as a \emph{line-search} framework~\cite[ch.~3]{Nocedal_Wright_2006} or a \emph{trust-region} framework~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
+To make model-based methods globally convergent, the models are exploited by a globalization strategy, such as a \emph{line-search} framework~\cite[Ch.~3]{Nocedal_Wright_2006} or a \emph{trust-region} framework~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
 Most of the existing model-based methods use linear or quadratic approximations~\cite{Powell_1994,Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b}, although other models have also been successfully used, such as \glspl{rbf}~\cite{Oeuvray_2005}.
 
 Model-based methods are highly appealing in practice, as they provide excellent performances in real applications.
@@ -593,8 +593,8 @@ Finally, we highlight that the function evaluations needed by the approximated d
 
 Meanwhile, such methods come with disadvantages as well.
 First of all, if the problem is noisy, it is nontrivial to choose the difference parameter~$h$.
-From a theoretical standpoint, the optimal choice for the difference parameter depends on the noise level and the Lipschitz constants of the derivatives of the function~$\obj$ (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006} and~\cite[eq.~(2.13) and~(2.14)]{Shi_Etal_2021}).
-There exist procedures to estimate these quantities (see, e.g.,~\cite[\S~3]{More_Wild_2011} and~\cite[proc.~I]{Shi_Etal_2021}).
+From a theoretical standpoint, the optimal choice for the difference parameter depends on the noise level and the Lipschitz constants of the derivatives of the function~$\obj$ (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006} and~\cite[Eqs.~(2.13) and~(2.14)]{Shi_Etal_2021}).
+There exist procedures to estimate these quantities (see, e.g.,~\cite[\S~3]{More_Wild_2011} and~\cite[Proc.~I]{Shi_Etal_2021}).
 However, these procedures are often costly in terms of function evaluations in practice.
 In addition, it is difficult to reuse the function values in methods based on finite differences.
 A finite difference at~$x \in \R^n$ requires the function to be evaluated on a mesh of~$\bigo(n)$ points around~$x$ oriented along the coordinate directions.

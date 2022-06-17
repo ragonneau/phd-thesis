@@ -21,7 +21,7 @@ In this chapter, we introduce a new model-based \gls{dfo} method for solving non
 \begin{subequations}
     \label{eq:problem-cobyqa}
     \begin{align}
-        \min        & \quad \obj(\iter)\\
+        \min        & \quad \obj(\iter) \label{eq:problem-cobyqa-obj}\\
         \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-ub}\\
                     & \quad \con{i}(\iter) = 0, ~ i \in \ieq,\\
                     & \quad \xl \le x \le \xu, \label{eq:problem-cobyqa-bd}\\
@@ -102,37 +102,75 @@ Later on, \citeauthor{Garcia-Palomares_Mangasarian_1976}~\cite{Garcia-Palomares_
 A similar method was introduced by \citeauthor{Han_1976}~\cite{Han_1976,Han_1977}, but he only approximated~$\nabla_{x, x}^2 \lag(\iter[k], \lm[k])$, while \citeauthor{Garcia-Palomares_Mangasarian_1976} applied quasi-Newton approximations to the whole matrix~$\nabla^2 \lag(\iter[k], \lm[k])$.
 In addition, \citeauthor{Han_1976} introduced a line-search strategy to guarantee the global convergence and local Q-superlinear convergence rate, requiring that~$\nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast])$ is positive definite at the solution~$(\iter[\ast], \lm[\ast])$.
 \Citeauthor{Powell_1978a}~\cite{Powell_1978b,Powell_1978a,Powell_1978c} studied the method along the same direction.
-In particular, he proposed to apply the damped BFGS quasi-Newton formula~\cite[eq.~(5.8),~(5.9), and~(5.10)]{Powell_1978b} to update~$H^k$.
+In particular, he proposed to apply the damped BFGS quasi-Newton formula~\cite[Eqs.~(5.8),~(5.9), and~(5.10)]{Powell_1978b} to update~$H^k$.
 This formula guarantees the positive definiteness of such a matrix, which is beneficial in practice and in theory (see the comments towards the end of~\cite[\S~2]{Powell_1978a}).
 Moreover, he introduced a practical line-search technique based on a merit function suggested by \citeauthor{Han_1976}~\cite{Han_1976}.
 Furthermore, \citeauthor{Powell_1978c} established the global convergence and the local R-superlinear convergence rate for his method, without requiring the positive definiteness of~$\nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast])$ as \citeauthor{Han_1976} did.
 Recognizing the controbutions of \citeauthor{Wilson_1963}, \Citeauthor{Han_1976}, and \citeauthor{Powell_1978a}, the \gls{sqp} method is also referred to as the Wilson-Han-Powell method~\cite{Schittkowski_1981,Burke_1992}.
 See~\cite{Boggs_Tolle_1995} for a more detailed review on the history, theory, and practice of the \gls{sqp} method.
 
-\subsection{Interpretation of the subproblem}
+\subsection{A simple example}
 
-To get some insight into the origin of the \gls{sqp} method, we now interpret the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}.
-Note that the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} involves the Lagrangian function~$\lag$ of problem~\cref{eq:problem-cobyqa-sqp}, not only~$\obj$.
-It is in fact necessary due to the possible nonlinearity of the constraints.
-To comprehend this fact, we consider the~$2$-dimensional example of \citeauthor{Boggs_Tolle_1995}~\cite[\S~2.2]{Boggs_Tolle_1995}
+In \cref{alg:sqp}, it is crucial that~$H^k$ approximates~$\nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
+It may be tempting to set~$H^k \approx \nabla \obj(\iter[k])$, because the objective function of the \gls{sqp} subproblem would then be a local quadratic approximation of~$\obj$ at~$\iter[k]$.
+However, such a naive idea does not work, as illustrated by the following~$2$-dimensional example inspired by \citeauthor{Boggs_Tolle_1995}~\cite[\S~2.2]{Boggs_Tolle_1995}.
+
+We consider
+% To get some insight into the origin of the \gls{sqp} method, we now interpret the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}.
+% Note that the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} involves the Lagrangian function~$\lag$ of problem~\cref{eq:problem-cobyqa-sqp}, not only~$\obj$.
+% It is in fact necessary due to the possible nonlinearity of the constraints.
+% To comprehend this fact, we consider the following~$2$-dimensional example inspired by \citeauthor{Boggs_Tolle_1995}~\cite[\S~2.2]{Boggs_Tolle_1995}
 \begin{align*}
-    \min        & \quad -x_1 - \frac{x_2^2}{2}\\
-    \text{s.t.} & \quad \norm{x}^2 - 1 = 0,\\
+    \min        & \quad -\iter_1 - \frac{(\iter_2)^2}{4}\\
+    \text{s.t.} & \quad \norm{\iter}^2 - 1 = 0,\\
                 & \quad \iter \in \R^2,
 \end{align*}
-whose solution is~$\iter[\ast] = [1, 0]^{\T}$.
-Given a perturbation~$\epsilon \ge 0$ and an iterate~$\iter[k] = [1 + \epsilon, 0]^{\T}$, if the second-order term in~\cref{eq:sqp-subproblem-obj} included only~$\nabla^2 \obj(\iter[k])$, the \gls{sqp} subproblem would be
+whose solution is~$\iter[\ast] = [1, 0]^{\T}$ with the associated Lagrange multiplier~$\lm[\ast] = 1/2$.
+Suppose that we have an iterate~$\iter[k] = [t, 0]^{\T}$ with~$t \approx 1$, so that it is already close to the solution.
+If~$H^k = \nabla^2 \obj(\iter[k])$, then the \gls{sqp} subproblem would become
 \begin{subequations}
     \begin{align}
-        \min        & \quad -\step_1 - \frac{\step_2^2}{2} \label{eq:boggs-tolle-sp-obj}\\
-        \text{s.t.} & \quad \step_1 = -\frac{\epsilon (2 + \epsilon)}{2 (1 + \epsilon)}, \label{eq:boggs-tolle-sp-eq}\\
+        \min        & \quad -\step_1 - \frac{(\step_2)^2}{4} \label{eq:boggs-tolle-sp-obj}\\
+        \text{s.t.} & \quad \step_1 = \frac{1 - t^2}{2 t}, \label{eq:boggs-tolle-sp-eq}\\
                     & \quad \step \in \R^2. \nonumber
     \end{align}
 \end{subequations}
-This subproblem is unbounded from below, regardless of the magnitude of~$\epsilon$.
-In addition, the more~$\step$ reduces~\cref{eq:boggs-tolle-sp-obj}, the larger~$\norm{\iter[k] + d - \iter[\ast]}$ is.
-Moreover, if~$\epsilon = 0$, we have~$\iter[k] = \iter[\ast]$, but any feasible direction~$d$ for~\cref{eq:boggs-tolle-sp-eq} will push~$\iter[k] + d$ away from~$\iter[\ast]$, unless~$d$ is the global maximum of~\cref{eq:boggs-tolle-sp-obj} subject to~\cref{eq:boggs-tolle-sp-eq}.
-Therefore, as indicated by this example, including the Lagrangian function in the second-order term of the objective function~\cref{eq:sqp-subproblem-obj} is crucial.
+This subproblem is unbounded from below, regardless of~$t$.
+In addition, the more~$\step[k]$ reduces~\cref{eq:boggs-tolle-sp-obj}, the larger~$\norm{\iter[k] + \step[k] - \iter[\ast]}$ is.
+Moreover, if~$t = 1$, we have~$\iter[k] = \iter[\ast]$, but any feasible point~$\step[k]$ for~\cref{eq:boggs-tolle-sp-eq} will push~$\iter[k] + \step[k]$ away from~$\iter[\ast]$, unless~$\step[k]$ is the global maximizer of~\cref{eq:boggs-tolle-sp-obj} subject to~\cref{eq:boggs-tolle-sp-eq}.
+
+We now consider the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ and~$\lm[k] \approx \lm[\ast] = 1/2$.
+It is
+\begin{align*}
+    \min        & \quad -\step_1 + \lm[k] (\step_1)^2 + \bigg( \lm[k] - \frac{1}{4} \bigg) (\step_2)^2\\
+    \text{s.t.} & \quad \step_1 = \frac{1 - t^2}{2 t},\\
+                & \quad \step \in \R^2. \nonumber
+\end{align*}
+When~$\lm[k] > 1/4$, the solution to this subproblem is
+\begin{equation*}
+    \step[k] =
+    \begin{bmatrix}
+        \dfrac{1 - t^2}{2 t}    & 0
+    \end{bmatrix}^{\T}.
+\end{equation*}
+We thus have
+\begin{equation*}
+    \iter[k] + \step[k] = 
+    \begin{bmatrix}
+        \dfrac{t^2 + 1}{2 t}  & 0
+    \end{bmatrix}^{\T}.
+\end{equation*}
+If we set~$\iter[k + 1] = \iter[k] + \step[k]$ and continue to iterate in this way, we will obtain a sequence of iterates that converges quadratically to~$\iter[\ast]$, because
+\begin{equation*}
+    \norm{\iter[k] + \step[k] - \iter[\ast]} = \frac{(1 - t)^2}{2 \abs{t}} = \bigo(\norm{\iter[k] - \iter[\ast]}^2).
+\end{equation*}
+This is not surprising, since \citeauthor{Robinson_1974}~\cite{Robinson_1974} showed the local R-quadratic convergence rate of the \gls{sqp} method when~$H^k$ is the exact Hessian matrix of the Lagrangian function with respect to~$x$.
+
+To summarize, as indicated by this example, choosing~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ instead of~$H^k \approx \nabla \obj(\iter[k])$ in~\cref{eq:sqp-subproblem} is crucial.
+
+\subsection{Interpretation of the subproblem}
+
+To get some insight into the origin of the \gls{sqp} method, we now interpret the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}.
 
 \subsubsection{Approximation of the \glsfmtlong{kkt} conditions}
 
@@ -147,7 +185,18 @@ According to \cref{thm:first-order-necessary-conditions}, if~$\iter[\ast] \in \R
         & \lm[\ast]_i \ge 0,                            && \quad \text{if~$i \in \iub$.}
     \end{empheq}
 \end{subequations}
-Let~$(\iter[k], \lm[k])$ be some approximation of~$(\iter[\ast], \lm[\ast])$, and let~$(\step[k], u^k)$ satisfy
+Let~$(\iter[k], \lm[k])$ be some approximation of~$(\iter[\ast], \lm[\ast])$, and let~$(\step[k], u^k)$ be a Newton-Raphson step of the system~\cref{eq:sqp-kkt}.
+It should then satisfy
+\begin{empheq}[left=\empheqlbrace]{alignat*=2}
+    & \nabla_x \lag(\iter[k], \lm[k] + u^k) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step = 0,         && \\
+    & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,                                    && \quad \text{if~$i \in \iub$,}\\
+    & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,                                      && \quad \text{if~$i \in \ieq$,}\\
+    & \lm[k]_i [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step] + u_i^k \con{i}(\iter[k]) = 0, && \quad \text{if~$i \in \iub$,}\\
+    & \lm[k]_i + u_i^k \ge 0,                                                                           && \quad \text{if~$i \in \iub$.}
+\end{empheq}
+
+
+, and let~$(\step[k], u^k)$ satisfy
 \begin{subequations}
     \label{eq:sqp-kkt-step}
     \begin{empheq}[left=\empheqlbrace]{alignat=2}
@@ -158,7 +207,7 @@ Let~$(\iter[k], \lm[k])$ be some approximation of~$(\iter[\ast], \lm[\ast])$, an
         & \lm[k]_i + u_i^k \ge 0,                                                                  && \quad \text{if~$i \in \iub$.}
     \end{empheq}
 \end{subequations}
-Note that this conditions resemble closely the first-order Taylor approximation at~$(\iter[k], \lm[k])$ of~\cref{eq:sqp-kkt}, in which case~$(\step, u^k)$ would be a Newton-Raphson step.
+Note that this conditions resemble closely the first-order Taylor approximation at~$(\iter[k], \lm[k])$ of~\cref{eq:sqp-kkt}, in which case~$(\step[k], u^k)$ would be a Newton-Raphson step for the system~\cref{eq:sqp-kkt} at~$(\iter[k], \lm[k])$.
 However, the condition~\cref{eq:sqp-kkt-step-complementary-slackness} is not directly the linearization of~\cref{eq:sqp-kkt-complementary-slackness}, but it includes the second-order term~$u_i^k \nabla \con{i}(\iter[k])^{\T} \step$.
 We thus remark that the conditions~\cref{eq:sqp-kkt-step} are nothing but the \gls{kkt} conditions of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} associated with the Lagrange multiplier~$\lm[k] + u^k$ with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
 
@@ -395,7 +444,7 @@ The parameters chosen in \gls{cobyqa} are~$\eta_4 = 16$,~$\eta_5 = 250$, and~$\t
 \subsection{Composite-step approach}
 
 \begin{itemize}
-    \item The Vardi-like approach~\cite{Vardi_1985} is similar to an idea proposed by Powell~\cite[eq.~(2.7) and~(2.8)]{Powell_1978a}.
+    \item The Vardi-like approach~\cite{Vardi_1985} is similar to an idea proposed by Powell~\cite[Eqs.~(2.7) and~(2.8)]{Powell_1978a}.
     The inactive constraints are not modified by Powell.
 \end{itemize}
 
@@ -404,34 +453,24 @@ The parameters chosen in \gls{cobyqa} are~$\eta_4 = 16$,~$\eta_5 = 250$, and~$\t
 
 \section{Outline of the \glsfmttext{cobyqa} method}
 
-\subsection{Management of bound constraints}
+\subsection{Management of bound and linear constraints}
 \label{subsec:bound-constraints}
 
-Note that the general inequality constraints~\cref{eq:problem-cobyqa-sqp-ub} may include bound constraints.
-In general, the problem~\cref{eq:problem-cobyqa-sqp} can be formulated as
-\begin{subequations}
-    \label{eq:problem-cobyqa-bounds}
-    \begin{align}
-        \min        & \quad \obj(\iter) \label{eq:problem-cobyqa-bounds-obj}\\
-        \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-bounds-ub}\\
-                    & \quad \con{i}(\iter) = 0, ~ i \in \ieq,\\
-                    & \quad \xl \le x \le \xu, \label{eq:problem-cobyqa-bounds-bd}\\
-                    & \quad \iter \in \R^n, \nonumber
-    \end{align}
-\end{subequations}
-where the bounds~$\xl \in (\R \cup \set{-\infty})^n$ and~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl < \xu$.
-The requirement on the bounds is weak, as otherwise, the problem~\cref{eq:problem-cobyqa-bounds} would be either infeasible, or would admit fix variables.
-Of course, when written in this form, the indices of the inequality constraints in~$\iub$ might be different from the one in~\cref{eq:problem-cobyqa-sqp}, not to include the bound constraints anymore.
-Note that they are very simple constraints.
-It is, for example, trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-sqp-bounds-bd}, and easy to project any point onto the bound constraints.
+\todo[noline]{Rewrite to include linear constraints.}
 
-In the theoretical development presented hereinafter, we consider problems of the form~\cref{eq:problem-cobyqa-sqp} for clarity.
-However, when developing the implementation of \gls{cobyqa}, we consider the bound constraints separatly from the inequality constraints~\cref{eq:problem-cobyqa-sqp-bounds-ub}, because they often represent inalienable physical or theoretical restrictions.
-In other words, in many applications, the objective function~\cref{eq:problem-cobyqa-sqp-bounds-obj} is not defined if the bounds constraints~\cref{eq:problem-cobyqa-sqp-bounds-bd} are violated.
-For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods}) involves a bounds that cannot be violated, as the optimization methods that are tuned may not be defined otherwise.
+In the general form of nonlinearly-constrained problems~\cref{eq:problem-cobyqa}, we did not include the bound constraints~\cref{eq:problem-cobyqa-bd} in the general inequality constraints~\cref{eq:problem-cobyqa-ub}, altough it is theoretically possible.
+This is because they often represent inalienable physical or theoretical restrictions.
+In other words, in many applications, the objective function~\cref{eq:problem-cobyqa-obj} is not defined if the bounds constraints~\cref{eq:problem-cobyqa-bd} are violated.
+For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods}) involves bounds that cannot be violated, as the optimization methods that are tuned may not be defined otherwise.
 Very similar observations can be made on hyperparameter tuning in machine learning (see \cref{subsec:machine-learning}).
 Therefore, every point that \gls{cobyqa} encounters always respects these bounds.
 This is also the case for the \gls{bobyqa} method, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
+
+Note that we assumed that~$\xl < \xu$.
+The requirement on the bounds is weak, as otherwise, the problem~\cref{eq:problem-cobyqa} would be either infeasible, or would admit fix variables.
+Note also that they are very simple constraints.
+It is, for example, trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-bd}, and easy to project any point onto the bound constraints.
+This is another reason why they should be handled separately.
 
 \subsection{Interpolation-based quadratic models}
 \label{subsec:cobyqa-models}
@@ -453,7 +492,7 @@ This is also the case for the \gls{bobyqa} method, presented in \cref{subsec:new
     \item The modeled merit function must ensure a crucial decrease property (holds because of what follows).
     \item The best point so far considered by \gls{cobyqa} is the one with the least merit value.
     \item What is the trust-region ratio?
-    \item \Cite[thm.~14.5.1]{Conn_Gould_Toint_2000} provides a lower bound on the penalty coefficient.
+    \item \Cite[Thm.~14.5.1]{Conn_Gould_Toint_2000} provides a lower bound on the penalty coefficient.
     \item Detail the algorithm for increasing the penalty parameter.
     \item We decrease the penalty parameter as in~\cite{Powell_1994} (detail the modification made for the equality constraints).
 \end{itemize}

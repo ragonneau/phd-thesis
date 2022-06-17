@@ -41,7 +41,7 @@ Although there are successful methods that use regression models (see, e.g.,~\ci
 It is also possible to use polynomials of degree higher than two.
 However, we do not consider such models in this thesis due to the following observations.
 \begin{enumerate}
-    \item As shown in~\cite[thm.~2.5]{Wendland_2005}, the space of polynomials on~$\R^n$ of degree at most~$k$ has a dimension of
+    \item As shown in~\cite[Thm.~2.5]{Wendland_2005}, the space of polynomials on~$\R^n$ of degree at most~$k$ has a dimension of
     \begin{equation*}
         \binom{n + k}{n} = \frac{1}{k!} \prod_{i = 1}^k (n + i) \ge \frac{n^k}{k!}.
     \end{equation*}
@@ -138,8 +138,8 @@ It is well-known that for any~$\iter \in \R^n$, we have
     \label{eq:Ciarlet_Raviart_0}
     \abs{\obj(\iter) - \objm(\iter)} \le \frac{\theta}{6} \sum_{i = 1}^m \abs{\lagp[i](\iter)} \norm{x - y^i}^3,
 \end{equation}
-where~$\theta$ is an upper bound on the absolute value of the third-order directional derivatives of~$\obj$~\cite[thm.~2]{Powell_2001}.
-A similar bound is established in~\cite[thm.~2]{Ciarlet_Raviart_1972}.
+where~$\theta$ is an upper bound on the absolute value of the third-order directional derivatives of~$\obj$~\cite[Thm.~2]{Powell_2001}.
+A similar bound is established in~\cite[Thm.~2]{Ciarlet_Raviart_1972}.
 For any compact set~$\mathcal{C} \subseteq \R^n$, we then clearly have
 \begin{equation}
     \label{eq:ciarlet-raviard-bound}
@@ -153,7 +153,7 @@ where~$\Lambda$ is defined by
 In this sense,~$\Lambda$ measures the well-poisedness of the interpolation set~$\xpt$ with respect to the set~$\mathcal{C}$.
 This motivates the following concept of~$\Lambda$-poisedness.
 
-\begin{definition}[$\Lambda$-poisedness~{\cite[def.~3.6]{Conn_Scheinberg_Vicente_2009b}}]
+\begin{definition}[$\Lambda$-poisedness~{\cite[Def.~3.6]{Conn_Scheinberg_Vicente_2009b}}]
     \label{def:lambda-poisedness}
     A poised interpolation set~$\xpt \subseteq \R^n$ is said to be~$\Lambda$-poised in a compact set~$\mathcal{C} \subseteq \R^n$, for some~$\Lambda > 0$, if
     \begin{equation*}
@@ -172,7 +172,7 @@ Indeed, if~$\xpt$ is~$\Lambda$-poised in a compact set~$\mathcal{C} \subseteq \R
 
 The notion of~$\Lambda$-poisedness is intrinsically related to the well-conditioning of the interpolation system.
 Note that the interpolation system~\cref{eq:interpolation-conditions-quadratic} is linear with respect to the coefficients of the interpolant~$\objm$.
-One can show that the set~$\xpt$ is~$\Lambda$-poised if and only if the condition number of the coefficient matrix of this linear system is bounded by some terms proportional to~$\Lambda$~\cite[thm.~3.14]{Conn_Scheinberg_Vicente_2009b}.
+One can show that the set~$\xpt$ is~$\Lambda$-poised if and only if the condition number of the coefficient matrix of this linear system is bounded by some terms proportional to~$\Lambda$~\cite[Thm.~3.14]{Conn_Scheinberg_Vicente_2009b}.
 Therefore, the lower~$\Lambda$ is, the better the conditioning of the interpolation system is and hence, the better the interpolation set is from a numerical standpoint.
 
 In practice, however, we do not use the~$\Lambda$-poisedness of interpolation sets directly.
@@ -314,7 +314,7 @@ As in the case where~$m = \dim \qpoly$, any minimum Frobenius norm interpolant c
 
 We now present the notion of~$\Lambda$-poisedness in the minimum Frobenius norm sense, which is a straightforward adaptation of \cref{def:lambda-poisedness}.
 
-\begin{definition}[$\Lambda$-poisedness in the minimum Frobeninus norm sense~{\cite[def.~5.6]{Conn_Scheinberg_Vicente_2009b}}]
+\begin{definition}[$\Lambda$-poisedness in the minimum Frobeninus norm sense~{\cite[Def.~5.6]{Conn_Scheinberg_Vicente_2009b}}]
     \label{def:lambda-poisedness-minimum-norm}
     A poised interpolation set~$\xpt \subseteq \R^n$ in the minimum Frobenius norm sense is said to be~$\Lambda$-poised in the minimum Frobenius norm sense in a compact set~$\mathcal{C} \subseteq \R^n$, for some~$\Lambda > 0$, if
     \begin{equation*}
@@ -323,7 +323,7 @@ We now present the notion of~$\Lambda$-poisedness in the minimum Frobenius norm 
 \end{definition}
 
 Similarly to what we mentioned before, if~$\xpt$ is~$\Lambda_0$-poised in the minimum Frobenius norm sense in~$\mathcal{C}$, it is obviously~$\Lambda$-poised in the minimum Frobenius norm sense in~$\mathcal{C}$ for all~$\Lambda \ge \Lambda_0$.
-Moreover, one can show that the set~$\xpt$ is~$\Lambda$-poised if and only if the condition number of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is bounded by some terms proportional to~$\Lambda$~\cite[thm.~5.8]{Conn_Scheinberg_Vicente_2009b}.
+Moreover, one can show that the set~$\xpt$ is~$\Lambda$-poised if and only if the condition number of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is bounded by some terms proportional to~$\Lambda$~\cite[Thm.~5.8]{Conn_Scheinberg_Vicente_2009b}.
 
 \subsection{Quadratic models based on symmetric Broyden updates}
 \label{subsec:symmetric-broyden-updates}
@@ -363,7 +363,7 @@ The symmetric Broyden method~\cite{Powell_1970b} approximates the function~$\obj
 \begin{align*}
     \objm(\iter) = \objm(y^1) + \nabla \objm(y^1)^{\T} (\iter - y^1) + \frac{1}{2} (\iter - y^1)^{\T} \hat{H} (\iter - y^1),
 \end{align*}
-and, as shown in~\cite[thm.~4.2]{Dennis_Schnabel_1979},~$\hat{H} \in \R^{n \times n}$ is the unique solution to
+and, as shown in~\cite[Thm.~4.2]{Dennis_Schnabel_1979},~$\hat{H} \in \R^{n \times n}$ is the unique solution to
 \begin{align*}
     \min        & \quad \norm{H - H_{\text{old}}}_{\mathsf{F}}\\
     \text{s.t.} & \quad H (y^1 - y^2) = \nabla \objm(y^1) - \nabla \objm(y^2),\\
