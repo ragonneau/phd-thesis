@@ -187,33 +187,33 @@ According to \cref{thm:first-order-necessary-conditions}, if~$\iter[\ast] \in \R
 \end{subequations}
 Let~$(\iter[k], \lm[k])$ be some approximation of~$(\iter[\ast], \lm[\ast])$, and let~$(\step[k], u^k)$ be a Newton-Raphson step of the system~\cref{eq:sqp-kkt}.
 It should then satisfy
-\begin{empheq}[left=\empheqlbrace]{alignat*=2}
-    & \nabla_x \lag(\iter[k], \lm[k] + u^k) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step = 0,         && \\
-    & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,                                    && \quad \text{if~$i \in \iub$,}\\
-    & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,                                      && \quad \text{if~$i \in \ieq$,}\\
-    & \lm[k]_i [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step] + u_i^k \con{i}(\iter[k]) = 0, && \quad \text{if~$i \in \iub$,}\\
-    & \lm[k]_i + u_i^k \ge 0,                                                                           && \quad \text{if~$i \in \iub$.}
-\end{empheq}
-
-
-, and let~$(\step[k], u^k)$ satisfy
 \begin{subequations}
-    \label{eq:sqp-kkt-step}
+    \label{eq:sqp-kkt-linearization}
     \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \nabla_x \lag(\iter[k], \lm[k] + u^k) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step = 0,   && \\
-        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,                                            && \quad \text{if~$i \in \iub$,}\\
-        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,                                              && \quad \text{if~$i \in \ieq$,}\\
-        & (\lm[k]_i + u_i^k) [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step] = 0,                && \quad \text{if~$i \in \iub$,} \label{eq:sqp-kkt-step-complementary-slackness}\\
-        & \lm[k]_i + u_i^k \ge 0,                                                                  && \quad \text{if~$i \in \iub$.}
+        & \nabla_x \lag(\iter[k], \lm[k] + u^k) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step[k] = 0,          && \\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step[k] \le 0,                                     && \quad \text{if~$i \in \iub$,}\\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step[k] = 0,                                       && \quad \text{if~$i \in \ieq$,}\\
+        & \lm[k]_i [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step[k]] + u_i^k \con{i}(\iter[k]) = 0,  && \quad \text{if~$i \in \iub$,} \label{eq:sqp-kkt-linearization-complementary-slackness}\\
+        & \lm[k]_i + u_i^k \ge 0,                                                                               && \quad \text{if~$i \in \iub$.}
     \end{empheq}
 \end{subequations}
-Note that this conditions resemble closely the first-order Taylor approximation at~$(\iter[k], \lm[k])$ of~\cref{eq:sqp-kkt}, in which case~$(\step[k], u^k)$ would be a Newton-Raphson step for the system~\cref{eq:sqp-kkt} at~$(\iter[k], \lm[k])$.
-However, the condition~\cref{eq:sqp-kkt-step-complementary-slackness} is not directly the linearization of~\cref{eq:sqp-kkt-complementary-slackness}, but it includes the second-order term~$u_i^k \nabla \con{i}(\iter[k])^{\T} \step$.
-We thus remark that the conditions~\cref{eq:sqp-kkt-step} are nothing but the \gls{kkt} conditions of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} associated with the Lagrange multiplier~$\lm[k] + u^k$ with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
-
+Moreover, if~$(\step[k], \lm[k + 1])$ were a first-order stationary point for the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$, it would then satisfy
+\begin{subequations}
+    \label{eq:sqp-subproblem-kkt}
+    \begin{empheq}[left=\empheqlbrace]{alignat=2}
+        & \nabla_x \lag(\iter[k], \lm[k + 1]) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step[k] = 0,    && \\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step[k] \le 0,                             && \quad \text{if~$i \in \iub$,}\\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step[k] = 0,                               && \quad \text{if~$i \in \ieq$,}\\
+        & \lm[k + 1]_i [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step[k]] = 0,                && \quad \text{if~$i \in \iub$,} \label{eq:sqp-subproblem-kkt-complementary-slackness}\\
+        & \lm[k + 1]_i \ge 0,                                                                           && \quad \text{if~$i \in \iub$.}
+    \end{empheq}
+\end{subequations}
+With~$\lm[k + 1] = \lm[k] + u^k$, we remark that the systems~\cref{eq:sqp-kkt-linearization,eq:sqp-subproblem-kkt} are almost the same.
+They only differ by the fact that~\cref{eq:sqp-subproblem-kkt-complementary-slackness} includes the second-order term~$u_i^k \nabla \con{i}(\iter[k])^{\T} \step[k]$, whereas~\cref{eq:sqp-kkt-linearization-complementary-slackness} does not.
 When~$\iub = \emptyset$, the \gls{sqp} method is exactly equivalent to the Newton-Raphson method and when~$\iub \neq \emptyset$, it is a slight modification of it.
-We finally make the two following remarks.
-We had a second-order term to the linearization of~\cref{eq:sqp-kkt-complementary-slackness}, but this term is included in the second-order development of~\cref{eq:sqp-kkt-complementary-slackness}, and make the expression~\cref{eq:sqp-kkt-step-complementary-slackness} bilinear.
+Thus, remark that~\cref{eq:sqp-subproblem-kkt-complementary-slackness} includes a second-order term, but that this term is included in the second-order development of~\cref{eq:sqp-kkt-complementary-slackness}.
+Therefore, it is natural to expect that the step generated by the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} is not worse than a Newton-Raphson step, if it is solved exactly.
+Moreover, we note that this term makes the expression~\cref{eq:sqp-subproblem-kkt-complementary-slackness} bilinear, so that solving~\cref{eq:sqp-subproblem-kkt} is not substantially harder than solving~\cref{eq:sqp-kkt-linearization} from a numerical standpoint.
 
 \subsubsection{Approximation of a modified Lagrangian}
 
@@ -222,7 +222,7 @@ Given an iterate~$\iter[k] \in \R^n$, let~$\lag[k]$ be the modified Lagrangian f
 \begin{equation*}
     \lag[k](\iter, \lm) \eqdef \obj(\iter) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lm_i \delta_i^k(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lm_i \in \R$, with~$i \in \iub \cup \ieq$},
 \end{equation*}
-where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$, and where~$\delta_i^k$, for~$i \in \iub \cup \ieq$, denotes the departure from linearity\footnote{When~$\con{i}$ is strictly convex, it is the Bregman distance~\cite{Bregman_1967} associated with~$\con{i}$ for the point~$\iter[k]$.}~\cite{Robinson_1972,Hoek_1982} associated with~$\con{i}$ for the point~$\iter[k]$, defined by
+where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$, and where~$\delta_i^k$, for~$i \in \iub \cup \ieq$, denotes the departure from linearity\footnote{When~$\con{i}$ is strictly convex, it is the Bregman distance~\cite{Bregman_1967} associated with~$\con{i}$ for the point~$\iter[k]$.}~\cite{Robinson_1972a,Hoek_1982} associated with~$\con{i}$ for the point~$\iter[k]$, defined by
 \begin{equation*}
     \delta_i^k(\iter) \eqdef \con{i}(\iter) - \con{i}(\iter[k]) - \nabla \con{i}(\iter[k])^{\T} (\iter - \iter[k]), \quad \text{for~$\iter \in \R^n$.}
 \end{equation*}
@@ -456,21 +456,27 @@ The parameters chosen in \gls{cobyqa} are~$\eta_4 = 16$,~$\eta_5 = 250$, and~$\t
 \subsection{Management of bound and linear constraints}
 \label{subsec:bound-constraints}
 
-\todo[noline]{Rewrite to include linear constraints.}
+The implementation of \gls{cobyqa} accepts three types of constraints, namely bound constraints, linear constraints, and nonlinear constraints.
+From a theoretical standpoint, problems written in the form~\cref{eq:problem-cobyqa-sqp} may have bound and linear constraints included in some of the constraints~$\con{i}$, with~$i \in \iub \cup \ieq$.
+However, it is crucial that the implementation of a solver handles these types of constraints separately.
 
-In the general form of nonlinearly-constrained problems~\cref{eq:problem-cobyqa}, we did not include the bound constraints~\cref{eq:problem-cobyqa-bd} in the general inequality constraints~\cref{eq:problem-cobyqa-ub}, altough it is theoretically possible.
+First of all, note that in the general form of nonlinearly-constrained problems~\cref{eq:problem-cobyqa}, we did not include the bound constraints~\cref{eq:problem-cobyqa-bd} in the inequality constraints~\cref{eq:problem-cobyqa-ub}.
 This is because they often represent inalienable physical or theoretical restrictions.
 In other words, in many applications, the objective function~\cref{eq:problem-cobyqa-obj} is not defined if the bounds constraints~\cref{eq:problem-cobyqa-bd} are violated.
-For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods}) involves bounds that cannot be violated, as the optimization methods that are tuned may not be defined otherwise.
+For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods})  involves bounds that cannot be violated, as the optimizationmethods that are tuned may not be defined otherwise.
 Very similar observations can be made on hyperparameter tuning in machine learning (see \cref{subsec:machine-learning}).
-Therefore, every point that \gls{cobyqa} encounters always respects these bounds.
-This is also the case for the \gls{bobyqa} method, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
-
-Note that we assumed that~$\xl < \xu$.
-The requirement on the bounds is weak, as otherwise, the problem~\cref{eq:problem-cobyqa} would be either infeasible, or would admit fix variables.
-Note also that they are very simple constraints.
+For this reason, every point that \gls{cobyqa} encounters always respects these bounds, as is also the case for the \gls{bobyqa} method, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
+When establishing the problem~\cref{eq:problem-cobyqa}, we assumed that~$\xl < \xu$.
+Note that this requirement is weak, as otherwise, the problem~\cref{eq:problem-cobyqa} would be either infeasible, or admit fix variables.
+Thus, note also that they are very simple constraints.
 It is, for example, trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-bd}, and easy to project any point onto the bound constraints.
-This is another reason why they should be handled separately.
+This is another reason why \gls{cobyqa} handles them separately.
+
+The linear constraints are usually much less restrictive.
+The objective function is often well-defined even at points that are infeasible with respect to the linear constraints.
+Therefore, we do not enforce \gls{cobyqa} to always respect the linear constraints.
+However, when evaluating a model~$\conm[k]{i}$ of a linear constraint~$\con{i}$, we enforce~$\nabla \conm[k]{i} \equiv \nabla \con{i}$ and~$\nabla^2 \conm[k]{i} \equiv 0$, so that~$\conm[k]{i} \equiv \con{i}$.
+This reduces the computational complexity of evaluating all the models, and it also suppresses all damages that could be generated by computer rounding errors.
 
 \subsection{Interpolation-based quadratic models}
 \label{subsec:cobyqa-models}
