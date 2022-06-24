@@ -50,7 +50,7 @@ Therefore, throughout these two sections, we consider for simplicity a problem o
     \begin{align}
         \min        & \quad \obj(\iter) \label{eq:problem-cobyqa-sqp-obj}\\
         \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-sqp-ub}\\
-                    & \quad \con{i}(\iter) = 0, ~ i \in \ieq,\\
+                    & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:problem-cobyqa-sqp-eq}\\
                     & \quad \iter \in \R^n. \nonumber
     \end{align}
 \end{subequations}
@@ -167,17 +167,8 @@ To summarize, as indicated by this example, choosing~$H^k \approx \nabla_{x, x}^
 \subsection{Interpretation of the \glsfmtshort{sqp} subproblem}
 
 To get some insight into the origin of the \gls{sqp} method, we now interpret the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}.
-Since we consider the subproblem only within one iteration, we omit the iteration counter~$k$ in what follows\footnote{With this simplification, the notation~$\nabla_x \lag(\iter, \lm)$ is a bit problematic, because~$x$ stands for both a variable and a given point, but it will not lead to confusions.}.
-In other words, given~$\iter \in \R^n$,~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$, and~$H \approx \nabla_{x, x}^2 \lag(\iter, \lm)$, we consider the following subproblem of~$\step$
-\begin{subequations}
-    \label{eq:sqp-subproblem-nok}
-    \begin{align}
-        \min        & \quad \nabla \obj(\iter)^{\T} \step + \frac{1}{2} \step^{\T} H \step\\
-        \text{s.t.} & \quad \con{i}(\iter) + \nabla \con{i}(\iter)^{\T} \step \le 0, ~ i \in \iub,\\
-                    & \quad \con{i}(\iter) + \nabla \con{i}(\iter)^{\T} \step = 0, ~ i \in \ieq,\\
-                    & \quad \step \in \R^n. \nonumber
-    \end{align}
-\end{subequations}
+In what follows, we focus on only one iteration of \cref{alg:sqp} and hence,~$k$ is fixed.
+We will explain why it is reasonable to update~$\iter[k]$ by a solution to~\cref{eq:sqp-subproblem}.
 
 \subsubsection{Bilinear approximation of the \glsfmtlong{kkt} conditions}
 
@@ -193,57 +184,60 @@ According to \cref{thm:first-order-necessary-conditions}, if~$\iter[\ast] \in \R
         & \lm[\ast]_i \ge 0,                            && \quad \text{if~$i \in \iub$.}
     \end{empheq}
 \end{subequations}
-Regard~\cref{eq:sqp-kkt} as a nonlinear system of inequalities and equalities, and~$(\iter, \lm)$ as an approximation of~$(\iter[\ast], \lm[\ast])$.
-If we want to solve this system by the Newton-Raphson method\footnote{Discussions are needed on how to apply the Newton-Raphson method to systems of nonlinear inequalities and equalities. We will not go further in this direction but refer to \cite{Pshenichnyi_1970a,Pshenichnyi_1970b,Robinson_1972b,Daniel_1973} for fundamental works on this topic.} starting from~$(\iter, \lm)$, we would seek a step~$(\step, u)$ that satisfies the system
+Regard~\cref{eq:sqp-kkt} as a nonlinear system of inequalities and equalities, and~$(\iter[k], \lm[k])$ as an approximation of~$(\iter[\ast], \lm[\ast])$.
+If we want to solve this system by the Newton-Raphson method\footnote{Discussions are needed on how to apply the Newton-Raphson method to systems of nonlinear inequalities and equalities. We will not go further in this direction but refer to \cite{Pshenichnyi_1970a,Pshenichnyi_1970b,Robinson_1972b,Daniel_1973} for fundamental works on this topic.} starting from~$(\iter[k], \lm[k])$, we would seek a step~$(\step, \mu)$ that satisfies the system
 \begin{subequations}
     \label{eq:sqp-kkt-linearization}
     \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \nabla_x \lag(\iter, \lm + u) + \nabla_{x, x}^2 \lag(\iter, \lm) \step = 0,           && \\
-        & \con{i}(\iter) + \nabla \con{i}(\iter)^{\T} \step \le 0,                              && \quad \text{if~$i \in \iub$,}\\
-        & \con{i}(\iter) + \nabla \con{i}(\iter)^{\T} \step = 0,                                && \quad \text{if~$i \in \ieq$,}\\
-        & \lm_i [\con{i}(\iter) + \nabla \con{i}(\iter)^{\T} \step] + u_i \con{i}(\iter) = 0,   && \quad \text{if~$i \in \iub$,} \label{eq:sqp-kkt-linearization-complementary-slackness}\\
-        & \lm_i + u_i \ge 0,                                                                    && \quad \text{if~$i \in \iub$,}
+        & \nabla_x \lag(\iter[k], \lm[k] + \mu) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step = 0,         && \\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,                                    && \quad \text{if~$i \in \iub$,}\\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,                                      && \quad \text{if~$i \in \ieq$,}\\
+        & \lm[k]_i [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step] + \mu_i \con{i}(\iter[k]) = 0, && \quad \text{if~$i \in \iub$,} \label{eq:sqp-kkt-linearization-complementary-slackness}\\
+        & \lm[k]_i + \mu_i \ge 0,                                                                           && \quad \text{if~$i \in \iub$,}
     \end{empheq}
 \end{subequations}
-which is a linear approximation of~\cref{eq:sqp-kkt} at~$(\iter, \lm)$.
-However, as pointed out by \citeauthor{Robinson_1972a}~\cite[Rem.~3]{Robinson_1972a}, an objection to such a method is that it would not solve even a linear programming problem in one iteration.
-To cope with this deffect, we let~$(d, u)$ solve instead the following bilinear approximation of~\cref{eq:sqp-kkt},
+which is a linear approximation of~\cref{eq:sqp-kkt} at~$(\iter[k], \lm[k])$.
+However, as pointed out by \citeauthor{Robinson_1972a}~\cite[Rem.~3]{Robinson_1972a}, an objection to such a method is that it would not solve even a linear program in one iteration.
+To cope with this deffect, we let~$(d, \mu)$ solve instead the following bilinear approximation of~\cref{eq:sqp-kkt},
 \begin{subequations}
     \label{eq:sqp-subproblem-kkt}
     \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \nabla_x \lag(\iter, \lm + u) + \nabla_{x, x}^2 \lag(\iter, \lm) \step = 0,   && \\
-        & \con{i}(\iter) + \nabla \con{i}(\iter)^{\T} \step \le 0,                      && \quad \text{if~$i \in \iub$,}\\
-        & \con{i}(\iter) + \nabla \con{i}(\iter)^{\T} \step = 0,                        && \quad \text{if~$i \in \ieq$,}\\
-        & (\lm_i + u_i) [\con{i}(\iter) + \nabla \con{i}(\iter)^{\T} \step] = 0,        && \quad \text{if~$i \in \iub$,} \label{eq:sqp-subproblem-kkt-complementary-slackness}\\
-        & \lm_i + u_i \ge 0,                                                            && \quad \text{if~$i \in \iub$.}
+        & \nabla_x \lag(\iter[k], \lm[k] + \mu) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step = 0, && \\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,                            && \quad \text{if~$i \in \iub$,}\\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,                              && \quad \text{if~$i \in \ieq$,}\\
+        & (\lm[k]_i + \mu_i) [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step] = 0,         && \quad \text{if~$i \in \iub$,} \label{eq:sqp-subproblem-kkt-complementary-slackness}\\
+        & \lm[k]_i + \mu_i \ge 0,                                                                   && \quad \text{if~$i \in \iub$.}
     \end{empheq}
 \end{subequations}
-Its only difference with the system~\cref{eq:sqp-kkt-linearization} lies in the condition~\cref{eq:sqp-subproblem-kkt-complementary-slackness}, which now includes the bilinear term~$u_i \nabla \con{i}(\iter)^{\T} \step$.
-If the problem~\cref{eq:problem-cobyqa} is a linear programming problem, then~\cref{eq:sqp-subproblem-kkt} is precisely its \gls{kkt} system, while~\cref{eq:sqp-kkt-linearization} is only an approximation.
-Observe that the bilinear system~\cref{eq:sqp-subproblem-kkt} is nothing but the \gls{kkt} conditions of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-nok}, with~$\lm + u$ being the Lagrange multiplier.
-Therefore, a \gls{kkt} pair for the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-nok} is similar to a Newton-Raphson step for the \gls{kkt} system of the problem~\cref{eq:problem-cobyqa}, and it is even better in the sense that the resulting method solves a linear programming problem in one iteration.
+Its only difference from the system~\cref{eq:sqp-kkt-linearization} lies in the condition~\cref{eq:sqp-subproblem-kkt-complementary-slackness}, which now includes the bilinear term~$\mu_i \nabla \con{i}(\iter[k])^{\T} \step$.
+If the problem~\cref{eq:problem-cobyqa-sqp} is a linear program, then~\cref{eq:sqp-subproblem-kkt} is precisely its \gls{kkt} system, while~\cref{eq:sqp-kkt-linearization} is only an approximation.
+Observe that the bilinear system~\cref{eq:sqp-subproblem-kkt} is nothing but the \gls{kkt} conditions of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}, with~$\lm[k] + \mu$ being the Lagrange multiplier.
+Therefore, a \gls{kkt} pair for the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} is similar to a Newton-Raphson step for the \gls{kkt} system of the problem~\cref{eq:problem-cobyqa-sqp}, and it is even better in the sense that the resulting method solves a linear program in one iteration.
 
-Note that discrepancy between the systems~\cref{eq:sqp-kkt-linearization,eq:sqp-subproblem-kkt} disappears if~$\iub = \emptyset$ in the problem~\cref{eq:problem-cobyqa} and hence, a \gls{kkt} pair for the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-nok} is exactly a Newton-Raphson step for the \gls{kkt} system of the problem~\cref{eq:problem-cobyqa} in such a situation.
+Note that discrepancy between the systems~\cref{eq:sqp-kkt-linearization,eq:sqp-subproblem-kkt} disappears if~$\iub = \emptyset$ in the problem~\cref{eq:problem-cobyqa-sqp} and hence, a \gls{kkt} pair for the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} is exactly a Newton-Raphson step for the \gls{kkt} system of the problem~\cref{eq:problem-cobyqa-sqp} in such a situation.
 
 \subsubsection{Approximation of a modified Lagrangian}
 
 This interpretation is due to \citeauthor{Robinson_1972a}~\cite[Rem.~4]{Robinson_1972a}.
 Let~$\widetilde{\lag}$ be the function
 \begin{equation*}
-    \widetilde{\lag}(\step, u) \eqdef \obj(\iter + d) + \sum_{\mathclap{i \in \iub \cup \ieq}} (\lm_i + u_i) \delta_i(\iter + \step), \quad \text{for~$\step \in \R^n$ and~$u_i \in \R$, with~$i \in \iub \cup \ieq$},
+    \widetilde{\lag}(\iter, \lm) \eqdef \obj(\iter) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lm_i \delta_i(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lm_i \in \R$, with~$i \in \iub \cup \ieq$},
 \end{equation*}
-where~$\delta_i$, for~$i \in \iub \cup \ieq$, denotes the departure from linearity\footnote{When~$\con{i}$ is strictly convex, it is the Bregman distance~\cite{Bregman_1967} associated with~$\con{i}$ for the point~$\iter$.}~\cite{Hoek_1982} associated with~$\con{i}$ for the point~$\iter$, defined by
+where~$\delta_i$, for~$i \in \iub \cup \ieq$, is defined by
 \begin{equation*}
-    \delta_i(\iter + \step) \eqdef \con{i}(\iter + \step) - \con{i}(\iter) - \nabla \con{i}(\iter)^{\T} \step, \quad \text{for~$\iter \in \R^n$.}
+    \delta_i(\iter) \eqdef \con{i}(\iter) - \con{i}(\iter[k]) - \nabla \con{i}(\iter[k])^{\T} (\iter - \iter[k]), \quad \text{for~$\iter \in \R^n$.}
 \end{equation*}
+The function~$\delta_i$ is referred to as the departure from linearity\footnote{When~$\con{i}$ is strictly convex,~$\delta_i$ defines the Bregman distance~\cite{Bregman_1967} associated with~$\con{i}$.}~\cite[\S~2]{Gill_Wong_2011} for~$\con{i}$ at the point~$\iter[k]$.
 % Note that~$\widetilde{\lag}$ can be regarded as the Lagrangian function of the minimization of~$\obj$ subject to~$\delta_i(x) \le 0$ for~$i \in \iub$ and~$\delta_i(x) = 0$ for~$i \in \ieq$.
-The \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H = \nabla_{x, x}^2 \lag(\iter, \lm)$ can then be seen as the minimization of the second-order Taylor approximation of~$\widetilde{\lag}$ subject to the linearized constraints, i.e.,
+The \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ can then be seen as the minimization of the second-order Taylor approximation of~$\widetilde{\lag}$ subject to the linear approximations of the constraints~\cref{eq:problem-cobyqa-sqp-ub,eq:problem-cobyqa-sqp-eq} at~$(\iter[k], \lm[k])$, i.e.,
 \begin{align*}
-    \min        & \quad \nabla_d \widetilde{\lag}(\iter[k], \lm[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \widetilde{\lag}(\iter[k], \lm[k]) \step\\
+    \min        & \quad \nabla_x \widetilde{\lag}(\iter[k], \lm[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \widetilde{\lag}(\iter[k], \lm[k]) \step\\
     \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
                 & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
                 & \quad \step \in \R^n.
 \end{align*}
+
+By expressing its subproblem in this form, we observe that the \gls{sqp} method is a special case of \citeauthor{Robinson_1972a}'s method~\cite{Robinson_1972a}, known to have a local R-quadratic convergence rate.
 
 \subsubsection{Approximation of the augmented Lagrangian}
 
