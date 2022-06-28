@@ -251,14 +251,66 @@ We consider the problem
     \end{align}
 \end{subequations}
 with~$h : \R^n \to \R^m$.
-The problem~\cref{eq:problem-cobyqa-sqp} can be reformulated in this form (in the reformulation, the dimension and the meaning of~$\iter$ may be altered, but we do not change the notations since it does not lead to confusion).
+The problem~\cref{eq:problem-cobyqa-sqp} can be reformulated in this form\footnote{In the reformulation, the dimension and the meaning of~$\iter$ may be altered, but we do not change the notations since it does not lead to confusion}.
+Recall that the Lagrangian of~\cref{eq:problem-cobyqa-auglag} is
+\begin{equation*}
+    \lag(\iter, \lm) \eqdef \obj(\iter) + \lm^{\T} h(\iter), \quad \text{for~$\iter \ge 0$ and~$\lm \in \R^m$.}
+\end{equation*}
+
+Let~$\iter[k] \ge 0$ and~$\lm[k] \in \R^m$ be given.
+Correspondingly, the \gls{sqp} subproblem of the problem~\cref{eq:problem-cobyqa-auglag} is
+\begin{subequations}
+    \label{eq:sqp-subproblem-auglag}
+    \begin{align}
+        \min        & \quad Q_k(\step) \eqdef \obj(\iter[k]) + \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} H^k \step \label{eq:sqp-subproblem-auglag-obj}\\
+        \text{s.t.} & \quad h(\iter[k]) + \nabla h(\iter[k]) \step = 0,\\
+                    & \quad \iter[k] + \step \ge 0, ~ \step \in \R^n,
+    \end{align}
+\end{subequations}
+with~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
+Note that the constant term~$\obj(\iter[k])$ in~\cref{eq:sqp-subproblem-auglag-obj} may be excluded, as in~\cref{eq:sqp-subproblem-obj}, but including it facilitates the discussion in the sequel.
+
+\todo[noline]{Revise the assumptions to make~$\phi''$ Lipschitz continuous}
 
 \begin{theorem}
-    To do.
+    Assume that~$\obj$ is twice differentiable with Lipschitz-continuous Hessian matrices, that~$h$ is twice differentiable.
+    Let~$\iter(t)$ be a twice differentiable feasible path starting at~$\iter[k]$ and parametrized by a nonnegative scalar~$t$, i.e.,~$h(\iter(t)) = 0$ and~$\iter(t) \ge 0$ for~$t \ge 0$, and~$\iter(0) = \iter[k]$, with Lipschitz-continuous second derivative.
+    If~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$, then there exist constants~$\nu_1 \ge 0$ and~$\nu_2 \ge 0$ such that for all~$t \ge 0$,
+    \begin{equation*}
+        \abs{\obj(\iter(t)) - Q_k(x'(0) t)} \le (\nu_1 t + \nu_2) t^2.
+    \end{equation*}
+    Moreover, if~$\iter[k]$ is a local solution to~\cref{eq:problem-cobyqa-auglag}, then we can set~$\nu_2 = 0$.
 \end{theorem}
 
 \begin{proof}
-    To do.
+    Let~$\phi$ be the function defined by~$\phi(t) = \obj(x(t))$ for~$t \ge 0$.
+    For any~$t \ge 0$, we have
+    \begin{empheq}[left=\empheqlbrace]{alignat*=1}
+        & \phi'(t) = \iter'(t)^{\T} \nabla \obj(\iter(t)),\\
+        & \phi''(t) = \iter''(t)^{\T} \nabla \obj(\iter(t)) + \iter'(t)^{\T} \nabla^2 \obj(\iter(t)) \iter'(t).
+    \end{empheq}
+    Let~$\widehat{\phi}$ be the second-order Taylor expansion of~$\phi$ at~$0$.
+    % \begin{equation*}
+    %     \widehat{\phi}(t) \eqdef \phi(0) + t \phi'(0) + \frac{t^2}{2} \phi''(0), \quad \text{for~$t \ge 0$.}
+    % \end{equation*}
+    We then have
+    \begin{equation*}
+        \abs{\obj(\iter(t)) - Q_k(\iter'(0) t)} \le \abs{\phi(t) - \widehat{\phi}(t)} + \abs{\widehat{\phi}(t) - Q_k(\iter'(0) t)}.
+    \end{equation*}
+    By assumption, there exists a constant~$\nu_1 \ge 0$ such that~$\abs{\phi(t) - \widehat{\phi}(t)} \le \nu_1 t^3$.
+    Moreover, since~$h(\iter(t)) = 0$ for all~$t \ge 0$, the derivatives of its components are zero and hence,
+    \begin{equation*}
+        \iter''(0)^{\T} \nabla h_i(\iter[k]) + \iter'(0) \nabla^2 h_i(\iter[k]) \iter'(0) = 0, \quad \text{for~$i \in \set{1, 2, \dots, m}$.}
+    \end{equation*}
+    Therefore, we have
+    \begin{align*}
+        \abs{\widehat{\phi}(t) - Q_k(x'(0) t)}  & = \frac{t^2}{2} \abs[\bigg]{\iter''(0)^{\T} \nabla \obj(\iter[k]) - \sum_{i = 1}^m \lm[k]_i \iter'(0) \nabla^2 h_i(\iter[k]) \iter'(0)}\\
+                                                & \le \frac{t^2}{2} \abs{\iter''(0)^{\T} [\nabla \obj(\iter[k]) + \nabla h(x^k)^{\T} \lm[k]]}
+    \end{align*}
+    By setting~$\nu_2 = \abs{\iter''(0)^{\T} [\nabla \obj(\iter[k]) + \nabla h(x^k)^{\T} \lm[k]]} / 2$, we thus have
+    \begin{equation*}
+        \abs{\obj(\iter(t)) - Q_k(\iter'(0) t)} \le \nu_1 t^3 + \nu_2 t^2 = (\nu_1 t + \nu_2) t^2.
+    \end{equation*}
 \end{proof}
 
 \subsection{Lagrangian and augmented Lagrangian of the \glsfmtshort{sqp} subproblem}
@@ -267,29 +319,13 @@ In this section, we study the Lagrangian and the augmented Lagrangian of the \gl
 We also point out that the augmented Lagrangian of the \gls{sqp} subproblem is exactly the approximate augmented Lagrangian used in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 
 For simplicity, instead of the problem~\cref{eq:problem-cobyqa}, we consider still the problem~\cref{eq:problem-cobyqa-auglag}.
-Recall that the Lagrangian of~\cref{eq:problem-cobyqa-auglag} is
-\begin{equation*}
-    \lag(\iter, \lm) \eqdef \obj(\iter) + \lm^{\T} h(\iter), \quad \text{for~$\iter \ge 0$ and~$\lm \in \R^m$,}
-\end{equation*}
-and the augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973} of the problem~\cref{eq:problem-cobyqa-auglag} is
+Recall that the augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973} of the problem~\cref{eq:problem-cobyqa-auglag} is
 \begin{equation}
     \label{eq:augmented-lagrangian-inequality}
     \lag[\mathsf{A}](\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \norm{h(\iter)}^2, \quad \text{for~$\iter \ge 0$ and~$\lm \in \R^m$,}
 \end{equation}
 where~$\gamma \ge 0$ is a penalty parameter.
 
-Let~$\iter[k] \ge 0$ and~$\lm[k] \in \R^m$ be given.
-Correspondingly, the \gls{sqp} subproblem of the problem~\cref{eq:problem-cobyqa-auglag} is
-\begin{subequations}
-    \label{eq:sqp-subproblem-auglag}
-    \begin{align}
-        \min        & \quad \obj(\iter[k]) + \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} H^k \step \label{eq:sqp-subproblem-auglag-obj}\\
-        \text{s.t.} & \quad h(\iter[k]) + \nabla h(\iter[k]) \step = 0,\\
-                    & \quad \iter[k] + \step \ge 0, ~ \step \in \R^n,
-    \end{align}
-\end{subequations}
-with~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
-Note that the constant term~$\obj(\iter[k])$ in~\cref{eq:sqp-subproblem-auglag-obj} may be excluded, as in~\cref{eq:sqp-subproblem-obj}, but including it facilitates the discussion in the sequel.
 Denote by~$\lagalt$ the Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag}, i.e.,
 \begin{align*}
     \lagalt(\step, \lm) & \eqdef \obj(\iter[k]) + \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} H^k \step\\
@@ -322,7 +358,19 @@ We now present some relations between~$\lag$ and~$\lagalt$, and also between~$\l
 \end{theorem}
 
 \begin{proof}
-    To do.
+    By direct calculations, we remark that
+    \begin{equation*}
+        \nabla_x \lag[\mathsf{A}](\iter[k], \lm[k]) = \nabla_x \lag(\iter[k], \lm[k]) + \gamma \nabla h(\iter[k])^{\T} h(\iter[k]),
+    \end{equation*}
+    and
+    \begin{equation*}
+        \nabla_{x, x}^2 \lag[\mathsf{A}](\iter[k], \lm[k]) = \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) + \gamma \bigg[ \nabla h(\iter[k])^{\T} \nabla h(\iter[k]) + \sum_{i = 1}^m h_i(\iter[k]) \nabla^2 h_i(\iter[k]) \bigg].
+    \end{equation*}
+    Therefore, the second-order Taylor expansion of~$\lag[\mathsf{A}](\iter[k] + d, \lm[k])$ with respect to~$d$ at~$0$ is
+    \begin{equation*}
+        \lag[\mathsf{A}](\iter[k] + d, \lm[k]) = \lag(\iter[k], \lm[k]) + \nabla_x \lag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} H^k d + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) d}^2 + \smallo(\norm{d}^2),
+    \end{equation*}
+    where~$H^k$ is defined by~\cref{eq:auglag-sqp-2}.
 \end{proof}
 
 There is an interesting connection between the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} and the trust-region augmented Lagrange methods studied in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
@@ -340,76 +388,13 @@ This approximation turns out to be the augmented Lagrangian of the \gls{sqp} sub
 \end{theorem}
 
 \begin{proof}
-    To do.
+    Simarlarly to \cref{thm:auglag-sqp-1}, this theorem can be verified by a straightforward calculation.
 \end{proof}
 
 Several possibilities of~$H^k$ are proposed in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 For example,~$H^k$ can be set to~$\nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ or an approximation.
 As pointed out by~\cite[\S~2.1]{Niu_Yuan_2010}, if~$H^k$ is defined as in~\cref{eq:auglag-sqp-2}, then the right-hand side of~\cref{eq:niu-yuan-auglag} is the second-order Taylor expansion of~$\lag[\mathsf{A}](\iter[k] + d, \lm[k])$ with respect to~$d$ at~$0$, which agrees with \cref{thm:auglag-sqp-2}.
 However, in the numerical experiments,~\cite{Niu_Yuan_2010,Wang_Yuan_2014} choose~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
-
-\todo[noline]{Prove the theorems}
-
-% Let us consider the second-order Taylor expansion of~$\lag[\mathsf{A}](\iter[k] + d, \lm[k])$ with respect to~$d$ at~$0$.
-% To this end, we remark that
-% \begin{equation*}
-%     \nabla_x \lag[\mathsf{A}](\iter[k], \lm[k]) = \nabla_x \lag(\iter[k], \lm[k]) + \gamma \nabla h(\iter[k])^{\T} h(\iter[k]),
-% \end{equation*}
-% and
-% \begin{equation*}
-%     \nabla_{x, x}^2 \lag[\mathsf{A}](\iter[k], \lm[k]) = \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) + \gamma \bigg[ \nabla h(\iter[k])^{\T} \nabla h(\iter[k]) + \sum_{i = 1}^m h_i(\iter[k]) \nabla^2 h_i(\iter[k]) \bigg].
-% \end{equation*}
-% This gives us
-% \begin{equation*}
-%     \lag[\mathsf{A}](\iter[k] + d, \lm[k]) \approx \lag(\iter[k], \lm[k]) + \nabla_x \lag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} H^k d + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) d}^2,
-% \end{equation*}
-% where
-% \begin{equation*}
-%     H^k = \nabla \obj(\iter[k]) + \sum_{i = 1}^m [\lm[k]_i + \gamma h_i(\iter[k])] \nabla^2 h_i(\iter[k]).
-% \end{equation*}
-% Interestingly, this quadratic approximation of~$\lag[\mathsf{A}](\iter[k] + d, \lm[k])$ is the augmented Lagrangian function of the \gls{sqp} subproblem
-
-% This is interesting, because traditional augmented Lagrangian methods for solving the problem~\cref{eq:problem-cobyqa-auglag} would update the dual variable~$\lm[k]$ as~$\lm[k + 1] = \lm[k] + \gamma h(\iter[k])$.
-% Therefore, this approximation of~$\lag[\mathsf{A}]$ can be interpreted as the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k + 1])$.
-
-
-% %%%%%%%%%%%%%%
-% We observe that the augmented Lagrangian function of the \gls{sqp} subproblem for the Lagrange multiplier~$\lm[k]$ and the penalty parameter~$\gamma$ is
-% \begin{enumerate}
-%     \item the quadratic approximation of~$\lag[\mathsf{A}](\iter[k] + \step, \lm[k])$ by replacing~$\lag(\iter[k] + \step, \lm[k])$ by its second-order Taylor expansion and~$h(\iter)$ by its first-order Taylor expansion if~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$, and
-%     \item the second-order Taylor expansion of~$\lag[\mathsf{A}](\iter[k] + \step, \lm[k])$ if
-%     \begin{equation*}
-%         H^k = \nabla \obj(\iter[k]) + \sum_{i = 1}^m [\lm[k]_i + \gamma h_i(\iter[k])] \nabla^2 h_i(\iter[k]).
-%     \end{equation*}
-% \end{enumerate}
-% The second approximation is particularly interesting, because a traditional augmented Lagrangian method for solving the problem~\cref{eq:problem-cobyqa-auglag} would update the dual variable~$\lm[k]$ as~$\lm[k + 1] = \lm[k] + \gamma h(\iter[k])$.
-% Therefore, this approximation of~$\lag[\mathsf{A}]$ can be interpreted as the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k + 1])$.
-% Moreover, the augmented Lagrangian function of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} for the Lagrange multiplier~$\lm[k]$ and the penalty parameter~$\gamma$ takes the form
-% \begin{equation*}
-%     (\lm[k])^{\T} h(\iter[k]) + \nabla_x \lag(\iter[k], \lm[k])^{\T} \step + \frac{1}{2} \step^{\T} H^k \step + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) d}^2
-% \end{equation*}
-
-% We approximate~\cite{Niu_Yuan_2010,Wang_Yuan_2014} the augmented Lagrangian function~\cref{eq:augmented-lagrangian-inequality} by
-% \begin{align*}
-%     \lag[\mathsf{A}](\iter[k] + \step, \lm[k])  & \approx \lag(\iter[k], \lm[k]) + \nabla_x \lag(\iter[k], \lm[k])^{\T} \step + \frac{1}{2} \step^{\T} H^k \step\\
-%                                                 & \qquad + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) \step}^2,
-% \end{align*}
-% for~$\step \in \R^n$, where~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
-% In this approximation, we replaced~$\lag$ by a quadratic approximation, and~$h$ by its first-order Taylor expansion.
-% Note that the first three terms in the right-hand side equal the Lagrangian function of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
-% Therefore, the right-hand side of this equation is nothing but the augmented Lagrangian function of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} in such a case.
-
-% Moreover, the second-order Taylor approximation of~$\lag[\mathsf{A}]$ provides
-% \begin{align*}
-%     \lag[\mathsf{A}](\iter[k] + d, s^k, \lm[k]) & \approx \obj(\iter[k]) + \nabla \obj(\iter[k])^{\T} d + \frac{1}{2} d^{\T} \tilde{H}^k(\lm[k]) d\\
-%                                                 & \qquad + \sum_{i \in \iub} \lm[k]_i [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} d + s_i]\\
-%                                                 & \qquad + \frac{\gamma}{2} \sum_{i \in \iub} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} d + s_i]^2\\
-% \end{align*}
-% where~$\tilde{H}^k$ is defined by
-% \begin{equation*}
-%     \tilde{H}^k(\lm) \eqdef \nabla \obj(\iter[k]) + \sum_{i \in \iub} [\lm_i + \gamma (\con{i}(\iter[k]) + s_i)] \nabla^2 \con{i}(\iter[k]), \quad \text{for~$\lm_i \in \R$, with~$i \in \iub$.}
-% \end{equation*}
-% This approximation of~$\lag[\mathsf{A}]$ is the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \tilde{H}^k(\lm[k])$.
 
 \subsection{A derivative-free \glsfmtlong{sqp} method}
 \label{subsec:derivative-free-sqp}

@@ -273,9 +273,9 @@ where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\T}$,~$e \in 
     Y_L \eqdef 
     \begin{bmatrix}
         y^1 - \bar{x}   & y^2 - \bar{x} & \cdots    & y^m - \bar{x}
-    \end{bmatrix} \quad \text{and} \quad Y_H \eqdef \frac{1}{2} (Y_L^{\T} Y_L) \circ (Y_L^{\T} Y_L).
+    \end{bmatrix} \quad \text{and} \quad Y_H \eqdef \frac{1}{2} (Y_L^{\T} Y_L) \odot (Y_L^{\T} Y_L).
 \end{equation}
-In~\cref{eq:least-frobenius-kkt-system-matrices},~$\circ$ denotes the Hadamard product and hence, the~$(i, j)$ entry of~$Y_H$ is given by~$[(y^i - \bar{x})^{\T} (y^j - \bar{x})]^2 / 2$.
+In~\cref{eq:least-frobenius-kkt-system-matrices},~$\odot$ denotes the Hadamard product and hence, the~$(i, j)$ entry of~$Y_H$ is given by~$[(y^i - \bar{x})^{\T} (y^j - \bar{x})]^2 / 2$.
 In fact, the problem~\cref{eq:least-frobenius-norm-models} is equivalent to the linear system~\cref{eq:least-frobenius-kkt-system}, where the matrix~$H$ can be retrieved from the value of~$\lm$ by~\cref{eq:least-frobenius-norm-kkt}~\cite[\S~2]{Powell_2004b}, and the interpolation set~$\xpt$ is poised if and only if the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is nonsingular~\cite[\S~5.3]{Conn_Scheinberg_Vicente_2009b}.
 Since the poisedness of~$\xpt$ does not depends on the choice of~$\bar{x}$, neither does the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
 
