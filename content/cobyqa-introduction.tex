@@ -23,7 +23,7 @@ In this chapter, we introduce a new model-based \gls{dfo} method for solving non
     \begin{align}
         \min        & \quad \obj(\iter) \label{eq:problem-cobyqa-obj}\\
         \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-ub}\\
-                    & \quad \con{i}(\iter) = 0, ~ i \in \ieq,\\
+                    & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:problem-cobyqa-eq}\\
                     & \quad \xl \le x \le \xu, \label{eq:problem-cobyqa-bd}\\
                     & \quad \iter \in \R^n, \nonumber
     \end{align}
@@ -238,10 +238,12 @@ The \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \l
 
 By expressing its subproblem in this form, we observe that the \gls{sqp} method is a special case of \citeauthor{Robinson_1972a}'s method~\cite{Robinson_1972a}, known to have a local R-quadratic convergence rate.
 
-\subsubsection{Second-order approximation of the objective function}
+\subsubsection{Approximation of the objective function in the tangent space of the feasible set}
 
-The objective function of the \gls{sqp} subproblem can also be interpreted as a second-order approximation of~$\obj$ on the boundary of the feasible region~\cite[\S~2]{Gill_Wong_2011}.
-We consider the problem
+Inspired by an observation in~\cite[\S~2]{Gill_Wong_2011}, we can also interpret the \gls{sqp} subproblem as minimizing an approximation of the objective function in the tangent space of the feasible set.
+As will be shown in \cref{thm:sqp-path}, when approximating~$\obj$ in such a space, we will naturally get the Hessian matrix of the Lagrangian in the second-order term.
+
+For this interpretation, we consider the problem
 \begin{subequations}
     \label{eq:problem-cobyqa-auglag}
     \begin{align}
@@ -257,61 +259,77 @@ Recall that the Lagrangian of~\cref{eq:problem-cobyqa-auglag} is
     \lag(\iter, \lm) \eqdef \obj(\iter) + \lm^{\T} h(\iter), \quad \text{for~$\iter \ge 0$ and~$\lm \in \R^m$.}
 \end{equation*}
 
-Let~$\iter[k] \ge 0$ and~$\lm[k] \in \R^m$ be given.
-Correspondingly, the \gls{sqp} subproblem of the problem~\cref{eq:problem-cobyqa-auglag} is
-\begin{subequations}
-    \label{eq:sqp-subproblem-auglag}
-    \begin{align}
-        \min        & \quad Q_k(\step) \eqdef \obj(\iter[k]) + \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} H^k \step \label{eq:sqp-subproblem-auglag-obj}\\
-        \text{s.t.} & \quad h(\iter[k]) + \nabla h(\iter[k]) \step = 0,\\
-                    & \quad \iter[k] + \step \ge 0, ~ \step \in \R^n,
-    \end{align}
-\end{subequations}
-with~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
-Note that the constant term~$\obj(\iter[k])$ in~\cref{eq:sqp-subproblem-auglag-obj} may be excluded, as in~\cref{eq:sqp-subproblem-obj}, but including it facilitates the discussion in the sequel.
-
-\todo[noline]{Revise the assumptions to make~$\phi''$ Lipschitz continuous}
+Let~$\bar{\iter} \in \R^n$,~$\bar{\lm} \in \R^m$ be given, and define
+\begin{equation*}
+    Q(\step) \eqdef \obj(\bar{\iter}) + \nabla \obj(\bar{\iter})^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm}) \step.
+\end{equation*}
+If~$\bar{\iter}$ and~$\bar{\lm}$ represent the current iterate and approximate Lagrange multiplier, then~$Q$ is the objective function of the \gls{sqp} subproblem with the exact second-order term.
+Therefore, the \gls{sqp} subproblem approximates~$\obj$ by~$Q$ and the feasible set by its tangent space.
+Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tangent space, which turns out to be true, as detailed by \cref{thm:sqp-path}.
 
 \begin{theorem}
-    Assume that~$\obj$ is twice differentiable with Lipschitz-continuous Hessian matrices, that~$h$ is twice differentiable.
-    Let~$\iter(t)$ be a twice differentiable feasible path starting at~$\iter[k]$ and parametrized by a nonnegative scalar~$t$, i.e.,~$h(\iter(t)) = 0$ and~$\iter(t) \ge 0$ for~$t \ge 0$, and~$\iter(0) = \iter[k]$, with Lipschitz-continuous second derivative.
-    If~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$, then there exist constants~$\nu_1 \ge 0$ and~$\nu_2 \ge 0$ such that for all~$t \ge 0$,
+    \label{thm:sqp-path}
+    Assume that~$\obj$ and~$h$ are twice differentiable and that~$\nabla^2 \obj$ is Lipschitz continuous in a neighborhood of~$\bar{\iter}$.
+    Let~$\iter(t)$ be a feasible path starting at~$\bar{\iter}$ and parametrized by a nonnegative scalar~$t$, i.e.,~$h(\iter(t)) = 0$ and~$\iter(t) \ge 0$ for~$t \ge 0$, and~$\iter(0) = \bar{\iter}$.
+    Assume that~$\iter$ is twice differentiable for~$t \ge 0$ and that~$\iter''$ is Lipschitz continuous in a neighborhood of~$0$.
+    Then, there exist constants~$\nu \ge 0$ and~$\epsilon > 0$ such that
     \begin{equation*}
-        \abs{\obj(\iter(t)) - Q_k(x'(0) t)} \le (\nu_1 t + \nu_2) t^2.
+        \abs{\obj(\iter(t)) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2}\abs{\iter''(0)^{\T} [\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}]} \bigg) t^2 \quad \text{for all~$t \in [0, \epsilon]$.}
     \end{equation*}
-    Moreover, if~$\iter[k]$ is a local solution to~\cref{eq:problem-cobyqa-auglag}, then we can set~$\nu_2 = 0$.
 \end{theorem}
 
 \begin{proof}
-    Let~$\phi$ be the function defined by~$\phi(t) = \obj(x(t))$ for~$t \ge 0$.
+    Define~$\phi(t) = \obj(x(t))$ for~$t \ge 0$.
     For any~$t \ge 0$, we have
-    \begin{empheq}[left=\empheqlbrace]{alignat*=1}
-        & \phi'(t) = \iter'(t)^{\T} \nabla \obj(\iter(t)),\\
-        & \phi''(t) = \iter''(t)^{\T} \nabla \obj(\iter(t)) + \iter'(t)^{\T} \nabla^2 \obj(\iter(t)) \iter'(t).
-    \end{empheq}
+    \begin{subequations}
+        \label{eq:sqp-path-proof-1}
+        \begin{empheq}[left=\empheqlbrace]{alignat=1}
+            & \phi'(t) = \iter'(t)^{\T} \nabla \obj(\iter(t)),\\
+            & \phi''(t) = \iter'(t)^{\T} \nabla^2 \obj(\iter(t)) \iter'(t) + \iter''(t)^{\T} \nabla \obj(\iter(t)),
+        \end{empheq}
+    \end{subequations}
+    and by assumption, there exists~$\epsilon > 0$ such that~$\phi''$ is Lipschitz continuous in~$[0, \epsilon]$.
     Let~$\widehat{\phi}$ be the second-order Taylor expansion of~$\phi$ at~$0$.
-    % \begin{equation*}
-    %     \widehat{\phi}(t) \eqdef \phi(0) + t \phi'(0) + \frac{t^2}{2} \phi''(0), \quad \text{for~$t \ge 0$.}
-    % \end{equation*}
     We then have
+    \begin{equation}
+        \label{eq:sqp-path-proof-2}
+        \abs{\obj(\iter(t)) - Q(\iter'(0) t)} \le \abs{\phi(t) - \widehat{\phi}(t)} + \abs{\widehat{\phi}(t) - Q(\iter'(0) t)}.
+    \end{equation}
+    Due to the Lipschitz continuity of~$\phi''$, there exists a constants~$\nu \ge 0$ such that
+    \begin{equation}
+        \label{eq:sqp-path-proof-3}
+        \abs{\phi(t) - \widehat{\phi}(t)} \le \nu t^3 \quad \text{for~$t \in [0, \epsilon]$.}
+    \end{equation}
+    We now bound~$\abs{\widehat{\phi}(t) - Q(\iter'(0) t)}$.
+    According to~\cref{eq:sqp-path-proof-1}, only the second-order terms of~$\widehat{\phi}(t)$ and~$Q(\iter'(0) t)$ differ, and
+    \begin{subequations}
+        \label{eq:sqp-path-proof-4}
+        \begin{align}
+            \abs{\widehat{\phi}(t) - Q(x'(0) t)}    & = \frac{t^2}{2} \abs{\phi''(0) - \iter'(0)^{\T} \nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm}) \iter'(0)}\\
+                                                    & = \frac{t^2}{2} \abs[\bigg]{\iter''(0)^{\T} \nabla \obj(\bar{\iter}) - \sum_{i = 1}^m \bar{\lm}_i \iter'(0) \nabla^2 h_i(\bar{\iter}) \iter'(0)}.
+        \end{align}
+    \end{subequations}
+    Moreover, since~$h(\iter(t)) = 0$ for all~$t \ge 0$, we have
     \begin{equation*}
-        \abs{\obj(\iter(t)) - Q_k(\iter'(0) t)} \le \abs{\phi(t) - \widehat{\phi}(t)} + \abs{\widehat{\phi}(t) - Q_k(\iter'(0) t)}.
+        0 = \frac{\du^2 h_i(\iter(t))}{\du t^2}\bigg\vert_{t = 0} = \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) + \iter''(0)^{\T} \nabla h_i(\bar{\iter}), \quad \text{for~$i \in \set{1, 2, \dots, m}$.}
     \end{equation*}
-    By assumption, there exists a constant~$\nu_1 \ge 0$ such that~$\abs{\phi(t) - \widehat{\phi}(t)} \le \nu_1 t^3$.
-    Moreover, since~$h(\iter(t)) = 0$ for all~$t \ge 0$, the derivatives of its components are zero and hence,
-    \begin{equation*}
-        \iter''(0)^{\T} \nabla h_i(\iter[k]) + \iter'(0) \nabla^2 h_i(\iter[k]) \iter'(0) = 0, \quad \text{for~$i \in \set{1, 2, \dots, m}$.}
-    \end{equation*}
-    Therefore, we have
-    \begin{align*}
-        \abs{\widehat{\phi}(t) - Q_k(x'(0) t)}  & = \frac{t^2}{2} \abs[\bigg]{\iter''(0)^{\T} \nabla \obj(\iter[k]) - \sum_{i = 1}^m \lm[k]_i \iter'(0) \nabla^2 h_i(\iter[k]) \iter'(0)}\\
-                                                & \le \frac{t^2}{2} \abs{\iter''(0)^{\T} [\nabla \obj(\iter[k]) + \nabla h(x^k)^{\T} \lm[k]]}
-    \end{align*}
-    By setting~$\nu_2 = \abs{\iter''(0)^{\T} [\nabla \obj(\iter[k]) + \nabla h(x^k)^{\T} \lm[k]]} / 2$, we thus have
-    \begin{equation*}
-        \abs{\obj(\iter(t)) - Q_k(\iter'(0) t)} \le \nu_1 t^3 + \nu_2 t^2 = (\nu_1 t + \nu_2) t^2.
-    \end{equation*}
+    Therefore,~$\iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) = -\iter''(0)^{\T} \nabla h_i(\bar{\iter})$ for each~$i$ and hence,~\cref{eq:sqp-path-proof-4} leads to
+    \begin{equation}
+        \label{eq:sqp-path-proof-5}
+        \abs{\widehat{\phi}(t) - Q(x'(0) t)} \le \frac{t^2}{2} \abs{\iter''(0)^{\T} [\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}]}.
+    \end{equation}
+    Plugging~\cref{eq:sqp-path-proof-3,eq:sqp-path-proof-5} into~\cref{eq:sqp-path-proof-2}, we obtain the desired result.
 \end{proof}
+
+Note that the approximation error in \cref{thm:sqp-path} depends on the magnitude of~$\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}$.
+If~$(\bar{\iter}, \bar{\lm})$ is close to \gls{kkt} pair, then~$\norm{\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}}$ is small.
+On the other hand, if we defined~$\nabla^2 Q$ by~$\nabla^2 \obj(\bar{x})$ instead of~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$, then under the assumptions of \cref{thm:sqp-path}, we would have
+\begin{equation*}
+    \abs{\obj(\iter(t)) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2}\abs{\iter''(0)^{\T} \nabla \obj(\bar{\iter})} \bigg) t^2 \quad \text{for all~$t \in [0, \epsilon]$,}
+\end{equation*}
+which can be obtained by setting~$\bar{\lm} = 0$ in \cref{thm:sqp-path}.
+However, since we are considering constrained optimization, we cannot expect~$\norm{\nabla \obj(\bar{\iter})}$ to be small even if~$\bar{\iter}$ is close to a solution, unless no constraint is active at this solution.
+This explains why the second-order term of the \gls{sqp} subproblem should be defined by the Hessian matrix of the Lagrangian, rather than that of~$\obj$.
 
 \subsection{Lagrangian and augmented Lagrangian of the \glsfmtshort{sqp} subproblem}
 
@@ -319,13 +337,25 @@ In this section, we study the Lagrangian and the augmented Lagrangian of the \gl
 We also point out that the augmented Lagrangian of the \gls{sqp} subproblem is exactly the approximate augmented Lagrangian used in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 
 For simplicity, instead of the problem~\cref{eq:problem-cobyqa}, we consider still the problem~\cref{eq:problem-cobyqa-auglag}.
+Let~$\iter[k] \ge 0$ and~$\lm[k] \in \R^m$ be given.
+Correspondingly, the \gls{sqp} subproblem of the problem~\cref{eq:problem-cobyqa-auglag} is
+\begin{subequations}
+    \label{eq:sqp-subproblem-auglag}
+    \begin{align}
+        \min        & \quad \obj(\iter[k]) + \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} H^k \step \label{eq:sqp-subproblem-auglag-obj}\\
+        \text{s.t.} & \quad h(\iter[k]) + \nabla h(\iter[k]) \step = 0,\\
+                    & \quad \iter[k] + \step \ge 0, ~ \step \in \R^n,
+    \end{align}
+\end{subequations}
+with~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
+Note that the constant term~$\obj(\iter[k])$ in~\cref{eq:sqp-subproblem-auglag-obj} may be excluded, as in~\cref{eq:sqp-subproblem-obj}, but including it facilitates the discussion in the sequel.
+
 Recall that the augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973} of the problem~\cref{eq:problem-cobyqa-auglag} is
 \begin{equation}
     \label{eq:augmented-lagrangian-inequality}
     \lag[\mathsf{A}](\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \norm{h(\iter)}^2, \quad \text{for~$\iter \ge 0$ and~$\lm \in \R^m$,}
 \end{equation}
 where~$\gamma \ge 0$ is a penalty parameter.
-
 Denote by~$\lagalt$ the Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag}, i.e.,
 \begin{align*}
     \lagalt(\step, \lm) & \eqdef \obj(\iter[k]) + \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} H^k \step\\
@@ -340,6 +370,7 @@ We now present some relations between~$\lag$ and~$\lagalt$, and also between~$\l
 
 \begin{theorem}
     \label{thm:auglag-sqp-1}
+    Assume that~$\obj$ and~$h$ are twice differentiable.
     If~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$, then~$\lagalt(\step, \lm[k])$ is the second-order Taylor expansion of~$\lag(\iter[k] + \step, \lm[k])$ with respect to~$d$ at~$0$.
 \end{theorem}
 
@@ -349,6 +380,7 @@ We now present some relations between~$\lag$ and~$\lagalt$, and also between~$\l
 
 \begin{theorem}
     \label{thm:auglag-sqp-2}
+    Assume that~$\obj$ and~$h$ are twice differentiable.
     If
     \begin{equation}
         \label{eq:auglag-sqp-2}
@@ -358,7 +390,7 @@ We now present some relations between~$\lag$ and~$\lagalt$, and also between~$\l
 \end{theorem}
 
 \begin{proof}
-    By direct calculations, we remark that
+    By direct calculations, we have
     \begin{equation*}
         \nabla_x \lag[\mathsf{A}](\iter[k], \lm[k]) = \nabla_x \lag(\iter[k], \lm[k]) + \gamma \nabla h(\iter[k])^{\T} h(\iter[k]),
     \end{equation*}
@@ -373,6 +405,12 @@ We now present some relations between~$\lag$ and~$\lagalt$, and also between~$\l
     where~$H^k$ is defined by~\cref{eq:auglag-sqp-2}.
 \end{proof}
 
+Intriguingly, a traditional augmented Lagrangian method for solving the problem~\cref{eq:problem-cobyqa-auglag} would update the dual variable~$\lm[k]$ by
+\begin{equation*}
+    \lm[k + 1] = \lm[k] + \gamma h(\iter[k]).
+\end{equation*}
+Therefore, the second-order Taylor expansion of~$\lag[\mathsf{A}]$ can be interpreted as the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k + 1])$.
+
 There is an interesting connection between the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} and the trust-region augmented Lagrange methods studied in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 These methods employ the approximation
 \begin{equation}
@@ -384,7 +422,8 @@ This approximation turns out to be the augmented Lagrangian of the \gls{sqp} sub
 
 \begin{theorem}
     \label{thm:auglag-sqp-3}
-    For any symmetric matrix~$H^k \in \R^{n \times n}$, the right-hand side of~\cref{eq:niu-yuan-auglag} equals~$\lagalt[\mathsf{A}](\step, \lm[k])$.
+    Assume that~$\obj$ and~$h$ are differentiable.
+    For any matrix~$H^k \in \R^{n \times n}$, the right-hand side of~\cref{eq:niu-yuan-auglag} equals~$\lagalt[\mathsf{A}](\step, \lm[k])$.
 \end{theorem}
 
 \begin{proof}
@@ -395,6 +434,9 @@ Several possibilities of~$H^k$ are proposed in~\cite{Niu_Yuan_2010,Wang_Yuan_201
 For example,~$H^k$ can be set to~$\nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ or an approximation.
 As pointed out by~\cite[\S~2.1]{Niu_Yuan_2010}, if~$H^k$ is defined as in~\cref{eq:auglag-sqp-2}, then the right-hand side of~\cref{eq:niu-yuan-auglag} is the second-order Taylor expansion of~$\lag[\mathsf{A}](\iter[k] + d, \lm[k])$ with respect to~$d$ at~$0$, which agrees with \cref{thm:auglag-sqp-2}.
 However, in the numerical experiments,~\cite{Niu_Yuan_2010,Wang_Yuan_2014} choose~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
+
+Suppose that an algorithm defines a step~$\step[k]$ based on the minimization of the right-hand side of~\cref{eq:niu-yuan-auglag}.
+Then, \cref{thm:auglag-sqp-3} tells us that the algorithm can be regarded as an \gls{sqp} method that approximately solves the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} by minimizing~$\lagalt[\mathsf{A}](\step, \lm[k])$, i.e., by applying one single iteration of an augmented Lagrangian method.
 
 \subsection{A derivative-free \glsfmtlong{sqp} method}
 \label{subsec:derivative-free-sqp}
@@ -463,13 +505,13 @@ Details on the merit functions employed by \gls{cobyqa} is given in \cref{subsec
         \begin{subequations}
             \label{eq:trust-region-sqp-subproblem}
             \begin{algomathalign}
-                \min        & \quad \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step \label{derivative-free-trust-region-sqp-subproblem-obj}\\
-                \text{s.t.} & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
-                            & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
-                            & \quad \norm{\step} \le \rad[k],\\
-                            & \quad \step \in \R^n,
+                \min        & \quad \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step \label{eq:derivative-free-trust-region-sqp-subproblem-obj}\\
+                \text{s.t.} & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub, \label{eq:derivative-free-trust-region-sqp-subproblem-ub}\\
+                            & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:derivative-free-trust-region-sqp-subproblem-eq}\\
+                            & \quad \norm{\step} \le \rad[k], \label{eq:derivative-free-trust-region-sqp-subproblem-tr}\\
+                            & \quad \step \in \R^n, \nonumber
             \end{algomathalign}
-        \end{subequations}
+        \end{subequations} \nllabel{alg:derivative-free-sqp-tr-step}
         Evaluate the trust-region ratio
         \begin{algomathdisplay}
             \ratio[k] \gets \frac{\merit[k](\iter[k]) - \merit[k](\iter[k] + \step[k])}{\meritm[k](\iter[k]) - \meritm[k](\iter[k] + \step[k])}
@@ -559,10 +601,63 @@ The parameters chosen in \gls{cobyqa} are~$\eta_4 = 16$,~$\eta_5 = 250$, and~$\t
 
 \subsection{Composite-step approach}
 
-\begin{itemize}
-    \item The Vardi-like approach~\cite{Vardi_1985} is similar to an idea proposed by Powell~\cite[Eqs.~(2.7) and~(2.8)]{Powell_1978a}.
-    The inactive constraints are not modified by Powell.
-\end{itemize}
+The \cref{alg:derivative-free-sqp-tr-step} of \cref{alg:derivative-free-sqp} hides the following crucial point.
+If the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem} is infeasible, what should~$\step[k]$ approximate?
+Since the constraints~\cref{eq:derivative-free-trust-region-sqp-subproblem-ub,eq:derivative-free-trust-region-sqp-subproblem-eq} are linear representation of the constraints~\cref{eq:problem-cobyqa-ub,eq:problem-cobyqa-eq}, we cannot guarantee the feasible region of the subproblem~\cref{eq:trust-region-sqp-subproblem} to be feasible.
+It may be infeasible because
+\begin{enumerate}
+    \item the inequality constraints~\cref{eq:derivative-free-trust-region-sqp-subproblem-ub} may be infeasible,
+    \item the equality constraints~\cref{eq:derivative-free-trust-region-sqp-subproblem-eq} may be infeasible, and
+    \item the intersection of the regions defined by~\cref{eq:derivative-free-trust-region-sqp-subproblem-ub,eq:derivative-free-trust-region-sqp-subproblem-eq,eq:derivative-free-trust-region-sqp-subproblem-tr} may be empty.
+\end{enumerate}
+
+The traditional approach to cope with this difficulty is to define~$\step[k]$ as the sum of two steps, a \emph{normal step}~$\nstep[k]$ that aims at reducing the constraint violation and a \emph{tangential step}~$\tstep[k]$ that aims at reducing the objective function~\cref{eq:derivative-free-trust-region-sqp-subproblem-obj}.
+Note that the terms \enquote{normal} and \enquote{tangential} only describe the step properties, there will be no actual reason for these steps to be orthogonal.
+In what follows, we describe three approaches for defining these composite steps, namely the Vardi-like approach~\cite{Vardi_1985}, the Byrd-Omojokun-like approach~\cite{Byrd_1987,Omojokun_1989}, and the \gls{cdt} approach~\cite{Celis_Dennis_Tapia_1985}.
+
+\subsubsection{Vardi-like approach}
+
+The Vardi-like approach to define the normal and tangential steps is perhaps the simplest one.
+It is very similar to an idea proposed by Powell~\cite[Eqs.~(2.7) and~(2.8)]{Powell_1978a}.
+It consists in replacing the constraints~\cref{eq:derivative-free-trust-region-sqp-subproblem-ub,eq:derivative-free-trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
+\begin{subequations}
+    \begin{empheq}[left=\empheqlbrace]{alignat=2}
+        & \alpha \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \ieq$,} \label{eq:vardi-eq}\\
+        & \alpha \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, && \quad \text{if~$i \in \iub$ and~$\conm[k]{i}(\iter[k]) \ge 0$,} \label{eq:vardi-ub1}\\
+        & \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0,        && \quad \text{if~$i \in \iub$ and~$\conm[k]{i}(\iter[k]) < 0$,} \label{eq:vardi-ub2}
+    \end{empheq}
+\end{subequations}
+for some~$\alpha \in [0, 1]$.
+The reason for doing so is that if~$\alpha = 0$, then the trust-region subproblem is feasible, because all vectors lying in the null space of~$[\nabla \conm[k]{i}(\iter[k])]_{i \in \iub \cup \ieq}^{\T}$ satisfy the inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2}, the equality constraints~\cref{eq:vardi-eq}, and the trust-region constraint~\cref{eq:derivative-free-trust-region-sqp-subproblem-tr}.
+The relaxation of the equality constraints~\cref{eq:vardi-eq} is due to \citeauthor{Vardi_1985}~\cite{Vardi_1985}, but the treatment of the relaxed inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2} is adapted from \citeauthor{Powell_1978a}~\cite {Powell_1978a}.
+
+Let~$\bar{\alpha}$ be the largest~$\alpha \in [0, 1]$ such that the trust-region subproblem is feasible, and let~$\nstep[c]$ be the least-squares solution to
+\begin{align*}
+    \min        & \quad \sum_{i \in \iub} [\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step]_+^2 + \sum_{i \in \ieq} [\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step]^2\\
+    \text{s.t.} & \quad \step \in \R^n,
+\end{align*}
+where~$[\cdot]_+$ denotes the componentwise positive-part operator.
+Then,~$\nstep[k] = \bar{\alpha} \nstep[c]$ is the closest point to the constraints that satisfy the trust-region constraint.
+However, choosing such a normal step is not viable, for the following reason.
+If~$\bar{\alpha} < 1$, then~$\nstep[k]$ is the only point in the relaxed feasible region. 
+Therefore, the tangential step~$\tstep[k]$ must be set to zero, since it should not worsen the infeasibility of~$\step[k] = \nstep[k] + \tstep[k]$.
+To cope with this defect, if~$\bar{\alpha} < 1$, the normal step should be~$\nstep[k] = \alpha \nstep[c]$ with~$\alpha < \bar{\alpha}$, and~$\nstep[k] = 0$ otherwise.
+
+Now that~$\nstep[k]$ has been found, we turn our attention to the definition of the tangential step~$\tstep[k]$.
+Recall that it should decrease the objective function of the trust-region \gls{sqp} subproblem~\cref{eq:derivative-free-trust-region-sqp-subproblem-obj} without worsening the possible constraint infeasibility.
+Therefore, the composite step~$\step[k]$ is an approximate solution to
+\begin{align*}
+    \min        & \quad \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
+    \text{s.t.} & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max \set{-\conm[k]{i}(\iter[k]), \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k]}, ~ i \in \iub,\\
+                & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], ~ i \in \ieq,\\
+                & \quad \norm{\step} \le \rad[k],\\
+                & \quad \step \in \R^n,
+\end{align*}
+where\todo{Check that the constraints are ok} the~$\max$ operator is understood componentwise.
+
+\subsubsection{Byrd-Omojokun-like approach}
+
+\subsubsection{\Glsfmtshort{cdt} approach}
 
 \subsection{Geometry-improving iterations}
 \label{subsec:geometry-improving-iterations}
