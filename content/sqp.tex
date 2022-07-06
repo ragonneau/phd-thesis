@@ -12,12 +12,12 @@
 % This work has the LPPL maintenance status `maintained'.
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
-\chapter{The \glsfmtlong{sqp} method}
+\chapter{The \glsfmtlong{sqp} (\glsfmtshort{sqp}) method}
 
-\section{The \glsfmtlong{sqp} (\glsfmtshort{sqp}) method}
+\section{The method}
 
-We present in this chapter the basic idea behind the \gls{sqp} method.
-For this discussion, we assume that the derivatives of the objective and constraints functions are available, as is the case in the classical \gls{sqp} method.
+This chapter presents the basic idea behind the \gls{sqp} method.
+For this discussion, we assume that the derivatives of the objective and constraint functions are available, as is the case in the classical \gls{sqp} method.
 % However, we will extend the method to the derivative-free context in \cref{subsec:derivative-free-sqp}.
 
 % Note that the problem~\cref{eq:problem-cobyqa} formulates the bound constraints~\cref{eq:problem-cobyqa-bd} explicitely.
@@ -40,7 +40,7 @@ Throughout this chapter, we consider a problem of the form
 %     However, this will not generate any confusion in our discussions.
 % \end{remark}
 
-Note that the problem~\cref{eq:problem-cobyqa-sqp} is exactly the problem~\cref{eq:problem-introduction} discussed in \cref{ch:introduction} and hence, all the theory mentioned is applicable.
+Note that the problem~\cref{eq:problem-cobyqa-sqp} is precisely the problem~\cref{eq:problem-introduction} discussed in \cref{ch:introduction}; hence, all the theory mentioned is applicable.
 For our later discussion, recall in particular that the Lagrangian of this problem is defined by
 \begin{equation*}
     \lag(\iter, \lm) \eqdef \obj(\iter) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lm_i \con{i}(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lm_i \in \R$, with~$i \in \iub \cup \ieq$,}
@@ -49,7 +49,7 @@ where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$ is the dual variable of the co
 
 \subsection{Overview of the method}
 
-The \gls{sqp} method is known to be one of the most powerful method for solving the problem~\cref{eq:problem-cobyqa-sqp} when derivatives of~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are available.
+The \gls{sqp} method is known to be one of the most powerful methods for solving the problem~\cref{eq:problem-cobyqa-sqp} when derivatives of~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are available.
 The classical \gls{sqp} framework is presented in \cref{alg:sqp}.
 
 \begin{algorithm}
@@ -74,19 +74,19 @@ The classical \gls{sqp} framework is presented in \cref{alg:sqp}.
     }
 \end{algorithm}
 
-The ealiest reference of such a method appeared in the Ph.D. thesis of \citeauthor{Wilson_1963}~\cite{Wilson_1963}, with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
+The earliest reference to such a method appeared in the Ph.D. thesis of \citeauthor{Wilson_1963}~\cite{Wilson_1963}, with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
 \Citeauthor{Robinson_1974}~\cite{Robinson_1974} showed the local R-quadratic convergence rate of this method.
 % Check for Q-quadratic convergence.
-Later on, \citeauthor{Garcia-Palomares_Mangasarian_1976}~\cite{Garcia-Palomares_1973,Garcia-Palomares_Mangasarian_1976} modified it using a quasi-Newton update for calculating~$H^k$, and established a local R-superlinear convergence rate for such an algorithm.
+Later, \citeauthor{Garcia-Palomares_Mangasarian_1976}~\cite{Garcia-Palomares_1973,Garcia-Palomares_Mangasarian_1976} modified it using a quasi-Newton update for calculating~$H^k$ and established a local R-superlinear convergence rate for such an algorithm.
 A similar method was introduced by \citeauthor{Han_1976}~\cite{Han_1976,Han_1977}, but he only approximated~$\nabla_{x, x}^2 \lag(\iter[k], \lm[k])$, while \citeauthor{Garcia-Palomares_Mangasarian_1976} applied quasi-Newton approximations to the whole matrix~$\nabla^2 \lag(\iter[k], \lm[k])$.
 In addition, \citeauthor{Han_1976} introduced a line-search strategy to guarantee the global convergence and local Q-superlinear convergence rate, requiring that~$\nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast])$ is positive definite at the solution~$(\iter[\ast], \lm[\ast])$.
-\Citeauthor{Powell_1978a}~\cite{Powell_1978b,Powell_1978a,Powell_1978c} studied the method along the same direction.
+\Citeauthor{Powell_1978a}~\cite{Powell_1978b,Powell_1978a,Powell_1978c} studied the method in the same direction.
 In particular, he proposed to apply the damped BFGS quasi-Newton formula~\cite[Eqs.~(5.8),~(5.9), and~(5.10)]{Powell_1978b} to update~$H^k$.
-This formula guarantees the positive definiteness of such a matrix, which is beneficial in practice and in theory (see the comments towards the end of~\cite[\S~2]{Powell_1978a}).
+This formula guarantees the positive definiteness of such a matrix, which is beneficial in practice and theory (see the comments towards the end of~\cite[\S~2]{Powell_1978a}).
 Moreover, he introduced a practical line-search technique based on a merit function suggested by \citeauthor{Han_1976}~\cite{Han_1976}.
-Furthermore, \citeauthor{Powell_1978c} established the global convergence and the local R-superlinear convergence rate for his method, without requiring the positive definiteness of~$\nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast])$ as \citeauthor{Han_1976} did.
-Recognizing the controbutions of \citeauthor{Wilson_1963}, \Citeauthor{Han_1976}, and \citeauthor{Powell_1978a}, the \gls{sqp} method is also referred to as the Wilson-Han-Powell method~\cite{Schittkowski_1981,Burke_1992}.
-See~\cite{Boggs_Tolle_1995} for a more detailed review on the history, theory, and practice of the \gls{sqp} method.
+Furthermore, \citeauthor{Powell_1978c} established the global convergence and the local R-superlinear convergence rate for his method without requiring the positive definiteness of~$\nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast])$ as \citeauthor{Han_1976} did.
+Recognizing the contributions of \citeauthor{Wilson_1963}, \Citeauthor{Han_1976}, and \citeauthor{Powell_1978a}, the \gls{sqp} method is also referred to as the Wilson-Han-Powell method~\cite{Schittkowski_1981,Burke_1992}.
+See~\cite{Boggs_Tolle_1995} for a more detailed review of the history, theory, and practice of the \gls{sqp} method.
 
 \subsection{A simple example}
 
@@ -101,7 +101,7 @@ We consider
                 & \quad \iter \in \R^2,
 \end{align*}
 whose solution is~$\iter[\ast] = [1, 0]^{\T}$ with the associated Lagrange multiplier~$\lm[\ast] = 1/2$.
-Suppose that we have an iterate~$\iter[k] = [t, 0]^{\T}$ with~$t \approx 1$, so that it is already close to the solution.
+Suppose that we have an iterate~$\iter[k] = [t, 0]^{\T}$ with~$t \approx 1$, so it is already close to the solution.
 If~$H^k = \nabla^2 \obj(\iter[k])$, then the \gls{sqp} subproblem would become
 \begin{subequations}
     \begin{align}
@@ -110,11 +110,11 @@ If~$H^k = \nabla^2 \obj(\iter[k])$, then the \gls{sqp} subproblem would become
                     & \quad \step \in \R^2. \nonumber
     \end{align}
 \end{subequations}
-This subproblem is unbounded from below, regardless of~$t$.
+This subproblem is unbounded from below, regardless of the value of~$t$.
 In addition, the more~$\step[k]$ reduces~\cref{eq:boggs-tolle-sp-obj}, the larger~$\norm{\iter[k] + \step[k] - \iter[\ast]}$ is.
 Moreover, if~$t = 1$, we have~$\iter[k] = \iter[\ast]$, but any feasible point~$\step[k]$ for~\cref{eq:boggs-tolle-sp-eq} will push~$\iter[k] + \step[k]$ away from~$\iter[\ast]$, unless~$\step[k]$ is the global maximizer of~\cref{eq:boggs-tolle-sp-obj} subject to~\cref{eq:boggs-tolle-sp-eq}.
 
-We now consider the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ and~$\lm[k] \approx \lm[\ast] = 1/2$.
+Let us now consider the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ for a dual variable~$\lm[k] \approx \lm[\ast] = 1/2$.
 It is
 \begin{align*}
     \min        & \quad -\step_1 + \lm[k] (\step_1)^2 + \bigg( \lm[k] - \frac{1}{4} \bigg) (\step_2)^2\\
@@ -299,8 +299,7 @@ Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tang
     \end{equation}
     Plugging~\cref{eq:sqp-path-proof-3,eq:sqp-path-proof-5} into~\cref{eq:sqp-path-proof-2}, we obtain the desired result.
 \end{proof}
-s
-We observe that the error term in \cref{thm:sqp-path} depends on the magnitude of~$\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}$.
+We observe that the magnitude of~$\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}$ affects the error term in \cref{thm:sqp-path} in general.
 If~$(\bar{\iter}, \bar{\lm})$ is close to \gls{kkt} pair, then~$\norm{\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}}$ is small.
 On the other hand, if we defined~$\nabla^2 Q$ by~$\nabla^2 \obj(\bar{x})$ instead of~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$, then under the assumptions of \cref{thm:sqp-path}, we would have
 \begin{equation*}
@@ -315,7 +314,7 @@ This explains why the second-order term of the \gls{sqp} subproblem should be de
 In this section, we study the Lagrangian and the augmented Lagrangian of the \gls{sqp} subproblem, and observe their relations with those of the original optimization problem.
 We also point out that the augmented Lagrangian of the \gls{sqp} subproblem is exactly the approximate augmented Lagrangian used in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 
-For simplicity, instead of the problem~\cref{eq:problem-cobyqa}, we consider still the problem~\cref{eq:problem-cobyqa-auglag}.
+For simplicity, instead of the problem~\cref{eq:problem-cobyqa-sqp}, we consider still the problem~\cref{eq:problem-cobyqa-auglag}.
 Let~$\iter[k] \ge 0$ and~$\lm[k] \in \R^m$ be given.
 Correspondingly, the \gls{sqp} subproblem of the problem~\cref{eq:problem-cobyqa-auglag} is
 \begin{subequations}
@@ -417,226 +416,119 @@ However, in the numerical experiments,~\cite{Niu_Yuan_2010,Wang_Yuan_2014} choos
 Suppose that an algorithm defines a step~$\step[k]$ based on the minimization of the right-hand side of~\cref{eq:niu-yuan-auglag}.
 Then, \cref{thm:auglag-sqp-3} tells us that the algorithm can be regarded as an \gls{sqp} method that approximately solves the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} by minimizing~$\lagalt[\mathsf{A}](\step, \lm[k])$, i.e., by applying one single iteration of an augmented Lagrangian method.
 
-% \subsection{A derivative-free \glsfmtlong{sqp} method}
-% \label{subsec:derivative-free-sqp}
+\section{Merit functions for the \glsfmtshort{sqp} method}
 
-% At the~$k$th iteration, \gls{cobyqa} builds the models~$\objm[k]$ and~$\conm[k]{i}$ of the objective function~$\obj$ and the constraints functions~$\con{i}$, with~$i \in \iub \cup \ieq$, using the derivative-free Broyden updates presented in~\cref{subsec:symmetric-broyden-updates}.
-% A poised interpolation set~$\xpt[k] \subseteq \R^n$ is maintained, whose cardinal number is fixed.
-% The only restriction is
-% \begin{equation*}
-%     n + 2 \le \card(\xpt[k]) \le \frac{1}{2} (n + 1) (n + 2),
-% \end{equation*}
-% as otherwise, the set~$\xpt[k]$ cannot be poised (see \cref{subsec:symmetric-broyden-updates} for details).
-% More details on this interpolation set is given in \cref{subsec:cobyqa-models}.
-% We also denote by~$\lagm[k]$ the Lagrangian
-% \begin{equation*}
-%     \lagm[k](\iter, \lm) \eqdef \objm[k](\iter) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lm_i \conm[k]{i}(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lm_i \in \R$, with~$i \in \iub \cup \ieq$.}
-% \end{equation*}
-% The derivative-free \gls{sqp} method we consider is presented in \cref{alg:derivative-free-sqp}.
+In unconstrained optimization, a point~$x \in \R^n$ is considered to be better than another point~$y \in \R^n$ if~$\obj(x) < \obj(y)$.
+However, such a simple fact is not true in constrained optimization, because the feasibility of the points~$x$ and~$y$ must be taken into account.
+This is usually done using the concept of \emph{merit functions}.
+A merit function is a function that balances the objective function value with the infeasibility (e.g., some distance to the feasible set) of a point.
+We present in what follows some classical merit functions.
 
-% \begin{algorithm}
-%     \caption{Derivative-free \glsfmtshort{sqp} method}
-%     \label{alg:derivative-free-sqp}
-%     \DontPrintSemicolon
-%     \KwData{Initial guess~$\iter[0] \in \R^n$.}
-%     Build an initial interpolation set~$\xpt[0] \subseteq \R^n$ with~$\iter[0] \in \xpt[0]$\;
-%     \For{$k = 0, 1, \dots$}{
-%         Evaluate~$\objm[k]$ and~$\conm[k]{i}$ for~$i \in \iub \cup \ieq$ by underdetermined interpolation on~$\xpt[k]$\;
-%         Generate a step~$\step[k] \in \R^n$ by solving approximately
-%         \begin{algomathalign*}
-%             \min        & \quad \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
-%             \text{s.t.} & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
-%                         & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
-%                         & \quad \step \in \R^n,
-%         \end{algomathalign*}
-%         Replace a point in~$\xpt[k]$ by~$\iter[k + 1]$ to obtain~$\xpt[k + 1]$ \nllabel{alg:derivative-free-sqp-set}\;
-%         Update the iterate~$\iter[k + 1] \gets \iter[k] + \step[k]$\;
-%         Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$\;
-%     }
-% \end{algorithm}
+\subsection{Nonsmooth exact merit functions}
 
-% Recall that the set~$\xpt[k]$ must be ensured poised.
-% Therefore, the point chosen in \cref{alg:derivative-free-sqp-set} must be chosen so that~$\xpt[k + 1]$ is poised.
-% It is however possible that such a point does not exist.
-% The difficulty of maintaining an appropriate geometry of the interpolation set is discussed in \cref{subsec:geometry-improving-iterations}, and requires to modify \cref{alg:derivative-free-sqp}.
-% As we will see, traditionally, geometry-improving steps are incorporating to the method, which modify a point from the interpolation set to improve its geometry.
+Perhaps the most classical merit functions are the~$\ell_p$-merit functions, defined by
+\begin{equation*}
+    \merit[\gamma](\iter) \eqdef \obj(\iter) + \gamma \bigg( \sum_{i \in \iub} [\con{i}(\iter)]_+^p + \sum_{i \in \ieq} \abs{\con{i}(\iter)}^p \bigg)^{1/p}, \quad \text{for~$x \in \R^n$ and~$\gamma \ge 0$,}
+\end{equation*}
+where~$[\cdot]_+$ denotes the componentwise positive-part operator.
+Such merit functions enjoy the properties of being exact under some mild assumptions, as defined hereinafter.
 
-\section{The trust-region framework}
-\label{sec:trust-region}
+\begin{definition}[Exact merit function]
+    \label{def:exact-merit-function}
+    A merit function~$\merit[\gamma]$ that depends on a parameter~$\gamma \ge 0$ is said to be \emph{exact} if there exist~$\bar{\gamma} \ge 0$ such that for all~$\gamma \ge \bar{\gamma}$, a solution to the unconstrained problem
+    \begin{subequations}
+        \label{eq:exact-merit-function}
+        \begin{align}
+            \min        & \quad \merit[\gamma](x)\\
+            \text{s.t.} & \quad x \in \R^n,
+        \end{align}
+    \end{subequations}
+    is also a solution to the problem~\cref{eq:problem-cobyqa-sqp}.
+\end{definition}
 
-The \gls{sqp} framework suffers from the major deffect that it is a local method.
-Therefore, the convergence of the method cannot be ensured for any initial guess~$\iter[0] \in \R^n$.
-To cope with this difficulty, the method is usually embedded in a globalization strategy, such as a line-search or a trust-region framework.
-We consider in this thesis trust-region methods only.
-Assume that we have a merit function~$\merit[k]$ whose values depend on~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, and a merit function~$\meritm[k]$ whose values depend on the Taylor expansions of~$\obj$ and~$\con{i}$.
-% Details on the merit functions employed by \gls{cobyqa} is given in \cref{subsec:cobyqa-merit-function}.
-\Cref{alg:derivative-free-trust-region-sqp} presents the trust-region framework.
+Therefore, if~$\merit[\gamma]$ is an exact merit function, and if~$\gamma$ is large enough, then it is very natural to consider that a point~$x \in \R^n$ is better than another point~$y \in \R^n$ for the optimization problem~\cref{eq:problem-cobyqa-sqp} if~$\merit[\gamma](x) < \merit[\gamma](y)$.
 
-\begin{algorithm}
-    \caption{Derivative-free trust-region \glsfmtshort{sqp} method}
-    \label{alg:derivative-free-trust-region-sqp}
-    \DontPrintSemicolon
-    \KwData{Initial guess~$\iter[0] \in \R^n$ and initial trust-region radius~$\rad[0] > 0$.}
-    Build an initial interpolation set~$\xpt[0] \subseteq \R^n$ with~$\iter[0] \in \xpt[0]$\;
-    \For{$k = 0, 1, \dots$}{
-        Evaluate~$\objm[k]$ and~$\conm[k]{i}$ for~$i \in \iub \cup \ieq$ by underdetermined interpolation on~$\xpt[k]$\;
-        Generate a step~$\step[k] \in \R^n$ by solving approximately
-        \begin{subequations}
-            \label{eq:trust-region-sqp-subproblem}
-            \begin{algomathalign}
-                \min        & \quad \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step \label{eq:derivative-free-trust-region-sqp-subproblem-obj}\\
-                \text{s.t.} & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub, \label{eq:derivative-free-trust-region-sqp-subproblem-ub}\\
-                            & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:derivative-free-trust-region-sqp-subproblem-eq}\\
-                            & \quad \norm{\step} \le \rad[k], \label{eq:derivative-free-trust-region-sqp-subproblem-tr}\\
-                            & \quad \step \in \R^n, \nonumber
-            \end{algomathalign}
-        \end{subequations} \nllabel{alg:derivative-free-sqp-tr-step}
-        Evaluate the trust-region ratio
-        \begin{algomathdisplay}
-            \ratio[k] \gets \frac{\merit[k](\iter[k]) - \merit[k](\iter[k] + \step[k])}{\meritm[k](\iter[k]) - \meritm[k](\iter[k] + \step[k])}
-        \end{algomathdisplay} \nllabel{alg:derivative-free-trust-region-sqp-ratio}
-        \eIf{$\ratio[k] \ge 0$}{
-            Choose a point~$\bar{y} \in \xpt[k]$ to remove from~$\xpt[k]$\;
-        }{
-            Choose a point~$\bar{y} \in \xpt[k] \setminus \set{\iter[k]}$ to remove from~$\xpt[k]$\;
-        }
-        Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k] \setminus \set{\bar{y}}) \cup \set{\iter[k] + \step[k]}$\;
-        Update the current iterate~$\iter[k + 1] \gets \argmin \set{\merit[k](y)}_{y \in \xpt[k + 1]}$\;
-        Calculate~$\rad[k + 1]$ according to the values of~$\ratio[k]$ and~$\rad[k]$ \nllabel{alg:derivative-free-trust-region-sqp-radius}\;
-    }
-\end{algorithm}
+An inconvenience of such the~$\ell_p$-merit functions is that, even if~$\obj$ and~$\con{i}$ are differentiable for all~$i \in \iub \cup \ieq$,~$\merit[\gamma]$ may not be differentiable everywhere.
+However, it enjoys the important properties that the constant~$\bar{\gamma}$ in \cref{def:exact-merit-function} is known, as detailed by \cref{thm:exact-merit-function}.
 
-Details on the update of the trust-region radius in \cref{alg:derivative-free-trust-region-sqp-radius} is provided in \cref{subsec:trust-region-radius}.
-Once again, this framework presents a very simplified version of the derivative-free trust-region \gls{sqp} framework.
-It must be modified to address the difficulties related to the geometry of the interpolation set.
-This is taken into account in the framework presented in \cref{subsec:geometry-improving-iterations}.
+\begin{theorem}
+    \label{thm:exact-merit-function}
+    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable for all~$i \in \iub \cup \ieq$.
+    Let~$(\iter[\ast], \lm[\ast])$ be a \gls{kkt} pair that satisfies the second-order sufficient condition of \cref{thm:second-order-sufficient-conditions}.
+    If~$\gamma \ge \norm{\lm[\ast]}_q$, where~$q$ is the H{\"{o}}lder conjugate of~$p$, then~$\iter[\ast]$ satisfies the second-order sufficient condition for the problem~\cref{eq:exact-merit-function}.
+\end{theorem}
 
-The trust-region ratio in \cref{alg:derivative-free-trust-region-sqp-ratio} is a scalar that represents the performance of the models.
-Therefore, the closer from one~$\ratio[k]$ is, the best the~$k$th models perform.
-Moreover, as long as it nonnegative, the trial step~$\step[k]$ does not provide any increase in the merit function~$\merit[k]$.
+Noteworthy, if~$\iter \in \R^n$ is a feasible point for~\cref{eq:problem-cobyqa-sqp}, then~$\merit[\gamma](\iter) = \obj(\iter)$.
+Therefore, such a merit function is exact, but its value also equals the objective function at a solution.
 
-If we were naively adapting the trust-region framework for unconstrained optimization to our setting, the choice of~$\iter[k + 1]$ would be either~$\iter[k] + \step[k]$ if~$\ratio[k] \ge 0$, and~$\iter[k]$ otherwise.
-However, this would not take into account the fact that~$\merit[k]$ might differ from~$\merit[k - 1]$.
-Therefore,~$\iter[k + 1]$ might not be the best point in~$\xpt[k + 1]$ according to~$\merit[k]$.
-In \cref{alg:derivative-free-trust-region-sqp} however,~$\iter[k + 1]$ is always the best point in~$\xpt[k + 1]$.
-Moreover, note that~$\xpt[k + 1]$ necessarily contains~$\iter[k] + \step[k]$, and also contain~$\iter[k]$ if~$\ratio[k] < 0$.
-Thus, our adaptation of the trust-region framework for unconstrained optimization is reasonable.
+\subsection{The Courant merit function}
 
-\subsection{Managing the trust-region radius}
-\label{subsec:trust-region-radius}
+Another classical example of merit functions is the Courant merit function, defined by
+\begin{equation*}
+    \merit[\gamma](\iter) \eqdef \obj(\iter) + \gamma \bigg( \sum_{i \in \iub} [\con{i}(\iter)]_+^2 + \sum_{i \in \ieq} \con{i}(\iter)^2 \bigg), \quad \text{for~$x \in \R^n$ and~$\gamma \ge 0$.}
+\end{equation*}
+The advantage of such a merit function is that if~$\obj$ and~$\con{i}$, for~$i \in \iub \cup \ieq$, are differentiable, then~$\merit[\gamma]$ is also differentiable.
+Remark however that~$\iter[\ast]$ is a solution to~\cref{eq:problem-cobyqa-sqp}, then
+\begin{equation*}
+    \nabla \merit[\gamma](\iter[\ast]) = \nabla \obj(\iter[\ast]) + 2 \gamma \bigg( \sum_{i \in \iub} [\con{i}(\iter[\ast])]_+ \nabla \con{i}(\iter[\ast]) + \sum_{i \in \ieq} \con{i}(\iter[\ast]) \nabla \con{i}(\iter[\ast]) \bigg) = \nabla \obj(\iter[\ast]).
+\end{equation*}
+If~$\iter[\ast]$ is also a solution to~\cref{eq:exact-merit-function}, then~$\nabla \obj(\iter[\ast]) = 0$.
+Of course, this is seldom the case in constrained optimization, as~$\iter[\ast]$ would then also be a solution to the problem
+\begin{align*}
+    \min        & \quad \obj(\iter)\\
+    \text{s.t.} & \quad \iter \in \R^n.
+\end{align*}
 
-Inspired by the performance of \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa} (see \cref{subsec:uobyqa,subsec:newuoa-bobyqa-lincoa}), we employ the following paradigm for managing the trust-region radius, proposed by Powell~\cite{Powell_2002,Powell_2006,Powell_2009}.
-It consists in maintaining both the trust-region radius~$\rad[k] > 0$ and a lower-bound of it~$\radlb[k] > 0$.
-The idea behind this technique is to use~$\rad[k]$ as the trust-region radius in the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem}, and~$\radlb[k]$ to maintain an adequate distance between the points in~$\xpt[k]$.
-Further, the method never increases~$\radlb[k]$, but adapt the value of~$\rad[k]$ in a typical trust-region way.
-Of course, the method always ensures that~$\rad[k] \ge \radlb[k]$.
-As noted by \citeauthor{Powell_2002}, allowing trial step to have a length larger than~$\radlb[k]$ prevent loss in efficiency that occurred otherwise in his software \gls{uobyqa}.
+However, this does not mean that it is impossible to construct smooth exact merit functions.
+In fact, as detailed in the next section, the augmented Lagrangian function is an example of smooth exact merit functions for~\cref{eq:problem-cobyqa-sqp}.
 
-The update of the trust-region radius~$\rad[k]$ is given in \cref{alg:update-trust-region-radius}.
-The parameters chosen in \gls{cobyqa} are~$\eta_1 = 0.1$,~$\eta_2 = 0.7$,~$\eta_3 = 1.4$,~$\theta_1 = 0.5$, and~$\theta_2 = \sqrt{2}$.
-This update is untertained at each iteration.
+\subsection{The augmented Lagrangian merit function}
 
-\begin{algorithm}
-    \caption{Updating the trust-region radius}
-    \label{alg:update-trust-region-radius}
-    \DontPrintSemicolon
-    \KwData{Current lower bound on the trust-region radius~$\radlb[k] > 0$, current trust-region radius~$\rad[k] \ge \radlb[k]$, current trust-region ratio~$\ratio[k] \in \R$, current trial step~$\step \in \R^n$, and parameters~$0 < \eta_1 \le \eta_2 < 1 \le \eta_3$ and~$0 < \theta_1 < 1 < \theta_2$.}
-    \KwResult{Updated trust-region radius~$\rad[k + 1]$.}
-    Set the value of~$\rad[k + 1]$ to
-    \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
-        & \theta_1 \rad[k]                                                                      && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
-        & \min \set{\theta_1 \rad[k], \norm{\step}}                                               && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
-        & \min \set{\theta_2 \rad[k], \max \set{\theta_1 \rad[k], \theta_1^{-1} \norm{\step}}}    && \quad \text{otherwise}
-    \end{algoempheq}
-    \If{$\rad[k + 1] \le \eta_3 \radlb[k]$}{
-        $\rad[k + 1] \gets \radlb[k]$\;
-    }
-\end{algorithm}
+For simplicity, we shall assume here that~$\iub = \emptyset$.
+The augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973} of the problem~\cref{eq:problem-cobyqa-auglag} is then
+\begin{equation*}
+    \lag[\mathsf{A}](\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \sum_{i \in \ieq} \con{i}(\iter)^2, \quad \text{for~$\iter \ge 0$ and~$\lm = [\lm_i]_{i \in \ieq}$,}
+\end{equation*}
+where~$\lag$ denotes the Lagrangian function of the problem~\cref{eq:problem-cobyqa-sqp}.
+The augmented Lagrangian merit function is then defined as
+\begin{equation*}
+    \merit[\gamma](\iter) = \lag[\mathsf{A}](\iter, \lm(\iter)),
+\end{equation*}
+where~$\lm(\iter)$ denotes the least-squares solution to
+\begin{align*}
+    \min        & \quad \norm[\bigg]{\nabla \obj(\iter) + \sum_{i \in \ieq} \lm_i \nabla \con{i}(x)}\\
+    \text{s.t.} & \quad \lm = [\lm_i]_{i \in \ieq}.
+\end{align*}
+Note that, to some extend, the least-squares Lagrange multipliers attempts to satisfy the \gls{kkt} conditions as much as possible.
+Therefore, if~$\iter[\ast]$ is a solution to the problem~\cref{eq:problem-cobyqa-sqp}, then~$(\iter[\ast], \lm(\iter[\ast]))$ is a \gls{kkt} pair.
+Hence, when~$\iub \neq \emptyset$, the complamentary slackness conditions must be taken into account.
+A clear drawback of such a merit function is that it is expensive to evaluate, as one evaluation necessitates to solve a linear least-squares problem that involve the gradients of~$\obj$ and~$\con{i}$, with~$i \in \ieq$.
 
-As we mentioned already, the method maintains~$\rad[k] \ge \radlb[k]$ and it never increases~$\radlb[k]$.
-Therefore, the value of~$\radlb[k]$ is decreased only if~$\rad[k] = \radlb[k]$.
-Moreover, since~$\radlb[k]$ is designed to maintain a good distance between the interpolation points, it must be decreased only if the performance of the models is poor.
-Hence, it is decreased only if the trial step~$\norm{\step[k]}$ is small compared with~$\rad[k]$ and the trust-region ratio~$\ratio[k]$ is small.
-\Cref{alg:reducing-lower-bound-trust-region-radius} presents the method employed by \gls{cobyqa} to reduce~$\radlb[k]$.
-The parameters chosen in \gls{cobyqa} are~$\eta_4 = 16$,~$\eta_5 = 250$, and~$\theta_3 = 0.1$.
+Nonetheless, this merit function offers several advantages.
+First of all, if~$\obj$ and~$\con{i}$, for~$i \in \ieq$, are differentiable, and if~$\set{\nabla \con{i}(\iter)}_{i \in \ieq}$ are linearly independent for all~$\iter \in \R^n$, then~$\merit[\gamma]$ is differentiable.
+Moreover, as shown by \cref{thm:exact-augmented-lagrangian}, it is an exact merit function.
 
-\begin{algorithm}
-    \caption{Reducing the lower bound on the trust-region radius}
-    \label{alg:reducing-lower-bound-trust-region-radius}
-    \DontPrintSemicolon
-    \KwData{Final trust-region radius~$\radlb[\infty] > 0$, current lower bound on the trust-region radius~$\radlb[k] \ge \radlb[\infty]$, updated trust-region radius~$\rad[k + 1] \ge \radlb[k]$, and parameters~$1 \le \eta_4 < \eta_5$ and~$0 < \theta_3 < 1$.}
-    \KwResult{Reduced lower bound on trust-region radius~$\radlb[k + 1]$ and modified trust-region radius~$\rad[k + 1]$.}
-    \If{$\radlb[k] = \radlb[\infty]$}{
-        Terminate the optimization method\;
-    }
-    Set the value of~$\radlb[k + 1]$ to
-    \begin{algoempheq}[left={\radlb[k + 1] \gets \empheqlbrace}]{alignat*=2}
-        & \theta_3 \radlb[k]                && \quad \text{if~$\eta_5 < \radlb[k] / \radlb[\infty]$,}\\
-        & \sqrt{\radlb[k] \radlb[\infty]}   && \quad \text{if~$\eta_4 < \radlb[k] / \radlb[\infty] \le \eta_5$,}\\
-        & \radlb[\infty]                    && \quad \text{otherwise}
-    \end{algoempheq}
-    $\rad[k + 1] \gets \max \set{\rad[k + 1], \radlb[k + 1]}$\;
-\end{algorithm}
+\begin{theorem}
+    \label{thm:exact-augmented-lagrangian}
+    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable for all~$i \in \ieq$.
+    Let~$(\iter[\ast], \lm[\ast])$ be a \gls{kkt} pair that satisfies the second-order sufficient condition of \cref{thm:second-order-sufficient-conditions}.
+    Then there exist~$\bar{\gamma} \ge 0$ such that for all~$\gamma \ge \bar{\gamma}$,~$\iter[\ast]$ satisfies the second-order sufficient condition for the problem~\cref{eq:exact-merit-function}.
+\end{theorem}
 
-\subsection{Composite-step approach}
+\subsection{Maratos Effects and second-order correction}
 
-The \cref{alg:derivative-free-sqp-tr-step} of \cref{alg:derivative-free-sqp} hides the following crucial point.
-If the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem} is infeasible, what should~$\step[k]$ approximate?
-Since the constraints~\cref{eq:derivative-free-trust-region-sqp-subproblem-ub,eq:derivative-free-trust-region-sqp-subproblem-eq} are linear representation of the constraints~\cref{eq:problem-cobyqa-ub,eq:problem-cobyqa-eq}, we cannot guarantee the feasible region of the subproblem~\cref{eq:trust-region-sqp-subproblem} to be feasible.
-It may be infeasible because
-\begin{enumerate}
-    \item the inequality constraints~\cref{eq:derivative-free-trust-region-sqp-subproblem-ub} may be infeasible,
-    \item the equality constraints~\cref{eq:derivative-free-trust-region-sqp-subproblem-eq} may be infeasible, and
-    \item the intersection of the regions defined by~\cref{eq:derivative-free-trust-region-sqp-subproblem-ub,eq:derivative-free-trust-region-sqp-subproblem-eq,eq:derivative-free-trust-region-sqp-subproblem-tr} may be empty.
-\end{enumerate}
+\section{The trust-region \glsfmtshort{sqp} method}
 
-The traditional approach to cope with this difficulty is to define~$\step[k]$ as the sum of two steps, a \emph{normal step}~$\nstep[k]$ that aims at reducing the constraint violation and a \emph{tangential step}~$\tstep[k]$ that aims at reducing the objective function~\cref{eq:derivative-free-trust-region-sqp-subproblem-obj}.
-Note that the terms \enquote{normal} and \enquote{tangential} only describe the step properties, there will be no actual reason for these steps to be orthogonal.
-In what follows, we describe three approaches for defining these composite steps, namely the Vardi-like approach~\cite{Vardi_1985}, the Byrd-Omojokun-like approach~\cite{Byrd_1987,Omojokun_1989}, and the \gls{cdt} approach~\cite{Celis_Dennis_Tapia_1985}.
+\subsection{Overview of the method}
+
+\subsection{Composite-step approaches}
 
 \subsubsection{Vardi-like approach}
 
-The Vardi-like approach to define the normal and tangential steps is perhaps the simplest one.
-It is very similar to an idea proposed by Powell~\cite[Eqs.~(2.7) and~(2.8)]{Powell_1978a}.
-It consists in replacing the constraints~\cref{eq:derivative-free-trust-region-sqp-subproblem-ub,eq:derivative-free-trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
-\begin{subequations}
-    \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \alpha \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \ieq$,} \label{eq:vardi-eq}\\
-        & \alpha \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, && \quad \text{if~$i \in \iub$ and~$\conm[k]{i}(\iter[k]) \ge 0$,} \label{eq:vardi-ub1}\\
-        & \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0,        && \quad \text{if~$i \in \iub$ and~$\conm[k]{i}(\iter[k]) < 0$,} \label{eq:vardi-ub2}
-    \end{empheq}
-\end{subequations}
-for some~$\alpha \in [0, 1]$.
-The reason for doing so is that if~$\alpha = 0$, then the trust-region subproblem is feasible, because all vectors lying in the null space of~$[\nabla \conm[k]{i}(\iter[k])]_{i \in \iub \cup \ieq}^{\T}$ satisfy the inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2}, the equality constraints~\cref{eq:vardi-eq}, and the trust-region constraint~\cref{eq:derivative-free-trust-region-sqp-subproblem-tr}.
-The relaxation of the equality constraints~\cref{eq:vardi-eq} is due to \citeauthor{Vardi_1985}~\cite{Vardi_1985}, but the treatment of the relaxed inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2} is adapted from \citeauthor{Powell_1978a}~\cite {Powell_1978a}.
-
-Let~$\bar{\alpha}$ be the largest~$\alpha \in [0, 1]$ such that the trust-region subproblem is feasible, and let~$\nstep[c]$ be the least-squares solution to
-\begin{align*}
-    \min        & \quad \sum_{i \in \iub} [\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step]_+^2 + \sum_{i \in \ieq} [\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step]^2\\
-    \text{s.t.} & \quad \step \in \R^n,
-\end{align*}
-where~$[\cdot]_+$ denotes the componentwise positive-part operator.
-Then,~$\nstep[k] = \bar{\alpha} \nstep[c]$ is the closest point to the constraints that satisfy the trust-region constraint.
-However, choosing such a normal step is not viable, for the following reason.
-If~$\bar{\alpha} < 1$, then~$\nstep[k]$ is the only point in the relaxed feasible region. 
-Therefore, the tangential step~$\tstep[k]$ must be set to zero, since it should not worsen the infeasibility of~$\step[k] = \nstep[k] + \tstep[k]$.
-To cope with this defect, if~$\bar{\alpha} < 1$, the normal step should be~$\nstep[k] = \alpha \nstep[c]$ with~$\alpha < \bar{\alpha}$, and~$\nstep[k] = 0$ otherwise.
-
-Now that~$\nstep[k]$ has been found, we turn our attention to the definition of the tangential step~$\tstep[k]$.
-Recall that it should decrease the objective function of the trust-region \gls{sqp} subproblem~\cref{eq:derivative-free-trust-region-sqp-subproblem-obj} without worsening the possible constraint infeasibility.
-Therefore, the composite step~$\step[k]$ is an approximate solution to
-\begin{align*}
-    \min        & \quad \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
-    \text{s.t.} & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max \set{-\conm[k]{i}(\iter[k]), \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k]}, ~ i \in \iub,\\
-                & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], ~ i \in \ieq,\\
-                & \quad \norm{\step} \le \rad[k],\\
-                & \quad \step \in \R^n,
-\end{align*}
-where\todo{Check that the constraints are ok} the~$\max$ operator is understood componentwise.
-
 \subsubsection{Byrd-Omojokun-like approach}
 
-\subsubsection{\Glsfmtshort{cdt} approach}
+\begin{itemize}
+    \item Compare with the Vardi-like approach.
+\end{itemize}
 
-\subsection{Geometry-improving iterations}
-\label{subsec:geometry-improving-iterations}
+\subsubsection{\Glsfmtshort{cdt} approach}
