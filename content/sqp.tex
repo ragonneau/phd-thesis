@@ -89,6 +89,7 @@ Recognizing the contributions of \citeauthor{Wilson_1963}, \Citeauthor{Han_1976}
 See~\cite{Boggs_Tolle_1995} for a more detailed review of the history, theory, and practice of the \gls{sqp} method.
 
 \subsection{A simple example}
+\label{subsec:sqp-simple-example}
 
 In \cref{alg:sqp}, it is crucial that~$H^k$ approximates~$\nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
 It may be tempting to set~$H^k \approx \nabla \obj(\iter[k])$, because the objective function of the \gls{sqp} subproblem would then be a local quadratic approximation of~$\obj$ at~$\iter[k]$.
@@ -144,6 +145,7 @@ This is not surprising, since \citeauthor{Robinson_1974}~\cite{Robinson_1974} sh
 To summarize, as indicated by this example, choosing~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ instead of~$H^k \approx \nabla \obj(\iter[k])$ in~\cref{eq:sqp-subproblem} is crucial.
 
 \subsection{Interpretation of the \glsfmtshort{sqp} subproblem}
+\label{subsec:sqp-interpretation}
 
 To get some insight into the origin of the \gls{sqp} method, we interpret the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}.
 In what follows, we focus on only one iteration of \cref{alg:sqp} and hence,~$k$ is fixed.
@@ -416,71 +418,46 @@ However, in the numerical experiments,~\cite{Niu_Yuan_2010,Wang_Yuan_2014} choos
 Suppose that an algorithm defines a step~$\step[k]$ based on the minimization of the right-hand side of~\cref{eq:niu-yuan-auglag}.
 Then, \cref{thm:auglag-sqp-3} tells us that the algorithm can be regarded as an \gls{sqp} method that approximately solves the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} by minimizing~$\lagalt[\mathsf{A}](\step, \lm[k])$, i.e., by applying one single iteration of an augmented Lagrangian method.
 
-\section{Merit functions for the \glsfmtshort{sqp} method}
+\section{Merit functions for the \glsfmtshort{sqp} method and the Maratos effect}
 
-In unconstrained optimization, a point~$x \in \R^n$ is considered to be better than another point~$y \in \R^n$ if~$\obj(x) < \obj(y)$.
-However, such a simple fact is not true in constrained optimization, because the feasibility of the points~$x$ and~$y$ must be taken into account.
-This is usually done using the concept of \emph{merit functions}.
-A merit function is a function that balances the objective function value with the infeasibility (e.g., some distance to the feasible set) of a point.
+In unconstrained optimization, a point~$x \in \R^n$ is normally considered to be better than another point~$y \in \R^n$ if~$\obj(x) < \obj(y)$.
+However, this is not true in constrained optimization, because the feasibility of the points~$x$ and~$y$ must be taken into account.
+This is usually done using \emph{merit functions}.
+A merit function assesses the quality of a point by considering both~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$.
 We present in what follows some classical merit functions.
-
-\subsection{Nonsmooth exact merit functions}
-
-Perhaps the most classical merit functions are the~$\ell_p$-merit functions, defined by
-\begin{equation*}
-    \merit[\gamma](\iter) \eqdef \obj(\iter) + \gamma \bigg( \sum_{i \in \iub} [\con{i}(\iter)]_+^p + \sum_{i \in \ieq} \abs{\con{i}(\iter)}^p \bigg)^{1/p}, \quad \text{for~$x \in \R^n$ and~$\gamma \ge 0$,}
-\end{equation*}
-where~$[\cdot]_+$ denotes the componentwise positive-part operator.
-Such merit functions enjoy the properties of being exact under some mild assumptions, as defined hereinafter.
-
-\begin{definition}[Exact merit function]
-    \label{def:exact-merit-function}
-    A merit function~$\merit[\gamma]$ that depends on a parameter~$\gamma \ge 0$ is said to be \emph{exact} if there exist~$\bar{\gamma} \ge 0$ such that for all~$\gamma \ge \bar{\gamma}$, a solution to the unconstrained problem
-    \begin{subequations}
-        \label{eq:exact-merit-function}
-        \begin{align}
-            \min        & \quad \merit[\gamma](x)\\
-            \text{s.t.} & \quad x \in \R^n,
-        \end{align}
-    \end{subequations}
-    is also a solution to the problem~\cref{eq:problem-cobyqa-sqp}.
-\end{definition}
-
-Therefore, if~$\merit[\gamma]$ is an exact merit function, and if~$\gamma$ is large enough, then it is very natural to consider that a point~$x \in \R^n$ is better than another point~$y \in \R^n$ for the optimization problem~\cref{eq:problem-cobyqa-sqp} if~$\merit[\gamma](x) < \merit[\gamma](y)$.
-
-An inconvenience of such the~$\ell_p$-merit functions is that, even if~$\obj$ and~$\con{i}$ are differentiable for all~$i \in \iub \cup \ieq$,~$\merit[\gamma]$ may not be differentiable everywhere.
-However, it enjoys the important properties that the constant~$\bar{\gamma}$ in \cref{def:exact-merit-function} is known, as detailed by \cref{thm:exact-merit-function}.
-
-\begin{theorem}
-    \label{thm:exact-merit-function}
-    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable for all~$i \in \iub \cup \ieq$.
-    Let~$(\iter[\ast], \lm[\ast])$ be a \gls{kkt} pair that satisfies the second-order sufficient condition of \cref{thm:second-order-sufficient-conditions}.
-    If~$\gamma \ge \norm{\lm[\ast]}_q$, where~$q$ is the H{\"{o}}lder conjugate of~$p$, then~$\iter[\ast]$ satisfies the second-order sufficient condition for the problem~\cref{eq:exact-merit-function}.
-\end{theorem}
-
-Noteworthy, if~$\iter \in \R^n$ is a feasible point for~\cref{eq:problem-cobyqa-sqp}, then~$\merit[\gamma](\iter) = \obj(\iter)$.
-Therefore, such a merit function is exact, but its value also equals the objective function at a solution.
 
 \subsection{The Courant merit function}
 
-Another classical example of merit functions is the Courant merit function, defined by
+Perhaps the most classical merit function is the Courant merit function\footnote{\citeauthor{Courant_1943} proposed this merit function when dealing with boundary conditions of equilibrium and vibration problems. See~\cite[Pt.~II, \S~3]{Courant_1943} for details.}~\cite{Courant_1943}, defined by
 \begin{equation*}
-    \merit[\gamma](\iter) \eqdef \obj(\iter) + \gamma \bigg( \sum_{i \in \iub} [\con{i}(\iter)]_+^2 + \sum_{i \in \ieq} \con{i}(\iter)^2 \bigg), \quad \text{for~$x \in \R^n$ and~$\gamma \ge 0$.}
+    \merit[\gamma](\iter) \eqdef \obj(\iter) + \gamma \bigg( \sum_{i \in \iub} [\con{i}(\iter)]_+^2 + \sum_{i \in \ieq} \con{i}(\iter)^2 \bigg), \quad \text{for~$x \in \R^n$ and~$\gamma \ge 0$,}
 \end{equation*}
-The advantage of such a merit function is that if~$\obj$ and~$\con{i}$, for~$i \in \iub \cup \ieq$, are differentiable, then~$\merit[\gamma]$ is also differentiable.
-Remark however that~$\iter[\ast]$ is a solution to~\cref{eq:problem-cobyqa-sqp}, then
-\begin{equation*}
-    \nabla \merit[\gamma](\iter[\ast]) = \nabla \obj(\iter[\ast]) + 2 \gamma \bigg( \sum_{i \in \iub} [\con{i}(\iter[\ast])]_+ \nabla \con{i}(\iter[\ast]) + \sum_{i \in \ieq} \con{i}(\iter[\ast]) \nabla \con{i}(\iter[\ast]) \bigg) = \nabla \obj(\iter[\ast]).
-\end{equation*}
-If~$\iter[\ast]$ is also a solution to~\cref{eq:exact-merit-function}, then~$\nabla \obj(\iter[\ast]) = 0$.
-Of course, this is seldom the case in constrained optimization, as~$\iter[\ast]$ would then also be a solution to the problem
-\begin{align*}
-    \min        & \quad \obj(\iter)\\
-    \text{s.t.} & \quad \iter \in \R^n.
-\end{align*}
+where~$[\cdot]_+$ denotes the positive-part operator.
+The advantage of such a merit function is that it is differentiable if~$\obj$ and~$\con{i}$, for~$i \in \iub \cup \ieq$, are differentiable.
+However, normally, a global minimizer of~$\merit[\gamma]$ is not a solution to~\cref{eq:problem-cobyqa-sqp} when~$\gamma$ is finite.
+This phenomenon can be seen on the simple example of minimizing~$x$ subject to~$x \ge 0$.
 
-However, this does not mean that it is impossible to construct smooth exact merit functions.
-In fact, as detailed in the next section, the augmented Lagrangian function is an example of smooth exact merit functions for~\cref{eq:problem-cobyqa-sqp}.
+\subsection{Nonsmooth merit functions}
+
+Others examples merit functions are the~$\ell_p$-merit functions, defined by
+\begin{equation*}
+    \merit[\gamma](\iter) \eqdef \obj(\iter) + \gamma \bigg( \sum_{i \in \iub} [\con{i}(\iter)]_+^p + \sum_{i \in \ieq} \abs{\con{i}(\iter)}^p \bigg)^{1/p}, \quad \text{for~$x \in \R^n$ and~$\gamma \ge 0$,}
+\end{equation*}
+Such merit functions enjoy the properties of being exact under some mild assumptions.
+Roughly speaking, this means that a solution\footnote{Here, the term \enquote{solution} may be interpreted in different ways. It may be a global solution, a local solution, or a stationary point.} to the constrained problem~\cref{eq:problem-cobyqa-sqp} can be obtained by minimizing~$\merit[\gamma]$ when~$\gamma$ is big enough.
+We will not discuss this concept further, but only provide the following theorem for later reference.
+Interested readers may refer to~\cite{Han_Mangasarian_1979,Pillo_Grippo_1989}\todo{Add more references}.
+
+\begin{theorem}[{\cite[Thm.~14.5.1]{Conn_Gould_Toint_2000}}]
+    \label{thm:exact-merit-function}
+    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable for all~$i \in \iub \cup \ieq$.
+    Let~$(\iter[\ast], \lm[\ast])$ be a \gls{kkt} pair to the problem~\cref{eq:problem-cobyqa-sqp} that satisfies the second-order sufficient condition of \cref{thm:second-order-sufficient-conditions}.
+    If~$\gamma \ge \norm{\lm[\ast]}_q$, where~$q$ is the H{\"{o}}lder conjugate of~$p$, then~$\iter[\ast]$ satisfies the second-order sufficient condition for the minimization of~$\merit[\gamma]$.
+    Moreover, if~$\gamma > \norm{\lm[\ast]}_q$, then the two second-order sufficient conditions are equivalent.
+\end{theorem}
+
+An inconvenience of the~$\ell_p$-merit functions is that, even if~$\obj$ and~$\con{i}$ are differentiable for all~$i \in \iub \cup \ieq$,~$\merit[\gamma]$ is likely not differentiable at the points~$\iter \in \R^n$ where~$\con{i}(\iter) = 0$ for all~$i \in \iub \cup \ieq$.
+However, there do exist smooth merit functions that enjoy exactness, as shown in the next section.
 
 \subsection{The augmented Lagrangian merit function}
 
@@ -499,23 +476,37 @@ where~$\lm(\iter)$ denotes the least-squares solution to
     \min        & \quad \norm[\bigg]{\nabla \obj(\iter) + \sum_{i \in \ieq} \lm_i \nabla \con{i}(x)}\\
     \text{s.t.} & \quad \lm = [\lm_i]_{i \in \ieq}.
 \end{align*}
-Note that, to some extend, the least-squares Lagrange multipliers attempts to satisfy the \gls{kkt} conditions as much as possible.
-Therefore, if~$\iter[\ast]$ is a solution to the problem~\cref{eq:problem-cobyqa-sqp}, then~$(\iter[\ast], \lm(\iter[\ast]))$ is a \gls{kkt} pair.
-Hence, when~$\iub \neq \emptyset$, the complamentary slackness conditions must be taken into account.
-A clear drawback of such a merit function is that it is expensive to evaluate, as one evaluation necessitates to solve a linear least-squares problem that involve the gradients of~$\obj$ and~$\con{i}$, with~$i \in \ieq$.
+To some extend, the least-squares Lagrange multipliers attempts to satisfy the \gls{kkt} conditions as much as possible.
+If~$\iter[\ast]$ is a solution to the problem~\cref{eq:problem-cobyqa-sqp}, then~$(\iter[\ast], \lm(\iter[\ast]))$ is a \gls{kkt} pair.
+When~$\iub \neq \emptyset$, to achieve the same propery, the complamentary slackness conditions must be taken into account.
 
+A clear drawback of such a merit function is that it is expensive to evaluate, as one evaluation necessitates to solve a linear least-squares problem that involve the gradients of~$\obj$ and~$\con{i}$, with~$i \in \ieq$.
 Nonetheless, this merit function offers several advantages.
 First of all, if~$\obj$ and~$\con{i}$, for~$i \in \ieq$, are differentiable, and if~$\set{\nabla \con{i}(\iter)}_{i \in \ieq}$ are linearly independent for all~$\iter \in \R^n$, then~$\merit[\gamma]$ is differentiable.
-Moreover, as shown by \cref{thm:exact-augmented-lagrangian}, it is an exact merit function.
+Moreover, under some mild assumptions, when~$\gamma$ is large enough, the second-order sufficient conditions of~\cref{eq:problem-cobyqa-sqp} and of minimizing~$\merit[\gamma]$ are equivalent~\cite[Thm.~14.6.1]{Conn_Gould_Toint_2000}.
 
-\begin{theorem}
-    \label{thm:exact-augmented-lagrangian}
-    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable for all~$i \in \ieq$.
-    Let~$(\iter[\ast], \lm[\ast])$ be a \gls{kkt} pair that satisfies the second-order sufficient condition of \cref{thm:second-order-sufficient-conditions}.
-    Then there exist~$\bar{\gamma} \ge 0$ such that for all~$\gamma \ge \bar{\gamma}$,~$\iter[\ast]$ satisfies the second-order sufficient condition for the problem~\cref{eq:exact-merit-function}.
-\end{theorem}
+\subsection{Maratos effect and second-order correction}
 
-\subsection{Maratos Effects and second-order correction}
+In practice, to have global convergence, the \gls{sqp} method needs to be modified, normally using a merit function to decide whether to accept a step or not.
+However, the merit function may jeopardize the fast local convergence of the \gls{sqp} method.
+This is known as the \emph{Maratos effect}~\cite{Maratos_1978}.
+
+The reason behind the effect is that, for certain problems, the \gls{sqp} method can generate a step that increases both the objective function and the constraint violation, no matter how close is the current iterate to a solution.
+Such a step would be rejected by any merit function that is increasing with respect to both the objective function and the constraint violation.
+See examples of this phenomenon in~\cite[\S~3.5]{Maratos_1978} and~\cite{Powell_1987}.
+
+\subsubsection{Second-order correction}
+
+\begin{itemize}
+    \item \citeauthor{Fletcher_1982}~\cite{Fletcher_1982}~\cite[\S~14.4]{Fletcher_1987}.
+    \item \citeauthor{Mayne_Polak_1982}~\cite{Mayne_Polak_1982}.
+\end{itemize}
+
+\subsubsection{A note on the augmented Lagrangian merit function}
+
+\begin{itemize}
+    \item Find a reference why it is not subject to the Maratos effect.
+\end{itemize}
 
 \section{The trust-region \glsfmtshort{sqp} method}
 
@@ -531,4 +522,4 @@ Moreover, as shown by \cref{thm:exact-augmented-lagrangian}, it is an exact meri
     \item Compare with the Vardi-like approach.
 \end{itemize}
 
-\subsubsection{\Glsfmtshort{cdt} approach}
+\subsubsection{\Glsfmtlong{cdt}-like approach}
