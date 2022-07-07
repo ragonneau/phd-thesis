@@ -70,7 +70,7 @@ The classical \gls{sqp} framework is presented in \cref{alg:sqp}.
             \end{algomathalign}
         \end{subequations}
         Update the iterate~$\iter[k + 1] \gets \iter[k] + \step[k]$\;
-        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$
+        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$\;
     }
 \end{algorithm}
 
@@ -140,7 +140,7 @@ If we set~$\iter[k + 1] = \iter[k] + \step[k]$ and continue to iterate in this w
 \begin{equation*}
     \norm{\iter[k] + \step[k] - \iter[\ast]} = \frac{(1 - t)^2}{2 \abs{t}} = \bigo(\norm{\iter[k] - \iter[\ast]}^2).
 \end{equation*}
-This is not surprising, since \citeauthor{Robinson_1974}~\cite{Robinson_1974} showed the local R-quadratic convergence rate of the \gls{sqp} method when~$H^k$ is the exact Hessian matrix of the Lagrangian with respect to~$x$.
+This is not surprising, since \citeauthor{Robinson_1974}~\cite{Robinson_1974} showed the local R-quadratic convergence rate of the \gls{sqp} method when~$H^k$ is the exact Hessian matrix of the Lagrangian with respect to~$\iter$.
 
 To summarize, as indicated by this example, choosing~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ instead of~$H^k \approx \nabla \obj(\iter[k])$ in~\cref{eq:sqp-subproblem} is crucial.
 
@@ -435,13 +435,13 @@ Perhaps the most classical merit function is the Courant merit function\footnote
 where~$[\cdot]_+$ denotes the positive-part operator.
 The advantage of such a merit function is that it is differentiable if~$\obj$ and~$\con{i}$, for~$i \in \iub \cup \ieq$, are differentiable.
 However, normally, a global minimizer of~$\merit[\gamma]$ is not a solution to~\cref{eq:problem-cobyqa-sqp} when~$\gamma$ is finite.
-This phenomenon can be seen on the simple example of minimizing~$x$ subject to~$x \ge 0$.
+This phenomenon can be seen on the simple example of minimizing~$\iter$ subject to~$\iter \ge 0$.
 
 \subsection{Nonsmooth merit functions}
 
 Others examples merit functions are the~$\ell_p$-merit functions, defined by
 \begin{equation*}
-    \merit[\gamma](\iter) \eqdef \obj(\iter) + \gamma \bigg( \sum_{i \in \iub} [\con{i}(\iter)]_+^p + \sum_{i \in \ieq} \abs{\con{i}(\iter)}^p \bigg)^{1/p}, \quad \text{for~$x \in \R^n$ and~$\gamma \ge 0$,}
+    \merit[\gamma](\iter) \eqdef \obj(\iter) + \gamma \bigg( \sum_{i \in \iub} [\con{i}(\iter)]_+^p + \sum_{i \in \ieq} \abs{\con{i}(\iter)}^p \bigg)^{1/p}, \quad \text{for~$\iter \in \R^n$ and~$\gamma \ge 0$,}
 \end{equation*}
 Such merit functions enjoy the properties of being exact under some mild assumptions.
 Roughly speaking, this means that a solution\footnote{Here, the term \enquote{solution} may be interpreted in different ways. It may be a global solution, a local solution, or a stationary point.} to the constrained problem~\cref{eq:problem-cobyqa-sqp} can be obtained by minimizing~$\merit[\gamma]$ when~$\gamma$ is big enough.
@@ -495,22 +495,86 @@ The reason behind the effect is that, for certain problems, the \gls{sqp} method
 Such a step would be rejected by any merit function that is increasing with respect to both the objective function and the constraint violation.
 See examples of this phenomenon in~\cite[\S~3.5]{Maratos_1978} and~\cite{Powell_1987}.
 
-\subsubsection{Second-order correction}
+To cope with the Maratos effect, we usually employ second-order correction steps.
+The idea behind the second-order correction is to modify the current step~$\step[k] \in \R^n$ by a term~$r^k \in \R^n$, so that
+\begin{empheq}[left=\empheqlbrace]{alignat*=2}
+    & [\con{i}(\iter[k] + \step[k] + r^k)]_+ = \smallo(\norm{\step[k]}^2),      && i \in \iub,\\
+    & \abs{\con{i}(\iter[k] + \step[k] + r^k)} = \smallo(\norm{\step[k]}^2),    && i \in \ieq.
+\end{empheq}
+However, the step~$\step[k]$ should not be substantially altered, so that~$\norm{r^k} = \smallo(\norm{\step[k]})$ is also imposed.
+A step that satisfies these conditions is commonly known as a \emph{second-order correction step}.
+Of course, such a modification should be made only when necessary.
+Perhaps the simplest of these steps, inspired by~\cite{Mayne_Polak_1982}, is the least-squares solution of
+\begin{align*}
+    \min        & \quad \sum_{i \in \iub} [\con{i}(\iter[k] + \step[k]) + \nabla \con{i}(\iter[k] + \step[k])^{\T} r]_+^2 + \sum_{i \in \ieq} [\con{i}(\iter[k] + \step[k]) + \nabla \con{i}(\iter[k] + \step[k])^{\T} r]^2\\
+    \text{s.t.} & \quad r \in \R^n.
+\end{align*}
+Many other second-order correction steps can also be defined (see, e.g.,~\cite{Colman_Conn_1982a,Colman_Conn_1982b,Fletcher_1982,Fukushima_1986}).
 
-\begin{itemize}
-    \item \citeauthor{Fletcher_1982}~\cite{Fletcher_1982}~\cite[\S~14.4]{Fletcher_1987}.
-    \item \citeauthor{Mayne_Polak_1982}~\cite{Mayne_Polak_1982}.
-\end{itemize}
-
-\subsubsection{A note on the augmented Lagrangian merit function}
-
-\begin{itemize}
-    \item Find a reference why it is not subject to the Maratos effect.
-\end{itemize}
+Another possibility to handle the Maratos effect is to use an augmented Lagrangian merit function.
+Indeed, \citeauthor{Powell_Yuan_1986}~\cite[\S~4]{Powell_Yuan_1986} showed that the Maratos effect cannot occur when using the augmented Lagrangian merit function in a line-search \gls{sqp} method.
+More generally, the Maratos effect cannot occur for any globalization strategy that uses the augmented Lagrangian merit function, because the Maratos effect can happen only at the points at which the merit function is nondifferentiable~\cite[\S~12.1]{Fletcher_1987}.
 
 \section{The trust-region \glsfmtshort{sqp} method}
 
+As we mentioned previously, since the \gls{sqp} method is a local method, we need in practice to employ a globalization strategy.
+We present in what follows the trust-region framework, the new method we presented in \cref{ch:cobyqa-introduction} uses a derivative-free variation of the trust-region \gls{sqp} method.
+
 \subsection{Overview of the method}
+
+We present in this section the basic trust-region \gls{sqp} method.
+The merit functions we consider from now on are~$\ell_2$-merit functions, defined by
+\begin{equation*}
+    \merit[\gamma](\iter) \eqdef \obj(\iter) + \gamma \sqrt{\sum_{i \in \iub} [\con{i}(\iter)]_+^2 + \sum_{i \in \ieq} \abs{\con{i}(\iter)}^2}, \quad \text{for~$\iter \in \R^n$ and~$\gamma \ge 0$.}
+\end{equation*}
+The algorithm we present below maintains a penalty parameter~$\gamma^k \ge 0$ and hence, we denote~$\merit[k]$ the function~$\merit[\gamma^k]$ for simplicity.
+Similarly, we denote by~$\meritm[k]$ the~$\ell_2$-merit function computed on the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}, i.e.,
+\begin{align*}
+    \meritm[k](\step)   & \eqdef \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
+                        & \qquad + \gamma^k \sqrt{\sum_{i \in \iub} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]_+^2 + \sum_{i \in \ieq} \abs{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2},\\
+                        & \qquad \text{for~$\step \in \R^n$ and~$\gamma \ge 0$.}
+\end{align*}
+As mentioned by~\cite[\S~15.3.2.1]{Conn_Gould_Toint_2000}, such a function is a second-order approximation of~$\merit[k]$ at~$\iter[k]$, which is suitable for use in trust-region \gls{sqp} method.
+The basic framework is given in \cref{alg:trust-region-sqp}, where we do not explicit the second-order correction mechanism for sake of clarity.
+
+\begin{algorithm}
+    \caption{Basic trust-region \gls{sqp} method for constrained optimization}
+    \label{alg:trust-region-sqp}
+    \DontPrintSemicolon
+    \KwData{Objective function~$\obj$, constraint functions~$\set{\con{i}}_{i \in \iub \cup \ieq}$, initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
+    \For{$k = 0, 1, \dots$}{
+        Set the trial step~$\step[k]$ to an approximate solution to
+        \begin{algomathdisplay}
+            \begin{aligned}
+                \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
+                \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
+                            & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
+                            & \quad \norm{\step} \le \rad[k],\\
+                            & \quad \step \in \R^n,
+            \end{aligned}
+        \end{algomathdisplay}
+        Determine a penalty parameter~$\gamma^k \ge \max \set{\gamma^{k - 1}, \norm{\lm[k]}}$ that provides
+        \begin{algomathdisplay}
+            \meritm[k](\step[k]) \le \meritm[k](0)
+        \end{algomathdisplay}
+        Evaluate the trust-region ratio
+        \begin{algomathdisplay}
+            \ratio[k] \gets \frac{\merit[k](\iter[k]) - \merit[k](\iter[k] + \step[k])}{\meritm[k](0) - \meritm[k](\step[k])}
+        \end{algomathdisplay}
+        \eIf{$\ratio[k] \ge 0$}{
+            Update the trial point~$\iter[k + 1] \gets \iter[k] + \step[k]$\;
+        }{
+            Retain the trial point~$\iter[k + 1] \gets \iter[k]$\;
+        }
+        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$\;
+        Update the trust-region radius
+        \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
+            & \theta_1 \rad[k],  && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
+            & \rad[k],           && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
+            & \theta_2 \rad[k],  && \quad \text{otherwise}
+        \end{algoempheq}
+    }
+\end{algorithm}
 
 \subsection{Composite-step approaches}
 
