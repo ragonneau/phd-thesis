@@ -53,7 +53,7 @@ The \gls{sqp} method is known to be one of the most powerful methods for solving
 The classical \gls{sqp} framework is presented in \cref{alg:sqp}.
 
 \begin{algorithm}
-    \caption{Classical \glsfmtshort{sqp} method}
+    \caption{Classical \glsxtrshort{sqp} method}
     \label{alg:sqp}
     \DontPrintSemicolon
     \KwData{Initial guess~$\iter[0] \in \R^n$ and estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$.}
@@ -537,22 +537,23 @@ As mentioned in~\cite[\S~15.3.2.1]{Conn_Gould_Toint_2000}, such a function is a 
 The basic framework is given in \cref{alg:trust-region-sqp}, where we do not explicit the second-order correction mechanism for sake of clarity.
 
 \begin{algorithm}
-    \caption{Basic trust-region \gls{sqp} method for constrained optimization}
+    \caption{Basic trust-region \glsxtrshort{sqp} method for constrained optimization}
     \label{alg:trust-region-sqp}
     \DontPrintSemicolon
     \KwData{Objective function~$\obj$, constraint functions~$\set{\con{i}}_{i \in \iub \cup \ieq}$, initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
     Set the penalty parameter~$\gamma^{-1} \gets 0$\;
     \For{$k = 0, 1, \dots$}{
         Set the trial step~$\step[k]$ to an approximate solution to
-        \begin{algomathdisplay}
-            \begin{aligned}
-                \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
-                \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
-                            & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
-                            & \quad \norm{\step} \le \rad[k],\\
-                            & \quad \step \in \R^n,
-            \end{aligned}
-        \end{algomathdisplay}
+        \begin{subequations}
+            \label{eq:trust-region-sqp-subproblem}
+            \begin{algomathalign}
+                \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step \label{eq:trust-region-sqp-subproblem-obj}\\
+                \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub, \label{eq:trust-region-sqp-subproblem-ub}\\
+                            & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:trust-region-sqp-subproblem-eq}\\
+                            & \quad \norm{\step} \le \rad[k], \label{eq:trust-region-sqp-subproblem-tr}\\
+                            & \quad \step \in \R^n, \nonumber
+            \end{algomathalign}
+        \end{subequations} \nllabel{alg:trust-region-sqp-step}
         Determine a penalty parameter~$\gamma^k \ge \max \set{\gamma^{k - 1}, \norm{\lm[k]}}$ that provides
         \begin{algomathdisplay}
             \meritm[k](\step[k]) \le \meritm[k](0)
@@ -610,12 +611,72 @@ Thus, a traditional implementation of the update of the penalty parameter is giv
 
 \subsection{Composite-step approaches}
 
-\subsubsection{Vardi-like approach}
+The \cref{alg:trust-region-sqp-step} of \cref{alg:trust-region-sqp} hides the following crucial point.
+If the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem} is infeasible, what should~$\step[k]$ approximate?
+Since the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} are linear representation of the constraints~\cref{eq:problem-cobyqa-sqp-ub,eq:problem-cobyqa-sqp-eq}, we cannot guarantee the feasible region of the subproblem~\cref{eq:trust-region-sqp-subproblem} to be feasible.
+It may be infeasible because
+\begin{enumerate}
+    \item the inequality constraints~\cref{eq:trust-region-sqp-subproblem-ub} may be infeasible,
+    \item the equality constraints~\cref{eq:trust-region-sqp-subproblem-eq} may be infeasible, or
+    \item the intersection of the regions defined by~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq,eq:trust-region-sqp-subproblem-tr} may be empty.
+\end{enumerate}
 
-\subsubsection{Byrd-Omojokun-like approach}
+The traditional approach to cope with this difficulty is to define~$\step[k]$ as the sum of two steps, a \emph{normal step}~$\nstep[k]$ that aims at reducing the constraint violation and a \emph{tangential step}~$\tstep[k]$ that aims at reducing the objective function~\cref{eq:trust-region-sqp-subproblem-obj}.
+Note that the terms \enquote{normal} and \enquote{tangential} only describe the step properties, there will be no actual reason for these steps to be orthogonal\todo{If equality, then orthogonal. If both, then $\ge 90$}.
+In what follows, we describe three approaches for defining these composite steps, namely the Vardi approach~\cite{Vardi_1985}, the Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989}, and the \gls{cdt} approach~\cite{Celis_Dennis_Tapia_1985}.
+
+\subsubsection{Vardi approach}
+
+The Vardi approach to define the normal and tangential steps is perhaps the simplest one.
+It is very similar to an idea proposed by Powell~\cite[Eqs.~(2.7) and~(2.8)]{Powell_1978a}.
+It consists in replacing the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
+\begin{subequations}
+    \begin{empheq}[left=\empheqlbrace]{alignat=2}
+        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \ieq$,} \label{eq:vardi-eq}\\
+        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, && \quad \text{if~$i \in \iub$ and~$\con{i}(\iter[k]) \ge 0$,} \label{eq:vardi-ub1}\\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,        && \quad \text{if~$i \in \iub$ and~$\con{i}(\iter[k]) < 0$,} \label{eq:vardi-ub2}
+    \end{empheq}
+\end{subequations}
+for some~$\alpha \in [0, 1]$.
+The reason for doing so is that if~$\alpha = 0$, then the trust-region subproblem is feasible, because all vectors lying in the null space of~$[\nabla \con{i}(\iter[k])]_{i \in \iub \cup \ieq}^{\T}$ satisfy the inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2}, the equality constraints~\cref{eq:vardi-eq}, and the trust-region constraint~\cref{eq:trust-region-sqp-subproblem-tr}.
+The relaxation of the equality constraints~\cref{eq:vardi-eq} is due to \citeauthor{Vardi_1985}~\cite{Vardi_1985}, but the treatment of the relaxed inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2} is adapted from \citeauthor{Powell_1978a}~\cite {Powell_1978a}.
+
+Let~$\bar{\alpha}$ be the largest~$\alpha \in [0, 1]$ such that the trust-region subproblem is feasible, and let~$\nstep[c]$ be the least-squares solution to
+\begin{align*}
+    \min        & \quad \sum_{i \in \iub} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]_+^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2\\
+    \text{s.t.} & \quad \step \in \R^n.
+\end{align*}
+Then,~$\nstep[k] = \bar{\alpha} \nstep[c]$ is the closest point to the constraints that satisfy the trust-region constraint.
+However, choosing such a normal step is not viable, for the following reason.
+If~$\bar{\alpha} < 1$, then~$\nstep[k]$ is the only point in the relaxed feasible region. 
+Therefore, the tangential step~$\tstep[k]$ must be set to zero, since it should not worsen the infeasibility of~$\step[k] = \nstep[k] + \tstep[k]$.
+To cope with this defect, if~$\bar{\alpha} < 1$, the normal step should be~$\nstep[k] = \alpha \nstep[c]$ with~$\alpha < \bar{\alpha}$, and~$\nstep[k] = 0$ otherwise.
+
+Now that~$\nstep[k]$ has been found, we turn our attention to the definition of the tangential step~$\tstep[k]$.
+Recall that it should decrease the objective function of the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem-obj} without worsening the possible constraint infeasibility.
+Therefore, the composite step~$\step[k]$ is an approximate solution to
+\begin{align*}
+    \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
+    \text{s.t.} & \quad \nabla \con{i}(\iter[k])^{\T} \step \le \max \set{-\con{i}(\iter[k]), \nabla \con{i}(\iter[k])^{\T} \nstep[k]}, ~ i \in \iub,\\
+                & \quad \nabla \con{i}(\iter[k])^{\T} \step = \nabla \con{i}(\iter[k])^{\T} \nstep[k], ~ i \in \ieq,\\
+                & \quad \norm{\step} \le \rad[k],\\
+                & \quad \step \in \R^n.
+\end{align*}
+In other word, the tangential step~$\tstep[k]$ is an approximate solution to
+\begin{align*}
+    \min        & \quad [\nabla \obj(\iter[k]) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
+    \text{s.t.} & \quad \nabla \con{i}(\iter[k])^{\T} \step \le \max \set{-\con{i}(\iter[k]) - \nabla \con{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub,\\
+                & \quad \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
+                & \quad \norm{\nstep[k] + \step} \le \rad[k],\\
+                & \quad \step \in \R^n.
+\end{align*}
+
+An important remark is that, when using the Vardi approach, the required property on the merit function in \cref{alg:trust-region-sqp-penalty} of \cref{alg:trust-region-sqp} is true.
+
+\subsubsection{Byrd-Omojokun approach}
 
 \begin{itemize}
-    \item Compare with the Vardi-like approach.
+    \item Compare with the Vardi approach.
 \end{itemize}
 
-\subsubsection{\Glsfmtlong{cdt}-like approach}
+\subsubsection{\Glsfmtlong{cdt} approach}
