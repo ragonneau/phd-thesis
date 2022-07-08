@@ -527,14 +527,13 @@ The merit functions we consider from now on are~$\ell_2$-merit functions, define
 \begin{equation*}
     \merit[\gamma](\iter) \eqdef \obj(\iter) + \gamma \sqrt{\sum_{i \in \iub} [\con{i}(\iter)]_+^2 + \sum_{i \in \ieq} \abs{\con{i}(\iter)}^2}, \quad \text{for~$\iter \in \R^n$ and~$\gamma \ge 0$.}
 \end{equation*}
-The algorithm we present below maintains a penalty parameter~$\gamma^k \ge 0$ and hence, we denote~$\merit[k]$ the function~$\merit[\gamma^k]$ for simplicity.
+The algorithm we present below maintains a penalty parameter~$\gamma^k \ge 0$ and hence, we denote~$\merit[k]$ the function~$\merit[\gamma]$ for~$\gamma = \gamma^k$.
 Similarly, we denote by~$\meritm[k]$ the~$\ell_2$-merit function computed on the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}, i.e.,
 \begin{align*}
     \meritm[k](\step)   & \eqdef \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
-                        & \qquad + \gamma^k \sqrt{\sum_{i \in \iub} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]_+^2 + \sum_{i \in \ieq} \abs{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2},\\
-                        & \qquad \text{for~$\step \in \R^n$ and~$\gamma \ge 0$.}
+                        & \qquad + \gamma^k \sqrt{\sum_{i \in \iub} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]_+^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2}, \quad \text{for~$\step \in \R^n$.}
 \end{align*}
-As mentioned by~\cite[\S~15.3.2.1]{Conn_Gould_Toint_2000}, such a function is a second-order approximation of~$\merit[k]$ at~$\iter[k]$, which is suitable for use in trust-region \gls{sqp} method.
+As mentioned in~\cite[\S~15.3.2.1]{Conn_Gould_Toint_2000}, such a function is a second-order approximation of~$\merit[k]$ at~$\iter[k]$, which is suitable for use in trust-region \gls{sqp} method.
 The basic framework is given in \cref{alg:trust-region-sqp}, where we do not explicit the second-order correction mechanism for sake of clarity.
 
 \begin{algorithm}
@@ -542,6 +541,7 @@ The basic framework is given in \cref{alg:trust-region-sqp}, where we do not exp
     \label{alg:trust-region-sqp}
     \DontPrintSemicolon
     \KwData{Objective function~$\obj$, constraint functions~$\set{\con{i}}_{i \in \iub \cup \ieq}$, initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
+    Set the penalty parameter~$\gamma^{-1} \gets 0$\;
     \For{$k = 0, 1, \dots$}{
         Set the trial step~$\step[k]$ to an approximate solution to
         \begin{algomathdisplay}
@@ -556,7 +556,7 @@ The basic framework is given in \cref{alg:trust-region-sqp}, where we do not exp
         Determine a penalty parameter~$\gamma^k \ge \max \set{\gamma^{k - 1}, \norm{\lm[k]}}$ that provides
         \begin{algomathdisplay}
             \meritm[k](\step[k]) \le \meritm[k](0)
-        \end{algomathdisplay}
+        \end{algomathdisplay} \nllabel{alg:trust-region-sqp-penalty}
         Evaluate the trust-region ratio
         \begin{algomathdisplay}
             \ratio[k] \gets \frac{\merit[k](\iter[k]) - \merit[k](\iter[k] + \step[k])}{\meritm[k](0) - \meritm[k](\step[k])}
@@ -575,6 +575,38 @@ The basic framework is given in \cref{alg:trust-region-sqp}, where we do not exp
         \end{algoempheq}
     }
 \end{algorithm}
+
+When choosing the trial step~$\step[k]$, we must ensure that there exists~$\bar{\gamma} \ge 0$ such that for all~$\gamma \ge \bar{\gamma}$, the property~$\meritm[k](\step[k]) \le \meritm[k](0)$ mentioned on \cref{alg:trust-region-sqp-penalty} is well-defined.
+Clearly, we must ensure that the step~$\step[k]$ satisfies either
+\begin{equation*}
+    \sum_{i \in \iub} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step[k]]_+^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step[k]]^2 < \sum_{i \in \iub} [\con{i}(\iter[k])]_+^2 + \sum_{i \in \ieq} \con{i}(\iter[k])^2,
+\end{equation*}
+or if these two term equals, then
+\begin{equation*}
+    \nabla \obj(\iter[k])^{\T} \step[k] + \frac{1}{2} (\step[k])^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step[k] \le 0.
+\end{equation*}
+In other word, the step~$\step[k]$ must either improve the infeasibility of~$\iter[k]$ with respect to the linearized constraints, or decrease the objective function of the \gls{sqp} subproblem without worsening the possible infeasibility.
+
+Note moreover that we imposed~$\gamma^k \ge \norm{\lm[k]}$.
+This is because \cref{thm:exact-merit-function} tells us that we want finally~$\gamma^k > \norm{\lm[\ast]}$, where~$\lm[\ast]$ is the Lagrange multiplier at the solution.
+In other word, we attempt to fulfil this condition as much as possible using the information available so far.
+Thus, a traditional implementation of the update of the penalty parameter is given in \cref{alg:increase-penalty}.
+
+\begin{algorithm}
+    \caption{Increasing the penalty parameter}
+    \label{alg:increase-penalty}
+    \DontPrintSemicolon
+    \KwData{Merit functions~$\meritm[\gamma]$ for~$\gamma \ge 0$, trial step~$\step[k] \in \R^n$, Lagrange multiplier estimation~$\lm[k]$, previous penalty parameter~$\gamma^{k - 1} \ge 0$, and constants~$1 \le \eta_3 \le \eta_4$.}
+    \KwResult{Updated penalty parameter~$\gamma^k \ge \gamma^{k - 1}$.}
+    Set~$\bar{\gamma} \gets \argmin \set{\gamma \ge 0 : \meritm[\gamma](\step[k]) \le \meritm[\gamma](0)}$\;
+    \eIf{$\gamma^{k - 1} \le \eta_3 \max \set{\bar{\gamma}, \norm{\lm[k]}}$}{
+        Set~$\gamma^k \gets \eta_4 \max \set{\bar{\gamma}, \norm{\lm[k]}}$\;
+    }{
+        Set~$\gamma^k \gets \gamma^{k - 1}$\;
+    }
+\end{algorithm}
+
+\citeauthor{Powell_1994} used in his solver \gls{cobyla}~\cite{Powell_1994} a very similar update of the penalty parameter, with the values~$\eta_3 = 3/2$ and~$\eta_4 = 2$.
 
 \subsection{Composite-step approaches}
 
