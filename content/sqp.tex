@@ -641,16 +641,16 @@ for some~$\alpha \in [0, 1]$.
 The reason for doing so is that if~$\alpha = 0$, then the trust-region subproblem is feasible, because all vectors lying in the null space of~$[\nabla \con{i}(\iter[k])]_{i \in \iub \cup \ieq}^{\T}$ satisfy the inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2}, the equality constraints~\cref{eq:vardi-eq}, and the trust-region constraint~\cref{eq:trust-region-sqp-subproblem-tr}.
 The relaxation of the equality constraints~\cref{eq:vardi-eq} is due to \citeauthor{Vardi_1985}~\cite{Vardi_1985}, but the treatment of the relaxed inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2} is adapted from \citeauthor{Powell_1978a}~\cite {Powell_1978a}.
 
-Let~$\bar{\alpha}$ be the largest~$\alpha \in [0, 1]$ such that the trust-region subproblem is feasible, and let~$\nstep[c]$ be the least-squares solution to
+Let~$\bar{\alpha}^k$ be the largest~$\alpha \in [0, 1]$ such that the trust-region subproblem is feasible, and let~$\nstepalt[k]$ be the least-squares solution to
 \begin{align*}
     \min        & \quad \sum_{i \in \iub} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]_+^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2\\
     \text{s.t.} & \quad \step \in \R^n.
 \end{align*}
-Then,~$\nstep[k] = \bar{\alpha} \nstep[c]$ is the closest point to the constraints that satisfy the trust-region constraint.
+Then,~$\nstep[k] = \bar{\alpha}^k \nstepalt[k]$ is the closest point to the constraints that satisfy the trust-region constraint.
 However, choosing such a normal step is not viable, for the following reason.
-If~$\bar{\alpha} < 1$, then~$\nstep[k]$ is the only point in the relaxed feasible region. 
+If~$\bar{\alpha}^k < 1$, then~$\nstep[k]$ is the only point in the relaxed feasible region. 
 Therefore, the tangential step~$\tstep[k]$ must be set to zero, since it should not worsen the infeasibility of~$\step[k] = \nstep[k] + \tstep[k]$.
-To cope with this defect, if~$\bar{\alpha} < 1$, the normal step should be~$\nstep[k] = \alpha \nstep[c]$ with~$\alpha < \bar{\alpha}$, and~$\nstep[k] = 0$ otherwise.
+To cope with this defect, if~$\bar{\alpha}^k < 1$, the normal step should be~$\nstep[k] = \alpha \nstepalt[k]$ with~$\alpha < \bar{\alpha}^k$, and~$\nstep[k] = 0$ otherwise.
 
 Now that~$\nstep[k]$ has been found, we turn our attention to the definition of the tangential step~$\tstep[k]$.
 Recall that it should decrease the objective function of the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem-obj} without worsening the possible constraint infeasibility.
@@ -663,20 +663,49 @@ Therefore, the composite step~$\step[k]$ is an approximate solution to
                 & \quad \step \in \R^n.
 \end{align*}
 In other word, the tangential step~$\tstep[k]$ is an approximate solution to
-\begin{align*}
-    \min        & \quad [\nabla \obj(\iter[k]) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
-    \text{s.t.} & \quad \nabla \con{i}(\iter[k])^{\T} \step \le \max \set{-\con{i}(\iter[k]) - \nabla \con{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub,\\
-                & \quad \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
-                & \quad \norm{\nstep[k] + \step} \le \rad[k],\\
-                & \quad \step \in \R^n.
-\end{align*}
+\begin{subequations}
+    \label{eq:tangential-subproblem}
+    \begin{align}
+        \min        & \quad [\nabla \obj(\iter[k]) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
+        \text{s.t.} & \quad \nabla \con{i}(\iter[k])^{\T} \step \le \max \set{-\con{i}(\iter[k]) - \nabla \con{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub,\\
+                    & \quad \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
+                    & \quad \norm{\nstep[k] + \step} \le \rad[k],\\
+                    & \quad \step \in \R^n.
+    \end{align}
+\end{subequations}
 
 An important remark is that, when using the Vardi approach, the required property on the merit function in \cref{alg:trust-region-sqp-penalty} of \cref{alg:trust-region-sqp} is true.
 
 \subsubsection{Byrd-Omojokun approach}
 
-\begin{itemize}
-    \item Compare with the Vardi approach.
-\end{itemize}
+\todo[noline]{Compare with the Vardi approach.}
+
+The Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989} is very similar to the Vardi approach.
+It defines the normal step~$\nstep[k]$ by solving approximately
+\begin{align*}
+    \min        & \quad \sum_{i \in \iub} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]_+^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2\\
+    \text{s.t.} & \quad \norm{\step} \le \zeta \rad[k],\\
+                & \quad \step \in \R^n,
+\end{align*}
+where~$\zeta \in (0, 1)$.
+Note that~$\zeta$ should not be set to one as otherwise, the feasible region of the tangential subproblem might be a singleton, similarly to the Vardi approach.
+Once the normal step has been calculated, the tangential step~$\step[k]$ is also defined to be an approximate solution to~\cref{eq:tangential-subproblem}.
+
+Note that this method is very close from the Vardi approach, but are not equivalent.
+However, as for the Vardi approach, the required property on the merit function in \cref{alg:trust-region-sqp-penalty} of \cref{alg:trust-region-sqp} is true.
 
 \subsubsection{\Glsfmtlong{cdt} approach}
+
+The last common composite-step approach is referred to as the \gls{cdt} approach~\cite{Celis_Dennis_Tapia_1985}.
+It consists in lumping the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
+\begin{empheq}[left=\empheqlbrace]{alignat*=2}
+    & \norm{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step} \le \delta,        && \quad \text{if~$i \in \ieq$,}\\
+    & \norm{[\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]_+} \le \delta,    && \quad \text{if~$i \in \iub$,}
+\end{empheq}
+for some~$\delta \ge 0$, chosen so that the \gls{sqp} subproblem becomes feasible.
+We first select a normal step~$\nstep[k]$ in the trust region that improves the feasibility, and we then set
+\begin{equation*}
+    \delta = \max \set{\norm{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]}, \norm{[\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]]_+}}.
+\end{equation*}
+The advantage of the \gls{cdt} approach over the Vardi and the Byrd-Omojokun approaches is that the feasible region of the tangential subproblem is usually wider, and hence, a larger reduction in the objective function is usually obtained.
+However, solving such a subproblem in practice is very complicated, because the linear constraints become elliptic.
