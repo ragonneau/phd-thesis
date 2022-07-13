@@ -324,6 +324,7 @@ They will be required for the necessary conditions to hold.
 We first introduce the notion of \emph{active sets}.
 
 \begin{definition}[Active set]
+    \label{def:active-set}
     The \emph{active set}~$\act(\iter) \subseteq \iub \cup \ieq$ for the problem~\cref{eq:problem-introduction} at a point~$\iter \in \R^n$ is defined by
     \begin{equation*}
         \act(\iter) \eqdef \ieq \cup \set{i \in \iub : \con{i}(\iter) \ge 0}.
@@ -866,17 +867,17 @@ This phenomenon is studied in~\cite{Gould_Scott_2016}, which presents examples o
 \todo[noline]{Complete the notation description}
 
 Throughout this thesis, the functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, always denote the objective and constraint functions of an optimization problem, respectively.
-The Lagrangian function of this problem is denoted by~$\lag$.
+The Lagrangian function of this problem is denoted by~$(\iter, \lm) \mapsto \lag(\iter, \lm)$.
 Its first argument~$\iter$ is the decision variable, while its second argument~$\lm = [\lm_i]_{i \in \iub \cup \ieq}$ is the dual variable of the considered problem.
-A quadratic approximation of a function~$u$ is always denoted by~$\hat{u}$, and may be subscripted if this model is used in an iterative process.
+A quadratic approximation of a function~$u$ is always denoted by~$\hat{u}$, and may be superscripted if this model is used in an iterative process.
 For example, if an optimization method maintains a quadratic approximation of the objective function, the~$k$th model is denoted by~$\objm[k]$.
 
-In general, an iteration number is written as a superscript.
+In general, an iteration number is written as a \emph{superscript}.
 When an exponent is used in a formula that may lead to confusion, we will explicitely state the meaning of the notation in the context.
-Moreover, a subscript usually indicates a component number of a vector, a matrix, etc.
-An exception to this rule is the notation~$e_i \in \R^n$, which indicates the~$i$th standard coordinate vector, i.e., the~$i$th column of the identity matrix in~$\R^{n \times n}$.
+Moreover, a \emph{subscript} usually signifies a component index of a vector, a matrix, etc.
+An exception to this rule is the notation~$e_i \in \R^n$, which represents the~$i$th standard coordinate vector, i.e., the~$i$th column of the identity matrix in~$\R^{n \times n}$.
 
-We will mainly consider the~$\ell_2$-norm in this thesis.
+We will mainly use the~$\ell_2$-norm in this thesis.
 Hence,~$\norm{\cdot}$ denotes the~$\ell_2$-norm, unless otherwise stated.
 If any other norm is needed, its choice is clarified using subscripts.
-For example~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm of a matrix.
+For example~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm of a matrix, and~$\norm{\cdot}_1$ denotes the~$\ell_1$ norm of a vector or the corresponding induced norm of a matrix.
