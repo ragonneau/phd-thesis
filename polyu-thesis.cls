@@ -16,6 +16,8 @@
 \ProvidesClass{polyu-thesis}[2022/06/14 PolyU thesis document class]
 
 % Load book class as basis
+\newif\ifreview
+\DeclareOption{review}{\reviewtrue}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessOptions\relax
 \LoadClass[11pt]{book}
@@ -242,13 +244,17 @@
 
 % Drafting packages
 \RequirePackage{ifdraft}
-\RequirePackage[%
-    obeyDraft,%
-    english,%
-    colorinlistoftodos,%
-    color=Apricot,%
-    textsize=scriptsize,%
-]{todonotes}
+\ifreview
+    \RequirePackage[disable]{todonotes}
+\else
+    \RequirePackage[%
+        obeyDraft,%
+        english,%
+        colorinlistoftodos,%
+        color=Apricot,%
+        textsize=scriptsize,%
+    ]{todonotes}
+\fi
 \renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
 \if@todonotes@disabled
 \else

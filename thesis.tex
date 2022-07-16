@@ -94,14 +94,18 @@
 
 \mainmatter
 
-\include{content/introduction}
-\include{content/interpolation}
-\include{content/pdfo}
-\include{content/sqp}
-\include{content/cobyqa-introduction}
-\include{content/cobyqa-subproblems}
-\include{content/cobyqa-implementation}
-\include{content/conclusion}
+\ifreview
+    \include{content/sqp}
+\else
+    \include{content/introduction}
+    \include{content/interpolation}
+    \include{content/pdfo}
+    \include{content/sqp}
+    \include{content/cobyqa-introduction}
+    \include{content/cobyqa-subproblems}
+    \include{content/cobyqa-implementation}
+    \include{content/conclusion}
+\fi
 
 \appendix
 
