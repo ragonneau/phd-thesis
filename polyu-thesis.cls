@@ -13,11 +13,11 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/06/14 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/07/18 PolyU thesis document class]
 
 % Load book class as basis
-\newif\ifreview
-\DeclareOption{review}{\reviewtrue}
+\newif\ifmeeting
+\DeclareOption{meeting}{\meetingtrue}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessOptions\relax
 \LoadClass[11pt]{book}
@@ -244,7 +244,7 @@
 
 % Drafting packages
 \RequirePackage{ifdraft}
-\ifreview
+\ifmeeting
     \RequirePackage[disable]{todonotes}
 \else
     \RequirePackage[%

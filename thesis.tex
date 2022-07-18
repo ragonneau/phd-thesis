@@ -12,7 +12,7 @@
 % This work has the LPPL maintenance status `maintained'.
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
-\documentclass[draft]{polyu-thesis}
+\documentclass[draft,meeting]{polyu-thesis}
 \usepackage[final]{microtype}
 \usepackage{nameref}
 
@@ -94,7 +94,7 @@
 
 \mainmatter
 
-\ifreview
+\ifmeeting
     \include{content/sqp}
 \else
     \include{content/introduction}

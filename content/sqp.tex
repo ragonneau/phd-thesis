@@ -746,13 +746,14 @@ We point out that the choice of~$\alpha$ in the Vardi approach is important, and
 The Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989} is very similar to the Vardi approach.
 It defines the normal step~$\nstep[k]$ by solving
 \begin{subequations}
+    \label{eq:byrd-omojokun}
     \begin{align}
         \min        & \quad \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \label{eq:byrd-omojokun-obj}\\
         \text{s.t.} & \quad \norm{\step} \le \zeta \rad[k],\\
-                    & \quad \step \in \R^n,
+                    & \quad \step \in \R^n, \nonumber
     \end{align}
 \end{subequations}
-where~$\zeta \in (0, 1)$.
+where~$\zeta \in (0, 1]$.
 Further, it sets the tangential step~$\tstep[k]$ to a solution to~\cref{eq:tangential-subproblem}.
 Finally, the Byrd-Omojokun composite step is~$\step[k] = \nstep[k] + \tstep[k]$.
 Note that~$\zeta$ should not be set to one as otherwise, the feasible region of~\cref{eq:tangential-subproblem} might be a singleton.
@@ -775,21 +776,52 @@ We first select a normal step~$\nstep[k]$ in the trust region that improves the 
 \begin{equation*}
     \delta = \max \set{\norm{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]}, \norm{\posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]}}}.
 \end{equation*}
+Unlike the two former approaches, the tangential step of the \gls{cdt} approach does not attempt to maintain or decrease the violation of each constraint, but rather global violation of all the constraints simultaneously.
 The advantage of the \gls{cdt} approach over the Vardi and the Byrd-Omojokun approaches is that the feasible region of the tangential subproblem is usually wider, and hence, a larger reduction in the objective function is usually obtained.
 However, solving such a subproblem in practice is very complicated, because the linear constraints become elliptic.
 
 \subsubsection{A relation between the Vardi and the Byrd-Omojokun approach}
 
-\todo[noline]{Reformulate using simple notations}
-
-\todo[noline]{What is there is inequality constraints (maybe slack variables)}
+We now highlight a relation between the Vardi approach and Byrd-Omojokun approach when~$\iub = \emptyset$.
+In such a case, the problem~\cref{eq:problem-cobyqa-sqp} can be reformulated as
+\begin{align*}
+    \min        & \quad \obj(\iter)\\
+    \text{s.t.} & \quad h(\iter) = 0,\\
+                & \quad \iter \in \R^n,
+\end{align*}
+where~$h : \R^n \to \R^m$.
+Given~$\alpha \in [0, 1]$ such that~$\alpha h(\iter[k]) + \nabla h(\iter[k]) d = 0$ admits a solution whose norm is at most~$\rad[k]$, the above-mentioned normal step of the Vardi approach is
+\begin{equation}
+    \label{eq:vardi-equality}
+    \nstep[k] = \argmin_{\step \in \R^n} \set{\norm{\step} : \alpha h(\iter[k]) + \nabla h(\iter[k]) \step = 0} = -\alpha \nabla h(\iter[k])^{\dagger} h(\iter[k]),
+\end{equation}
+where~$\nabla h(\iter[k])^{\dagger}$ denotes the Moore-Penrose pseudoinverse of~$\nabla h(\iter[k])$.
+Moreover, the above-mentioned normal step of the Byrd-Omojokun approach solves 
+\begin{subequations}
+    \label{eq:byrd-omojokun-equality}
+    \begin{align}
+        \min        & \quad \norm{h(\iter[k]) + \nabla h(\iter[k]) \step} \label{eq:byrd-omojokun-equality-obj}\\
+        \text{s.t.} & \quad \norm{\step} \le \zeta \rad[k],\\
+                    & \quad \step \in \R^n,
+    \end{align}
+\end{subequations}
+As shown by \cref{prop:vardi-byrd-omojokun}, the above-mentioned normal step of the Vardi approach can be interpreted as a constrained Newton step for~\cref{eq:byrd-omojokun-equality} for some specific~$\zeta \in (0, 1]$.
 
 \begin{proposition}
-    Assume that~$\iub = \emptyset$, and denote~$Q(\step)$ the objective function~\cref{eq:byrd-omojokun-obj}.
-    Let~$\nstep[k]$ be the least-norm solution to~\cref{eq:vardi-normal-step}, and let~$\step[\ast]$ be the least-norm global minimizer of~$Q$.
-    If~$\zeta = \norm{\nstep[k]} / \rad[k]$, then
+    \label{prop:vardi-byrd-omojokun}
+    Let~$\nstep[k]$ be the normal step~\cref{eq:vardi-equality}, and let~$\step[\ast]$ be the least-norm global unconstrained minimizer of~\cref{eq:byrd-omojokun-equality-obj}.
+    The step~$\nstep[k]$ solves
     \begin{equation*}
-        \nstep[k] = \argmin \set{Q(\step) : \step = t \step[\ast], ~ t \ge 0, ~ \norm{d} \le \rad[k]}
+        \min_{d \in \R^n} \set{\norm{h(\iter[k]) + \nabla h(\iter[k]) \step} : \step = t \step[\ast], ~ t \ge 0, ~ \norm{d} \le \zeta \rad[k]},
     \end{equation*}
-    % ~$\nstep[k]$ minimizes~\cref{eq:byrd-omojokun-obj} along the direction~$\step[\ast]$ such that~$\norm{\nstep[k]} \le \zeta \rad[k]$.
+    if~$\zeta = \norm{\nstep[k]} / \rad[k]$.
 \end{proposition}
+
+\begin{proof}
+    Remark that~$\step[\ast] = -\nabla h(\iter[k])^{\dagger} h(\iter[k])$, so that we only need to show that
+    \begin{equation}
+        \label{eq:vardi-byrd-omojokun-proof}
+        \alpha = \argmin_{t \in [0, \alpha]} \norm{h(\iter[k]) - t\nabla h(\iter[k]) \nabla h(\iter[k])^{\dagger} h(\iter[k])}.
+    \end{equation}
+    This is clear because~$\alpha \le 1$ and the objective function in~\cref{eq:vardi-byrd-omojokun-proof} is decreasing.
+\end{proof}
