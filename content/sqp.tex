@@ -638,6 +638,16 @@ The subproblem may be infeasible because
 \end{enumerate}
 
 The traditional approach to cope with this difficulty is to define~$\step[k]$ as the sum of two steps, a \emph{normal step}~$\nstep[k]$ that aims at reducing the constraint violation and a \emph{tangential step}~$\tstep[k]$ that aims at reducing the objective function~\cref{eq:trust-region-sqp-subproblem-obj}.
+The normal step~$\nstep[k]$ usually solves
+\begin{subequations}
+    \label{eq:byrd-omojokun}
+    \begin{align}
+        \min        & \quad \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \label{eq:byrd-omojokun-obj}\\
+        \text{s.t.} & \quad \norm{\step} \le \zeta \rad[k],\\
+                    & \quad \step \in \R^n, \nonumber
+    \end{align}
+\end{subequations}
+for some~$\zeta \in (0, 1]$, either exactly or approximately.
 Note that the normal and tangential steps may not be orthogonal to each other.
 Consider for example
 \begin{align*}
@@ -646,51 +656,14 @@ Consider for example
                 & \quad \iter \in \R^2.
 \end{align*}
 Given the initial guess~$\iter[0] = [0, -1]^{\T}$, a reasonable composite-step approach would generate normal and tangential steps that are (almost) in the same direction, both heading up towards the feasible region.
-% the normal~$\nstep[1]$ should satisfy~$\nstep[1]_2 > 0$, and the tangential step~$\tstep[1]$ should satisfy~$\tstep[1]_1 = -\nstep[1]_1$ and~$\tstep[1]_2 \ge 0$.
 
-In what follows, we describe three approaches for defining these composite steps, namely the Vardi approach~\cite{Vardi_1985}, the Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989}, and the \gls{cdt} approach~\cite{Celis_Dennis_Tapia_1985}.
+In what follows, we describe three approaches for defining these composite steps, namely the Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989}, the Vardi approach~\cite{Vardi_1985}, and the \gls{cdt} approach~\cite{Celis_Dennis_Tapia_1985}.
 
-\subsubsection{Vardi approach}
+\subsubsection{Byrd-Omojokun approach}
 
-The Vardi approach to define the normal and tangential steps is perhaps the simplest one.
-It is very similar to an idea proposed earlier by Powell~\cite[Eqs.~(2.7) and~(2.8)]{Powell_1978a}.
-It consists in replacing the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
-\begin{subequations}
-    \label{eq:vardi}
-    \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,        && \quad \text{if~$i \in \iub \setminus \act(\iter[k])$,} \label{eq:vardi-ub2}\\
-        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, && \quad \text{if~$i \in \iub \cap \act(\iter[k])$,} \label{eq:vardi-ub1}\\
-        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \ieq$,} \label{eq:vardi-eq}
-    \end{empheq}
-\end{subequations}
-for some~$\alpha \in [0, 1]$, , where~$\act(\iter[k])$ designates the active set for the problem~\cref{eq:problem-cobyqa-sqp} at~$\iter[k]$ (see \cref{def:active-set}), so that the trust-region subproblem after the replacement, i.e.,
-\begin{subequations}
-    \label{eq:sqp-subproblem-vardi}
-    \begin{align}
-        \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step \label{eq:sqp-subproblem-vardi-obj}\\
-        \text{s.t.} & \quad\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub \setminus \act(\iter[k]), \label{eq:sqp-subproblem-vardi-ub2}\\
-                    & \quad \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub \cap \act(\iter[k]), \label{eq:sqp-subproblem-vardi-ub1}\\
-                    & \quad \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:sqp-subproblem-vardi-eq}\\
-                    & \quad \norm{\step} \le \rad[k],\\
-                    & \quad \step \in \R^n,
-    \end{align}
-\end{subequations}
-becomes feasible.
-Note that if~$\alpha = 0$, then~\cref{eq:sqp-subproblem-vardi} is feasible, because all vectors in the null space of~$[\nabla \con{i}(\iter[k])]_{i \in \act(\iter[k])}^{\T}$ that are short enough are feasible.
-The relaxation of the equality constraints~\cref{eq:vardi-eq} is due to \citeauthor{Vardi_1985}~\cite{Vardi_1985}, but the treatment of the relaxed inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2} is adapted from \citeauthor{Powell_1978a}~\cite {Powell_1978a}.
-
-Let us explain why it can be understood as a composite-step approach.
-Under some assumptions (e.g., \gls{licq} at~$\iter[k]$), we can take~$\alpha \in [0, 1]$ so that the system
-\begin{subequations}
-    \label{eq:vardi-normal-step}
-    \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,        && \quad \text{if~$i \in \iub \setminus \act(\iter[k])$,} \label{eq:vardi-normal-step-1}\\
-        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \iub \cap \act(\iter[k])$,}\\
-        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \ieq$,}
-    \end{empheq}
-\end{subequations}
-admits a solution whose norm is at most~$\rad[k]$, which ensures that~\cref{eq:sqp-subproblem-vardi} is feasible.
-Define the normal step~$\nstep[k]$ as the least-norm solution to this system, which then satisfies~$\norm{\nstep[k]} \le \rad[k]$, and define~$\tstep[k]$ so that it attempts to decrease~\cref{eq:sqp-subproblem-vardi-obj} within the trust region without increasing the violation of any linearized constraint.
+The Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989} is perhaps the most direct to comprehend.
+It defines the normal step~$\nstep[k]$ by solving directly~\cref{eq:byrd-omojokun} for some constant~$\zeta \in (0, 1]$.
+Further, it defines the tangential step~$\tstep[k]$ so that it attempts to decrease~\cref{eq:trust-region-sqp-subproblem} within the trust region without increasing the violation of any linearized constraint.
 More specifically, the tangential step~$\tstep[k]$ solves
 \begin{subequations}
     \label{eq:tangential-subproblem}
@@ -702,7 +675,7 @@ More specifically, the tangential step~$\tstep[k]$ solves
                     & \quad \step \in \R^n.
     \end{align}
 \end{subequations}
-If we consider the composite step~$\nstep[k] + \tstep[k]$, it then solves
+The composite step~$\step[k] = \nstep[k] + \tstep[k]$ then solves
 \begin{subequations}
     \label{eq:vardi-composite-step}
     \begin{align}
@@ -713,7 +686,51 @@ If we consider the composite step~$\nstep[k] + \tstep[k]$, it then solves
                     & \quad \step \in \R^n,
     \end{align}
 \end{subequations}
-which turns out to the be exactly~\cref{eq:sqp-subproblem-vardi}, as specified by the following proposition.
+Note that~$\zeta$ should not be set to one as otherwise, the feasible region of~\cref{eq:tangential-subproblem} might be a singleton.
+In practice, we can take for example~$\zeta = 0.8$ (see, e.g.,~\cite[Eq.~(18.45)]{Nocedal_Wright_2006}).
+
+\subsubsection{Vardi approach}
+
+The Vardi approach is very similar to an idea proposed earlier by Powell~\cite[Eqs.~(2.7) and~(2.8)]{Powell_1978a}.
+It consists in replacing the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
+\begin{subequations}
+    \label{eq:vardi}
+    \begin{empheq}[left=\empheqlbrace]{alignat=2}
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,        && \quad \text{if~$i \in \iub \setminus \act(\iter[k])$,} \label{eq:vardi-ub2}\\
+        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, && \quad \text{if~$i \in \iub \cap \act(\iter[k])$,} \label{eq:vardi-ub1}\\
+        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \ieq$,} \label{eq:vardi-eq}
+    \end{empheq}
+\end{subequations}
+for some~$\alpha \in [0, 1]$, where~$\act(\iter[k])$ designates the active set for the problem~\cref{eq:problem-cobyqa-sqp} at~$\iter[k]$ (see \cref{def:active-set}), so that the trust-region subproblem after the replacement, i.e.,
+\begin{subequations}
+    \label{eq:sqp-subproblem-vardi}
+    \begin{align}
+        \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step \label{eq:sqp-subproblem-vardi-obj}\\
+        \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub \setminus \act(\iter[k]), \label{eq:sqp-subproblem-vardi-ub2}\\
+                    & \quad \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub \cap \act(\iter[k]), \label{eq:sqp-subproblem-vardi-ub1}\\
+                    & \quad \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:sqp-subproblem-vardi-eq}\\
+                    & \quad \norm{\step} \le \rad[k],\\
+                    & \quad \step \in \R^n,
+    \end{align}
+\end{subequations}
+becomes feasible.
+Note that if~$\alpha = 0$, then~\cref{eq:sqp-subproblem-vardi} is feasible, because all vectors in the null space of~$[\nabla \con{i}(\iter[k])]_{i \in \act(\iter[k])}^{\T}$ that are short enough are feasible.
+The relaxation of the equality constraints~\cref{eq:vardi-eq} is due to \citeauthor{Vardi_1985}~\cite{Vardi_1985}, but the treatment of the relaxed inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2} is adapted from \citeauthor{Powell_1978a}~\cite {Powell_1978a}.
+
+We now explain why it can be understood as a composite-step approach.
+Under some assumptions (e.g., \gls{licq} at~$\iter[k]$, see \cref{def:constraint-qualifications}), we can take~$\alpha \in [0, 1]$ so that the system
+\begin{subequations}
+    \label{eq:vardi-normal-step}
+    \begin{empheq}[left=\empheqlbrace]{alignat=2}
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,        && \quad \text{if~$i \in \iub \setminus \act(\iter[k])$,} \label{eq:vardi-normal-step-1}\\
+        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \iub \cap \act(\iter[k])$,}\\
+        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \ieq$,}
+    \end{empheq}
+\end{subequations}
+admits a solution whose norm is at most~$\rad[k]$, which ensures that~\cref{eq:sqp-subproblem-vardi} is feasible.
+Define the normal step~$\nstep[k]$ as the least-norm solution to this system, which then satisfies~$\norm{\nstep[k]} \le \rad[k]$, and define~$\tstep[k]$ as a solution to~\cref{eq:tangential-subproblem}.
+We point out that the choice of~$\alpha$ in the Vardi approach is important, and we refer to~\cite[\S~15.4.1]{Conn_Gould_Toint_2000} for more discussions.
+In this setting, the subproblem~\cref{eq:vardi-composite-step}, to which~$\nstep[k] + \tstep[k]$ is a solution, turns out to the be exactly~\cref{eq:sqp-subproblem-vardi}, as specified by the following proposition.
 
 \begin{proposition}
     Let~$\nstep[k]$ be the least-norm solution to~\cref{eq:vardi-normal-step}.
@@ -739,68 +756,18 @@ which turns out to the be exactly~\cref{eq:sqp-subproblem-vardi}, as specified b
     The proof is complete.
 \end{proof}
 
-We point out that the choice of~$\alpha$ in the Vardi approach is important, and we refer to~\cite[\S~15.4.1]{Conn_Gould_Toint_2000} for more discussions.
-
-\subsubsection{Byrd-Omojokun approach}
-
-The Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989} is very similar to the Vardi approach.
-It defines the normal step~$\nstep[k]$ by solving
-\begin{subequations}
-    \label{eq:byrd-omojokun}
-    \begin{align}
-        \min        & \quad \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \label{eq:byrd-omojokun-obj}\\
-        \text{s.t.} & \quad \norm{\step} \le \zeta \rad[k],\\
-                    & \quad \step \in \R^n, \nonumber
-    \end{align}
-\end{subequations}
-where~$\zeta \in (0, 1]$.
-Further, it sets the tangential step~$\tstep[k]$ to a solution to~\cref{eq:tangential-subproblem}.
-Finally, the Byrd-Omojokun composite step is~$\step[k] = \nstep[k] + \tstep[k]$.
-Note that~$\zeta$ should not be set to one as otherwise, the feasible region of~\cref{eq:tangential-subproblem} might be a singleton.
-In practice, we can take for example~$\zeta = 0.8$ (see, e.g.,~\cite[Eq.~(18.45)]{Nocedal_Wright_2006}).
-
-% Note that this method is very close to the Vardi approach, but they are not equivalent.
-% We remark that if~$\zeta$ is set such that the norm of the normal step of the Vardi approach is~$\zeta \rad[k]$, then the Byrd-Omojokun usually provides a normal step with a greater decrease of the constraint violation.
-% Therefore, in general, practical implementations of the trust-region \gls{sqp} framework prefer to employ the Byrd-Omojokun approach over the Vardi approach.
-
-\subsubsection{\Glsfmtlong{cdt} approach}
-
-The last common composite-step approach is referred to as the \gls{cdt} approach~\cite{Celis_1985,Celis_Dennis_Tapia_1985}.
-It consists in lumping the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
-\begin{empheq}[left=\empheqlbrace]{alignat*=2}
-    & \norm{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step} \le \delta,        && \quad \text{if~$i \in \ieq$,}\\
-    & \norm{\posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}} \le \delta,  && \quad \text{if~$i \in \iub$,}
-\end{empheq}
-for some~$\delta \ge 0$, chosen so that the \gls{sqp} subproblem becomes feasible.
-We first select a normal step~$\nstep[k]$ in the trust region that improves the feasibility, and we then set
-\begin{equation*}
-    \delta = \max \set{\norm{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]}, \norm{\posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]}}}.
-\end{equation*}
-Unlike the two former approaches, the tangential step of the \gls{cdt} approach does not attempt to maintain or decrease the violation of each constraint, but rather global violation of all the constraints simultaneously.
-The advantage of the \gls{cdt} approach over the Vardi and the Byrd-Omojokun approaches is that the feasible region of the tangential subproblem is usually wider, and hence, a larger reduction in the objective function is usually obtained.
-However, solving such a subproblem in practice is very complicated, because the linear constraints become elliptic.
-
-\subsubsection{A relation between the Vardi and the Byrd-Omojokun approach}
-
 We now highlight a relation between the Vardi approach and Byrd-Omojokun approach when~$\iub = \emptyset$.
-In such a case, the problem~\cref{eq:problem-cobyqa-sqp} can be reformulated as
-\begin{align*}
-    \min        & \quad \obj(\iter)\\
-    \text{s.t.} & \quad h(\iter) = 0,\\
-                & \quad \iter \in \R^n,
-\end{align*}
-where~$h : \R^n \to \R^m$.
-Given~$\alpha \in [0, 1]$ such that~$\alpha h(\iter[k]) + \nabla h(\iter[k]) d = 0$ admits a solution whose norm is at most~$\rad[k]$, the above-mentioned normal step of the Vardi approach is
+In such a case, the above-mentioned normal step of the Vardi approach is
 \begin{equation}
     \label{eq:vardi-equality}
-    \nstep[k] = \argmin_{\step \in \R^n} \set{\norm{\step} : \alpha h(\iter[k]) + \nabla h(\iter[k]) \step = 0} = -\alpha \nabla h(\iter[k])^{\dagger} h(\iter[k]),
+    \nstep[k] = \argmin_{\step \in \R^n} \set{\norm{\step} : \alpha b^k + A^k \step = 0} = -\alpha (A^k)^{\dagger} b,
 \end{equation}
-where~$\nabla h(\iter[k])^{\dagger}$ denotes the Moore-Penrose pseudoinverse of~$\nabla h(\iter[k])$.
-Moreover, the above-mentioned normal step of the Byrd-Omojokun approach solves 
+with~$b^k \eqdef [\con{i}(\iter[k])]_{i \in \ieq}$ and~$A^k \eqdef [\nabla \con{i}(\iter[k])^{\T}]_{i \in \ieq}$, and where~$(A^k)^{\dagger}$ denotes the Moore-Penrose pseudoinverse of~$A^k$.
+Under these notations, the above-mentioned normal step of the Byrd-Omojokun approach solves 
 \begin{subequations}
     \label{eq:byrd-omojokun-equality}
     \begin{align}
-        \min        & \quad \norm{h(\iter[k]) + \nabla h(\iter[k]) \step} \label{eq:byrd-omojokun-equality-obj}\\
+        \min        & \quad \norm{b^k + A^k \step} \label{eq:byrd-omojokun-equality-obj}\\
         \text{s.t.} & \quad \norm{\step} \le \zeta \rad[k],\\
                     & \quad \step \in \R^n,
     \end{align}
@@ -809,19 +776,59 @@ As shown by \cref{prop:vardi-byrd-omojokun}, the above-mentioned normal step of 
 
 \begin{proposition}
     \label{prop:vardi-byrd-omojokun}
-    Let~$\nstep[k]$ be the normal step~\cref{eq:vardi-equality}, and let~$\step[\ast]$ be the least-norm global unconstrained minimizer of~\cref{eq:byrd-omojokun-equality-obj}.
+    Let~$\nstep[k]$ be the normal step~\cref{eq:vardi-equality} in the Vardi approach, and let~$\step[\ast]$ be the least-norm global unconstrained minimizer of~\cref{eq:byrd-omojokun-equality-obj} in the Byrd-Omojokun approach.
     The step~$\nstep[k]$ solves
     \begin{equation*}
-        \min_{d \in \R^n} \set{\norm{h(\iter[k]) + \nabla h(\iter[k]) \step} : \step = t \step[\ast], ~ t \ge 0, ~ \norm{d} \le \zeta \rad[k]},
+        \min_{d \in \R^n} \set{\norm{b^k + A^k \step} : \step = t \step[\ast], ~ t \ge 0, ~ \norm{d} \le \zeta \rad[k]},
     \end{equation*}
     if~$\zeta = \norm{\nstep[k]} / \rad[k]$.
+    % It is in fact the least-norm solution.
 \end{proposition}
 
 \begin{proof}
-    Remark that~$\step[\ast] = -\nabla h(\iter[k])^{\dagger} h(\iter[k])$, so that we only need to show that
+    Remark that~$\step[\ast] = -(A^k)^{\dagger} b$, so that we only need to show that
     \begin{equation}
         \label{eq:vardi-byrd-omojokun-proof}
-        \alpha = \argmin_{t \in [0, \alpha]} \norm{h(\iter[k]) - t\nabla h(\iter[k]) \nabla h(\iter[k])^{\dagger} h(\iter[k])}.
+        \alpha \in \argmin_{t \in [0, \alpha]} \norm{b^k - t A^k (A^k)^{\dagger} b^k}.
     \end{equation}
     This is clear because~$\alpha \le 1$ and the objective function in~\cref{eq:vardi-byrd-omojokun-proof} is decreasing.
 \end{proof}
+
+% Note that this method is very close to the Vardi approach, but they are not equivalent.
+% We remark that if~$\zeta$ is set such that the norm of the normal step of the Vardi approach is~$\zeta \rad[k]$, then the Byrd-Omojokun usually provides a normal step with a greater decrease of the constraint violation.
+% Therefore, in general, practical implementations of the trust-region \gls{sqp} framework prefer to employ the Byrd-Omojokun approach over the Vardi approach.
+
+\subsubsection{\Glsfmtlong{cdt} (\Glsfmtshort{cdt}) approach}
+
+The last common composite-step approach is referred to as the \gls{cdt} approach~\cite{Celis_1985,Celis_Dennis_Tapia_1985}.
+It consists in lumping the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
+\begin{empheq}[left=\empheqlbrace]{alignat*=2}
+    & \norm{\posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}} \le \delta, && \quad \text{if~$i \in \iub$,}\\
+    & \norm{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step} \le \delta,        && \quad \text{if~$i \in \ieq$,}
+\end{empheq}
+for some~$\delta \ge 0$, chosen so that the trust-region subproblem after replacement, i.e.,
+\begin{subequations}
+    \label{eq:cdt-composite-step}
+    \begin{align}
+        \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
+        \text{s.t.} & \quad \norm{\posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}} \le \delta, ~ i \in \iub, \label{eq:cdt-composite-step-ub}\\
+                    & \quad \norm{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step} \le \delta, ~ i \in \ieq, \label{eq:cdt-composite-step-eq}\\
+                    & \quad \norm{\step} \le \rad[k],\\
+                    & \quad \step \in \R^n,
+    \end{align}
+\end{subequations}
+becomes feasible.
+The method selects the scalar~$\delta$ in a composite approach, as follows.
+It first select a normal step~$\nstep[k]$ by solving (approximately) the problem~\cref{eq:byrd-omojokun} for some~$\zeta \in (0, 1]$.
+Note that this problem can be for example solved as in the Byrd-Omojokun approach or solved along the Newton's direction as in the Vardi approach.
+Once such a normal is defined, it sets
+\begin{equation*}
+    \delta = \max \set{\norm{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]}, \norm{\posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]}}},
+\end{equation*}
+and solves~\cref{eq:cdt-composite-step}.
+We do not explicit directly the tangential step, but this can be done by applying the change of variable~$\tstep[k] = \step[k] - \nstep[k]$ to~\cref{eq:cdt-composite-step}.
+
+Unlike the two former approaches, the tangential step of the \gls{cdt} approach does not attempt to maintain or decrease the violation of each constraint, but rather the global violation of all the constraints simultaneously.
+The advantage of the \gls{cdt} approach over the Vardi and the Byrd-Omojokun approaches is that the feasible region of the tangential subproblem is usually wider, and hence, a larger reduction in the objective function is usually obtained.
+However, solving such a subproblem in practice is challenging, because of the constraints~\cref{eq:cdt-composite-step-ub,eq:cdt-composite-step-eq}.
+Such a problem is however interesting and well-studied (see, e.g.,~\cite{Chen_Yuan_1999,Ai_Zhang_2009,Chen_Yuan_2009,Bienstock_2016}).
