@@ -93,3 +93,11 @@ This reduces the computational complexity of evaluating all the models, and it a
 \section{Merit function and update of the penalty parameters}
 
 \section{Summary of the method}
+
+\begin{itemize}
+    \item Theoretically, it is possible to evaluate the composite step directly.
+    However, the methods used to solve the subproblems usually require the trust-region center to be feasible, which is not the case for the composite subproblem.
+    Therefore, we modify the tangential subproblem to make the origin the trust-region center, which is then feasible.
+    Therefore, we build explicitely the tangential step.
+    See Trust-Region Methods, p.~660.
+\end{itemize}

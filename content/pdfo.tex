@@ -18,6 +18,56 @@
 \section{Overview of the Powell's \glsentrylong{dfo} methods}
 \label{sec:powell}
 
+Between~\citeyear{Powell_1994} and~\citeyear{Powell_2015}, Powell developed five solvers to tackle unconstrained and constrained problems without using derivatives,
+namely~\gls{cobyla}~\cite{Powell_1994}, \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}~\cite{Powell_2015}.
+These solvers were implemented by Powell, with particular attention paid to their numerical stability and algebraic complexity.
+Renowned for their robustness and efficiency, these solvers are extremely appealing to practitioners and widely used in applications, for instance, aeronautical engineering~\cite{Gallard_Etal_2018}, astronomy~\cite{Biviano_Etal_2013,Mamon_Biviano_Boue_2013}, computer vision~\cite{Izadinia_Shan_Seitz_2017}, robotics~\cite{Mombaur_Truong_Laumond_2010}, and statistics~\cite{Bates_Etal_2015}.
+
+However, Powell coded in Fortran 77, an old-fashion language that damps the enthusiasm of many users to exploit these solvers in their projects.
+There have been a considerable demand from both researchers and practitioners for the availability of Powell's solvers in more user-friendly languages such as Python, MATLAB, and Julia.
+Our aim is to wrap Powell's Fortran code into a package named \gls{pdfo}, which enables users of such languages to call Powell's solvers without any need of dealing with the Fortran code.
+For each supported language, \gls{pdfo} provides a simple subroutine that can invoke one of Powell's solvers according to the user's request (if any) or according to the type of the problem to solve. The current release (version 1.2) of \gls{pdfo} supports Python and ATLAB, with more languages to be covered in the future.
+The signature of the Python subroutine is consistent with the \texttt{minimize} function of the SciPy optimization library~\cite{Virtanen_Etal_2020};
+the signature of the MATLAB subroutine is consistent with the \texttt{fmincon} function of the MATLAB Optization Toolbox.
+The package is cross-platform, available on Linux, macOS, and Microsoft Windows at once.
+
+\Gls{pdfo} is not the first attempt to facilitate the usage of Powell's solvers in languages other than Fortran.
+Various efforts have been made in this direction in response to the continual demands from both researchers and practitioners: Py-BOBYQA~\cite{Cartis_Etal_2019} provides a Python implementation of \gls{bobyqa}; NLopt~\cite{Johnson_2019} includes multi-language interfaces for \gls{cobyla}, \gls{newuoa}, and \gls{bobyqa}; minqa~\cite{Bates_Etal_2014} wraps \gls{uobyqa}, \gls{newuoa}, and \gls{bobyqa} in R; SciPy~\cite{Virtanen_Etal_2020} makes \gls{cobyla} available in Python under its optimization library. Nevertheless, \gls{pdfo} has several features that distinguishes itself from others.
+
+% \begin{enumerate}
+%     \item \emph{Comprehensiveness.}
+%     To the best of our knowledge, \gls{pdfo} is the only package that provides all of \gls{cobyla}, \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa} with a uniform interface.
+%     In addition to homogenizing the usage, such an interface eases the comparison between these solvers in case multiple of them are able to tackle a given problem.
+%     Doing so, we may gain insights that cannot be obtained otherwise into the behavior of the solvers, as will be illustrated in~\cref{sec:fake}.
+
+%     \item \emph{Solver selection.}
+%     When using \gls{pdfo}, the user can specifically call one of Powell's solvers; nevertheless, if the user does not specify any solver, \gls{pdfo} will select automatically a solver according to the given problem.
+%     The selection takes into consideration the performance of the solvers on the \cutest~\cite{Gould_Orban_Toint_2015} problem set.
+%     Interestingly, it turns out that the solver with the best performance may not be the most intuitive one.
+%     For example, \gls{newuoa} is not always the best choice for solving an unconstrained problem.
+%     This will be elaborated in~\cref{sec:fake}
+
+%     \item \emph{Code patching.}
+%     During the development of \gls{pdfo}, we spotted in the original \fortran\ code some bugs, which led to infinite cycling or segmentation faults on some ill-conditioned problems.
+%     The bugs have been patched in \gls{pdfo}.
+%     Nevertheless, we provide an option that can enforce the package to use the original code of Powell without the patches, which is not recommended except for research.
+%     In addition, \gls{pdfo} provides \gls{cobyla} in double precision, whereas Powell used single precision when he implemented it in the 1990s. See~\cref{sec:fake} for details.
+
+%     \item \emph{Fault tolerance.}
+%     \gls{pdfo} takes care of failures in the evaluation of the objective or constraint functions when NaN or infinite values are returned.
+%     In case of such failures, \gls{pdfo} will not exit but try to progress.
+%     Moreover, \gls{pdfo} ensures that the returned solution is not a point where the evaluation fails, while the original code of Powell may return a point whose objective function value is numerically NaN. This is explained in~\cref{sec:fake}.
+
+%     \item \emph{Problem preprocessing.}
+%     \gls{pdfo} preprocesses the inputs to simplify the problem and reformulate it to meet the requirements of Powell's solvers.
+%     For instance, if the problem has linear constraints~$A x = b$, \gls{pdfo} can rewrite it into a problem on the null space of~$A$, eliminating such constraints and reducing the dimension.
+%     Another example is that the starting point of a linearly-constrained problem is projected to the feasible region, because \gls{lincoa} needs a feasible starting point to work properly.
+
+%     \item \emph{Additional options.}
+%     \gls{pdfo} includes options for the user to control the solvers in some manners that are useful in practice.
+%     For example, the user can request \gls{pdfo} to scale the problem according to the bounds of the variables before solving it.
+% \end{enumerate}
+
 \begin{itemize}
     \item Conjugate direction and~$B$-conjugate direction methods~\cite{Powell_1964,Powell_1975a}
 \end{itemize}
