@@ -66,6 +66,7 @@ The space in which~$\objm$ lies in this section is either~$\lpoly$ or~$\qpoly$.
 Moreover, we assume in this section that number of interpolation points~$m$ equals the dimension of the chosen space, i.e., either~$n + 1$ or~$(n + 1)(n + 2) / 2$, respectively.
 
 \subsection{Poisedness of interpolation sets}
+\label{subsec:poisedness}
 
 Before studying properties of multivariate interpolation, we must introduce the following notion of poisedness.
 
@@ -387,6 +388,7 @@ The variational problem~\cref{eq:symmetric-broyden-models} is a derivative-free 
 Therefore, following \citeauthor{Powell_2013}~\cite{Powell_2013}, we will also refer to the minimum Frobenius norm update as the \emph{derivative-free symmetric Broyden update}.
 
 \subsection{Implementation in \glsfmtlong{dfo} methods}
+\label{subsec:implementation-symmetric-broyden-update}
 
 We consider in this section a model-based \gls{dfo} algorithm that builds models by the derivative-free symmetric Broyden update, and we summarize the implementation of this update, as proposed by \citeauthor{Powell_2004b}~\cite{Powell_2004b,Powell_2004c}.
 The implementation can straightforwardly be adapted to construct minimum Frobenius norm models.

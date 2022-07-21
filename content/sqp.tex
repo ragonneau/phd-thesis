@@ -689,7 +689,7 @@ The composite step~$\step[k] = \nstep[k] + \tstep[k]$ then solves
                     & \quad \step \in \R^n, \nonumber
     \end{align}
 \end{subequations}
-Note that~$\zeta$ should not be set to one as otherwise, the feasible region of~\cref{eq:tangential-subproblem} might be a singleton.
+Note that~$\zeta$ should not be set to one as otherwise, the feasible region of~\cref{eq:tangential-subproblem-original} might be a singleton.
 In practice, we can take for example~$\zeta = 0.8$ (see, e.g.,~\cite[Eq.~(18.45)]{Nocedal_Wright_2006}).
 
 \subsubsection{Vardi approach}
@@ -801,7 +801,7 @@ In the general case, we let the normal step~$\nstep[k]$ solve
 \begin{subequations}
     \label{eq:byrd-omojokun}
     \begin{align}
-        \min        & \quad \sum_{i \in \ieq} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2\\
+        \min        & \quad \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2\\
         \text{s.t.} & \quad \norm{\step} \le \zeta \rad[k],\\
                     & \quad \step \in \R^n, \nonumber
     \end{align}

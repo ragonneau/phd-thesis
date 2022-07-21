@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/07/18 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/07/20 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifmeeting
@@ -109,6 +109,7 @@
 \titlespacing*{\chapter}{0pt}{0pt}{3em}
 \titleformat{\section}{\normalfont\regularheader\Large}{\thesection}{1pc}{\color{NavyBlue}#1}[\phantomsection]
 \titleformat{\subsection}{\normalfont\regularheader\large}{\thesubsection}{1pc}{\color{NavyBlue}#1}[\phantomsection]
+\titleformat{\paragraph}[runin]{\normalfont\regularheader}{}{1pc}{\color{NavyBlue}#1}[\phantomsection]
 
 % Customize list environments
 \RequirePackage{enumitem}
