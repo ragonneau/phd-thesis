@@ -61,7 +61,6 @@ See~\cref{subsec:bug-corrections} for details.
 \Gls{pdfo} takes care of failures in the evaluation of the objective or constraint functions when NaN or infinite values are returned.
 In case of such failures, \gls{pdfo} will not exit but try to progress.
 Moreover, \gls{pdfo} ensures that the returned solution is not a point where the evaluation fails, while the original code of Powell may return a point whose objective function value is numerically NaN.
-This is explained in~\cref{subsec:abnormal-values}.
 
 \paragraph{Problem preprocessing}
 
@@ -213,20 +212,276 @@ However, the trust-region subproblem solver of \gls{bobyqa} always respects the 
 
 \section{Core features of the \glsfmttext{pdfo} package}
 
+Powell implemented all five methods in Fortran, in a very robust and efficient manner.
+However, less and less people are using Fortran in our present-day world, and Fortran has quite old standards.
+The authors developed therefore \gls{pdfo}\footnote{Available at \url{https://www.pdfo.net/}.}, named after \emph{\glsdesc{pdfo}}.
+It is cross-platform package providing MATLAB and Python interfaces for using all five Powell's \gls{dfo} solvers, available for Linux, macOS and Windows.
+\Gls{pdfo} does not reimplement Powell's solvers, but rather links the modern languages MATLAB and Python with the Fortran source code.
+At a low-level, it uses F2PY~\cite{Peterson_2009} to interface Python with Fortran, and MEX to interface it with MATLAB.
+
+\subsection{Main structure of the package}
+
+The philosophy of \gls{pdfo} is simple: providing to users a single function to solve a \gls{dfo} problem.
+It takes for input an optimization problem of the form
+\begin{subequations}
+    \label{eq:pdfo}
+    \begin{align}
+        \min        & \quad \obj(\iter)\\
+        \text{s.t.} & \quad \xl \le \iter \le \xu, \label{eq:pdfo-bds}\\
+                    & \quad A_{\iub} \iter \le b _{\iub}, \label{eq:pdfo-lub}\\
+                    & \quad A_{\ieq} \iter = b_{\ieq}, \label{eq:pdfo-leq}\\
+                    & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:pdfo-nlub}\\
+                    & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:pdfo-nleq}\\
+    \end{align}
+\end{subequations}
+where~$\xl, \xu \in (\R \cup \set{\pm \infty})^n$,~$A_{\iub}$ and~$A_{\ieq}$ are real matrices,~$b _{\iub}$ and~$b _{\ieq}$ are real vectors, and~$\con{i}$, for~$i \in \iub \cup \ieq$, is a real-valued function.
+The problem~\cref{eq:pdfo} covers every possible case, since all matrices, vectors and functions can be set to zero from a mathematical viewpoint and \gls{pdfo} does not require the constraints~\cref{eq:pdfo-bds,eq:pdfo-lub,eq:pdfo-leq,eq:pdfo-nlub,eq:pdfo-nleq} to be provided.
+A broad example of use is shown in MATLAB in \cref{lst:minimum-example-matlab} and in Python in \cref{lst:minimum-example-python}, where variable names have clear correspondances with the problem~\cref{eq:pdfo}.
+For both MATLAB and Python, \gls{pdfo} returns the best point calculated (evaluated via a merit function), and (optionally) the corresponding optimal value, together with different fields describing the backend calculations and their behaviors.
+
+\begin{lstmatlab}[%
+    caption=An elementary example of \gls{pdfo} in MATLAB,
+    label=lst:minimum-example-matlab,
+]
+    x = pdfo(@fun, x0, A, b, Aeq, beq, lb, ub, @nonlcon);
+
+    function fx = fun(x)
+    ...
+    return
+    end
+
+    function [c, ceq] = nonlcon(x)
+    ...
+    return
+    end
+\end{lstmatlab}
+
+\begin{lstpython}[%
+    caption=An elementary example of \gls{pdfo} in Python,
+    label=lst:minimum-example-python,
+]
+    import numpy as np
+    from pdfo import *
+
+    def fun(x):
+        return ...
+    
+    def cub(x):
+        return ...
+    
+    def ceq(x):
+        return ...
+    
+    bounds = Bounds(lb, ub)
+    constraints = [
+        LinearConstraint(A, -np.inf, b),
+        LinearConstraint(Aeq, beq, beq),
+        NonlinearConstraint(cub, -np.inf, 0.0),
+        NonlinearConstraint(ceq, 0.0, 0.0),
+    ]
+
+    res = pdfo(fun, x0, bounds=bounds, constraints=constraints)
+\end{lstpython}
+
+\subsection{Problem preprocessing}
+
+The package \gls{pdfo} preprocesses the arguments provided by the user, detects the type of the problem and then invokes the Powell's solver that match the best the given problem.
+The initial preprocessing of the arguments includes a handling of their internal types together with some programming-related procedures to allow as much freedom in the problem definition as possible, to make the use of \gls{pdfo} as easy as possible.
+More importantly, \gls{pdfo} preprocesses the constraints provided, to generate a problem as simple as possible.
+For instance, all linear constraints in~\cref{eq:pdfo-lub,eq:pdfo-leq} that are satisfied for every point in~$\R^n$ are removed and obvious infeasibility in the constraints~\cref{eq:pdfo-bds,eq:pdfo-lub,eq:pdfo-leq} are detected.
+Another noticeable preprocessing of the constraints made by \gls{pdfo} is the treatment of the linear equality constraints~\cref{eq:pdfo-leq}.
+As long as these constraints are consistent, they define a subspace of~$\R^n$ of lower dimension, and \gls{pdfo} takes into account this property to generate a new~$(n - \rank A_{\ieq})$-dimensional problem that is exactly equivalent to~\cref{eq:pdfo}, using the QR factorization of~$A_{\ieq}$.
+
+A crucial point of \gls{bobyqa} and \gls{lincoa} is that they require the initial guess to be feasible, so that \gls{pdfo} attempts to project the provided initial guess onto the feasible set (\gls{lincoa} would otherwise increase the coefficients of the right-hand side of the linear constraints to make the initial guess feasible).
+
 \subsection{Automatic selection of the solver}
 \label{subsec:solver-selection}
 
-\subsection{Meeting the requirements of the source code}
-
-\section{Implementation details of the \glsfmttext{pdfo} package}
-
-\subsection{Interfacing Fortran with Python and MATLAB}
-
-\subsection{Handling abnormal values in the problems}
-\label{subsec:abnormal-values}
+Another main feature of \gls{pdfo} is its solver selection mechanism.
+When a constrained problem is received, the selected solver is the one corresponding to the most general constraint provided.
+For example, when \gls{pdfo} receives a problem that admits both bound constraints~\cref{eq:pdfo-bds} and linear constraints~\cref{eq:pdfo-lub,eq:pdfo-leq}, \gls{lincoa} will be chosen.
+It is possible on some examples that \gls{lincoa} gives better results than \gls{bobyqa} on bound-constrained problems.
+This is likely because \gls{bobyqa} is a feasible method, while \gls{lincoa} may visit infeasible points (but on an engineering problem, these points may be unassessable).
+At last, when \gls{pdfo} receives an unconstrained problem, it will attempt to solve it with \gls{uobyqa} when its size is reasonable ($2 \le n \le 8$, say), and with \gls{newuoa} otherwise.
+We note that \gls{uobyqa} cannot handle problem with univariate objective function.
 
 \subsection{Bug corrections in the Fortran source files}
 \label{subsec:bug-corrections}
 
+The authors wanted to keep the source code of all solvers in its original states, but introduced some minor revisions and corrections.
+A new parameter has been added to allow each solver to exit whenever a target value has been reached, and a flag of termination has been included in the returned values.
+A revision has also been made to the source code of \gls{cobyla}.
+In the original version, trial points may be discarded prematurely, before the update of the penalty coefficient of the merit function.
+This has been revised in \gls{pdfo}.
+The authors also detected some minor bugs on failure exits, for which some returned values might not have been updated.
+Although very rarely, \gls{lincoa} might moreover encounter infinite cycling, even on well-conditioned problems.
+These bugs have been patched.
+\Gls{pdfo} also handle more carefully ill-conditioned problems, for which NaN values (resulting, e.g., from a division by zero) may occur.
+These values might cause infinite cycling or segmentation faults in the original code.
+In the early stage of \gls{pdfo}, such errors occurred on the CUTEst problems~\cite{Gould_Orban_Toint_2015} DANWOODLS or GAUSS1LS for example.
+NaN values detected in the objective or constraint functions are managed using extreme barriers, but NaN values encountered in the variables internal to the Fortran code result in early exit.
+Besides, when interfacing Fortran with MATLAB and Python, rounding errors occur in the problem's variables, which led in extreme cases to failures.
+For example, when using \gls{pdfo}, the user may provided initial and final trust-region radii~$\rad[0]$ and~$\rad[\infty]$ (respectively set to~$1$ and~$10^{-6}$ by default).
+If these values are chosen to be very close, although the condition~$\rad[0] \le \rad[\infty]$ is satisfied in the MATLAB or Python code, the Fortran code may receive perturbed values with~$\rad[0] > \rad[\infty]$, leading to failure exit in the original code.
+Therefore, the conditions required by Powell are ensured in the Fortran code directly.
+
 \section{Numerical experiments}
 \label{sec:pdfo-experiments}
+
+\subsection{Comparison on the CUTEst library}
+
+We make a comparison of the \gls{pdfo}'s solvers on different problems from the CUTEst library~\cite{Gould_Orban_Toint_2015}.
+Performance profiles~\cite{Dolan_More_2002,More_Wild_2009} on unconstrained problem of dimensions at most~$10$ and~$50$ are provided respectively in \cref{fig:ppu-10,fig:ppu-50}.
+For details on performance profiles, see \cref{sec:benchmarking-tools}.
+We can observe an expected behavior; \gls{uobyqa} performs better on small problems than all the others, as it is based on quadratic models obtained by fully-determined interpolation, and the performances of \gls{cobyla} decrease with the dimension rise, as it uses only linear models to approximate locally the problem.
+
+\begin{figure}[ht]
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"NEWUOA","BOBYQA","LINCOA","COBYLA","UOBYQA"}}{plain-1-10-perf-newuoa-bobyqa-lincoa-cobyla-uobyqa.csv}{4}
+        \caption{Dimension at most~$10$}
+        \label{fig:ppu-10}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"NEWUOA","BOBYQA","LINCOA","COBYLA"}}{plain-1-50-perf-newuoa-bobyqa-lincoa-cobyla-uobyqa.csv}{4}
+        \caption{Dimension at most~$50$}
+        \label{fig:ppu-50}
+    \end{subfigure}
+    \caption{Performance profiles on unconstrained problems with~$\tau = 10^{-4}$}
+\end{figure}
+
+Consider however the following experiment.
+Given a smooth objective function~$\obj$, assume that the value received by the solvers is
+\begin{equation*}
+    \tilde{\obj}(\iter) \eqdef [1 + \epsilon(\iter)] \obj(\iter),
+\end{equation*}
+where~$\epsilon(x)$ is a random variable that follows a standard normal distribution~$N(0, \sigma^2)$, and~$\sigma \ge 0$ is a given noise level.
+\Cref{fig:ppun-50} presents the performance profiles on the same unconstrained problems of dimension at most~$50$ from the CUTEst library as the previous experiment by randomizing the objective functions as~$\tilde{\obj}$ with~$\sigma = 10^{-2}$.
+Because of the stochastic behavior of the experiment, the convergence test~\cref{eq:convergence-test-profiles-unconstrained} needs to be adapted.
+Each problem is solved~$10$ times by each solver, the objective value considered at each iteration is the average value for all runs, and the optimal value of a given problem is decided as follows.
+It is the least value reached by the solvers for every run on the noised variation of the problem and by all the solvers on the noise-free original problem.
+In doing so, one should expect a decrease of the proportion of problems solved when compared with the previous experiment.
+
+\begin{figure}[ht]
+    \centering
+    \drawperformanceprofiles{{"NEWUOA","BOBYQA","LINCOA","COBYLA"}}{noisy-1-50-2-perf-newuoa-bobyqa-lincoa-cobyla.csv}{1}
+    \caption{Performance profiles on noisy problems with~$\tau = 10^{-1}$.}
+    \label{fig:ppun-50}
+\end{figure}
+
+We observe however a peculiar behavior of \gls{cobyla} on this experiment, as it defeats all other solvers on unconstrained problems even though it is not defined for such kind of problem, and uses the simplest models.
+It seems that the linear models of \gls{cobyla} are, in some sense, less sensitive to Gaussian noise, but the authors did not derive a theory for this behavior as of today.
+
+\subsection{An example of hyperparameter tuning problem}
+
+We consider now the more practical problem of the hyperparameter tuning of a \gls{svm}.
+The model we consider is a~$C$-SVM~\cite{Chang_Lin_2011} for binary classification problems with an \gls{rbf} kernel, admitting two hyperparameters: a regularization parameter~$C > 0$ and a kernel parameter~$\gamma > 0$.
+We want to compare the performance of \gls{pdfo} with a prominent Bayesian optimization method and a \gls{rs} method.
+To this end, we use the Python package hyperopt~\cite{Bergstra_Yamins_Cox_2013} for solving the optimization problems, which provides both the \gls{tpe} and the \gls{rs} methods.
+Our experiments are based on binary classifications problems from the LIBSVM datasets\footnote{Available at \url{https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/}.}.
+A description of the datasets employed is provided in \cref{tab:htdata}.
+
+\begin{table}[ht]
+    \caption{Considered LIBSVM datasets description}
+    \label{tab:htdata}
+    \centering
+    \begin{tabular}{ccS[table-parse-only]S[table-parse-only]}
+        \toprule
+        Dataset~$\mathcal{D}$   & Attribute characteristic  & {Dimension~$d$}   & {Dataset size}\\
+        \midrule
+        splice                  & $[-1, 1]$, scaled         & 60                & 1000\\
+        svmguide1               & $[-1, 1]$, scaled         & 4                 & 3088\\
+        svmguide3               & $[-1, 1]$, scaled         & 21                & 1242\\
+        ijcnn1                  & $[-1, 1]$                 & 22                & 49990\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The problem we consider is as follows.
+A dataset~$\mathcal{D} \subseteq [-1, 1]^d$ from \cref{tab:htdata} is randomly split into a training dataset~$\mathcal{T}_1$, admitting approximately~$70\%$ of the data, and a testing dataset~$\mathcal{T}_2$, with~$\mathcal{D} = \mathcal{T}_1 \cup \mathcal{T}_2$.
+We want to maximize the~$5$-fold \gls{auc} validation score of the \gls{svm} trained on~$\mathcal{T}_1$ with respect to the hyperparameters~$C$ and~$\gamma$.
+The \gls{auc} score, a real number in~$[0, 1]$, measures the area underneath the \gls{roc} curve, a graph representing the performance of a binary classification model.
+This curve plots the true positive classification rate with respect to the false positive classification rate at different classification thresholds.
+For details on the~$5$-fold cross-validation of an \gls{auc}, see \cref{subsec:machine-learning}.
+Such an experiment lies in the \gls{dfo} context.
+
+The numerical results for this experiment are provided in \cref{tab:splice,tab:svmguide1,tab:svmguide3,tab:ijcnn1}.
+
+\begin{table}[!ht]
+    \caption{Hyperparameter tuning problem on the dataset \enquote{splice}}
+    \label{tab:splice}
+    \centering
+    \begin{tabular}{cS[table-parse-only]SSS}
+        \toprule
+        solver      & {No.\ eval.}  & {AUC Score ($10^{-1}$)}   & {Accuracy ($10^{-1}$)}    & {Execution time (\si{\second})}\\
+        \midrule
+        \gls{pdfo}  & 65            & 9.568                     & 9.933                     & 3.697\\
+        \gls{rs}    & 100           & 6.409                     & 5.300                     & 4.635\\
+        \gls{rs}    & 200           & 7.880                     & 5.300                     & 9.244\\
+        \gls{rs}    & 300           & 7.880                     & 5.300                     & 13.763\\
+        \gls{tpe}   & 100           & 5.000                     & 5.033                     & 4.889\\
+        \gls{tpe}   & 300           & 7.736                     & 5.300                     & 15.726\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+    \caption{Hyperparameter tuning problem on the dataset \enquote{svmguide1}}
+    \label{tab:svmguide1}
+    \centering
+    \begin{tabular}{cS[table-parse-only]SSS}
+        \toprule
+        Solver      & {No.\ eval.}  & {AUC Score ($10^{-1}$)}   & {Accuracy ($10^{-1}$)}    & {Execution time (\si{\second})}\\
+        \midrule
+        \gls{pdfo}  & 68            & 9.966                     & 9.730                     & 4.906\\
+        \gls{rs}    & 100           & 9.966                     & 9.676                     & 16.178\\
+        \gls{rs}    & 200           & 9.966                     & 9.676                     & 32.914\\
+        \gls{rs}    & 300           & 9.966                     & 9.676                     & 48.404\\
+        \gls{tpe}   & 100           & 9.966                     & 9.720                     & 13.057\\
+        \gls{tpe}   & 300           & 9.966                     & 9.720                     & 33.392\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+    \caption{Hyperparameter tuning problem on the dataset \enquote{svmguide3}}
+    \label{tab:svmguide3}
+    \centering
+    \begin{tabular}{cS[table-parse-only]SSS}
+        \toprule
+        Solver      & {No.\ eval.}  & {AUC Score ($10^{-1}$)}   & {Accuracy ($10^{-1}$)}    & {Execution time (\si{\second})}\\
+        \midrule
+        \gls{pdfo}  & 68            & 8.241                     & 8.016                     & 2.793\\
+        \gls{rs}    & 100           & 8.025                     & 7.882                     & 4.233\\
+        \gls{rs}    & 200           & 8.141                     & 7.775                     & 8.308\\
+        \gls{rs}    & 300           & 8.141                     & 7.775                     & 12.414\\
+        \gls{tpe}   & 100           & 7.774                     & 7.453                     & 4.197\\
+        \gls{tpe}   & 300           & 8.106                     & 7.989                     & 12.912\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+    \caption{Hyperparameter tuning problem on the dataset \enquote{ijcnn1}}
+    \label{tab:ijcnn1}
+    \centering
+    \begin{tabular}{cS[table-parse-only]SSS}
+        \toprule
+        Solver      & {No.\ eval.}  & {AUC Score ($10^{-1}$)}   & {Accuracy ($10^{-1}$)}    & {Execution time (\SI{}[10^3]{\second})}\\
+        \midrule
+        \gls{pdfo}  & 59            & 9.940                     & 9.819                     & 1.892\\
+        \gls{rs}    & 100           & 9.886                     & 9.773                     & 4.435\\
+        \gls{rs}    & 200           & 9.886                     & 9.773                     & 9.146\\
+        \gls{rs}    & 300           & 9.886                     & 9.773                     & 13.251\\
+        \gls{tpe}   & 100           & 9.891                     & 9.791                     & 4.426\\
+        \gls{tpe}   & 300           & 9.896                     & 9.786                     & 12.552\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The \gls{auc} scores and accuracies presented in the tables correspond to the ones computed on~$\mathcal{T}_2$ with an \gls{svm} trained on~$\mathcal{T}_1$, with the tuned parameters~$C$ and~$\gamma$.
+In a nutshell, it globally shows that the numerical performances of \gls{pdfo} against the two classical approaches are very similar, but the computations requires much fewer \gls{auc} evaluations, and hence, much less computation time.
+This behavior is particularly visible on the dataset \enquote{ijcnn1} in \cref{tab:ijcnn1}, as the size of this dataset is much larger than the others.
+Thus, we can conclude that \gls{pdfo} performed better than the package hyperopt on these problems, even though the final numerical results are mostly similar.

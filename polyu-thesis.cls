@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/07/20 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/07/21 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifmeeting
@@ -40,6 +40,8 @@
 \RequirePackage{emptypage}
 \RequirePackage{morewrites}
 \RequirePackage{titling}
+\RequirePackage{booktabs}
+\RequirePackage{siunitx}
 \RequirePackage[en-US]{datetime2}
 
 % Latin and Chinese fonts
@@ -200,6 +202,8 @@
 \RequirePackage[noabbrev,capitalize]{cleveref}
 \crefname{equation}{}{}
 \Crefname{equation}{}{}
+\crefname{lstlisting}{Listing}{Listings}
+\Crefname{lstlisting}{Listing}{Listings}
 
 % Plots and graphs
 \RequirePackage{tikz}
@@ -286,6 +290,41 @@
 }
 \appto{\bibsetup}{\sloppy}
 
+% Customize listings environments
+\usepackage[final]{listings}
+\usepackage{lstautogobble}
+\lstset{
+    autogobble=true,
+    basicstyle=\normalsize\ttfamily,
+    breakautoindent=true,
+    breakatwhitespace=false,
+    breaklines=true,
+    commentstyle=\itshape\color{black!50},
+    frame=tb,
+    keywordstyle=\bfseries,
+    numbers=left,
+    numberstyle=\scriptsize\bfseries,
+    postbreak=\space,
+    showstringspaces=false,
+    stepnumber=1,
+    stringstyle=\itshape,
+    tabsize=4,
+}
+\lstnewenvironment{lstmatlab}[1][]{
+    \lstset{
+        language=matlab,
+        % morekeywords={},
+        #1,
+    }
+}{}
+\lstnewenvironment{lstpython}[1][]{
+    \lstset{
+        language=python,
+        % morekeywords={},
+        #1,
+    }
+}{}
+
 % Captions in floating environments
 \RequirePackage{caption}
 \RequirePackage{subcaption}
@@ -307,6 +346,11 @@
     \chapter*{\listtablename\markboth{\listtablename}{\listtablename}}%
     \addcontentsline{toc}{chapter}{\listtablename}%
     \@starttoc{lot}%
+}
+\renewcommand{\lstlistoflistings}{%
+    \chapter*{\listtablename\markboth{\lstlistlistingname}{\lstlistlistingname}}%
+    \addcontentsline{toc}{chapter}{\lstlistlistingname}%
+    \@starttoc{lol}%
 }
 
 % Insert the text 'This page intentionally left blank' on blank pages
