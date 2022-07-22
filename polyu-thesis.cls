@@ -18,6 +18,8 @@
 % Load book class as basis
 \newif\ifmeeting
 \DeclareOption{meeting}{\meetingtrue}
+\newif\ifinitial
+\DeclareOption{initial}{\initialtrue}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessOptions\relax
 \LoadClass[11pt]{book}
@@ -270,6 +272,16 @@
 }
 \fi
 
+% Initial submission
+\ifinitial
+    \usepackage[%
+        firstpageonly,%
+        fontsize=0.06\paperwidth,%
+        text={INITIAL SUBMISSION FOR\\[0.5em] EXAMINATION PURPOSE},%
+        colorspec=0.88,%
+    ]{draftwatermark}
+\fi
+
 % Bibliography information processing
 \RequirePackage[%
     style=numeric-comp,%
@@ -348,7 +360,7 @@
     \@starttoc{lot}%
 }
 \renewcommand{\lstlistoflistings}{%
-    \chapter*{\listtablename\markboth{\lstlistlistingname}{\lstlistlistingname}}%
+    \chapter*{\lstlistlistingname\markboth{\lstlistlistingname}{\lstlistlistingname}}%
     \addcontentsline{toc}{chapter}{\lstlistlistingname}%
     \@starttoc{lol}%
 }

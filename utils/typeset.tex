@@ -22,5 +22,8 @@
     \makeatother
     All rights reserved.\par
     Typeset using \LaTeXe\ on \DTMusedate{ini}%
-    \ifthenelse{\equal{\DTMusedate{ini}}{\DTMusedate{rev}}}{}{~(revised on \DTMusedate{rev})}.
+    \ifinitial%
+    \else%
+        ~(revised on \DTMusedate{rev})%
+    \fi.
 \end{itshape}

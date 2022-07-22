@@ -25,7 +25,7 @@ push @generated_exts, "xdv";
 $bibtex_use = 2;
 
 # Remove extra extensions on clean
-$clean_ext = "auxlock ist loa mw run.xml synctex.gz tdo";
+$clean_ext = "auxlock ist loa lol mw run.xml synctex.gz tdo";
 
 # Build dependencies for the glossaries-extra package
 add_cus_dep("acn", "acr", 0, "makeglo2gls");
