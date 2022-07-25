@@ -30,10 +30,10 @@ In this chapter, we introduce a new model-based \gls{dfo} method for solving non
 \end{subequations}
 where~$\obj$ and~$\con{i}$ represent the objective and constraint functions, with~$i \in \iub \cup \ieq$ and the sets of indices~$\iub$ and~$\ieq$ being finite and disjoint, but possibly empty. 
 The lower bounds~$\xl \in (\R \cup \set{-\infty})^n$ and the upper bounds~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl < \xu$.
-Note that the bound constraints~\cref{eq:problem-cobyqa-bd} are not included in the inequality constraints~\cref{eq:problem-cobyqa-ub}, because they must be dealt with separately, as detailed in \cref{sec:simple-constraints}.
+Note that the bound constraints~\cref{eq:problem-cobyqa-bd} are not included in the inequality constraints~\cref{eq:problem-cobyqa-ub}, because they will be handled separately, as detailed in \cref{sec:simple-constraints}.
 
-We will develop a derivative-free trust-region \gls{sqp} method for solving the problem~\cref{eq:problem-cobyqa}.
-The method, named~\gls{cobyqa} after \emph{\glsdesc{cobyqa}}, does not use derivatives of the objective function and the nonlinear constraint functions, but models them using underdetermined interpolation based on the derivative-free symmetric Broyden update (see \cref{subsec:symmetric-broyden-updates}).
+We will develop a derivative-free trust-region \gls{sqp} method for the problem~\cref{eq:problem-cobyqa}.
+The method, named~\gls{cobyqa} after \emph{\glsdesc{cobyqa}}, does not use derivatives of the objective function or the nonlinear constraint functions, but models them using underdetermined interpolation based on the derivative-free symmetric Broyden update (see \cref{subsec:symmetric-broyden-updates}).
 This chapter presents the framework of the method, while the subproblems and the Python implementation will be discussed in \cref{ch:cobyqa-subproblems,ch:cobyqa-implementation}, respectively.
 
 \section{The derivative-free trust-region \glsfmtshort{sqp} method}
@@ -41,22 +41,91 @@ This chapter presents the framework of the method, while the subproblems and the
 We presented in \cref{ch:sqp} the basic trust-region \gls{sqp} method.
 We now adapt this framework to derivative-free settings.
 
-\subsection{Overview of the method}
-
 \subsection{Interpolation-based quadratic models}
 
 Recall that the basic trust-region \gls{sqp} method presented in \cref{alg:trust-region-sqp} uses the gradients and the Hessian matrices of the objective function~$\obj$ and the constraint functions~$\con{i}$, with~$i \in \iub \cup \ieq$.
 Since we do not have access to such information, we use quadratic models of them, for which all derivative information are known.
 As detailed in \cref{ch:interpolation}, to increase the performance of the method, we use quadratic models obtained by underdetermined interpolation.
-Inspired by the performances of the solvers \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa} of Powell, we decide to base our models on derivative-free symmetric Broyden updates (see \cref{subsec:symmetric-broyden-updates}).
 
 At the~$k$th iteration, we note by~$\objm[k]$ the quadratic model of~$\obj$, and by~$\conm[k]{i}$ the quadratic model of~$\con{i}$, for all~$i \in \iub \cup \ieq$.
 These models are built on an interpolation set~$\xpt[k] \subseteq \R^n$, which is maintained automatically by the method.
-It changes at most one point of~$\xpt[k]$ at each iteration, and ensures that~$\iter[k] \in \xpt[k]$, where~$\iter[k] \in \R^n$ denotes the~$k$th iterate. 
+It changes at most one point of~$\xpt[k]$ at each iteration, and ensures that~$\iter[k] \in \xpt[k]$, where~$\iter[k] \in \R^n$ denotes the~$k$th iterate.
+Inspired by the performances of the solvers \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa} of Powell, we decide to base our models~$\objm[k]$ and~$\conm[k]{i}$, for~$i \in \iub \cup \ieq$, on the derivative-free symmetric Broyden update (see \cref{subsec:symmetric-broyden-updates}).
+
+The initial models~$\objm[0]$ and~$\conm[0]{i}$, for~$i \in \iub \cup \ieq$, are built on the initial interpolation set~$\xpt[0] \subseteq \R^n$, defined as follows.
+We are given a number~$m$ of interpolation points, satisfying
+\begin{equation*}
+    n + 2 \le m \le \frac{1}{2} (n + 1) (n + 2),
+\end{equation*}
+provided by the user, together with an initial guess~$\iter[0] \in \R^n$ and an initial trust-region radius~$\rad[0] > 0$.
+The points of~$\xpt[0] = \set{y^1, y^2, \dots, y^m}$ are defined by
+\begin{empheq}[left={y^i = \empheqlbrace}]{alignat*=2}
+    & \iter[0]                      && \quad \text{if~$i = 1$,}\\
+    & \iter[0] + \rad[0] e_{i - 1}  && \quad \text{if~$2 \le i \le n + 1$,}\\
+    & \iter[0] - \rad[0] e_{i - 1}  && \quad \text{if~$n + 2 \le i \le 2n + 1$,}\\
+    & \iter[0]                      && \quad \text{otherwise.}
+\end{empheq}
+
+\subsection{A derivative-free trust-region \glsfmtshort{sqp} framework}
 
 \subsection{Least-squares Lagrange multipliers}
 
 \subsection{Geometry of the interpolation set}
+
+\subsection{Managing the trust-region radius}
+
+Inspired by the performance of \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa} (see \cref{subsec:uobyqa,subsec:newuoa-bobyqa-lincoa}), we employ the following paradigm for managing the trust-region radius, proposed by Powell~\cite{Powell_2002,Powell_2006,Powell_2009}.
+It consists in maintaining both the trust-region radius~$\rad[k] > 0$ and a lower-bound of it~$\radlb[k] > 0$.
+The idea behind this technique is to use~$\rad[k]$ as the trust-region radius in the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem}, and~$\radlb[k]$ to maintain an adequate distance between the points in~$\xpt[k]$.
+Further, the method never increases~$\radlb[k]$, but adapt the value of~$\rad[k]$ in a typical trust-region way.
+Of course, the method always ensures that~$\rad[k] \ge \radlb[k]$.
+As noted by \citeauthor{Powell_2002}, allowing trial step to have a length larger than~$\radlb[k]$ prevent loss in efficiency that occurred otherwise in his software \gls{uobyqa}.
+
+The update of the trust-region radius~$\rad[k]$ is given in \cref{alg:update-trust-region-radius}.
+The parameters chosen in \gls{cobyqa} are~$\eta_1 = 0.1$,~$\eta_2 = 0.7$,~$\eta_3 = 1.4$,~$\theta_1 = 0.5$, and~$\theta_2 = \sqrt{2}$.
+This update is untertained at each iteration.
+
+\begin{algorithm}
+    \caption{Updating the trust-region radius}
+    \label{alg:update-trust-region-radius}
+    \DontPrintSemicolon
+    \KwData{Current lower bound on the trust-region radius~$\radlb[k] > 0$, current trust-region radius~$\rad[k] \ge \radlb[k]$, current trust-region ratio~$\ratio[k] \in \R$, current trial step~$\step \in \R^n$, and parameters~$0 < \eta_1 \le \eta_2 < 1 \le \eta_3$ and~$0 < \theta_1 < 1 < \theta_2$.}
+    \KwResult{Updated trust-region radius~$\rad[k + 1]$.}
+    Set the value of~$\rad[k + 1]$ to
+    \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
+        & \theta_1 \rad[k]                                                                      && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
+        & \min \set{\theta_1 \rad[k], \norm{\step}}                                             && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
+        & \min \set{\theta_2 \rad[k], \max \set{\theta_1 \rad[k], \theta_1^{-1} \norm{\step}}}  && \quad \text{otherwise}
+    \end{algoempheq}
+    \If{$\rad[k + 1] \le \eta_3 \radlb[k]$}{
+        $\rad[k + 1] \gets \radlb[k]$\;
+    }
+\end{algorithm}
+
+As we mentioned already, the method maintains~$\rad[k] \ge \radlb[k]$ and it never increases~$\radlb[k]$.
+Therefore, the value of~$\radlb[k]$ is decreased only if~$\rad[k] = \radlb[k]$.
+Moreover, since~$\radlb[k]$ is designed to maintain a good distance between the interpolation points, it must be decreased only if the performance of the models is poor.
+Hence, it is decreased only if the trial step~$\norm{\step[k]}$ is small compared with~$\rad[k]$ and the trust-region ratio~$\ratio[k]$ is small.
+\Cref{alg:reducing-lower-bound-trust-region-radius} presents the method employed by \gls{cobyqa} to reduce~$\radlb[k]$.
+The parameters chosen in \gls{cobyqa} are~$\eta_4 = 16$,~$\eta_5 = 250$, and~$\theta_3 = 0.1$.
+
+\begin{algorithm}
+    \caption{Reducing the lower bound on the trust-region radius}
+    \label{alg:reducing-lower-bound-trust-region-radius}
+    \DontPrintSemicolon
+    \KwData{Final trust-region radius~$\radlb[\infty] > 0$, current lower bound on the trust-region radius~$\radlb[k] \ge \radlb[\infty]$, updated trust-region radius~$\rad[k + 1] \ge \radlb[k]$, and parameters~$1 \le \eta_4 < \eta_5$ and~$0 < \theta_3 < 1$.}
+    \KwResult{Reduced lower bound on trust-region radius~$\radlb[k + 1]$ and modified trust-region radius~$\rad[k + 1]$.}
+    \If{$\radlb[k] = \radlb[\infty]$}{
+        Terminate the optimization method\;
+    }
+    Set the value of~$\radlb[k + 1]$ to
+    \begin{algoempheq}[left={\radlb[k + 1] \gets \empheqlbrace}]{alignat*=2}
+        & \theta_3 \radlb[k]                && \quad \text{if~$\eta_5 < \radlb[k] / \radlb[\infty]$,}\\
+        & \sqrt{\radlb[k] \radlb[\infty]}   && \quad \text{if~$\eta_4 < \radlb[k] / \radlb[\infty] \le \eta_5$,}\\
+        & \radlb[\infty]                    && \quad \text{otherwise}
+    \end{algoempheq}
+    $\rad[k + 1] \gets \max \set{\rad[k + 1], \radlb[k + 1]}$\;
+\end{algorithm}
 
 \section{Management of bound and linear constraints}
 \label{sec:simple-constraints}
@@ -69,17 +138,17 @@ From a theoretical standpoint, problems written in the form
                 & \quad \con{i}(\iter) = 0, ~ i \in \ieq,\\
                 & \quad \iter \in \R^n,
 \end{align*}
-may have bound and linear constraints included in some or all of the constraints~$\con{i}$, with~$i \in \iub \cup \ieq$.
-However, it is crucial that the implementation of a solver handles these types of constraints separately, for the following reasons.
+may have bound and linear constraints included in the constraints~$\set{\con{i}}_{i \in \iub \cup \ieq}$.
+However, our implementation handles these types of constraints separately, for the following reasons.
 
-First of all, note that in the general form of nonlinearly-constrained problems~\cref{eq:problem-cobyqa}, we did not include the bound constraints~\cref{eq:problem-cobyqa-bd} in the inequality constraints~\cref{eq:problem-cobyqa-ub}.
-This is because they often represent inalienable physical or theoretical restrictions.
-In other words, in many applications, the objective function~\cref{eq:problem-cobyqa-obj} is not defined if the bounds constraints~\cref{eq:problem-cobyqa-bd} are violated.
-For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods})  involves bounds that cannot be violated, as the optimizationmethods that are tuned may not be defined otherwise.
-Very similar observations can be made on hyperparameter tuning in machine learning (see \cref{subsec:machine-learning}).
+% First of all, note that in the general form of nonlinearly-constrained problems~\cref{eq:problem-cobyqa}, we did not include the bound constraints~\cref{eq:problem-cobyqa-bd} in the inequality constraints~\cref{eq:problem-cobyqa-ub}.
+Bound constraints often represent inalienable physical or theoretical restrictions.
+In many applications, the objective function~\cref{eq:problem-cobyqa-obj} is not defined if the bounds~\cref{eq:problem-cobyqa-bd} are violated.
+% For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods}) involves bounds that cannot be violated, as the optimization methods that are tuned may not be defined otherwise.
+For example, see the hyperparameter tuning problem given in \cref{subsec:machine-learning}.
 For this reason, every point that \gls{cobyqa} encounters always respects these bounds, as is also the case for the \gls{bobyqa} method, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
-When establishing the problem~\cref{eq:problem-cobyqa}, we assumed that~$\xl < \xu$.
-Note that this requirement is weak, as otherwise, the problem~\cref{eq:problem-cobyqa} would be either infeasible, or admit fix variables.
+% When establishing the problem~\cref{eq:problem-cobyqa}, we assumed that~$\xl < \xu$.
+% Note that this requirement is weak, as otherwise, the problem~\cref{eq:problem-cobyqa} would be either infeasible, or admit fix variables.
 Thus, note also that they are very simple constraints.
 It is, for example, trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-bd}, and easy to project any point onto the bound constraints.
 This is another reason why \gls{cobyqa} handles them separately.
@@ -89,6 +158,8 @@ The objective function is often well-defined even at points that are infeasible 
 Therefore, we do not enforce \gls{cobyqa} to always respect the linear constraints.
 However, when evaluating a model~$\conm[k]{i}$ of a linear constraint~$\con{i}$, we enforce~$\conm[k]{i} \equiv \con{i}$.
 This reduces the computational complexity of evaluating all the models, and it also suppresses all damages that could be generated by computer rounding errors.
+
+\todo[noline]{Rewrite this section}
 
 \section{Merit function and update of the penalty parameters}
 
