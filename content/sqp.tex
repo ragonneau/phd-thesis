@@ -15,9 +15,14 @@
 \chapter{The \glsfmtshort{sqp} method \textemdash\ an overview and some perspectives}
 \label{ch:sqp}
 
-This chapter presents the basic idea behind the \gls{sqp} method.
+This chapter presents basic ideas behind the well-known \gls{sqp} method and some of its practical implementations.
 For this discussion, we assume that the derivatives of the objective and constraint functions are available, as is the case in the classical \gls{sqp} method.
-We first present the general \gls{sqp} framework in \cref{sec:sqp-method}, and we interpret it from different angles\todo{Finish the introduction and the summary}.
+We first present the general \gls{sqp} framework in \cref{sec:sqp-method}, and we get some insight of its potency by interpreting it from four different angles.
+We then introduce the concept of merit function, used in globalization strategies for the \gls{sqp} method, in \cref{sec:sqp-merit-functions}.
+Further, we present in \cref{sec:sqp-trust-region} the trust-region \gls{sqp} method and some practical implementations, referred to as the Byrd-Omojokun, the Vardi, and the \gls{cdt} approaches.
+In particular, we present in \cref{prop:vardi-byrd-omojokun} an interesting interpretation of the Vardi approach as an approximate Byrd-Omojokun approach.
+Thus, we give some well-known \gls{sqp} software in \cref{sec:existing-sqp-software}.
+
 
 \section{The method}
 \label{sec:sqp-method}
@@ -316,6 +321,7 @@ However, since we are considering constrained optimization, we cannot expect~$\n
 This explains why the second-order term of the \gls{sqp} subproblem should be defined by the Hessian matrix of the Lagrangian, rather than that of~$\obj$.
 
 \subsection{Lagrangian and augmented Lagrangian of the \glsfmtshort{sqp} subproblem}
+\label{subsec:lagrangian-augmented-lagrangian}
 
 In this section, we study the Lagrangian and the augmented Lagrangian of the \gls{sqp} subproblem, and observe their relations with those of the original optimization problem.
 We also point out that the augmented Lagrangian of the \gls{sqp} subproblem is exactly the approximate augmented Lagrangian used in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
@@ -423,6 +429,7 @@ Suppose that an algorithm defines a step~$\step[k]$ based on the minimization of
 Then, \cref{thm:auglag-sqp-3} tells us that the algorithm can be regarded as an \gls{sqp} method that approximately solves the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} by minimizing~$\auglagalt(\step, \lm[k])$, i.e., by applying one single iteration of an augmented Lagrangian method.
 
 \section{Merit functions for the \glsfmtshort{sqp} method and the Maratos effect}
+\label{sec:sqp-merit-functions}
 
 In unconstrained optimization, a point~$x \in \R^n$ is normally considered to be better than another point~$y \in \R^n$ if~$\obj(x) < \obj(y)$.
 However, this is not true in constrained optimization, because the constraints must also be taken into account.
@@ -515,13 +522,14 @@ Perhaps the simplest of these steps, similar to~\cite[Eqs.~(21) and~(22)]{Mayne_
 \begin{equation*}
     \min_{r \in \R^n} \sum_{i \in \iub} \posp{\con{i}(\iter[k] + \step[k]) + \nabla \con{i}(\iter[k] + \step[k])^{\T} r}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k] + \step[k]) + \nabla \con{i}(\iter[k] + \step[k])^{\T} r]^2.
 \end{equation*}
-Many other second-order correction steps can also be defined (see, e.g.,~\cite{Colman_Conn_1982a,Colman_Conn_1982b,Fletcher_1982,Fukushima_1986}).
+Many other second-order correction steps can also be defined (see, e.g.,~\cite{Colman_Conn_1982a,Colman_Conn_1982b,Fletcher_1982b,Fukushima_1986}).
 
 Another possibility to handle the Maratos effect is to choose the merit function properly.
 For example, \citeauthor{Powell_Yuan_1986}~\cite[\S~4]{Powell_Yuan_1986} showed that the Maratos effect cannot occur when using the augmented Lagrangian merit function in a line-search \gls{sqp} method.
 % More generally, the Maratos effect cannot occur for any globalization strategy that uses the augmented Lagrangian merit function, because the Maratos effect can happen only at the points at which the merit function is nondifferentiable~\cite[\S~12.1]{Fletcher_1987}.
 
 \section{The trust-region \glsfmtshort{sqp} method}
+\label{sec:sqp-trust-region}
 
 As we mentioned previously, we need in practice a globalization strategy to make the method globally convergent.
 We present in what follows a method that uses the trust-region strategy in a derivative-based context.
@@ -1004,16 +1012,72 @@ Once~$\nstep[k]$ is defined, it sets
 \end{equation*}
 and solves the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem} after replacing~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} with~\cref{eq:cdt}.
 
-\section{Existing \glsfmtshort{sqp} software}
+\section{Other existing \glsfmtshort{sqp} methods and software}
+\label{sec:existing-sqp-software}
 
-\begin{itemize}
-    \item SNOPT, CONDOR, S$\ell_1$QP, SLSQP (merit functions, inequality constraints, infeasibility).
-\end{itemize}
+% We now present some well-known \gls{sqp} methods and software.
+
+There exist other mechanisms to deal with the possible infeasibility of the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem}.
+For example, the \gls{sl1qp} method~\cite{Fletcher_1982a} solves approximately the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem} by minimizing the objective function~\cref{eq:trust-region-sqp-subproblem-obj} plus a~$\ell_1$-norm penalty term of the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} subject to the trust-region constraint~\cref{eq:trust-region-sqp-subproblem-tr}.
+% \begin{equation*}
+%     \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step + \mu \bigg[ \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step} + \sum_{i \in \ieq} \abs{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step} \bigg]
+% \end{equation*}
+% subject to~$\norm{\step} \le \rad[k]$, for some~$\mu > 0$.
+This problem has the strong advantages that it is always feasible, and that it can be reformulated as a quadratic programming problem with a trust-region constraint and can hence be solved using traditional subproblem solvers (see \cref{ch:cobyqa-subproblems}).
+% \begin{align*}
+%     \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step + \mu \bigg[ \sum_{i \in \iub} u_i + \sum_{i \in \ieq} (v_i + w_i) \bigg]\\
+%     \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le u_i, ~ i \in \iub,\\
+%                 & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = v_i - w_i, ~ i \in \ieq,\\
+%                 & \quad \norm{\step} \le \rad[k],\\
+%                 & \quad u, v, w \ge 0,\\
+%                 & \quad \step \in \R^n, ~ u = [u_i]_{i \in \iub}, ~ v = [v_i]_{i \in \ieq}, ~ w = [w_i]_{i \in \ieq},
+% \end{align*}
+
+Another method for dealing with the possible infeasibility of~\cref{eq:trust-region-sqp-subproblem}, commonly referred to as the \gls{slqp} method~\cite{Fletcher_Maza_1989,Byrd_Etal_2004}, consists in performing the computation in the two following stages.
+The first stage solves a linear programming problem with a trust-region constraint to estimate a working set\footnote{We do not employ the term \emph{active set} not to confound with the one given in \cref{def:active-set}.}, and the second stage solves a equality-constrained quadratic programming problem with a trust-region constraint, where only the constraint in the working set are considered.
+This method underlies for example the \gls{slqpgs} software~\cite{Curtis_Overton_2012}.
+% It first minimizes
+% \begin{equation*}
+%     \nabla \obj(\iter[k])^{\T} \step + \mu \bigg[ \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step} + \sum_{i \in \ieq} \abs{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step} \bigg]
+% \end{equation*}
+% subject to~$\step \le \radlb[k]$ for some~$\radlb[k] > 0$.
+% Similar to the \gls{sl1qp} method, this problem has the advantage that it can be formulated as a linear programming problem with a trust-region constraint.
+% Once such a step, say~$\step[\ast]$, is calculated, the method determines a working set~$\mathcal{W}$ as a linearly independent subset of
+% \begin{equation*}
+%     \set{i \in \iub \cup \ieq : \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step[\ast] = 0}.
+% \end{equation*}
+% Thus, instead of solving
+
+Another mechanism that exists in the litterature is the trust-region filter-\gls{sqp} approach~\cite{Fletcher_Leyffer_2002}.
+Roughly speaking, it attempts to minimize simultaneously the objective function and the constraint violation, as in biobjective optimization.
+Moreover, if the current \gls{sqp} subproblem is infeasible, it will only focus on reducing the constraint violation.
+
+Many well-known software are based on the \gls{sqp} method.
+For example, \gls{snopt}~\cite{Gill_Murray_Saunders_2005} is an implementation of the \gls{sqp} method for inequality-constrained optimization that uses the exact gradients of the objective and constraint functions, but replaces the Hessians of the Lagrangian function with limited-memory quasi-Newton approximations.
+The method is embedded in a line-search framework (instead of a trust-region), that uses the augmented Lagrangian function as the merit function.
+Moreover, the possible infeasibility of the \gls{sqp} subproblem is handled using a very similar technique to the one employed by S$\ell_1$QP.
+
+Another example of famous pieces of software based on the \gls{sqp} method is the \gls{condor} solver~\cite{Berghen_2004,Berghen_Bersini_2004}.
+This method assumes that derivatives of the objective function are unavailable, but that evaluations of the constraint functions are unexpensive and that derivatives of them can be evaluated.
+It is a trust-region method based on the~$\ell_1$-merit function, where at each iteration, a quadratic model of the objective function is minimized subject to the original constraints and a trust-region constraint.
+The subproblem is usually solved using a line-search \gls{sqp} method with an active-set strategy for handling the nonlinear constraints.
+
+% \begin{itemize}
+%     \item The \gls{slsqp} method~\cite{Kraft_1988}.
+% \end{itemize}
 
 \section{Concluding remarks}
 
-\begin{itemize}
-    \item Brief summary, highlighting our contribution.
-    \item Some further discussions (relation between Vardi and Byrd-Omojokun in the general case, the relation between the augmented Lagrangian and the \gls{sqp} method (both theory and computations)).
-    \item We need to make experiments to show that the way to handle the inequality constraints in the composite-step approach is good.
-\end{itemize}
+We presented in this chapter the classical \gls{sqp} framework, and we got some insight of its potency by interpreting it from different perspectives.
+To the best of our knowledge, the result in \cref{thm:sqp-path} showing that the objective function of the \gls{sqp} subproblem is a quadratic approximation of the original objective function on a path on the boundary of the constraints is new.
+More specifically, it indicates that this approximation is of second-order and that corresponding the second-order term depends on the stationary condition.
+If a point is almost a stationary point, then the approximation is almost a cubic approximation.
+We also provide different relation between the \gls{sqp} and the augmented Lagrangian methods in \cref{subsec:lagrangian-augmented-lagrangian}, from both the theorerical and the computational points of view.
+More specifically, we showed different relations between the augmented Lagrangian functions of the original problem and the \gls{sqp} subproblem in \cref{thm:auglag-sqp-2,thm:auglag-sqp-3}.
+
+We then introduced the trust-region \gls{sqp} framework, and presented several alternatives to solve its subproblem.
+Interestingly, we derived in \cref{prop:vardi-byrd-omojokun} a relation between two of  these alternatives, namely the Byrd-Omojokun and the Vardi approaches, in the equality-constrained case.
+We believe that a similar result can be obtained in the general case, but no such result has been obtained so far.
+It is also necessary to make numerical experiments to confirm that the way we handled inequality constraints is satisfactory in practice.
+We will later in this thesis adapt the Byrd-Omojokun approach to the \gls{dfo} context for our new optimization method presented in \cref{ch:cobyqa-introduction}.
+The other methods need also to be tested in the future.
