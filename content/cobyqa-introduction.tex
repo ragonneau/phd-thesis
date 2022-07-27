@@ -42,6 +42,7 @@ We presented in \cref{ch:sqp} the basic trust-region \gls{sqp} method.
 We now adapt this framework to derivative-free settings.
 
 \subsection{Interpolation-based quadratic models}
+\label{subsec:interpolation-based-quadratic-models}
 
 Recall that the basic trust-region \gls{sqp} method presented in \cref{alg:trust-region-sqp} uses the gradients and the Hessian matrices of the objective function~$\obj$ and the constraint functions~$\con{i}$, with~$i \in \iub \cup \ieq$.
 Since we do not have access to such information, we use quadratic models of them, for which all derivative information are known.
@@ -52,23 +53,139 @@ These models are built on an interpolation set~$\xpt[k] \subseteq \R^n$, which i
 It changes at most one point of~$\xpt[k]$ at each iteration, and ensures that~$\iter[k] \in \xpt[k]$, where~$\iter[k] \in \R^n$ denotes the~$k$th iterate.
 Inspired by the performances of the solvers \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa} of Powell, we decide to base our models~$\objm[k]$ and~$\conm[k]{i}$, for~$i \in \iub \cup \ieq$, on the derivative-free symmetric Broyden update (see \cref{subsec:symmetric-broyden-updates}).
 
-The initial models~$\objm[0]$ and~$\conm[0]{i}$, for~$i \in \iub \cup \ieq$, are built on the initial interpolation set~$\xpt[0] \subseteq \R^n$, defined as follows.
+The initial models~$\objm[0]$ and~$\conm[0]{i}$, for~$i \in \iub \cup \ieq$, are built on the initial interpolation set~$\xpt[0] \subseteq \R^n$, defined as follows and proposed by \citeauthor{Powell_2009}~\cite{Powell_2009}.
 We are given a number~$m$ of interpolation points, satisfying
 \begin{equation*}
     n + 2 \le m \le \frac{1}{2} (n + 1) (n + 2),
 \end{equation*}
-provided by the user, together with an initial guess~$\iter[0] \in \R^n$ and an initial trust-region radius~$\rad[0] > 0$.
-The points of~$\xpt[0] = \set{y^1, y^2, \dots, y^m}$ are defined by
-\begin{empheq}[left={y^i = \empheqlbrace}]{alignat*=2}
+provided by the user, together with an initial guess~$\iter[0] \in \R^n$ satisfying~$\xl \le \iter[0] \le \xu$ and an initial trust-region radius~$\rad[0] > 0$.
+The first~$n + 1$ points of~$\xpt[0] = \set{y^1, y^2, \dots, y^m}$ are defined by
+\begin{empheq}[left={y^i \eqdef \empheqlbrace}]{alignat*=2}
     & \iter[0]                      && \quad \text{if~$i = 1$,}\\
-    & \iter[0] + \rad[0] e_{i - 1}  && \quad \text{if~$2 \le i \le n + 1$,}\\
-    & \iter[0] - \rad[0] e_{i - 1}  && \quad \text{if~$n + 2 \le i \le 2n + 1$,}\\
-    & \iter[0]                      && \quad \text{otherwise.}
+    & \iter[0] + \rad[0] e_{i - 1}  && \quad \text{if~$2 \le i \le n + 1$ and~$\xl_{i - 1} \le \iter[0]_{i - 1} < \xu_{i - 1}$,}\\
+    & \iter[0] - \rad[0] e_{i - 1}  && \quad \text{if~$2 \le i \le n + 1$ and~$\iter[0]_{i - 1} = \xu_{i - 1}$,}
 \end{empheq}
+and the following~$\min \set{n, m - n - 1}$ are defined by
+\begin{empheq}[left={y^i \eqdef \empheqlbrace}]{alignat*=2}
+    & \iter[0] - \rad[0] e_{i - n - 1}  && \quad \text{if~$n + 2 \le i \le \min \set{2n + 1, m}$ and~$\xl_{i - n - 1} < \iter[0]_{i - n - 1} \le \xu_{i - n - 1}$,}\\
+    & \iter[0] + 2\rad[0] e_{i - n - 1} && \quad \text{if~$n + 2 \le i \le \min \set{2n + 1, m}$ and~$\iter[0]_{i - n - 1} = \xl_{i - n - 1}$,}\\
+    & \iter[0] - 2\rad[0] e_{i - n - 1} && \quad \text{if~$n + 2 \le i \le \min \set{2n + 1, m}$ and~$\iter[0]_{i - n - 1} = \xu_{i - n - 1}$,}
+\end{empheq}
+where~$e_i$ denotes the~$i$th standard coordinate vector of~$\R^n$, i.e., the~$i$th column of~$I_n$.
+If~$m > 2n + 1$, for~$i \in \set{2n + 2, 2n + 3, \dots, m}$, we set
+\begin{equation*}
+    y^i \eqdef y^{p(i) + 1} + y^{q(i) + 1} - \iter[0],
+\end{equation*}
+where~$p$ and~$q$ are defined by
+\begin{equation*}
+    p(i) \eqdef i - n - 1 - n \kappa(i) \quad \text{with} \quad \kappa(i) \eqdef \floor[\bigg]{\frac{i - n - 2}{n}},
+\end{equation*}
+and
+\begin{empheq}[left={q(i) \eqdef \empheqlbrace}]{alignat*=2}
+    & p(i) + \kappa(i)      && \quad \text{if~$p(i) + \kappa(i) \le n$,}\\
+    & p(i) + \kappa(i) - n  && \quad \text{otherwise.}
+\end{empheq}
+We point out that if~$m \le 2n + 1$ and~$\xl < \iter[0] < \xl$, then the interpolation set~$\xpt[0]$ is exactly a scaled variation of the interpolation set studied in \cref{sec:optimal-interpolation-set}.
+We showed to some extend that this set was optimal for~$m = 2n + 1$.
+Therefore, as Powell did, we encourage such a value for~$m$.
+
+An advantage of choosing such an initial interpolation set is that the coefficients of the minimum-norm quadratic interpolation model can be directly evaluated.
+See~\cite[\S~9]{Powell_2009} for the details calculations.
 
 \subsection{A derivative-free trust-region \glsfmtshort{sqp} framework}
 
+We present in this section the derivative-free trust-region \gls{sqp} framework employed by \gls{cobyqa}.
+As before, the merit function we consider is the~$\ell_2$-merit function, defined for a given penalty parameter~$\gamma^k \ge 0$ by
+\begin{equation*}
+    \merit[k](\iter) \eqdef \obj(x) + \gamma^k \sqrt{\sum_{i \in \iub} \posp{\con{i}(\iter)}^2 + \sum_{i \in \ieq} \abs{\con{i}(\iter)}^2}, \quad \text{for~$\iter \in \R^n$.}
+\end{equation*}
+Once again, we denote by~$\meritm[k]$ the~$\ell_2$-merit function computed on the \gls{sqp} subproblem, i.e.,
+\begin{align*}
+    \meritm[k](\step)   & \eqdef \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
+                        & \qquad + \gamma^k \sqrt{\sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2}, \quad \text{for~$\step \in \R^n$.}
+\end{align*}
+The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hides many details, including the definition of \enquote{convergence} in the loop or the update of~$\lm[k]$, which will be specified hereinafter.
+
+\begin{algorithm}
+    \caption{Derivative-free trust-region \glsfmtshort{sqp} method}
+    \label{alg:derivative-free-trust-region-sqp}
+    \DontPrintSemicolon
+    \KwData{Initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
+    Set the penalty parameter~$\gamma^{-1} \gets  0$\;
+    Build the initial interpolation set~$\xpt[0] \subseteq \R^n$ described in \cref{subsec:interpolation-based-quadratic-models}\;
+    \For{$k = 0, 1, \dots$ until convergence}{
+        Evaluate~$\objm[k]$ and~$\conm[k]{i}$ for~$i \in \iub \cup \ieq$ by underdetermined interpolation on~$\xpt[k]$\; \nllabel{alg:derivative-free-trust-region-sqp-models}
+        Set the trial step~$\step[k] \in \R^n$ to an approximate solution to
+        \begin{subequations}
+            \label{eq:derivative-free-trust-region-sqp-subproblem}
+            \begin{algomathalign}
+                \min        & \quad \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
+                \text{s.t.} & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
+                            & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
+                            & \quad \norm{\step} \le \rad[k],\\
+                            & \quad \step \in \R^n, \nonumber
+            \end{algomathalign}
+        \end{subequations}
+        Set a penalty parameter~$\gamma^k \ge \max \set{\gamma^{k - 1}, \norm{\lm[k]}}$ providing~$\meritm[k](\step[k]) < \meritm[k](0)$\;
+        Evaluate the trust-region ratio
+        \begin{algomathdisplay}
+            \ratio[k] \gets \frac{\merit[k](\iter[k]) - \merit[k](\iter[k] + \step[k])}{\meritm[k](0) - \meritm[k](\step[k])}
+        \end{algomathdisplay}
+        \eIf{$\ratio[k] \ge 0$}{
+            Choose a point~$\bar{y} \in \xpt[k]$ to remove from~$\xpt[k]$\;
+        }{
+            Choose a point~$\bar{y} \in \xpt[k] \setminus \set{\iter[k]}$ to remove from~$\xpt[k]$\;
+        }
+        Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k] \setminus \set{\bar{y}}) \cup \set{\iter[k] + \step[k]}$\;
+        Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$\;
+        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}$\; \nllabel{alg:derivative-free-trust-region-sqp-multipliers}
+        Update the trust-region radius
+        \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
+            & \theta_1 \rad[k],  && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
+            & \rad[k],           && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
+            & \theta_2 \rad[k],  && \quad \text{otherwise}
+        \end{algoempheq}
+    }
+\end{algorithm}
+
+If we were naively adapting the trust-region framework for unconstrained optimization to our setting, the choice of~$\iter[k + 1]$ would be either~$\iter[k] + \step[k]$ if~$\ratio[k] \ge 0$, and~$\iter[k]$ otherwise.
+However, this would not take into account the fact that~$\merit[k]$ might differ from~$\merit[k - 1]$.
+Therefore,~$\iter[k + 1]$ might not be the best point in~$\xpt[k + 1]$ according to~$\merit[k]$.
+In \cref{alg:derivative-free-trust-region-sqp} however,~$\iter[k + 1]$ is always the best point in~$\xpt[k + 1]$.
+Moreover, note that~$\xpt[k + 1]$ necessarily contains~$\iter[k] + \step[k]$, and also contain~$\iter[k]$ if~$\ratio[k] < 0$.
+
+In a practical implementation, the quadratic models on \cref{alg:derivative-free-trust-region-sqp-models} of \cref{alg:derivative-free-trust-region-sqp} are not computed from scratch, because only one point differs~$\xpt[k + 1]$ from~$\xpt[k]$.
+Details on this update mechanism are given in \cref{subsec:implementation-symmetric-broyden-update}.
+
 \subsection{Least-squares Lagrange multipliers}
+
+We now provide details on the strategy employed by \gls{cobyqa} to estimate the Lagrange multipliers on \cref{alg:derivative-free-trust-region-sqp-multipliers} of \cref{alg:derivative-free-trust-region-sqp}.
+
+Recall that the \gls{sqp} method can be regarded as an approximate Newton method on the \gls{kkt} system.
+Therefore, given the iterate~$\iter[k + 1]$, it is natural to set the estimated Lagrange multipliers~$\lm[k + 1]$ to the one that attempt to satisfy the \gls{kkt} conditions as much as possible using the information available so far.
+We then let~$\lm[k + 1]$ be the least-norm solution to
+\begin{subequations}
+    \begin{align}
+        \min        & \quad \norm[\bigg]{\nabla \objm[k](\iter[k + 1]) + \sum_{i \in \iub \cup \ieq} \lm_i \nabla \conm[k]{i}(\iter[k + 1])}\\
+        \text{s.t.} & \quad \lm_i \conm[k]{i}(\iter[k + 1]) = 0, ~ i \in \iub \label{eq:least-squares-lagrange-multipliers-complementary-slackness}\\
+                    & \quad \lm_i \ge 0, ~ i \in \iub,\\
+                    & \quad \lm = [\lm_i]_{i \in \iub \cup \ieq},
+    \end{align}
+\end{subequations}
+which is then referred to as the \emph{least-squares Lagrange multiplier}~\cite{Dussault_1995}.
+Note that this problem can be easily simplified as follows.
+For all the indices~$i \in \iub$ such that~$\conm[k]{i}(\iter[k + 1]) \neq 0$, we necessarily have~$\lm[k + 1]_i = 0$.
+Therefore, the linear constraints~\cref{eq:least-squares-lagrange-multipliers-complementary-slackness} can be removed from the problem by considering only the indices in
+\begin{equation*}
+    \ieq \cup \set{i \in \iub : \conm[k]{i}(\iter[k + 1]) = 0},
+\end{equation*}
+and by setting the remaining components of the least-squares Lagrange multiplier to zero.
+% Another possibility, leading to a slightly different problem, is to consider only the indices in
+% \begin{equation*}
+%     \ieq \cup \set{i \in \iub : \conm[k]{i}(\iter[k + 1]) \le 0},
+% \end{equation*}
+% and to set the remaining components of the least-squares Lagrange multiplier to zero.
+This is the method employed by \gls{cobyqa}.
 
 \subsection{Geometry of the interpolation set}
 

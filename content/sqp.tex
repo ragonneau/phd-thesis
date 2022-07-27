@@ -27,11 +27,6 @@ Thus, we give some well-known \gls{sqp} software in \cref{sec:existing-sqp-softw
 \section{The method}
 \label{sec:sqp-method}
 
-% However, we will extend the method to the derivative-free context in \cref{subsec:derivative-free-sqp}.
-
-% Note that the problem~\cref{eq:problem-cobyqa} formulates the bound constraints~\cref{eq:problem-cobyqa-bd} explicitely.
-% This is important in computation, because it may not be reasonable to handle the bounds in the same way as the others due to their different natures (see \cref{subsec:bound-constraints} for details).
-% However, in the theoretical development of this section and the next one (\cref{sec:trust-region}), it is not necessary to distinguish bound constraints from the others.
 Throughout this chapter, we consider a problem of the form
 \begin{subequations}
     \label{eq:problem-cobyqa-sqp}
@@ -42,12 +37,6 @@ Throughout this chapter, we consider a problem of the form
                     & \quad \iter \in \R^n. \nonumber
     \end{align}
 \end{subequations}
-% where~$\iub$ contains the bound constraints, if any.
-
-% \begin{remark}
-%     Comparing~\cref{eq:problem-cobyqa} with~\cref{eq:problem-cobyqa-sqp}, we are abusing the notations, because~$\iub$ does not represent the same set of constraints in both.
-%     However, this will not generate any confusion in our discussions.
-% \end{remark}
 
 Note that the problem~\cref{eq:problem-cobyqa-sqp} is precisely the problem~\cref{eq:problem-introduction} discussed in \cref{ch:introduction}; hence, all the theory mentioned is applicable.
 For our later discussion, recall in particular that the Lagrangian of this problem is defined by
@@ -526,7 +515,6 @@ Many other second-order correction steps can also be defined (see, e.g.,~\cite{C
 
 Another possibility to handle the Maratos effect is to choose the merit function properly.
 For example, \citeauthor{Powell_Yuan_1986}~\cite[\S~4]{Powell_Yuan_1986} showed that the Maratos effect cannot occur when using the augmented Lagrangian merit function in a line-search \gls{sqp} method.
-% More generally, the Maratos effect cannot occur for any globalization strategy that uses the augmented Lagrangian merit function, because the Maratos effect can happen only at the points at which the merit function is nondifferentiable~\cite[\S~12.1]{Fletcher_1987}.
 
 \section{The trust-region \glsfmtshort{sqp} method}
 \label{sec:sqp-trust-region}
@@ -556,10 +544,10 @@ Note that this framework is conceptual, as many details are hidden, including th
 A similar framework for equality-constrained problems can be found in~\cite[\S~2]{Powell_Yuan_1991} and~\cite[Alg.~18.4]{Nocedal_Wright_2006}.
 
 \begin{algorithm}
-    \caption{Basic trust-region \glsxtrshort{sqp} method for constrained optimization}
+    \caption{Basic trust-region \glsxtrshort{sqp} method}
     \label{alg:trust-region-sqp}
     \DontPrintSemicolon
-    \KwData{Objective function~$\obj$, constraint functions~$\set{\con{i}}_{i \in \iub \cup \ieq}$, initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
+    \KwData{Initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
     Set the penalty parameter~$\gamma^{-1} \gets 0$\;
     \For{$k = 0, 1, \dots$ until convergence}{
         Set the trial step~$\step[k]$ to an approximate solution to
@@ -573,10 +561,7 @@ A similar framework for equality-constrained problems can be found in~\cite[\S~2
                             & \quad \step \in \R^n, \nonumber
             \end{algomathalign}
         \end{subequations} \nllabel{alg:trust-region-sqp-step}
-        Determine a penalty parameter~$\gamma^k \ge \max \set{\gamma^{k - 1}, \norm{\lm[k]}}$ that provides
-        \begin{algomathdisplay}
-            \meritm[k](\step[k]) < \meritm[k](0)
-        \end{algomathdisplay} \nllabel{alg:trust-region-sqp-penalty}
+        Set a penalty parameter~$\gamma^k \ge \max \set{\gamma^{k - 1}, \norm{\lm[k]}}$ providing~$\meritm[k](\step[k]) < \meritm[k](0)$\; \nllabel{alg:trust-region-sqp-penalty}
         Evaluate the trust-region ratio
         \begin{algomathdisplay}
             \ratio[k] \gets \frac{\merit[k](\iter[k]) - \merit[k](\iter[k] + \step[k])}{\meritm[k](0) - \meritm[k](\step[k])}
@@ -613,7 +598,6 @@ In other words, the step~$\step[k]$ either improves the feasibility of~$\iter[k]
 In practice, it is possible that neither the constraint violation nor the objective function of the \gls{sqp} subproblem can be reduced.
 A practical algorithm must handle such a case.
 However, from a theoretical point of view, it is possible to avoid such cases by making some mild assumptions (see, e.g.,~\cite[Asm.~3.1]{Powell_Yuan_1991}).
-% assuming for example that~$\set{\nabla \con{i}(x)}_{i \in \iub \cup \ieq}$ are linearly independent for all~$x \in \R^n$ 
 
 Note moreover that we imposed~$\gamma^k \ge \norm{\lm[k]}$.
 This is because \cref{thm:exact-merit-function} tells us that if ~$\gamma^k > \norm{\lm[\ast]}$, where~$\lm[\ast]$ is the Lagrange multiplier at the solution, then the merit function~$\merit[k]$ enjoys an exactness property.
@@ -641,12 +625,6 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
 The \cref{alg:trust-region-sqp-step} of \cref{alg:trust-region-sqp} hides the following crucial point.
 If the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem} is infeasible, what should~$\step[k]$ approximate?
 Since the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} are linear approximations of the constraints~\cref{eq:problem-cobyqa-sqp-ub,eq:problem-cobyqa-sqp-eq}, we cannot guarantee the feasibility of of the subproblem~\cref{eq:trust-region-sqp-subproblem}, even if the original problem is feasible.
-% The subproblem may be infeasible because
-% \begin{enumerate}
-%     \item the inequality constraints~\cref{eq:trust-region-sqp-subproblem-ub} may be infeasible,
-%     \item the equality constraints~\cref{eq:trust-region-sqp-subproblem-eq} may be infeasible, or
-%     \item the intersection of the regions defined by~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq,eq:trust-region-sqp-subproblem-tr} may be empty.
-% \end{enumerate}
 
 We review in this section the composite-step approach to coping with this difficulty in the equality-constrained case (i.e.,~$\iub = \emptyset$).
 Most discussions here are covered in~\cite[\S~15.4]{Conn_Gould_Toint_2000}, except \cref{prop:vardi-byrd-omojokun}, which gives a simple observation on the Vardi approach introduced below.
@@ -686,26 +664,6 @@ Further, it defines the tangential step~$\tstep[k]$ as a solution to~\cref{eq:ta
     \label{eq:tangential-subproblem-feasible-set}
     \mathcal{V} \eqdef \set{\step \in \R^n : \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq}.
 \end{equation}
-% \begin{subequations}
-%     \label{eq:tangential-subproblem-original}
-%     \begin{align}
-%         \min        & \quad [\nabla \obj(\iter[k]) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
-%         \text{s.t.} & \quad \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:tangential-subproblem-original-eq}\\
-%                     & \quad \norm{\nstep[k] + \step} \le \rad[k],\\
-%                     & \quad \step \in \R^n. \nonumber
-%     \end{align}
-% \end{subequations}
-% In other words, the tangential step~$\tstep[k]$ solves~\cref{eq:tangential-step-original} with~$\mathcal{V} \subseteq \R^n$ being the set of all steps~$d \in \R^n$ that satisfy~\cref{eq:tangential-subproblem-original-eq}.
-% The composite step~$\step[k] = \nstep[k] + \tstep[k]$ then solves
-% \begin{subequations}
-%     \label{eq:composite-step-original}
-%     \begin{align}
-%         \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
-%         \text{s.t.} & \quad \nabla \con{i}(\iter[k])^{\T} \step = \nabla \con{i}(\iter[k])^{\T} \nstep[k], ~ i \in \ieq,\\
-%                     & \quad \norm{\step} \le \rad[k],\\
-%                     & \quad \step \in \R^n. \nonumber
-%     \end{align}
-% \end{subequations}
 Note that~$\zeta$ should not be set to one as otherwise, the feasible region of~\cref{eq:tangential-step-original} might be a singleton.
 In practice, we can take for example~$\zeta = 0.8$ (see, e.g.,~\cite[Eq.~(18.45)]{Nocedal_Wright_2006}).
 
@@ -737,22 +695,6 @@ Further, define~$\tstep[k]$ as a solution to~\cref{eq:tangential-step-original} 
 It is then elementary to check that the composite step~$\nstep[k] + \tstep[k]$ solves~\cref{eq:sqp-subproblem-vardi-original}.
 
 We now point out that the above-mentioned normal step~$\nstep[k]$ is an approximate solution to~\cref{eq:byrd-omojokun-original} with~$\zeta = \norm{\nstep[k]} / \rad[k]$, which is at most one according to the definition of~$\nstep[k]$.
-% Recall that
-% \begin{equation}
-%     \label{eq:vardi-equality}
-%     \nstep[k] = \argmin_{\step \in \R^n} \set{\norm{\step} : \alpha b + A \step = 0} = -\alpha A^{\dagger} b,
-% \end{equation}
-% with~$b \eqdef [\con{i}(\iter[k])]_{i \in \ieq}$ and~$A \eqdef [\nabla \con{i}(\iter[k])^{\T}]_{i \in \ieq}$, and where~$A^{\dagger}$ denotes the Moore-Penrose pseudoinverse of~$A$.
-% Under these notations, the normal subproblem~\cref{eq:byrd-omojokun-original} is 
-% \begin{subequations}
-%     \label{eq:byrd-omojokun-equality}
-%     \begin{align}
-%         \min        & \quad \norm{b + A \step} \label{eq:byrd-omojokun-equality-obj}\\
-%         \text{s.t.} & \quad \norm{\step} \le \zeta \rad[k],\\
-%                     & \quad \step \in \R^n, \nonumber
-%     \end{align}
-% \end{subequations}
-% As shown by \cref{prop:vardi-byrd-omojokun}, the normal step~$\nstep[k]$ can be interpreted as a truncated Newton step for~\cref{eq:byrd-omojokun-original} for some specific~$\zeta \in (0, 1]$.
 
 \begin{proposition}
     \label{prop:vardi-byrd-omojokun}
@@ -762,7 +704,6 @@ We now point out that the above-mentioned normal step~$\nstep[k]$ is an approxim
         \min \set[\bigg]{\sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 : \step = t \step[\ast], ~ t \ge 0, ~ \norm{d} \le \zeta \rad[k]},
     \end{equation*}
     with~$\zeta = \norm{\nstep[k]} / \rad[k]$.
-    % It is in fact the least-norm solution.
 \end{proposition}
 
 \begin{proof}
@@ -785,13 +726,6 @@ Therefore, with~$\zeta  = \alpha \norm{\step[\ast]} / \rad[k]$, the normal step~
 This also reveals a relation between the Vardi and the Byrd-Omojokun approaches.
 The former solves the normal subproblem~\cref{eq:byrd-omojokun-original} by a truncated Newton step for a particular~$\zeta$ depending on~$k$, while the latter intends to solve~\cref{eq:byrd-omojokun-original} exactly with a prescribed constant~$\zeta$.
 The two approaches have no difference in the way they define the tangential step.
-% In this sense, the Vardi step can be understood as an approximation of the Byrd-Omojokun step.
-
-% \begin{proof}
-%     Since~$\step[\ast] = -A^{\dagger} b$, we only need to show that~$\alpha \step[\ast]$ minimizes~$\norm{b + A \step}$ on the line segment~$\set{t \step[\ast] : t \in [0, \alpha]}$, because~$\zeta \rad[k] = \norm{\nstep[k]} = \alpha \norm{\step[\ast]}$.
-%     Since~$\step[\ast]$ is a global minimizer of~$\norm{b + A \step}$, which is a convex function of~$\step$, we know that~$\norm{b + A \step}$ is nonincreasing on the interval from~$0$ to~$\step[\ast]$.
-%     Thus, the fact that~$\alpha \le 1$ provides the desired result.
-% \end{proof}
 
 \subsubsection{\Glsfmtlong{cdt} (\glsfmtshort{cdt}) approach}
 
@@ -811,7 +745,6 @@ for some~$\delta \ge 0$, so that the trust-region subproblem after replacement b
 \end{subequations}
 The method selects the scalar~$\delta$ in a composite-step fashion as follows.
 It first takes a normal step~$\nstep[k]$ by solving approximately the problem~\cref{eq:byrd-omojokun-original} with~$\zeta = 1$.
-% Note that this problem can be for example solved as in the Byrd-Omojokun approach or solved along the Newton's direction as in the Vardi approach.
 Once such a normal step is defined, it sets
 \begin{equation*}
     \delta = \sqrt{\sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]]^2},
@@ -846,16 +779,6 @@ For the normal step, as formulated in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}, w
 \end{subequations}
 for some~$\zeta \in [0, 1]$, either exactly or approximately.
 Further, similar to the equality-constrained case, we let the tangential step~$\tstep[k]$ solve~\cref{eq:tangential-step-original} for some~$\mathcal{V} \subseteq \R^n$ such that for any~$d \in \mathcal{V}$,~$\nstep[k] + \step$ does not violate the linearized constraints more than~$\nstep[k]$ does.
-
-% In the equality constrained case, the normal and tangential steps are clearly orthogonal to each other the Vardi approach, although they may not be in the \gls{cdt} approach\todo{This is wrong, the example is not needed anymore}.
-% In the general case however, there is no reason for them to be orthogonal to each other in all approaches.
-% Consider for example
-% \begin{align*}
-%     \min        & \quad \iter_1^2 + \iter_2^2\\
-%     \text{s.t.} & \quad \iter_2 \ge 0,\\
-%                 & \quad \iter \in \R^2.
-% \end{align*}
-% Given the initial guess~$\iter[0] = [0, -1]^{\T}$, an initial trust-region radius~$\rad[0] = 1 / 2$, and~$\zeta < 1$, a reasonable composite-step approach would generate normal and tangential steps that are (almost) in the same direction, both heading up towards the feasible region.
 
 \subsubsection{Byrd-Omojokun approach}
 
@@ -922,8 +845,6 @@ for some~$\alpha \in [0, 1]$, where~$\act(\iter[k])$ designates the active set f
 \end{subequations}
 Note that if~$\alpha = 0$, then~\cref{eq:sqp-subproblem-vardi} is clearly feasible.
 The relaxation of the equality constraints~\cref{eq:vardi-eq} is due to \citeauthor{Vardi_1985}~\cite{Vardi_1985}, but the relaxed inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2} are adopted from \citeauthor{Powell_1978a}~\cite {Powell_1978a}.
-% If all inequality constraints were replaced as in~\cref{eq:vardi-ub1}, then the inequality constraints that are strictly satisfied at~$\iter[k]$ (i.e., inactive) would be modified.
-% This is however not the case in the extension we adopt from Powell.
 
 Remark that~\cref{eq:vardi} does not modify a linearized inequality constraint if~$\iter[k]$ strictly satisfies the corresponding original constraint.
 Even more, if~$\iter[k]$ satisfies a constraint (whether inequality or equality), then its linearized counterpart is not modified.
@@ -939,7 +860,6 @@ Then~\cref{eq:vardi} does not modify the constraints in~$\mathcal{J}$, and repla
         & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \ieq \setminus \mathcal{J}$.}
     \end{empheq}
 \end{subequations}
-% This is because the difference between~$\iub \setminus \mathcal{J}$ and~$\iub \cap \act(\iter[k])$ are the indices such that~$\con{i}(\iter[k]) = 0$, for which~$\alpha \con{i}(\iter[k]) = \con{i}(\iter[k])$.
 This is because the difference between~$(\iub \cap \act(\iter[k])) \cup \ieq$ and~$(\iub \setminus \mathcal{J}) \cup (\ieq \setminus \mathcal{J})$ are the indices such that~$\con{i}(\iter[k]) = 0$, for which~$\alpha \con{i}(\iter[k]) = \con{i}(\iter[k])$.
 
 We now explain why this method can be understood as a composite-step approach, assuming that the system
@@ -995,15 +915,6 @@ It consists in replacing the constraints~\cref{eq:trust-region-sqp-subproblem-ub
     \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \le \delta^2
 \end{equation}
 for some~$\delta \ge 0$, so that the trust-region subproblem after replacement becomes feasible.
-% \begin{subequations}
-%     \label{eq:cdt-composite-step}
-%     \begin{align}
-%         \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
-%         \text{s.t.} & \quad \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \le \delta^2,\\
-%                     & \quad \norm{\step} \le \rad[k],\\
-%                     & \quad \step \in \R^n. \nonumber
-%     \end{align}
-% \end{subequations}
 The method selects the scalar~$\delta$ in a composite-step fashion as follows.
 It first takes a normal step~$\nstep[k]$ by solving (approximately) the problem~\cref{eq:byrd-omojokun} with~$\zeta = 1$.
 Once~$\nstep[k]$ is defined, it sets
@@ -1015,38 +926,13 @@ and solves the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subpr
 \section{Other existing \glsfmtshort{sqp} methods and software}
 \label{sec:existing-sqp-software}
 
-% We now present some well-known \gls{sqp} methods and software.
-
 There exist other mechanisms to deal with the possible infeasibility of the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem}.
 For example, the \gls{sl1qp} method~\cite{Fletcher_1982a} solves approximately the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem} by minimizing the objective function~\cref{eq:trust-region-sqp-subproblem-obj} plus a~$\ell_1$-norm penalty term of the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} subject to the trust-region constraint~\cref{eq:trust-region-sqp-subproblem-tr}.
-% \begin{equation*}
-%     \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step + \mu \bigg[ \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step} + \sum_{i \in \ieq} \abs{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step} \bigg]
-% \end{equation*}
-% subject to~$\norm{\step} \le \rad[k]$, for some~$\mu > 0$.
 This problem has the strong advantages that it is always feasible, and that it can be reformulated as a quadratic programming problem with a trust-region constraint and can hence be solved using traditional subproblem solvers (see \cref{ch:cobyqa-subproblems}).
-% \begin{align*}
-%     \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step + \mu \bigg[ \sum_{i \in \iub} u_i + \sum_{i \in \ieq} (v_i + w_i) \bigg]\\
-%     \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le u_i, ~ i \in \iub,\\
-%                 & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = v_i - w_i, ~ i \in \ieq,\\
-%                 & \quad \norm{\step} \le \rad[k],\\
-%                 & \quad u, v, w \ge 0,\\
-%                 & \quad \step \in \R^n, ~ u = [u_i]_{i \in \iub}, ~ v = [v_i]_{i \in \ieq}, ~ w = [w_i]_{i \in \ieq},
-% \end{align*}
 
 Another method for dealing with the possible infeasibility of~\cref{eq:trust-region-sqp-subproblem}, commonly referred to as the \gls{slqp} method~\cite{Fletcher_Maza_1989,Byrd_Etal_2004}, consists in performing the computation in the two following stages.
 The first stage solves a linear programming problem with a trust-region constraint to estimate a working set\footnote{We do not employ the term \emph{active set} not to confound with the one given in \cref{def:active-set}.}, and the second stage solves a equality-constrained quadratic programming problem with a trust-region constraint, where only the constraint in the working set are considered.
 This method underlies for example the \gls{slqpgs} software~\cite{Curtis_Overton_2012}.
-% It first minimizes
-% \begin{equation*}
-%     \nabla \obj(\iter[k])^{\T} \step + \mu \bigg[ \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step} + \sum_{i \in \ieq} \abs{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step} \bigg]
-% \end{equation*}
-% subject to~$\step \le \radlb[k]$ for some~$\radlb[k] > 0$.
-% Similar to the \gls{sl1qp} method, this problem has the advantage that it can be formulated as a linear programming problem with a trust-region constraint.
-% Once such a step, say~$\step[\ast]$, is calculated, the method determines a working set~$\mathcal{W}$ as a linearly independent subset of
-% \begin{equation*}
-%     \set{i \in \iub \cup \ieq : \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step[\ast] = 0}.
-% \end{equation*}
-% Thus, instead of solving
 
 Another mechanism that exists in the litterature is the trust-region filter-\gls{sqp} approach~\cite{Fletcher_Leyffer_2002}.
 Roughly speaking, it attempts to minimize simultaneously the objective function and the constraint violation, as in biobjective optimization.
