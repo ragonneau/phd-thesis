@@ -55,7 +55,7 @@ The \gls{sqp} method is known to be one of the most powerful methods for solving
 The classical \gls{sqp} framework is presented in \cref{alg:sqp}.
 
 \begin{algorithm}
-    \caption{Classical \glsxtrshort{sqp} method}
+    \caption{Classical \glsfmtshort{sqp} method}
     \label{alg:sqp}
     \DontPrintSemicolon
     \KwData{Initial guess~$\iter[0] \in \R^n$ and estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$.}
@@ -555,7 +555,7 @@ Note that this framework is conceptual, as many details are hidden, including th
 A similar framework for equality-constrained problems can be found in~\cite[\S~2]{Powell_Yuan_1991} and~\cite[Alg.~18.4]{Nocedal_Wright_2006}.
 
 \begin{algorithm}
-    \caption{Basic trust-region \glsxtrshort{sqp} method}
+    \caption{Basic trust-region \glsfmtshort{sqp} method}
     \label{alg:trust-region-sqp}
     \DontPrintSemicolon
     \KwData{Initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
@@ -940,18 +940,17 @@ For example, the \gls{slpqp} methods~\cite{Fletcher_1982a,Yuan_1995,Gould_2021} 
 \begin{subequations}
     \label{eq:slpqp}
     \begin{align}
-        \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step + \Phi_p(d)\\
+        \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step + \mu \Phi_p(d)\\
         \text{s.t.} & \quad \norm{d} \le \rad[k]
     \end{align}
 \end{subequations}
-where~$\Phi_p$ is defined by
+for some~$\mu \ge 0$, where~$\Phi_p$ is defined by
 \begin{equation*}
     \Phi_p(d) \eqdef \bigg[ \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^p + \sum_{i \in \ieq} \abs{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^p \bigg]^{1/p}, \quad \text{for~$d \in \R^n$.}
 \end{equation*}
-% In particular, \citeauthor{Yuan_1995}~\cite{Yuan_1995} proposed it with~$p = \infty$.
 When the trust region is defined by a polyhedral norm (e.g., the~$\ell_1$- and~$\ell_{\infty}$-norms), the two cases~$p \in \set{1, \infty}$ have the advantage that the subproblem~\cref{eq:slpqp} can be reformulated as a quadratic programming problem.
-
-\todo[noline]{They did not propose it to solve a trust-region SQP subproblem, but as penalty methods}
+The original idea originally proposed by~\cite{Fletcher_1982a} was not to consider solutions to~\cref{eq:slpqp} as approximate solutions to the trust-region \gls{sqp} subproblems~\cref{eq:trust-region-sqp-subproblem}.
+He rather proposed a trust-region method for minimizing composite functions, such as exact penalty functions.
 
 Another method for dealing with the possible infeasibility of~\cref{eq:trust-region-sqp-subproblem}, commonly referred to as the \gls{slqp} method~\cite{Fletcher_Maza_1989,Byrd_Etal_2004}, consists in performing the computation in the two following stages.
 The first stage solves a linear programming problem with a trust-region constraint to estimate a working set\footnote{We do not employ the term \emph{active set} not to confound with the one given in \cref{def:active-set}.}, and the second stage solves a equality-constrained quadratic programming problem with a trust-region constraint, where only the constraint in the working set are considered.
@@ -960,8 +959,9 @@ This method underlies for example the \gls{slqpgs} software~\cite{Curtis_Overton
 \section{Software based on the \glsfmtshort{sqp} method}
 \label{sec:existing-sqp-software}
 
-Many well-known software packages are based on the \gls{sqp} method.
-For example, \gls{snopt}~\cite{Gill_Murray_Saunders_2002,Gill_Murray_Saunders_2005} is an implementation of the \gls{sqp} method for inequality-constrained optimization, which approximates the Hessians of the Lagrangian function with a limited-memory quasi-Newton method\todo{Put citations}.
+There are many well-known software packages based on the \gls{sqp} method.
+For example, \gls{snopt}~\cite{Gill_Murray_Saunders_2002,Gill_Murray_Saunders_2005} is an implementation of the \gls{sqp} method for inequality-constrained optimization, which approximates the Hessians of the Lagrangian function with a limited-memory quasi-Newton method~\cite{Buckley_Lenir_1978,Liu_Nocedal_1989,Gilbert_Nocedal_1993}.
+% ~\cite{Perry_1977,Shanno_1978}.
 The method is embedded in a line-search framework (instead of a trust-region), that uses the augmented Lagrangian function as the merit function.
 Moreover, the possible infeasibility of the \gls{sqp} subproblem is handled using a very similar technique to the one employed by S$\ell_1$QP.
 
