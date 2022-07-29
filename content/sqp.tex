@@ -15,14 +15,18 @@
 \chapter{The \glsfmtshort{sqp} method \textemdash\ an overview and some perspectives}
 \label{ch:sqp}
 
-This chapter presents basic ideas behind the well-known \gls{sqp} method and some of its practical implementations.
-For this discussion, we assume that the derivatives of the objective and constraint functions are available, as is the case in the classical \gls{sqp} method.
-We first present the general \gls{sqp} framework in \cref{sec:sqp-method}, and we get some insight of its potency by interpreting it from four different angles.
-We then introduce the concept of merit function, used in globalization strategies for the \gls{sqp} method, in \cref{sec:sqp-merit-functions}.
-Further, we present in \cref{sec:sqp-trust-region} the trust-region \gls{sqp} method and some practical implementations, referred to as the Byrd-Omojokun, the Vardi, and the \gls{cdt} approaches.
-In particular, we present in \cref{prop:vardi-byrd-omojokun} an interesting interpretation of the Vardi approach as an approximate Byrd-Omojokun approach.
-Thus, we give some well-known \gls{sqp} software in \cref{sec:existing-sqp-software}.
+This chapter introduces the well-known \gls{sqp} method, assuming that the derivatives of the objective and constraint functions are available.
+We first present the general \gls{sqp} framework and some insights into its subproblem from four different angles in \cref{sec:sqp-method}.
+\Cref{sec:sqp-merit-functions} then introduces the concept of merit function used in globalization strategies for the \gls{sqp} method.
+Further, \cref{sec:sqp-trust-region} focuses on the trust-region \gls{sqp} framework and some composite-step methods for solving its subproblem, referred to as the Byrd-Omojokun, Vardi, and \gls{cdt} approaches.
+\Cref{sec:existing-sqp-software} briefly mentions some well-known software based on the \gls{sqp} method.
 
+Most of the materials in this chapter are not new, and can be found for example in~\cite{Boggs_Tolle_1995,Gould_Toint_2000},~\cite[Ch.~15]{Conn_Gould_Toint_2000},~\cite[Ch.~12]{Sun_Yuan_2006},~\cite[Ch.~18]{Nocedal_Wright_2006}, and~\cite{Schittkowski_Yuan_2011,Gill_Wong_2011}.
+However, we highlight \cref{thm:sqp-path,thm:auglag-sqp-3,prop:vardi-byrd-omojokun}, which are new to the best of our knowledge, although the last two are easy to establish.
+\Cref{thm:sqp-path} interprets the objective function of the \gls{sqp} subproblem as a quadratic approximation of the original objective function in the tangent space of the feasible region.
+This explains in a new way why the objective function of the \gls{sqp} subproblem is not the second-order Taylor expansion of~$\obj$ in the general case.
+\Cref{thm:auglag-sqp-3} shows that the augmented Lagrangian of the \gls{sqp} subproblem is a particular quadratic approximation of the augmented Lagrangian used in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
+Finally, \cref{prop:vardi-byrd-omojokun} provides an interpretation of the Vardi approach as an approximation to the Byrd-Omojokun approach.
 
 \section{The method}
 \label{sec:sqp-method}
@@ -426,6 +430,12 @@ This is usually done using \emph{merit functions}.
 A merit function assesses the quality of a point by considering both~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$.
 We present in what follows some classical merit functions.
 
+We also mention that there exists an alternative to merit functions, known as the filter method~\cite{Fletcher_Leyffer_2002,Fletcher_Leyffer_Toint_1998,Fletcher_Leyffer_Toint_2002,Fletcher_Leyffer_Toint_2006,Riberio_Karas_Gonzaga_2008}.
+Roughly speaking, it attempts to minimize simultaneously the objective function and the constraint violation, as in biobjective optimization.
+However, we do not study the filter method in this thesis.
+Interested readers may refer to the above-mentioned references for more details.
+% Moreover, if the current \gls{sqp} subproblem is infeasible, it will only focus on reducing the constraint violation.
+
 \subsection{The Courant merit function}
 
 Perhaps the most classical merit function is the Courant merit function\footnote{\citeauthor{Courant_1943} proposed this merit function when dealing with boundary conditions of equilibrium and vibration problems. See~\cite[Pt.~II, \S~3]{Courant_1943} for details.}~\cite{Courant_1943}, defined by
@@ -515,6 +525,7 @@ Many other second-order correction steps can also be defined (see, e.g.,~\cite{C
 
 Another possibility to handle the Maratos effect is to choose the merit function properly.
 For example, \citeauthor{Powell_Yuan_1986}~\cite[\S~4]{Powell_Yuan_1986} showed that the Maratos effect cannot occur when using the augmented Lagrangian merit function in a line-search \gls{sqp} method.
+We refer to~\cite[\S~7]{Schittkowski_Yuan_2011} for other techniques to cope with the Maratos effect.
 
 \section{The trust-region \glsfmtshort{sqp} method}
 \label{sec:sqp-trust-region}
@@ -722,10 +733,9 @@ We now point out that the above-mentioned normal step~$\nstep[k]$ is an approxim
 \end{proof}
 
 Note that~$\step[\ast]$ is a Newton step for~\cref{eq:byrd-omojokun-original-obj} at the trust region center.
-Therefore, with~$\zeta  = \alpha \norm{\step[\ast]} / \rad[k]$, the normal step~$\nstep[k]$ of the Vardi approach is a truncated Newton step for~\cref{eq:byrd-omojokun-original}.
+Therefore, the normal step~$\nstep[k]$ of the Vardi approach is a truncated Newton step for~\cref{eq:byrd-omojokun-original} with~$\zeta = \norm{\nstep[k]} / \rad[k]  = \alpha \norm{\step[\ast]} / \rad[k]$.
 This also reveals a relation between the Vardi and the Byrd-Omojokun approaches.
-The former solves the normal subproblem~\cref{eq:byrd-omojokun-original} by a truncated Newton step for a particular~$\zeta$ depending on~$k$, while the latter intends to solve~\cref{eq:byrd-omojokun-original} exactly with a prescribed constant~$\zeta$.
-The two approaches have no difference in the way they define the tangential step.
+The Vardi approach with~$\alpha = \zeta \rad[k] / \norm{\step[\ast]}$ can be regarded as an approximation to the Byrd-Omojokun approach, because the former solves the normal subproblem~\cref{eq:byrd-omojokun-original} by a truncated Newton step, while the latter intends to solve this subproblem exactly, and the two approaches have no difference in the way they define the tangential step.
 
 \subsubsection{\Glsfmtlong{cdt} (\glsfmtshort{cdt}) approach}
 
@@ -923,41 +933,56 @@ Once~$\nstep[k]$ is defined, it sets
 \end{equation*}
 and solves the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem} after replacing~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} with~\cref{eq:cdt}.
 
-\section{Other existing \glsfmtshort{sqp} methods and software}
-\label{sec:existing-sqp-software}
+\subsection{Other methods for solving the trust-region \glsfmtshort{sqp} subproblem}
 
 There exist other mechanisms to deal with the possible infeasibility of the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem}.
-For example, the \gls{sl1qp} method~\cite{Fletcher_1982a} solves approximately the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem} by minimizing the objective function~\cref{eq:trust-region-sqp-subproblem-obj} plus a~$\ell_1$-norm penalty term of the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} subject to the trust-region constraint~\cref{eq:trust-region-sqp-subproblem-tr}.
-This problem has the strong advantages that it is always feasible, and that it can be reformulated as a quadratic programming problem with a trust-region constraint and can hence be solved using traditional subproblem solvers (see \cref{ch:cobyqa-subproblems}).
+For example, the \gls{slpqp} methods~\cite{Fletcher_1982a,Yuan_1995,Gould_2021} solve approximately the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem} by solving
+\begin{subequations}
+    \label{eq:slpqp}
+    \begin{align}
+        \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step + \Phi_p(d)\\
+        \text{s.t.} & \quad \norm{d} \le \rad[k]
+    \end{align}
+\end{subequations}
+where~$\Phi_p$ is defined by
+\begin{equation*}
+    \Phi_p(d) \eqdef \bigg[ \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^p + \sum_{i \in \ieq} \abs{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^p \bigg]^{1/p}, \quad \text{for~$d \in \R^n$.}
+\end{equation*}
+% In particular, \citeauthor{Yuan_1995}~\cite{Yuan_1995} proposed it with~$p = \infty$.
+When the trust region is defined by a polyhedral norm (e.g., the~$\ell_1$- and~$\ell_{\infty}$-norms), the two cases~$p \in \set{1, \infty}$ have the advantage that the subproblem~\cref{eq:slpqp} can be reformulated as a quadratic programming problem.
+
+\todo[noline]{They did not propose it to solve a trust-region SQP subproblem, but as penalty methods}
 
 Another method for dealing with the possible infeasibility of~\cref{eq:trust-region-sqp-subproblem}, commonly referred to as the \gls{slqp} method~\cite{Fletcher_Maza_1989,Byrd_Etal_2004}, consists in performing the computation in the two following stages.
 The first stage solves a linear programming problem with a trust-region constraint to estimate a working set\footnote{We do not employ the term \emph{active set} not to confound with the one given in \cref{def:active-set}.}, and the second stage solves a equality-constrained quadratic programming problem with a trust-region constraint, where only the constraint in the working set are considered.
 This method underlies for example the \gls{slqpgs} software~\cite{Curtis_Overton_2012}.
 
-Another mechanism that exists in the litterature is the trust-region filter-\gls{sqp} approach~\cite{Fletcher_Leyffer_2002}.
-Roughly speaking, it attempts to minimize simultaneously the objective function and the constraint violation, as in biobjective optimization.
-Moreover, if the current \gls{sqp} subproblem is infeasible, it will only focus on reducing the constraint violation.
+\section{Software based on the \glsfmtshort{sqp} method}
+\label{sec:existing-sqp-software}
 
-Many well-known software are based on the \gls{sqp} method.
-For example, \gls{snopt}~\cite{Gill_Murray_Saunders_2005} is an implementation of the \gls{sqp} method for inequality-constrained optimization that uses the exact gradients of the objective and constraint functions, but replaces the Hessians of the Lagrangian function with limited-memory quasi-Newton approximations.
+Many well-known software packages are based on the \gls{sqp} method.
+For example, \gls{snopt}~\cite{Gill_Murray_Saunders_2002,Gill_Murray_Saunders_2005} is an implementation of the \gls{sqp} method for inequality-constrained optimization, which approximates the Hessians of the Lagrangian function with a limited-memory quasi-Newton method\todo{Put citations}.
 The method is embedded in a line-search framework (instead of a trust-region), that uses the augmented Lagrangian function as the merit function.
 Moreover, the possible infeasibility of the \gls{sqp} subproblem is handled using a very similar technique to the one employed by S$\ell_1$QP.
 
-Another example of famous pieces of software based on the \gls{sqp} method is the \gls{condor} solver~\cite{Berghen_2004,Berghen_Bersini_2004}.
-This method assumes that derivatives of the objective function are unavailable, but that evaluations of the constraint functions are unexpensive and that derivatives of them can be evaluated.
-It is a trust-region method based on the~$\ell_1$-merit function, where at each iteration, a quadratic model of the objective function is minimized subject to the original constraints and a trust-region constraint.
-The subproblem is usually solved using a line-search \gls{sqp} method with an active-set strategy for handling the nonlinear constraints.
+We also mention \gls{condor}~\cite{Berghen_2004,Berghen_Bersini_2004}, a trust-region method that extends Powell's \gls{uobyqa}~\cite{Powell_2002} to constrained optimization.
+It is not an \gls{sqp} method on its own, but employs an \gls{sqp} algorithm to solve its subproblem.
+This method assumes that derivatives of the objective function are unavailable, but both the values and the derivatives of the constraint functions can be evaluated unexpensively.
+It is a trust-region method based on the~$\ell_1$-merit function, where at each iteration, a quadratic model of the objective function is minimized subject to the original constraints (rather than a model of them) and a trust-region constraint.
+The subproblem is solved with a \enquote{null-space, active-set approach} detailed in~\cite[\S~9.3]{Berghen_2004}, and a line-search \gls{sqp} method is applied to this subproblem in the presence of active nonlinear constraints.
 
-% \begin{itemize}
-%     \item The \gls{slsqp} method~\cite{Kraft_1988}.
-% \end{itemize}
+\begin{itemize}
+    \item NLPQLP (cite \url{http://klaus-schittkowski.de/NLPQLP.pdf}).
+    \item \cite{Lalee_Nocedal_Plantenga_1998}.
+\end{itemize}
 
 \section{Concluding remarks}
 
 We presented in this chapter the classical \gls{sqp} framework, and we got some insight of its potency by interpreting it from different perspectives.
-To the best of our knowledge, the result in \cref{thm:sqp-path} showing that the objective function of the \gls{sqp} subproblem is a quadratic approximation of the original objective function on a path on the boundary of the constraints is new.
+To the best of our knowledge, the result in \cref{thm:sqp-path} is new.
+It shows that the objective function of the \gls{sqp} subproblem is a quadratic approximation of the original objective function in the tangent space of the feasible region.
 More specifically, it indicates that this approximation is of second-order and that corresponding the second-order term depends on the stationary condition.
-If a point is almost a stationary point, then the approximation is almost a cubic approximation.
+% If a point is almost a stationary point, then the approximation is almost a cubic approximation.
 We also provide different relation between the \gls{sqp} and the augmented Lagrangian methods in \cref{subsec:lagrangian-augmented-lagrangian}, from both the theorerical and the computational points of view.
 More specifically, we showed different relations between the augmented Lagrangian functions of the original problem and the \gls{sqp} subproblem in \cref{thm:auglag-sqp-2,thm:auglag-sqp-3}.
 
