@@ -632,6 +632,7 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
 \end{algorithm}
 
 \subsection{Composite steps for equality constrained optimization}
+\label{subsec:composite-step-equality}
 
 The \cref{alg:trust-region-sqp-step} of \cref{alg:trust-region-sqp} hides the following crucial point.
 If the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem} is infeasible, what should~$\step[k]$ approximate?
@@ -663,7 +664,7 @@ Further, the tangential step~$\tstep[k]$ solves the tangential subproblem
 either exactly or approximately, where~$\mathcal{V}$ denotes some set such that for any~$d \in \mathcal{V}$,~$\nstep[k] + \step$ does not violate the linearized constraints more than~$\nstep[k]$ does.
 The exact formulation of~$\mathcal{V}$ depends on how we measure the constraint violation.
 
-In what follows, we describe three methods that are covered by this composite-step framework, namely the Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989}, the Vardi approach~\cite{Vardi_1985}, and the \gls{cdt} approach~\cite{Celis_Dennis_Tapia_1985}\todo{Find a solution for the italic}.
+In what follows, we describe three methods that are covered by this composite-step framework, namely the Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989}, the Vardi approach~\cite{Vardi_1985}, and the \gls{cdt} approach~\cite{Celis_Dennis_Tapia_1985}.
 It is noteworthy that \citeauthor{Vardi_1985} did not explicitely formulate his method as a composite-step approach, but it fits well in the composite-step framework as explained in the sequel.
 
 \subsubsection{Byrd-Omojokun approach}
@@ -965,16 +966,20 @@ For example, \gls{snopt}~\cite{Gill_Murray_Saunders_2002,Gill_Murray_Saunders_20
 The method is embedded in a line-search framework (instead of a trust-region), that uses the augmented Lagrangian function as the merit function.
 Moreover, the possible infeasibility of the \gls{sqp} subproblem is handled using a very similar technique to the one employed by S$\ell_1$QP.
 
+Another classical solver based on the \gls{sqp} method is \gls{nlpqlp}~\cite{Schittkowski_2015}.
+It is a line-search \gls{sqp} method based on the augmented Lagrangian merit function, which approximates the Hessians of the Lagrangian function by the \gls{bfgs} formula.
+The possible infeasibility of the \gls{sqp} subproblem is handled by increasing the dimension of the decision variable by one, to include a new parameter that will shift the infeasible constraints.
+Details on this mechanism is given in~\cite[Eq.~(9)]{Schittkowski_1986}.
+
+Another instance is the \gls{etr} method~\cite{Lalee_Nocedal_Plantenga_1998} for equality-constrained optimization.
+It is a trust-region \gls{sqp} method based on the~$\ell_2$-merit function, which approximates the Hessians of the Lagrangian function by a limited-memory quasi-Newton method if the Hessian matrices of the objective and constraint functions are not provided by the user.
+The trust-region \gls{sqp} subproblem is solved using a Byrd-Omojokun approach, described in \cref{subsec:composite-step-equality}.
+
 We also mention \gls{condor}~\cite{Berghen_2004,Berghen_Bersini_2004}, a trust-region method that extends Powell's \gls{uobyqa}~\cite{Powell_2002} to constrained optimization.
 It is not an \gls{sqp} method on its own, but employs an \gls{sqp} algorithm to solve its subproblem.
 This method assumes that derivatives of the objective function are unavailable, but both the values and the derivatives of the constraint functions can be evaluated unexpensively.
 It is a trust-region method based on the~$\ell_1$-merit function, where at each iteration, a quadratic model of the objective function is minimized subject to the original constraints (rather than a model of them) and a trust-region constraint.
 The subproblem is solved with a \enquote{null-space, active-set approach} detailed in~\cite[\S~9.3]{Berghen_2004}, and a line-search \gls{sqp} method is applied to this subproblem in the presence of active nonlinear constraints.
-
-\begin{itemize}
-    \item NLPQLP (cite \url{http://klaus-schittkowski.de/NLPQLP.pdf}).
-    \item \cite{Lalee_Nocedal_Plantenga_1998}.
-\end{itemize}
 
 \section{Concluding remarks}
 

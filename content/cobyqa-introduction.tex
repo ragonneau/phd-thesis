@@ -95,14 +95,18 @@ See~\cite[\S~9]{Powell_2009} for the details calculations.
 \subsection{A derivative-free trust-region \glsfmtshort{sqp} framework}
 
 We present in this section the derivative-free trust-region \gls{sqp} framework employed by \gls{cobyqa}.
+We denote for convenience~$\lagm[k]$ the Lagrangian function evaluated on the models, i.e.,
+\begin{equation*}
+    \lagm[k](\iter, \lm) \eqdef \objm[k](\iter) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lm_i \conm[k]{i}(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lm_i \in \R$, with~$i \in \iub \cup \ieq$.}
+\end{equation*}
 As before, the merit function we consider is the~$\ell_2$-merit function, defined for a given penalty parameter~$\gamma^k \ge 0$ by
 \begin{equation*}
     \merit[k](\iter) \eqdef \obj(x) + \gamma^k \sqrt{\sum_{i \in \iub} \posp{\con{i}(\iter)}^2 + \sum_{i \in \ieq} \abs{\con{i}(\iter)}^2}, \quad \text{for~$\iter \in \R^n$.}
 \end{equation*}
-Once again, we denote by~$\meritm[k]$ the~$\ell_2$-merit function computed on the \gls{sqp} subproblem, i.e.,
+We denote by~$\meritm[k]$ the~$\ell_2$-merit function computed on the \gls{sqp} subproblem, i.e.,
 \begin{align*}
-    \meritm[k](\step)   & \eqdef \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
-                        & \qquad + \gamma^k \sqrt{\sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2}, \quad \text{for~$\step \in \R^n$.}
+    \meritm[k](\step)   & \eqdef \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
+                        & \qquad + \gamma^k \sqrt{\sum_{i \in \iub} \posp{\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step]^2}, \quad \text{for~$\step \in \R^n$.}
 \end{align*}
 The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hides many details, including the definition of \enquote{convergence} in the loop or the update of~$\lm[k]$, which will be specified hereinafter.
 
@@ -125,16 +129,16 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
                             & \quad \norm{\step} \le \rad[k],\\
                             & \quad \step \in \R^n, \nonumber
             \end{algomathalign}
-        \end{subequations}
+        \end{subequations} \nllabel{alg:derivative-free-trust-region-sqp-subproblem}\;
         Set a penalty parameter~$\gamma^k \ge \max \set{\gamma^{k - 1}, \norm{\lm[k]}}$ providing~$\meritm[k](\step[k]) < \meritm[k](0)$ \nllabel{alg:derivative-free-trust-region-sqp-penalty}\;
         Evaluate the trust-region ratio
         \begin{algomathdisplay}
             \ratio[k] \gets \frac{\merit[k](\iter[k]) - \merit[k](\iter[k] + \step[k])}{\meritm[k](0) - \meritm[k](\step[k])}
         \end{algomathdisplay}
         \eIf{$\ratio[k] \ge 0$}{
-            Choose a point~$\bar{y} \in \xpt[k]$ to remove from~$\xpt[k]$\;
+            Choose a point~$\bar{y} \in \xpt[k]$ to remove from~$\xpt[k]$\; \nllabel{alg:derivative-free-trust-region-sqp-remove-1}
         }{
-            Choose a point~$\bar{y} \in \xpt[k] \setminus \set{\iter[k]}$ to remove from~$\xpt[k]$\;
+            Choose a point~$\bar{y} \in \xpt[k] \setminus \set{\iter[k]}$ to remove from~$\xpt[k]$\; \nllabel{alg:derivative-free-trust-region-sqp-remove-2}
         }
         Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k] \setminus \set{\bar{y}}) \cup \set{\iter[k] + \step[k]}$\;
         Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$\;
@@ -157,21 +161,118 @@ Moreover, note that~$\xpt[k + 1]$ necessarily contains~$\iter[k] + \step[k]$, an
 In a practical implementation, the quadratic models on \cref{alg:derivative-free-trust-region-sqp-models} of \cref{alg:derivative-free-trust-region-sqp} are not computed from scratch, because only one point differs~$\xpt[k + 1]$ from~$\xpt[k]$.
 Details on this update mechanism are given in \cref{subsec:implementation-symmetric-broyden-update}.
 
+\subsection{Solving the trust-region \glsfmtshort{sqp} subproblem}
+
 To solve the trust-region \gls{sqp} subproblem~\cref{eq:derivative-free-trust-region-sqp-subproblem}, we employ a Byrd-Omojokun approach.
 It first generates a normal step~$\nstep[k]$ by solving approximately
-\begin{align*}
-    \min        & \quad \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2\\
-    \text{s.t.} & \quad \xl \le \iter[k] + \step \le \xu,\\
-                & \quad \norm{\step} \le \zeta \rad[k],\\
-                & \quad \step \in \R^n,
-\end{align*}
-\todo[noline]{Finish the explanation}
+\begin{subequations}
+    \label{eq:cobyqa-normal}
+    \begin{align}
+        \min        & \quad \sum_{i \in \iub} \posp{\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step]^2\\
+        \text{s.t.} & \quad \xl \le \iter[k] + \step \le \xu,\\
+                    & \quad \norm{\step} \le \zeta \rad[k],\\
+                    & \quad \step \in \R^n,
+    \end{align}
+\end{subequations}
+for some~$\zeta \in (0, 1)$.
+Further, it generates a tangential step~$\tstep[k]$ by solving approximately
+\begin{subequations}
+    \label{eq:cobyqa-tangential-original}
+    \begin{align}
+        \min        & \quad [\nabla \objm[k](\iter[k]) + \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
+        \text{s.t.} & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max \set{-\conm[k]{i}(\iter[k]) - \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub,\\
+                    & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
+                    & \quad \xl \le \iter[k] + \nstep[k] + \step \le \xu,\\
+                    & \quad \norm{\nstep[k] + \step} \le \rad[k],\\
+                    & \quad \step \in \R^n,
+    \end{align}
+\end{subequations}
+and sets the composite step~$\step[k] = \nstep[k] + \tstep[k]$.
+Details on the calculations of the tangential and normal steps are provided in \cref{sec:cobyqa-tangential,sec:cobyqa-normal}, respectively.
+In particular, the method we use to approximately minimize a quadratic subject to linear constraints and a trust-region constraint necessitates
+\begin{enumerate}
+    \item the origin to be feasible, and
+    \item the trust region to be centered on the origin.
+\end{enumerate}
+The first requirement is satisfied by the tangential subproblem~\cref{eq:cobyqa-tangential-original}, but the second is not.
+To cope with this difficulty, we can solve instead
+\begin{subequations}
+    \label{eq:cobyqa-tangential}
+    \begin{align}
+        \min        & \quad [\nabla \objm[k](\iter[k]) + \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
+        \text{s.t.} & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max \set{-\conm[k]{i}(\iter[k]) - \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub,\\
+                    & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
+                    & \quad \xl \le \iter[k] + \nstep[k] + \step \le \xu,\\
+                    & \quad \norm{\step} \le \sqrt{(\rad[k])^2 - \norm{\nstep[k]}^2}, \label{eq:cobyqa-tangential-tr}\\
+                    & \quad \step \in \R^n.
+    \end{align}
+\end{subequations}
+In doing so, we would have
+\begin{equation*}
+    \norm{\step[k]} = \norm{\nstep[k] + \tstep[k]} \le \max_{d \in \R^n} \set[\Big]{\norm{d} + \sqrt{(\rad[k])^2 - \norm{\step}^2} : \norm{d} \le \rad[k]} = \sqrt{2} \rad[k].
+\end{equation*}
+Therefore, to maintain the property~$\norm{\step[k]} \le \rad[k]$, we replace the trust-region constraint of the tangential subproblem~\cref{eq:cobyqa-tangential-tr} with
+\begin{equation}
+    \label{eq:cobyqa-trust-region-radius}
+    \norm{\step} \le \sqrt{\frac{(\rad[k])^2}{2} - \norm{\nstep[k]}^2}.
+\end{equation}
+Of course, we must ensure that~$\norm{\nstep[k]} \le \rad[k] / \sqrt{2}$, so that the right-hand side in~\cref{eq:cobyqa-trust-region-radius} is well-defined.
+To do so, we select~$\zeta$ to satisfy~$\zeta \le 1 / \sqrt{2}$.
+To always provide some elbow room for the tangential step, we restrict the previous condition to~$\zeta < 1 / \sqrt{2}$, and we finally choose for \gls{cobyqa}
+\begin{equation*}
+    \zeta = \frac{2 \sqrt{2}}{5}.
+\end{equation*}
 
 % Theoretically, it is possible to evaluate the composite step directly.
 % However, the methods used to solve the subproblems usually require the trust-region center to be feasible, which is not the case for the composite subproblem.
 % Therefore, we modify the tangential subproblem to make the origin the trust-region center, which is then feasible.
 % Therefore, we build explicitely the tangential step.
 % See Trust-Region Methods, p.~660.
+
+\subsection{Updating the interpolation set}
+
+We now detail the choice of~$\bar{y}$ in \cref{alg:derivative-free-trust-region-sqp-remove-1,alg:derivative-free-trust-region-sqp-remove-2} of \cref{alg:derivative-free-trust-region-sqp}.
+Let us first consider the case~$\rho^k \ge 0$.
+We want to replace a point from~$\xpt[k]$ by~$\iter[k] + \step[k]$ to obtain~$\xpt[k + 1]$.
+We denote~$\bar{\iter}$ the closest point from~$\iter[k]$ that solves
+\begin{equation*}
+    \min_{y \in \xpt[k]} \merit[k](y).
+\end{equation*}
+This point is not necessarily~$\iter[k]$, because the penalty parameter is already updated.
+If several such points exists, we select any of them.
+Further, \gls{dfo} methods usually set~$\bar{y}$ to be a solution to
+\begin{equation*}
+    \max_{y \in \xpt[k]} \norm{y - \bar{\iter}}.
+\end{equation*}
+This is because we want the model to be accurate only locally, around the best point.
+Although this choice is possible, we decide in \gls{cobyqa} to set~$\bar{y}$ to be a solution to
+\begin{equation}
+    \label{eq:choice-point-to-remove-trust-region}
+    \max_{y \in \xpt[k]} \abs{\omega(y)} \norm{y - \bar{\iter}}^4,
+\end{equation}
+where~$\omega(y)$ is a scaling factor, detailed below.
+Recall from \cref{subsec:implementation-symmetric-broyden-update} that the inverse of the coefficient matrix of the interpolation system is maintained.
+The corresponding updating formula, detailed in~\cite[Eq.~(2.12)]{Powell_2004c} has a scalar denominator.
+We then set~$\omega(y)$ to be this denominator if~$y \in \xpt[k]$ were to be replaced with~$\iter[k] + \step[k]$.
+This is because we want both the points to be close from each others, and this denominator to be far away from zero to avoid numerical difficulties.
+The choice of the formula~\cref{eq:choice-point-to-remove-trust-region} is taken from \gls{lincoa}, the most recent \gls{dfo} solver of \citeauthor{Powell_2015}.
+He also made very similar choices for \gls{newuoa}~\cite[Eq.~(7.4)]{Powell_2006} and \gls{bobyqa}~\cite[Eq.~(6.1)]{Powell_2009}.
+
+Coping with the case~$\rho^k < 0$ is now clear.
+We set~$\bar{y}$ to be a solution to
+\begin{equation*}
+    \max_{y \in \xpt[k] \setminus \set{\iter[k]}} \abs{\omega(y)} \norm{y - \bar{\iter}}^4,
+\end{equation*}
+for the same reasons.
+
+Note that a possibility that has stronger theoretical motivations would be to set~$\bar{y}$ to be the point that would make~$\xpt[k + 1]$ being~$\Lambda$-poised (see \cref{subsec:symmetric-broyden-updates}) in some set, say
+\begin{equation}
+    \label{eq:ball-lambda-poisedness}
+    \set{x \in \R^n : \norm{x} \le \radlb[k]},
+\end{equation}
+with the least possible~$\Lambda$.
+This technique has however a major drawback: it is extremely expensive, and would require to minimize~$\card(\xpt[k + 1])$ absolute values of quadratic functions subject to~\cref{eq:ball-lambda-poisedness} at each iteration.
+Hence, we do not employ this technique.
 
 \subsection{Least-squares Lagrange multipliers}
 
@@ -210,13 +311,18 @@ Moreover, we may wish that~$\xpt[k]$ is~$\Lambda$-poised in
 \begin{equation*}
     \set{\iter \in \R^n : \norm{x - \iter[k]} \le \radlb[k]},
 \end{equation*}
-for some reasonably low~$\Lambda$ (see \cref{subsec:symmetric-broyden-updates}).
+for some reasonably low~$\Lambda$, because the purpose of~$\radlb[k]$ is to maintain adequate distance between the interpolation points.
 However, \cref{alg:derivative-free-trust-region-sqp} never ensures that such properties hold.
 It is known that model-based methods tends in practice to lose the poisedness property of their interpolation set as the iterations progress.
 To cope with this difficulty, model-based \gls{dfo} methods are usually modified to include geometry-improving mechanisms~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b,Fasano_Morales_Nocedal_2009}.
 
-We present in what follows the geometry-improving mechanism employed by \gls{cobyqa}, which is adapted from \gls{bobyqa}~\cite{Powell_2009}.
-If the step~$\step[k]$
+We present in this section the geometry-improving mechanism that we employ in \gls{cobyqa}, which is adapted from \gls{bobyqa}~\cite{Powell_2009}.
+Some trust-region iterations are replaced with a geometry-improving iteration.
+% During a trust-region iteration, a trial point is generated, and a point
+
+% The step~$\step[k]$ generated by \cref{alg:derivative-free-trust-region-sqp-subproblem} of \cref{alg:derivative-free-trust-region-sqp} is small compared to~$rad[k]$, say~$\norm{\step[k]} \le \rad[k] / 2$, 
+
+\todo[noline]{Present the mechanism}
 
 \subsection{Managing the trust-region radius}
 
