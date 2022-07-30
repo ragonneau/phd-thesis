@@ -234,7 +234,7 @@ To always provide some elbow room for the tangential step, we restrict the previ
 We now detail the choice of~$\bar{y}$ in \cref{alg:derivative-free-trust-region-sqp-remove-1,alg:derivative-free-trust-region-sqp-remove-2} of \cref{alg:derivative-free-trust-region-sqp}.
 Let us first consider the case~$\rho^k \ge 0$.
 We want to replace a point from~$\xpt[k]$ by~$\iter[k] + \step[k]$ to obtain~$\xpt[k + 1]$.
-We denote~$\bar{\iter}$ the closest point from~$\iter[k]$ that solves
+We denote by~$\bar{\iter}$ the closest point from~$\iter[k]$ that solves
 \begin{equation*}
     \min_{y \in \xpt[k]} \merit[k](y).
 \end{equation*}
@@ -251,7 +251,7 @@ Although this choice is possible, we decide in \gls{cobyqa} to set~$\bar{y}$ to 
     \max_{y \in \xpt[k]} \abs{\omega(y)} \norm{y - \bar{\iter}}^4,
 \end{equation}
 where~$\omega(y)$ is a scaling factor, detailed below.
-Recall from \cref{subsec:implementation-symmetric-broyden-update} that the inverse of the coefficient matrix of the interpolation system is maintained.
+Recall from \cref{subsec:implementation-symmetric-broyden-update} that the inverse of the coefficient matrix of the interpolation problem is maintained.
 The corresponding updating formula, detailed in~\cite[Eq.~(2.12)]{Powell_2004c} has a scalar denominator.
 We then set~$\omega(y)$ to be this denominator if~$y \in \xpt[k]$ were to be replaced with~$\iter[k] + \step[k]$.
 This is because we want both the points to be close from each others, and this denominator to be far away from zero to avoid numerical difficulties.
@@ -268,11 +268,11 @@ for the same reasons.
 Note that a possibility that has stronger theoretical motivations would be to set~$\bar{y}$ to be the point that would make~$\xpt[k + 1]$ being~$\Lambda$-poised (see \cref{subsec:symmetric-broyden-updates}) in some set, say
 \begin{equation}
     \label{eq:ball-lambda-poisedness}
-    \set{x \in \R^n : \norm{x} \le \radlb[k]},
+    \set{x \in \R^n : \norm{x - \bar{\iter}} \le \radlb[k]},
 \end{equation}
 with the least possible~$\Lambda$.
 This technique has however a major drawback: it is extremely expensive, and would require to minimize~$\card(\xpt[k + 1])$ absolute values of quadratic functions subject to~\cref{eq:ball-lambda-poisedness} at each iteration.
-Hence, we do not employ this technique.
+Hence, from a clear computational perspective, we decide not employ this technique in \gls{cobyqa}.
 
 \subsection{Least-squares Lagrange multipliers}
 
@@ -303,6 +303,7 @@ and by setting the remaining components of the least-squares Lagrange multiplier
 % \end{equation*}
 % and to set the remaining components of the least-squares Lagrange multiplier to zero.
 This is the method employed by \gls{cobyqa}.
+Details on the calculations of the least-squares Lagrange multipliers are provided in \cref{sec:cobyqa-lagrange-multipliers}.
 
 \subsection{Geometry of the interpolation set}
 
@@ -318,11 +319,39 @@ To cope with this difficulty, model-based \gls{dfo} methods are usually modified
 
 We present in this section the geometry-improving mechanism that we employ in \gls{cobyqa}, which is adapted from \gls{bobyqa}~\cite{Powell_2009}.
 Some trust-region iterations are replaced with a geometry-improving iteration.
-% During a trust-region iteration, a trial point is generated, and a point
+During such an iteration, a point~$\bar{y} \in \xpt[k]$ is chosen to be replaced by another one~$\iter[k] + \step[k]$ to obtain~$\xpt[k + 1]$, where the \emph{restoration step}~$\step[k]$ is chosen to improve the geometry of~$\xpt[k + 1]$.
+
+First of all, the point~$\bar{y}$ is chosen to be the closest point from~$\iter[k]$ that solves
+\begin{equation*}
+    \max_{y \in \xpt[k]} \norm{y - \iter[k]}.
+\end{equation*}
+Further, similar to~\cite[Eq.~(6.6)]{Powell_2006}, we let~$\step[k]$ be an approximate solution to
+\begin{subequations}
+    \label{eq:geometry-subproblem}
+    \begin{align}
+        \max        & \quad \abs{\lagp[\bar{y}](\iter[k] + \step)}\\
+        \text{s.t.} & \quad \xl \le \iter[k] + \step \le \xu,\\
+                    & \quad \norm{\step} \le \radlb[k],\\
+                    & \quad \step \in \R^n,
+    \end{align}
+\end{subequations}
+where~$\lagp[\bar{y}]$ denotes the minimum Frobenius norm Lagrange polynomials for~$\xpt[k]$ associated with~$\bar{y}$ (see \cref{def:lagrange-polynomials-minimum-norm}).
+Details on the calculations of the restoration step are provided in \cref{sec:cobyqa-geometry-improving}.
+
+The reason for choosing such an objective function is twofold.
+First of all, recall that the updating formula detailed in~\cite[Eq.~(2.12)]{Powell_2004c} to compute the new inverse of the coefficient matrix of the interpolation problem has a scalar denominator.
+Moreover,~\cite[Eq.~(6.5)]{Powell_2006} shows that this denominator is always lower bounded by~$\lagp[\bar{y}](\iter[k] + \step)^2$.
+Therefore, by selecting the restoration step~$\step[k]$ to maximize~$\abs{\lagp[\bar{y}](\iter[k] + \step[k])}$, we keep the denominator away from zero, and we avoid numerical difficulties.
+Second of all, denote by~$B^k$ and~$B^{k + 1}$ the coefficient matrices of the interpolation problems on~$\xpt[k]$ and~$\xpt[k + 1]$, respectively.
+\Citeauthor{Powell_2001}~\cite[\S~2]{Powell_2001} showed that
+\begin{equation*}
+    \lagp[\bar{y}](\iter[k] + \step[k]) = \frac{\det B^{k + 1}}{\det B^k}.
+\end{equation*}
+This property also encourages us to let the restoration step~$\step[k]$ solve~\cref{eq:geometry-subproblem}.
 
 % The step~$\step[k]$ generated by \cref{alg:derivative-free-trust-region-sqp-subproblem} of \cref{alg:derivative-free-trust-region-sqp} is small compared to~$rad[k]$, say~$\norm{\step[k]} \le \rad[k] / 2$, 
 
-\todo[noline]{Present the mechanism}
+\todo[noline]{When to entertain the mechanism}
 
 \subsection{Managing the trust-region radius}
 
