@@ -22,7 +22,7 @@ These models are used to construct subproblems that are in turn approximately mi
 Examples of such functions commonly used in the literature are polynomials and \glspl{rbf}~\cite{Powell_2004a}.
 In this thesis, we focus on linear and quadratic polynomial models, i.e., on polynomials of degree at most one and two, respectively.
 
-Let~$\lpoly$ and~$\qpoly$ denote the spaces of linear and quadratic polynomials on~$\R^n$, respectively.
+Let~$\lpoly$\nomenclature[Sg]{$\lpoly$}{Space of linear polynomials in~$\R^n$} and~$\qpoly$\nomenclature[Sh]{$\qpoly$}{Space of quadratic polynomials in~$\R^n$} denote the spaces of linear and quadratic polynomials on~$\R^n$, respectively.
 In a \gls{dfo} context, models from~$\lpoly$ or~$\qpoly$ are built for a real-valued function~$\obj$ without using derivatives.
 This can be done by interpolation schemes based on function values.
 Given a finite set of points~$\xpt = \set{y^1, y^2, \dots, y^m} \subseteq \R^n$, we construct a model~$\objm$ that interpolates the function~$\obj$ on~$\xpt$, i.e.,
@@ -269,7 +269,7 @@ Combining~\cref{eq:least-frobenius-norm-kkt} with the primal feasibility conditi
         0
     \end{bmatrix},
 \end{equation}
-where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\T}$,~$e \in \R^m$ is the all-one vector, while~$Y_L \in \R^{n \times m}$ and~$Y_H \in \R^{m \times m}$ are defined by
+where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\T}$,~$e \in \R^m$ is the all-one vector, while~$Y_L \in \R^{n \times m}$ and~$Y_H \in \R^{m \times m}$\nomenclature[Sf]{$\R^{m \times n}$}{Real matrix space of dimension~$m \times n$} are defined by
 \begin{equation}
     \label{eq:least-frobenius-kkt-system-matrices}
     Y_L \eqdef 
@@ -277,6 +277,7 @@ where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\T}$,~$e \in 
         y^1 - \bar{x}   & y^2 - \bar{x} & \cdots    & y^m - \bar{x}
     \end{bmatrix} \quad \text{and} \quad Y_H \eqdef \frac{1}{2} (Y_L^{\T} Y_L) \odot (Y_L^{\T} Y_L).
 \end{equation}
+\nomenclature[Oi]{$\odot$}{Hadamard product}%
 In~\cref{eq:least-frobenius-kkt-system-matrices},~$\odot$ denotes the Hadamard product and hence, the~$(i, j)$ entry of~$Y_H$ is given by~$[(y^i - \bar{x})^{\T} (y^j - \bar{x})]^2 / 2$.
 In fact, the problem~\cref{eq:least-frobenius-norm-models} is equivalent to the linear system~\cref{eq:least-frobenius-kkt-system}, where the matrix~$H$ can be retrieved from the value of~$\lm$ by~\cref{eq:least-frobenius-norm-kkt}~\cite[\S~2]{Powell_2004b}, and the interpolation set~$\xpt$ is poised if and only if the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is nonsingular~\cite[\S~5.3]{Conn_Scheinberg_Vicente_2009b}.
 Since the poisedness of~$\xpt$ does not depends on the choice of~$\bar{x}$, neither does the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
@@ -575,6 +576,7 @@ These formulae are given in~\cite[\S~3]{Powell_2006}, without a proof.
     \end{equation*}
     which completes the proof.
 \end{proof}
+\nomenclature[Nc]{$\qedsymbol$}{Halmos symbol}%
 
 \subsection{Bounds for the~\texorpdfstring{$\Lambda$}{\textLambda}-poisedness}
 

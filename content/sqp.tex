@@ -338,6 +338,7 @@ Recall that the augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar
     \label{eq:augmented-lagrangian-inequality}
     \auglag(\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \norm{h(\iter)}^2, \quad \text{for~$\iter \ge 0$ and~$\lm \in \R^m$,}
 \end{equation}
+\nomenclature[Fd]{$\auglag$}{Augmented Lagrangian function}%
 where~$\gamma \ge 0$ is a penalty parameter.
 Denote by~$\lagalt$ the Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag}, i.e.,
 \begin{align*}
@@ -385,6 +386,7 @@ We now present some relations between~$\lag$ and~$\lagalt$, and also between~$\a
     \begin{equation*}
         \auglag(\iter[k] + d, \lm[k]) = \lag(\iter[k], \lm[k]) + \nabla_x \lag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} H^k d + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) d}^2 + \smallo(\norm{d}^2),
     \end{equation*}
+    \nomenclature[Nh]{$\smallo(\cdot)$}{Little-O notation}%
     where~$H^k$ is defined by~\cref{eq:auglag-sqp-2}.
 \end{proof}
 
@@ -442,6 +444,7 @@ Perhaps the most classical merit function is the Courant merit function\footnote
 \begin{equation*}
     \merit_{\gamma}(\iter) \eqdef \obj(\iter) + \gamma \bigg( \sum_{i \in \iub} \posp{\con{i}(\iter)}^2 + \sum_{i \in \ieq} \con{i}(\iter)^2 \bigg), \quad \text{for~$x \in \R^n$ and~$\gamma \ge 0$,}
 \end{equation*}
+\nomenclature[Fe]{$\merit$}{Merit function ($\ell_2$-penalty function, unless otherwise stated)}%
 where~$\posp{\cdot}$ takes the positive part of a given number.
 The advantage of such a merit function is that it is differentiable if~$\obj$ and~$\con{i}$, for~$i \in \iub \cup \ieq$, are differentiable.
 However, normally, a global minimizer of~$\merit_{\gamma}$ is not a solution to~\cref{eq:problem-cobyqa-sqp} when~$\gamma$ is finite.
@@ -543,7 +546,7 @@ The merit function we consider from now on is the~$\ell_2$-merit function, defin
 \end{equation*}
 where~$\gamma$ is the penalty parameter.
 The algorithm we present below maintains a penalty parameter~$\gamma^k \ge 0$ at the~$k$th iteration and we use~$\merit[k]$ to denote the function~$\merit_{\gamma^k}$.
-We denote by~$\meritm[k]$ the~$\ell_2$-merit function computed on the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}, i.e.,
+We denote by~$\meritm[k]$\nomenclature[Fi]{$\meritm$}{Quadratic model of~$\merit$} the~$\ell_2$-merit function computed on the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}, i.e.,
 \begin{align*}
     \meritm[k](\step)   & \eqdef \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
                         & \qquad + \gamma^k \sqrt{\sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2}, \quad \text{for~$\step \in \R^n$.}
@@ -630,6 +633,7 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
         Set~$\gamma^k \gets \gamma^{k - 1}$\;
     }
 \end{algorithm}
+\nomenclature[Oo]{$\argmin$}{Argument of the minimum operator}%
 
 \subsection{Composite steps for equality constrained optimization}
 \label{subsec:composite-step-equality}

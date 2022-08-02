@@ -107,7 +107,7 @@ The solvers constitute the cornerstones of \gls{pdfo}.
 
 Powell's model-based \gls{dfo} algorithms are trust-region methods.
 At the~$k$th iteration, the algorithms construct a linear or quadratic trust-region model~$\objm[k]$ for the objective function~$\obj$ by underdetermined interpolationon a finite set~$\xpt[k] \subseteq \R^n$ updated along the iterations, based on the symmetric Broydem update (see \cref{subsec:symmetric-broyden-updates}).
-\Gls{cobyla} models the constraints by interpolants on~$\xpt[k]$ as well, which we denote~$\conm[k]{i}$, for~$i \in \iub$.
+\Gls{cobyla} models the constraints by interpolants on~$\xpt[k]$ as well, which we denote~$\conm[k]{i}$\nomenclature[Fg]{$\conm{i}$}{Quadratic model of~$\con{i}$, with~$i \in \iub \cup \ieq$}, for~$i \in \iub$.
 Instead of repeating Powell's description of these algorithms, we provide a sketch of them in the sequel.
 
 In all the five algorithms, the~$k$th iteration places the trust-region center~$\iter[k]$ at the \enquote{best} point where the objective function and constraints have been evaluated so far.
@@ -160,6 +160,7 @@ However, the trust-region constraint~$\norm{\iter - \iter[k]} \le \rad[k]$ and t
     \text{s.t.} & \quad \norm{\iter - \iter[k]} \le \rad[k],\\
                 & \quad \iter \in \R^n,
 \end{align*}
+\nomenclature[Oa]{$\posp{\cdot}$}{Elementwise positive-part operator}%
 where~$\posp{\cdot}$ takes the positive-part of a given number.
 In doing so, the method attempts to reduce the~$\ell_{\infty}$-violation of the constraint models while ensuring that the trial point lies in the trust region.
 
@@ -290,7 +291,7 @@ The initial preprocessing of the arguments includes a handling of their internal
 More importantly, \gls{pdfo} preprocesses the constraints provided, to generate a problem as simple as possible.
 For instance, all linear constraints in~\cref{eq:pdfo-lub,eq:pdfo-leq} that are satisfied for every point in~$\R^n$ are removed and obvious infeasibility in the constraints~\cref{eq:pdfo-bds,eq:pdfo-lub,eq:pdfo-leq} are detected.
 Another noticeable preprocessing of the constraints made by \gls{pdfo} is the treatment of the linear equality constraints~\cref{eq:pdfo-leq}.
-As long as these constraints are consistent, they define a subspace of~$\R^n$ of lower dimension, and \gls{pdfo} takes into account this property to generate a new~$(n - \rank A_{\ieq})$-dimensional problem that is exactly equivalent to~\cref{eq:pdfo}, using the QR factorization of~$A_{\ieq}$.
+As long as these constraints are consistent, they define a subspace of~$\R^n$ of lower dimension, and \gls{pdfo} takes into account this property to generate a new~$(n - \rank A_{\ieq})$\nomenclature[Om]{$\rank$}{Rank operator}-dimensional problem that is exactly equivalent to~\cref{eq:pdfo}, using the QR factorization of~$A_{\ieq}$.
 
 A crucial point of \gls{bobyqa} and \gls{lincoa} is that they require the initial guess to be feasible, so that \gls{pdfo} attempts to project the provided initial guess onto the feasible set (\gls{lincoa} would otherwise increase the coefficients of the right-hand side of the linear constraints to make the initial guess feasible).
 
@@ -398,6 +399,7 @@ A description of the datasets employed is provided in \cref{tab:htdata}.
         \bottomrule
     \end{tabular}
 \end{table}
+\nomenclature[Sb]{$[a, b]$}{Closed set~$\set{\iter \in \R : a \le \iter \le b}$ with~$a \le b$}%
 
 The problem we consider is as follows.
 A dataset~$\mathcal{D} \subseteq [-1, 1]^d$ from \cref{tab:htdata} is randomly split into a training dataset~$\mathcal{T}_1$, admitting approximately~$70\%$ of the data, and a testing dataset~$\mathcal{T}_2$, with~$\mathcal{D} = \mathcal{T}_1 \cup \mathcal{T}_2$.

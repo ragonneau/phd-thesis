@@ -15,46 +15,15 @@
 \chapter{Introduction}
 \label{ch:introduction}
 
-\nomenclature[Fa]{$\obj$}{Real-valued objective function defined on~$\R^n$}%
-\nomenclature[Fb]{$\con{i}$}{Real-valued constraint function defined on~$\R^n$, with~$i \in \iub \cup \ieq$}%
-\nomenclature[Fc]{$\lag$}{Lagrangian function}%
-\nomenclature[Na]{$\in$}{Set membership notation}%
-\nomenclature[Nb]{$\subseteq$}{Set inclusion notation}%
-\nomenclature[Nc]{$\qedsymbol$}{Halmos symbol}%
-\nomenclature[Nd]{$A^{\T}$,~$v^{\T}$}{Transpose of a matrix or a vector}%
-\nomenclature[Ne]{$I_n$}{Identity matrix on~$\R^{n \times n}$}%
-\nomenclature[Nf]{$e_i$}{Standard coordinate vector of~$\R^n$ ($i$th column of~$I_n$), with~$1 \le i \le n$}%
-\nomenclature[Ng]{$\bigo(\cdot)$}{Big-O notation}%
-\nomenclature[Nh]{$o(\cdot)$}{Little-O notation}%
-\nomenclature[Ni]{$N(\mu, \sigma^2)$}{Gaussian distribution with mean~$\mu$ and variance~$\sigma^2$}%
-\nomenclature[Oa]{$\posp{\cdot}$}{Elementwise positive-part operator}%
-\nomenclature[Ob]{$\negp{\cdot}$}{Elementwise negative-part operator}%
-\nomenclature[Oc]{$\abs{\cdot}$}{Elementwise modulus operator}%
-\nomenclature[Od]{$\inner{\cdot, \cdot}$}{Inner-product operator (may be subscripted for sake of clarity)}%
-\nomenclature[Oe]{$\norm{\cdot}$}{Norm of a vector or a matrix (may be subscripted for sake of clarity)}%
-\nomenclature[Of]{$\nabla$}{Gradient operator (elements~$\partial / \partial x_i$, with~$i \in \set{1, 2, \dots, n}$)}%
-\nomenclature[Og]{$\nabla^2$}{Hessian operator (elements~$\partial^2 / \partial x_i \partial x_j$, with~$i, j \in \set{1, 2, \dots, n}$)}%
-\nomenclature[Oh]{$\odot$}{Hadamard product}%
-\nomenclature[Oi]{$\card$}{Cardinal function}%
-\nomenclature[Oj]{$\conv$}{Convex hull operator}%
-\nomenclature[Sa]{$\emptyset$}{Empty set}%
-\nomenclature[Sb]{$[a, b]$}{Closed set~$\set{\iter \in \R : a \le \iter \le b}$ with~$a \le b$}%
-\nomenclature[Sc]{$(a, b)$}{Open set~$\set{\iter \in \R : a < \iter < b}$ with~$a < b$}%
-\nomenclature[Sd]{$\lpoly$}{Space of linear polynomials in~$\R^n$}%
-\nomenclature[Se]{$\qpoly$}{Space of quadratic polynomials in~$\R^n$}%
-\nomenclature[Sf]{$\R$}{Set of real numbers}%
-\nomenclature[Sg]{$\R^n$}{Real coordinate space of dimension~$n$}%
-\nomenclature[Sh]{$\R^{m \times n}$}{Real matrix space of dimension~$m \times n$}%
-\nomenclature[Si]{$\fset$}{Feasible set, included in~$\R^n$}%
-\nomenclature[Sj]{$\ieq$}{Set of indices of the equality constraints}%
-\nomenclature[Sk]{$\iub$}{Set of indices of the inequality constraints}%
-\todo[noline]{Replace the nomenclature items}
+% \nomenclature[Od]{$\inner{\cdot, \cdot}$}{Inner-product operator (may be subscripted for sake of clarity)}%
+% \nomenclature[Ok]{$\conv$}{Convex hull operator}%
+% \nomenclature[Ol]{$\cond$}{Condition number operator}%
 
 \section{Overview of \glsfmtlong{dfo}}
 \label{sec:overview}
 
 Optimization is the study of extremal points and values of mathematical functions.
-It aims at minimizing (or maximizing) a real-valued function~$\obj$, referred to as the \emph{objective function}, within a given set of points~$\fset \subseteq \R^n$, referred to as the \emph{feasible set}.
+It aims at minimizing (or maximizing) a real-valued function~$\obj$\nomenclature[Fa]{$\obj$}{Real-valued objective function defined on~$\R^n$}, referred to as the \emph{objective function}, within a given set of points~$\fset \subseteq \R^n$\nomenclature[Nb]{$\subseteq$}{Set inclusion notation}\nomenclature[Se]{$\R^n$}{Real coordinate space of dimension~$n$}\nomenclature[Si]{$\fset$}{Feasible set, included in~$\R^n$}, referred to as the \emph{feasible set}.
 It is well known that essential information for optimization is embraced in the (possibly generalized) derivatives of the functions involved.
 However, in practice, evaluations of such derivatives may be unreliable or prohibitively expensive, if not impossible.
 It motivates the study of \gls{dfo}~\cite{Conn_Scheinberg_Vicente_2009b,Audet_Hare_2017,Custodio_Scheinberg_Vicente_2017,Larson_Menickelly_Wild_2019}, where problems are solved using only function values.
@@ -84,6 +53,10 @@ In this introduction, we consider the nonlinearly-constrained problem
                     & \quad \iter \in \R^n, \nonumber
     \end{align}
 \end{subequations}
+\nomenclature[Fb]{$\con{i}$}{Real-valued constraint function defined on~$\R^n$, with~$i \in \iub \cup \ieq$}%
+\nomenclature[Na]{$\in$}{Set membership notation}%
+\nomenclature[Sj]{$\ieq$}{Set of indices of the equality constraints}%
+\nomenclature[Sk]{$\iub$}{Set of indices of the inequality constraints}%
 where the \emph{objective} and \emph{constraint functions}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and where the sets of indices~$\iub$ and~$\ieq$ are finite (perhaps empty) and disjoint.
 The feasible set of this problem is
 \begin{equation*}
@@ -125,12 +98,18 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
         }
     }
 \end{algorithm}
+\nomenclature[Nd]{$A^{\T}$,~$v^{\T}$}{Transpose of a matrix or a vector}%
+\nomenclature[Ne]{$I_n$}{Identity matrix on~$\R^{n \times n}$}%
+\nomenclature[Nf]{$e_i$}{Standard coordinate vector of~$\R^n$ ($i$th column of~$I_n$), with~$1 \le i \le n$}%
+\nomenclature[Oc]{$\abs{\cdot}$}{Elementwise modulus operator}%
+\nomenclature[Op]{$\argmax$}{Argument of the maximum operator}%
 
 \Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of \P~10 and~$g$ at the end of p.~97) demonstrates that the growth factor of the Gaussian elimination, defined as
 \begin{equation}
     \label{eq:gaussian-elimination-growth-factor}
     \rho_n(A) \eqdef \frac{\max_{0 \le k \le n - 1} \norm{A^{(k)}}_{\max}}{\norm{A}_{\max}},
 \end{equation}
+\nomenclature[Oe]{$\norm{\cdot}$}{Norm of a vector or a matrix (may be subscripted for sake of clarity)}%
 determinates the numerical stability of \cref{alg:gaussian-elimination}, where~$\norm{\cdot}_{\max}$ denotes the max norm of a matrix, i.e., the largest absolute value of the matrix's entries.
 More specifically, the~$\ell_{\infty}$-norm of the backward error of the computed solution is bounded from above by a term proportional to~$\rho_n(A)$.
 To study the worst-case scenario, we wish to determine how large~$\rho_n$ can be and hence, to solve
@@ -149,7 +128,7 @@ Note that the optimal value and all local solutions to the problem~\cref{eq:gaus
 \label{subsec:tuning-nonlinear-optimization-methods}
 
 Another well-known example of \gls{dfo} applications is the parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
-For example, consider \cref{alg:trust-region}, a basic trust-region method for solving the problem~\cref{eq:problem-introduction} when~$\iub = \ieq = \emptyset$, where~$\norm{\cdot}$ can be any norm.
+For example, consider \cref{alg:trust-region}, a basic trust-region method for solving the problem~\cref{eq:problem-introduction} when~$\iub = \ieq = \emptyset$\nomenclature[Sa]{$\emptyset$}{Empty set}, where~$\norm{\cdot}$ can be any norm.
 
 \begin{algorithm}
     \caption{Basic trust-region method for unconstrained optimization}
@@ -223,11 +202,12 @@ Binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by
     \end{align}
 \end{subequations}
 where~$\varphi_{\gamma}$ is a function mapping the data to a higher-dimensional space~$\R^{\ell}$ and~$\gamma > 0$ and~$C > 0$ are parameters.
-Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$ to the problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$\iter \in \R^n$ according to
+Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$\nomenclature[Sd]{$\R$}{Set of real numbers} to the problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$\iter \in \R^n$ according to
 \begin{equation}
     \label{eq:csvc-classifier}
     \delta(\iter) \eqdef \sgn(\beta^{\ast} + (\omega^{\ast})^{\T} \varphi_{\gamma}(\iter)),
 \end{equation}
+\nomenclature[On]{$\sgn$}{Sign operator}%
 which maps an observation~$\iter \in \R^n$ to a label in~$\set{\pm 1}$.
 It is clear that~$\delta$ depends on the two parameters~$C$ and~$\gamma$, which can be chosen by solving an optimization problem.
 The objective function~$P$ of this problem is a~$5$-fold cross-validation based on some performance measure of the model~\cref{eq:csvc-classifier}.
@@ -341,7 +321,7 @@ We introduce hereafter two classical constraint qualifications.
     Given~$\iter \in \fset$, denote~$\act(\iter)$ the active set for the problem~\cref{eq:problem-introduction} at~$x$, and assume that the constraint functions~$\con{i}$ are differentiable at~$x$ for all~$i \in \act(\iter)$.
     We say that
     \begin{itemize}
-        \item the \gls{licq} holds at~$x$ if the gradients~$\nabla \con{i}(\iter)$ are linearly independent for all~$i \in \act(\iter)$, and
+        \item the \gls{licq} holds at~$x$ if the gradients~$\nabla \con{i}(\iter)$\nomenclature[Og]{$\nabla$}{Gradient operator (elements~$\partial / \partial x_i$, with~$i \in \set{1, 2, \dots, n}$)} are linearly independent for all~$i \in \act(\iter)$, and
         \item the \gls{mfcq} holds at~$x$ if the gradients~$\nabla \con{i}(\iter)$ are linearly independent for all~$i \in \ieq$ and there exists a vector~$z \in \R^n$ such that
         \begin{subequations}
             \label{eq:mangasarian-fromovitz}
@@ -365,7 +345,7 @@ We also note that dedicated constraint qualifications may exist when the problem
 
 \subsubsection{Statement of the optimality conditions}
 
-Let~$\lag$ be the \emph{Lagrangian} of the problem~\cref{eq:problem-introduction}, defined by
+Let~$\lag$\nomenclature[Fc]{$\lag$}{Lagrangian function} be the \emph{Lagrangian} of the problem~\cref{eq:problem-introduction}, defined by
 \begin{equation*}
     \lag(\iter, \lm) \eqdef \obj(\iter) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lm_i \con{i}(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lm_i \in \R$ for~$i \in \iub \cup \ieq$},
 \end{equation*}
@@ -477,7 +457,7 @@ It is known that at a local solution of a smooth unconstrained optimization prob
             & \nabla \con{i}(\iter[\ast])^{\T} z \ge 0,    && \quad \text{if~$i \in \act(\iter[\ast]) \cap \iub$ and~$\lm[\ast]_i = 0$.}
         \end{empheq}
     \end{subequations}
-    Then~$z^{\T} \nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast]) z \ge 0$.
+    Then~$z^{\T} \nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast]) z \ge 0$\nomenclature[Oh]{$\nabla^2$}{Hessian operator (elements~$\partial^2 / \partial x_i \partial x_j$, with~$i, j \in \set{1, 2, \dots, n}$)}.
 \end{theorem}
 
 A first-order stationary point~$\iter \in \fset$ is called a \emph{second-order stationary point} if it satisfies the conclusion of \cref{thm:second-order-necessary-conditions}.
@@ -537,7 +517,7 @@ The first trust-region \gls{dfo} method was developed by~\citeauthor{Winfield_19
 It is also regarded as the first trust-region method with or without derivatives~\cite[\S~1.2]{Conn_Gould_Toint_2000}.
 A similar method was later developed by \citeauthor{Powell_2002}, namely \gls{uobyqa}~\cite{Powell_2002}.
 Both methods use fully-determined quadratic interpolation models (see \cref{sec:multivariate-interpolation} for detailed discussions).
-By updating the Lagrange functions of the interpolation problem, \gls{uobyqa} needs only~$\bigo(n^4)$ computer operations to obtain each quadratic interpolant, whereas the complexity is~$\bigo(n^6)$ in \citeauthor{Winfield_1969}'s method.
+By updating the Lagrange functions of the interpolation problem, \gls{uobyqa} needs only~$\bigo(n^4)$\nomenclature[Ng]{$\bigo(\cdot)$}{Big-O notation} computer operations to obtain each quadratic interpolant, whereas the complexity is~$\bigo(n^6)$ in \citeauthor{Winfield_1969}'s method.
 
 The methods of both \citeauthor{Winfield_1969} and \citeauthor{Powell_2002} require~$\bigo(n^2)$ function evaluations to establish each quadratic model.
 Such an amount of function values are needed to initialize the methods, although most of them will be reused at subsequent iterations.
@@ -662,6 +642,7 @@ The \emph{performance profile} of~$s$ is defined as
 \begin{equation*}
     \rho_s(\alpha) \eqdef \frac{1}{\card(\xpb)} \card (\set{p \in \xpb : r_{p, s} \le \alpha}), \quad \text{for~$\alpha \ge 1$},
 \end{equation*}
+\nomenclature[Oj]{$\card$}{Cardinal function}%
 where~$\card(\cdot)$ denotes the cardinal number of a set.
 Clearly,~$\rho_s(\alpha)$ is the proportion of problems in~$\xpb$ that are solved by~$s$ with a performance ratio at most~$\alpha$.
 It can also be interpreted as the probability for the solver~$s$ to solve a random problem from~$\xpb$ under the restriction on the performance ratio.
@@ -725,7 +706,7 @@ We conduct two experiments as follows.
         \label{eq:relative-gaussian-noisy-objective-function}
         \tilde{\obj}_p(\iter) \eqdef [1 + \epsilon(\iter)] \obj_p(\iter),
     \end{equation}
-    where~$\epsilon(\iter) \sim N(0, \sigma^2)$.
+    where~$\epsilon(\iter) \sim N(0, \sigma^2)$\nomenclature[Ni]{$N(\mu, \sigma^2)$}{Gaussian distribution with mean~$\mu$ and variance~$\sigma^2$}.
     Each problem is solved ten times with each solver.
     In the convergence test~\cref{eq:convergence-test-profiles-unconstrained},~$\obj_p^{\ast}$ is either the least value of~$\obj_p$ obtained by all solvers during these ten runs, or the value obtained in the previous noise-free experiment, whichever is smaller.
     The value of~$t_{p, s}$ is set to the average number of function evaluations that~$s \in \xsv$ needs to solve~$p \in \xpb$ up to the tolerance~$\tau$.
@@ -871,7 +852,7 @@ Throughout this thesis, the functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cu
 The Lagrangian function of this problem is denoted by~$(\iter, \lm) \mapsto \lag(\iter, \lm)$.
 Its first argument~$\iter$ is the decision variable, while its second argument~$\lm = [\lm_i]_{i \in \iub \cup \ieq}$ is the dual variable of the considered problem.
 A quadratic approximation of a function~$u$ is always denoted by~$\hat{u}$, and may be superscripted if this model is used in an iterative process.
-For example, if an optimization method maintains a quadratic approximation of the objective function, the~$k$th model is denoted by~$\objm[k]$.
+For example, if an optimization method maintains a quadratic approximation of the objective function, the~$k$th model is denoted by~$\objm[k]$\nomenclature[Ff]{$\objm$}{Quadratic model of~$\obj$}.
 
 In general, an iteration number is written as a \emph{superscript}.
 When an exponent is used in a formula that may lead to confusion, we will explicitely state the meaning of the notation in the context.
