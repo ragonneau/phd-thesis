@@ -86,7 +86,7 @@ where~$p$ and~$q$ are defined by
 \begin{equation*}
     p(i) \eqdef i - n - 1 - n \kappa(i) \quad \text{with} \quad \kappa(i) \eqdef \floor[\bigg]{\frac{i - n - 2}{n}},
 \end{equation*}
-\nomenclature[Of]{$\floor{\cdot}$}{Floor operator}%
+\nomenclature[Oe]{$\floor{\cdot}$}{Floor operator}%
 and
 \begin{empheq}[left={q(i) \eqdef \empheqlbrace}]{alignat*=2}
     & p(i) + \kappa(i)      && \quad \text{if~$p(i) + \kappa(i) \le n$,}\\
@@ -157,7 +157,7 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
         }
         Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k] \setminus \set{\bar{y}}) \cup \set{\iter[k] + \step[k]}$\;
         Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$\; \nllabel{alg:derivative-free-trust-region-sqp-iterate}
-        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}$\; \nllabel{alg:derivative-free-trust-region-sqp-multipliers}
+        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$\; \nllabel{alg:derivative-free-trust-region-sqp-multipliers}
         Update the trust-region radius
         \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
             & \theta_1 \rad[k],  && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
@@ -193,7 +193,7 @@ It first generates a normal step~$\nstep[k]$ as the least-norm solution to
                     & \quad \step \in \R^n,
     \end{align}
 \end{subequations}
-for some~$\zeta \in (0, 1)$\nomenclature[Sc]{$(a, b)$}{Open set~$\set{\iter \in \R : a < \iter < b}$ with~$a < b$}.
+for some~$\zeta \in (0, 1)$.
 Further, it generates a tangential step~$\tstep[k]$ by solving
 \begin{subequations}
     \label{eq:cobyqa-tangential-original}
@@ -261,7 +261,7 @@ We then let~$\lm[k + 1]$ be the least-norm solution to
         \min        & \quad \norm[\bigg]{\nabla \objm[k](\iter[k + 1]) + \sum_{i \in \iub \cup \ieq} \lm_i \nabla \conm[k]{i}(\iter[k + 1])}\\
         \text{s.t.} & \quad \lm_i \conm[k]{i}(\iter[k + 1]) = 0, ~ i \in \iub \label{eq:least-squares-lagrange-multipliers-complementary-slackness}\\
                     & \quad \lm_i \ge 0, ~ i \in \iub,\\
-                    & \quad \lm = [\lm_i]_{i \in \iub \cup \ieq},
+                    & \quad \lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T},
     \end{align}
 \end{subequations}
 which is then referred to as the \emph{least-squares Lagrange multiplier}~\cite{Dussault_1995}.
@@ -450,7 +450,7 @@ The complete framework of a geometry-improving phase is given in \cref{alg:geome
         Set the step~$\rstep[k + 1] \in \R^n$ to be an approximate solution to~\cref{eq:geometry-subproblem}\;
         Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k + 1] \setminus \set{\bar{y}}) \cup \set{\iter[k + 1] + \rstep[k + 1]}$\;
         Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$ \label{alg:geometry-improving-iterate}\;
-        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}$ \label{alg:geometry-improving-multiplier}\;
+        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$ \label{alg:geometry-improving-multiplier}\;
     }
 \end{algorithm}
 
@@ -558,7 +558,7 @@ If~$\ieq \neq \emptyset$, \gls{cobyqa} will view each equality constraint as two
         \end{algomathdisplay} \label{alg:reducting-penalty-replace}
     }
 \end{algorithm}
-\nomenclature[Ob]{$\negp{\cdot}$}{Elementwise negative-part operator}%
+\nomenclature[Ob]{$\negp{\cdot}$}{Negative-part operator}%
 
 The notation~$\negp{\cdot}$ in \cref{alg:reducting-penalty-replace} of \cref{alg:reducting-penalty} takes the negative part of a given number.
 The term in \cref{alg:reducting-penalty-replace} is explained in~\cite[\S~4]{Powell_1994}.

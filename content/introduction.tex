@@ -101,7 +101,7 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
 \nomenclature[Nd]{$A^{\T}$,~$v^{\T}$}{Transpose of a matrix or a vector}%
 \nomenclature[Ne]{$I_n$}{Identity matrix on~$\R^{n \times n}$}%
 \nomenclature[Nf]{$e_i$}{Standard coordinate vector of~$\R^n$ ($i$th column of~$I_n$), with~$1 \le i \le n$}%
-\nomenclature[Oc]{$\abs{\cdot}$}{Elementwise modulus operator}%
+\nomenclature[Oc]{$\abs{\cdot}$}{Modulus operator}%
 \nomenclature[Op]{$\argmax$}{Argument of the maximum operator}%
 
 \Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of \P~10 and~$g$ at the end of p.~97) demonstrates that the growth factor of the Gaussian elimination, defined as
@@ -109,7 +109,7 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
     \label{eq:gaussian-elimination-growth-factor}
     \rho_n(A) \eqdef \frac{\max_{0 \le k \le n - 1} \norm{A^{(k)}}_{\max}}{\norm{A}_{\max}},
 \end{equation}
-\nomenclature[Oe]{$\norm{\cdot}$}{Norm of a vector or a matrix (may be subscripted for sake of clarity)}%
+\nomenclature[Of]{$\norm{\cdot}$}{Norm of a vector or a matrix (may be subscripted for sake of clarity)}%
 determinates the numerical stability of \cref{alg:gaussian-elimination}, where~$\norm{\cdot}_{\max}$ denotes the max norm of a matrix, i.e., the largest absolute value of the matrix's entries.
 More specifically, the~$\ell_{\infty}$-norm of the backward error of the computed solution is bounded from above by a term proportional to~$\rho_n(A)$.
 To study the worst-case scenario, we wish to determine how large~$\rho_n$ can be and hence, to solve
@@ -166,7 +166,7 @@ For example, consider \cref{alg:trust-region}, a basic trust-region method for s
 The most critical simplification in \cref{alg:trust-region} lies in \cref{alg:trust-region-success}.
 A complete framework includes a parameter~$\eta_0 \ge 0$ satisfying~$\eta_0 \le \eta_1$, and the condition in \cref{alg:trust-region-success} is replaced by~$\ratio[k] \ge \eta_0$.
 In practice, we usually have~$\eta_0 = 0$.
-However, this parameter genuinely complexifies the theoretical analysis of the trust-region method, and hence, we omit it here simplicity.
+However, this parameter genuinely complexifies the theoretical analysis of the trust-region method, and hence, we omit it here for simplicity.
 We consider only the four parameters~$\eta_1$,~$\eta_2$,~$\theta_1$, and~$\theta_2$.
 To choose those parameters, we minimize some measure of the method's expense (e.g., the \glsxtrshort{cpu} time to solve a given set of optimization problems),~$C$ say.
 In other words, we wish to solve the optimization problem
@@ -178,7 +178,7 @@ In other words, we wish to solve the optimization problem
                     & \quad 0 < \theta_1 < 1 < \theta_2.
     \end{align}
 \end{subequations}
-Derivatives of~$C$ cannot be evaluated if they even exist.
+Derivatives of~$C$ cannot be evaluated, if they even exist.
 Such a problem is then solved using \gls{dfo} methods, such as the \gls{mads} method~\cite{Audet_Orban_2006}.
 \Citeauthor{Audet_Digabel_Tribes_2019} modified the \gls{mads} method to solve the problem~\cref{eq:tuning-algorithms-problem} with a controlled number of significant digits~\cite{Audet_Digabel_Tribes_2019} to determine parameters that practitioners can use.
 Interestingly, \gls{dfo} methods can be self-tuned using the method presented above.
@@ -188,7 +188,7 @@ The \gls{bfo}~\cite{Porcelli_Toint_2017}, a method for bound-constrained problem
 \label{subsec:machine-learning}
 
 A more recent example of \gls{dfo} applications is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}.
-For instance, Google solves hyperparameter tuning problems using Google Vizier~\cite{Golovin_Etal_2017}, the Google-internal service for performing black-box optimization.
+Google solves for instance hyperparameter tuning problems using Google Vizier~\cite{Golovin_Etal_2017}, the Google-internal service for performing black-box optimization.
 To illustrate this example, we consider the following hyperparameter tuning problem of a \gls{svm} for binary classification.
 Given a binary-labeled dataset~$\set{(\iter_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$, we build an \gls{svm} to classify the data with their respective labels.
 Binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by solving the optimization problem
@@ -210,7 +210,7 @@ Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times
 \nomenclature[On]{$\sgn$}{Sign operator}%
 which maps an observation~$\iter \in \R^n$ to a label in~$\set{\pm 1}$.
 It is clear that~$\delta$ depends on the two parameters~$C$ and~$\gamma$, which can be chosen by solving an optimization problem.
-The objective function~$P$ of this problem is a~$5$-fold cross-validation based on some performance measure of the model~\cref{eq:csvc-classifier}.
+The objective function~$P$ of this problem can be a~$5$-fold cross-validation based on some performance measure of the model~\cref{eq:csvc-classifier}.
 The general~$k$-fold cross-validation to define~$P(C, \gamma)$ is presented in \cref{alg:cross-validation}.
 
 \begin{algorithm}
@@ -238,14 +238,13 @@ The hyperparameter tuning problem can be formulated as
     \end{aligned}
 \end{equation*}
 It is clear that derivatives of the objective function of such a problem cannot be easily evaluated and may even not exist.
-This problem may be solved using \gls{dfo} methods.
+This problem can be solved using \gls{dfo} methods.
 
 As in~\cite{Qian_Yu_2021}, \gls{dfo} can also be applied to reinforcement learning.
 Instead of training a model on a fixed labeled dataset, reinforcement learning bases the training process on rewarding expected behaviors and punishing undesired ones.
 Hence, it often consists in finding optimal parameters that maximize a reward.
 However, these reward derivatives often cannot be evaluated, and \gls{dfo} methods can be an approach to solving such problems.
 This concept is often referred to as derivative-free reinforcement learning.
-
 
 \subsection{Some industrial and engineering applications}
 
@@ -358,12 +357,12 @@ where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
     Then there exists a Lagrange multiplier~$\lm[\ast] = [\lm[\ast]_i]_{i \in \iub \cup \ieq}^{\T}$ with~$\lm[\ast]_i \in \R$ for all~$i \in \iub \cup \ieq$ such that
     \begin{subequations}
         \label{eq:kkt-introduction}
-        \begin{empheq}[left=\empheqlbrace]{alignat=2}
-            & \nabla_x \lag(\iter[\ast], \lm[\ast]) = 0,    && \label{eq:kkt-introduction-stationarity}\\
-            & \con{i}(\iter[\ast]) \le 0,                   && \quad \text{if~$i \in \iub$,} \label{eq:kkt-introduction-primal-feasibility-ub}\\
-            & \con{i}(\iter[\ast]) = 0,                     && \quad \text{if~$i \in \ieq$,} \label{eq:kkt-introduction-primal-feasibility-eq}\\
-            & \lm[\ast]_i \con{i}(\iter[\ast]) = 0,         && \quad \text{if~$i \in \iub$,} \label{eq:kkt-introduction-complementary-slackness}\\
-            & \lm[\ast]_i \ge 0,                            && \quad \text{if~$i \in \iub$.} \label{eq:kkt-introduction-dual-feasibility}
+        \begin{empheq}[left=\empheqlbrace]{alignat=1}
+            & \nabla_x \lag(\iter[\ast], \lm[\ast]) = 0, \label{eq:kkt-introduction-stationarity}\\
+            & \con{i}(\iter[\ast]) \le 0, ~ i \in \iub \label{eq:kkt-introduction-primal-feasibility-ub}\\
+            & \con{i}(\iter[\ast]) = 0, ~ i \in \ieq \label{eq:kkt-introduction-primal-feasibility-eq}\\
+            & \lm[\ast]_i \con{i}(\iter[\ast]) = 0, ~ i \in \iub \label{eq:kkt-introduction-complementary-slackness}\\
+            & \lm[\ast]_i \ge 0, ~ i \in \iub \label{eq:kkt-introduction-dual-feasibility}
         \end{empheq}
     \end{subequations}
 \end{theorem}
@@ -371,7 +370,7 @@ where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
 We present \cref{thm:first-order-necessary-conditions} with the \gls{licq} as an example, but a similar conclusion can be established with other constraint qualifications, such as the \gls{mfcq} (see, e.g.,~\cite[P.~339]{Nocedal_Wright_2006}).
 The conditions~\cref{eq:kkt-introduction} are commonly referred to as the \gls{kkt} conditions~\cite{Karush_1939,Kuhn_Tucker_1951}, and the pair~$(\iter[\ast], \lm[\ast])$ in \cref{thm:first-order-necessary-conditions} is referred to as a \emph{\gls{kkt} pair}.
 More specifically, condition~\cref{eq:kkt-introduction-stationarity} is the \emph{stationarity} condition, conditions~\cref{eq:kkt-introduction-primal-feasibility-ub,eq:kkt-introduction-primal-feasibility-eq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-introduction-complementary-slackness} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-introduction-dual-feasibility} as the \emph{dual feasibility} condition.
-A point~$\iter \in \R^n$ is a \emph{first-order stationary point} if it satisfies the \gls{kkt} conditions~\cref{eq:kkt-introduction}.
+A \emph{first-order stationary point} is a point~$\iter \in \R^n$ satisfying the \gls{kkt} conditions~\cref{eq:kkt-introduction}.
 Such a point may not be a local solution.
 
 \subsubsection{An illustration of the first-order optimality conditions}
@@ -445,8 +444,8 @@ It is known that at a local solution of a smooth unconstrained optimization prob
 
 \begin{theorem}[Second-order necessary conditions~{\cite[Thm.~12.5]{Nocedal_Wright_2006}}]
     \label{thm:second-order-necessary-conditions}
-    Let~$\iter[\ast] \in \fset$ be a local solution to the problem~\cref{eq:problem-introduction}.
-    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood or~$\iter[\ast]$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$\iter[\ast]$.
+    Let~$\iter[\ast] \in \fset$ be a local solution to~\cref{eq:problem-introduction}.
+    Assume that the functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are twice continuously differentiable in a neighborhood or~$\iter[\ast]$, and that the \gls{licq} holds at~$\iter[\ast]$.
     Denote the active set for the problem~\cref{eq:problem-introduction} at~$\iter[\ast]$ by~$\act(\iter[\ast])$.
     Let~$\lm[\ast] = [\lm[\ast]_i]_{i \in \iub \cup \ieq}^{\T}$ be a Lagrange multiplier with~$\lm[\ast]_i \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the \gls{kkt} conditions~\cref{eq:kkt-introduction}, and let~$z \in \R^n$ be any vector such that
     \begin{subequations}
@@ -468,7 +467,7 @@ However, it is known in smooth unconstrained optimization that a point at which 
 \begin{theorem}[Second-order sufficient conditions~{\cite[Thm.~12.6]{Nocedal_Wright_2006}}]
     \label{thm:second-order-sufficient-conditions}
     Let~$\iter[\ast] \in \fset$ be a given point.
-    Assume that the functions~$\obj$ and~$\con{i}$ are twice continuously differentiable in a neighborhood of~$\iter[\ast]$ for all~$i \in \iub \cup \ieq$, and that there exists a Lagrange multiplier~$\lm[\ast] = [\lm[\ast]_i]_{i \in \iub \cup \ieq}^{\T}$ with~$\lm[\ast]_i \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-introduction}.
+    Assume that the functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are twice continuously differentiable in a neighborhood of~$\iter[\ast]$, and that at this point there exists a Lagrange multiplier~$\lm[\ast] = [\lm[\ast]_i]_{i \in \iub \cup \ieq}^{\T}$ with~$\lm[\ast]_i \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the KKT condition~\cref{eq:kkt-introduction}.
     If for all vector~$z \in \R^n \setminus \set{0}$ satisfying the conditions~\cref{eq:second-order-introduction} we have~$z^{\T} \nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast]) z > 0$, then~$\iter[\ast]$ is a strict local solution to problem~\cref{eq:problem-introduction}.
 \end{theorem}
 
@@ -616,7 +615,7 @@ We consider the following convergence test for \gls{dfo} solvers, following~\cit
 We define for each problem~$p \in \xpb$ a merit function~$\varphi_p$, i.e., a function that measures the quality of a point, taking into account the values of both the constraint and the objective functions.
 The smaller value of~$\varphi_p$, the better.
 Let~$x_p^0$ be the initial guess for a given problem~$p \in \xpb$, and~$\varphi_p^{\ast}$ be the least value of~$\varphi_p$ obtained by the solvers in~$\xsv$.
-Given a tolerance~$\tau \in (0, 1)$, a point~$x$ satisfies the convergence test if
+Given a tolerance~$\tau \in (0, 1)$\nomenclature[Sc]{$(a, b)$}{Open set~$\set{\iter \in \R : a < \iter < b}$ with~$a < b$}, a point~$x$ satisfies the convergence test if
 \begin{equation}
     \label{eq:convergence-test-profiles}
     \varphi_p(\iter) \le \varphi_p^{\ast} + \tau [\varphi_p(\iter_p^0) - \varphi_p^{\ast}],
@@ -846,20 +845,18 @@ This phenomenon is studied in~\cite{Gould_Scott_2016}, which presents examples o
 
 \section{Notations}
 
-\todo[noline]{Complete the notation description}
-
-Throughout this thesis, the functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, always denote the objective and constraint functions of an optimization problem, respectively.
+Throughout this thesis, the functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, always denote the objective and constraint functions of an optimization problem.
 The Lagrangian function of this problem is denoted by~$(\iter, \lm) \mapsto \lag(\iter, \lm)$.
-Its first argument~$\iter$ is the decision variable, while its second argument~$\lm = [\lm_i]_{i \in \iub \cup \ieq}$ is the dual variable of the considered problem.
+Its first argument~$\iter$ is the decision variable, while its second argument~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$ is the dual variable of the considered problem.
 A quadratic approximation of a function~$u$ is always denoted by~$\hat{u}$, and may be superscripted if this model is used in an iterative process.
-For example, if an optimization method maintains a quadratic approximation of the objective function, the~$k$th model is denoted by~$\objm[k]$\nomenclature[Ff]{$\objm$}{Quadratic model of~$\obj$}.
+For example, if an optimization method maintains a quadratic approximation of the objective function, the~$k$th model of the objective function is denoted by~$\objm[k]$\nomenclature[Ff]{$\objm$}{Quadratic model of~$\obj$}.
 
 In general, an iteration number is written as a \emph{superscript}.
-When an exponent is used in a formula that may lead to confusion, we will explicitely state the meaning of the notation in the context.
+When an exponent is used in a formula that may lead to confusion, we will explicitly state the meaning of the notation in the context.
 Moreover, a \emph{subscript} usually signifies a component index of a vector, a matrix, etc.
 An exception to this rule is the notation~$e_i \in \R^n$, which represents the~$i$th standard coordinate vector, i.e., the~$i$th column of the identity matrix in~$\R^{n \times n}$.
 
 We will mainly use the~$\ell_2$-norm in this thesis.
 Hence,~$\norm{\cdot}$ denotes the~$\ell_2$-norm, unless otherwise stated.
 If any other norm is needed, its choice is clarified using subscripts.
-For example~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm of a matrix, and~$\norm{\cdot}_1$ denotes the~$\ell_1$ norm of a vector or the corresponding induced norm of a matrix.
+For example,~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm of a matrix, and~$\norm{\cdot}_1$ denotes the~$\ell_1$-norm of a vector or the corresponding induced norm of a matrix.

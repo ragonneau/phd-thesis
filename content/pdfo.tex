@@ -19,38 +19,38 @@
 
 Between~\citeyear{Powell_1994} and~\citeyear{Powell_2015}, Powell developed five solvers to tackle unconstrained and constrained problems without using derivatives, namely~\gls{cobyla}~\cite{Powell_1994}, \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}~\cite{Powell_2015}.
 These solvers were implemented by Powell, with particular attention paid to their numerical stability and algebraic complexity.
-Renowned for their robustness and efficiency, these solvers are extremely appealing to practitioners and widely used in applications, for instance, aeronautical engineering~\cite{Gallard_Etal_2018}, astronomy~\cite{Biviano_Etal_2013,Mamon_Biviano_Boue_2013}, computer vision~\cite{Izadinia_Shan_Seitz_2017}, robotics~\cite{Mombaur_Truong_Laumond_2010}, and statistics~\cite{Bates_Etal_2015}.
+Renowned for their robustness and efficiency, these solvers are very appealing to practitioners and widely used in applications, including aeronautical engineering~\cite{Gallard_Etal_2018}, astronomy~\cite{Biviano_Etal_2013,Mamon_Biviano_Boue_2013}, computer vision~\cite{Izadinia_Shan_Seitz_2017}, robotics~\cite{Mombaur_Truong_Laumond_2010}, and statistics~\cite{Bates_Etal_2015}.
 
 However, Powell coded in Fortran 77, an old-fashion language that damps the enthusiasm of many users to exploit these solvers in their projects.
-There have been a considerable demand from both researchers and practitioners for the availability of Powell's solvers in more user-friendly languages such as Python, MATLAB, and Julia.
-Our aim is to wrap Powell's Fortran code into a package named \gls{pdfo}, which enables users of such languages to call Powell's solvers without any need of dealing with the Fortran code.
+There has been considerable demand from both researchers and practitioners for the availability of Powell's solvers in more user-friendly languages such as Python, MATLAB, and Julia.
+Our aim is to wrap Powell's Fortran code into a package named \gls{pdfo}, which enables users of such languages to call Powell's solvers without any need to deal with the Fortran code.
 For each supported language, \gls{pdfo} provides a simple subroutine that can invoke one of Powell's solvers according to the user's request (if any) or according to the type of the problem to solve.
-The current release (version 1.2) of \gls{pdfo} supports Python and ATLAB, with more languages to be covered in the future.
+The current release (version 1.2) of \gls{pdfo} supports Python and MATLAB, with more languages to be covered in the future.
 The signature of the Python subroutine is consistent with the \texttt{minimize} function of the SciPy optimization library~\cite{Virtanen_Etal_2020};
-the signature of the MATLAB subroutine is consistent with the \texttt{fmincon} function of the MATLAB Optization Toolbox.
+the signature of the MATLAB subroutine is consistent with the \texttt{fmincon} function of the MATLAB Optimization Toolbox.
 The package is cross-platform, available on Linux, macOS, and Microsoft Windows at once.
 
 \Gls{pdfo} is not the first attempt to facilitate the usage of Powell's solvers in languages other than Fortran.
 Various efforts have been made in this direction in response to the continual demands from both researchers and practitioners: Py-BOBYQA~\cite{Cartis_Etal_2019} provides a Python implementation of \gls{bobyqa}; NLopt~\cite{Johnson_2019} includes multi-language interfaces for \gls{cobyla}, \gls{newuoa}, and \gls{bobyqa}; minqa~\cite{Bates_Etal_2014} wraps \gls{uobyqa}, \gls{newuoa}, and \gls{bobyqa} in R; SciPy~\cite{Virtanen_Etal_2020} makes \gls{cobyla} available in Python under its optimization library.
-Nevertheless, \gls{pdfo} has several features that distinguishes itself from others.
+Nevertheless, \gls{pdfo} has several features that distinguish it from others.
 
 \paragraph{Comprehensiveness}
 
 To the best of our knowledge, \gls{pdfo} is the only package that provides all of \gls{cobyla}, \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa} with a uniform interface.
-In addition to homogenizing the usage, such an interface eases the comparison between these solvers in case multiple of them are able to tackle a given problem.
+In addition to homogenizing the usage, such an interface eases the comparison between these solvers in case multiple of them can tackle a given problem.
 Doing so, we may gain insights that cannot be obtained otherwise into the behavior of the solvers, as will be illustrated in~\cref{sec:pdfo-experiments}.
 
 \paragraph{Solver selection}
 
-When using \gls{pdfo}, the user can specifically invoke one of Powell's solvers; nevertheless, if the user does not specify any solver, \gls{pdfo} will select automatically a solver according to the given problem.
+When using \gls{pdfo}, the user can specifically invoke one of Powell's solvers; nevertheless, if the user does not specify any solver, \gls{pdfo} will automatically select a solver according to the given problem.
 The selection takes into consideration the performance of the solvers on the CUTEst problem set~\cite{Gould_Orban_Toint_2015}.
 Interestingly, it turns out that the solver with the best performance may not be the most intuitive one.
 For example, \gls{newuoa} is not always the best choice for solving an unconstrained problem.
-This will be elaborated in~\cref{subsec:solver-selection}.
+This will be elaborated on in~\cref{subsec:solver-selection}.
 
 \paragraph{Code patching}
 
-During the development of \gls{pdfo}, we spotted in the original Fortran code some bugs, which led for example to infinite cycling or segmentation faults on some ill-conditioned problems.
+During the development of \gls{pdfo}, we spotted in the original Fortran code some bugs, which led, for example, to infinite cycling or segmentation faults on some ill-conditioned problems.
 The bugs have been patched in \gls{pdfo}.
 Nevertheless, we provide an option that can enforce the package to use the original code of Powell without the patches, which is not recommended except for research.
 In addition, \gls{pdfo} provides \gls{cobyla} in double precision, whereas Powell used single precision when he implemented it in the 1990s.
@@ -58,7 +58,7 @@ See~\cref{subsec:bug-corrections} for details.
 
 \paragraph{Fault tolerance}
 
-\Gls{pdfo} takes care of failures in the evaluation of the objective or constraint functions when NaN or infinite values are returned.
+\Gls{pdfo} takes care of failures in the evaluations of the objective or constraint functions when NaN or infinite values are returned.
 In case of such failures, \gls{pdfo} will not exit but try to progress.
 Moreover, \gls{pdfo} ensures that the returned solution is not a point where the evaluation fails, while the original code of Powell may return a point whose objective function value is numerically NaN.
 
@@ -66,16 +66,12 @@ Moreover, \gls{pdfo} ensures that the returned solution is not a point where the
 
 \gls{pdfo} preprocesses the inputs to simplify the problem and reformulate it to meet the requirements of Powell's solvers.
 For instance, if the problem has linear constraints~$A x = b$, \gls{pdfo} can rewrite it into a problem on the null space of~$A$, eliminating such constraints and reducing the dimension.
-Another example is that the starting point of a linearly-constrained problem is projected to the feasible region, because \gls{lincoa} needs a feasible starting point to work properly.
+Another example is that the starting point of a linearly-constrained problem is projected to the feasible region because \gls{lincoa} needs a feasible starting point to work properly.
 
 \paragraph{Additional options}
 
 \gls{pdfo} includes options for the user to control the solvers in some manners that are useful in practice.
 For example, the user can request \gls{pdfo} to scale the problem according to the bounds of the variables before solving it.
-
-% \begin{itemize}
-%     \item Conjugate direction and~$B$-conjugate direction methods~\cite{Powell_1964,Powell_1975a}
-% \end{itemize}
 
 \section{Overview of the Powell's \glsentrylong{dfo} methods}
 \label{sec:powell}
@@ -95,12 +91,11 @@ In general, any problem of the form~\cref{eq:problem-introduction} can be reform
 
 We assume that derivatives of~$\obj$ and~$\con{i}$, for~$i \in \iub$, are unavailable.
 Powell published his first \gls{dfo} algorithm based on conjugate directions in \citeyear{Powell_1964}~\cite{Powell_1964}\footnote{According to Google Scholar, this is Powell's second published paper and also the second most cited work. The earliest and meanwhile most cited one is his paper on the \gls{dfp} method~\cite{Fletcher_Powell_1963}, co-authored with Fletcher and published in 1963.}.
-His code for this algorithm is contained in the HSL Mathematical Software Library~\cite{HSL} as subroutine \texttt{VA24}.
+His code for this algorithm is contained in the HSL Mathematical Software Library~\cite{HSL} as the subroutine \texttt{VA24}.
 It is not included in \gls{pdfo} because the code is not in the public domain, although open-source implementations are available~(see~\cite[Fn.~4]{Conn_Scheinberg_Toint_1997b}).
 
-From the 1990s to the final days of his career, Powell developed five model-based \gls{dfo} algorithms to solve~\cref{eq:problem-pdfo}, namely \gls{cobyla}~\cite{Powell_1994} for nonlinearly constrained problems, \gls{uobyqa}~\cite{Powell_2002} and \gls{newuoa}~\cite{Powell_2006} for unconstrained problems, \gls{bobyqa}~\cite{Powell_2009} for bound constrained problems, and~\gls{lincoa} for linearly constrained problems.
-In addition, Powell implemented these algorithms into Fortran solvers and made
-the code publicly available.
+From the 1990s to the final days of his career, Powell developed five model-based \gls{dfo} algorithms to solve the problem~\cref{eq:problem-pdfo} in different cases, namely \gls{cobyla}~\cite{Powell_1994} for nonlinearly-constrained problems, \gls{uobyqa}~\cite{Powell_2002} and \gls{newuoa}~\cite{Powell_2006} for unconstrained problems, \gls{bobyqa}~\cite{Powell_2009} for bound constrained problems, and~\gls{lincoa} for linearly constrained problems.
+In addition, Powell implemented these algorithms into Fortran solvers and made the code publicly available.
 The solvers constitute the cornerstones of \gls{pdfo}.
 
 \subsection{A sketch of the algorithms}
@@ -139,7 +134,7 @@ It aims to solve the optimization problem~\cref{eq:problem-pdfo} whenever the co
 In other words, only function values of the constraint functions are accessible.
 
 At the~$k$th iteration, \gls{cobyla} models the objective and the constraint functions with linear interpolants on the interpolation set~$\xpt[k] \subseteq \R^n$, which consists of~$n + 1$ points that are updated along the iterations.
-In this context, the interpolation set~$\xpt[k]$ is poised if an only if the volume of the~$n$-simplex engendered by~$\xpt[k]$ is nonzero (see \cref{subsec:poisedness} for details).
+In this context, the interpolation set~$\xpt[k]$ is poised if and only if the volume of the~$n$-simplex engendered by~$\xpt[k]$ is nonzero (see \cref{subsec:poisedness} for details).
 
 Once the linear models~$\conm[k]{i}$ of the constraint functions~$\con{i}$, for~$i \in \iub$, are built, the trust-region subproblem
 \begin{subequations}
@@ -151,16 +146,16 @@ Once the linear models~$\conm[k]{i}$ of the constraint functions~$\con{i}$, for~
                     & \quad \iter \in \R^n, \nonumber
     \end{align}
 \end{subequations}
-is then handled in the following way.
-Solving sequentially the problems~\cref{eq:cobyla-subproblem} by replacing the trust-region radius~$\rad[k]$ with a constant continuously increasing from zero to~$\rad[k]$ will generate a piecewise linear path from~$\iter[k]$ to the solution of the subproblem.
-The strategy of \gls{cobyla} is to compute this path, by updating the active sets of the constraint models.
+is handled in the following way.
+Solving the problems~\cref{eq:cobyla-subproblem} sequentially by replacing the trust-region radius~$\rad[k]$ with a constant continuously increasing from zero to~$\rad[k]$ will generate a piecewise linear path from~$\iter[k]$ to the solution of the subproblem.
+The strategy of \gls{cobyla} is to compute this path by updating the active sets of the constraint models.
 However, the trust-region constraint~$\norm{\iter - \iter[k]} \le \rad[k]$ and the region~\cref{eq:cobyla-subproblem-ub} may contradict each others, in which case the trial point is chosen to solve approximately
 \begin{align*}
     \min        & \quad \max_{i \in \iub} \posp{\conm[k]{i}(\iter)}\\
     \text{s.t.} & \quad \norm{\iter - \iter[k]} \le \rad[k],\\
                 & \quad \iter \in \R^n,
 \end{align*}
-\nomenclature[Oa]{$\posp{\cdot}$}{Elementwise positive-part operator}%
+\nomenclature[Oa]{$\posp{\cdot}$}{Positive-part operator}%
 where~$\posp{\cdot}$ takes the positive-part of a given number.
 In doing so, the method attempts to reduce the~$\ell_{\infty}$-violation of the constraint models while ensuring that the trial point lies in the trust region.
 
@@ -172,8 +167,8 @@ It aims at solving the nonlinear optimization problem~\cref{eq:problem-pdfo} in 
 To do so, at each iteration, it models the objective function with a quadratic obtained by fully-determined interpolation on the set~$\xpt[k] \subseteq \R^n$ containing~$N = (n + 1)(n + 2) / 2$ points.
 The set~$\xpt[k + 1]$ differs from~$\xpt[k]$ of at most one point.
 During a classical iteration, a trial point, i.e., an approximate solution of the trust-region subproblem~\cref{eq:powell-trust-region} replaces an interpolation of~$\xpt[k]$.
-As we already mentioned, it is essential to maintain some geometrical properties of~$\xpt[k]$ to ensure the existence and the uniqueness of the models from a computational viewpoint.
-Hence, \gls{uobyqa} may undertake geometry-improvement steps whenever the models seem not to be accurate, led a remarkable result pointed out in~\cite{Powell_2001}.
+As we already mentioned, it is essential to maintain some geometrical properties of~$\xpt[k]$ to ensure the existence and uniqueness of the models from a computational viewpoint.
+Hence, \gls{uobyqa} may undertake geometry-improving steps whenever the models seem not to be accurate, led a remarkable result pointed out in~\cite{Powell_2001}.
 It states that given a point~$y \in \xpt[k]$ to remove from the interpolation set, its most suitable substitute to build~$\xpt[k + 1]$ solves the subproblem
 \begin{subequations}
     \label{eq:biglag}
@@ -184,32 +179,32 @@ It states that given a point~$y \in \xpt[k]$ to remove from the interpolation se
     \end{align}
 \end{subequations}
 where~$\lagp[y] \colon \R^n \to \R$ denotes the Lagrange function associated with~$y$ (see \cref{sec:lagrange-polynomials} for details).
-Since \gls{uobyqa} requires only a rough solution of the geometry-improvement subproblem~\cref{eq:biglag}, Powell developed an algorithm that requires only~$\bigo(n^2)$ operations, based on an estimation of~$\abs{\lagp[y](\cdot)}$.
+Since \gls{uobyqa} requires only a rough solution of the geometry-improving subproblem~\cref{eq:biglag}, Powell developed an algorithm that requires only~$\bigo(n^2)$ operations, based on an estimation of~$\abs{\lagp[y](\cdot)}$.
 Once such a point is calculated, the solver continues with a classical trust-region step, and the subproblem~\cref{eq:powell-trust-region} is solved with the Mor{\'{e}}-Sorensen algorithm~\cite{More_Sorensen_1983}, as it controls the accuracy of the solution.
 
 \subsection{The \glsfmttext{newuoa}, \glsfmttext{bobyqa}, and \glsfmttext{lincoa} methods}
 \label{subsec:newuoa-bobyqa-lincoa}
 
-The major flaw of \gls{uobyqa} is the amount of required interpolation points, which can become prohibitively huge when~$n$ increases.
-Therefore, Powell designed a mechanism to define quadratic models that requires fewer interpolation points~\cite{Powell_2004a}.
+The major flaw of \gls{uobyqa} is the number of required interpolation points, which can become prohibitively huge when~$n$ increases.
+Therefore, Powell designed a mechanism to define quadratic models that require fewer interpolation points~\cite{Powell_2004a}.
 These models, referred to as quadratic models based on the symmetric Broyden update, are presented in \cref{subsec:symmetric-broyden-updates}.
 They only require the number of points in~$\xpt[k]$ to be at least~$n + 2$ and at most~$(n + 1)(n + 2) / 2$.
-As in the fully-determined case, the geometry of the interpolation set plays a crucial role, as it influences the accuracy of the quadratic models, and the geometry-improvement steps~\cref{eq:biglag} should be also entertained.
+As in the fully-determined case, the geometry of the interpolation set plays a crucial role, as it influences the accuracy of the quadratic models and the geometry-improving steps~\cref{eq:biglag} should also be entertained.
 
 The last three \gls{dfo} solvers of Powell are \gls{newuoa}~\cite{Powell_2006, Powell_2008}, \gls{bobyqa}~\cite{Powell_2009}, and~\gls{lincoa}.
 \Gls{bobyqa} and \gls{lincoa} are named respectively after \emph{\glsdesc{bobyqa}} and \emph{\glsdesc{lincoa}}, but the meaning of the acronym \gls{newuoa} is not known (even though most people agree on \emph{\glsdesc{newuoa}}).
 Powell never published a paper introducing \gls{lincoa}, and~\cite{Powell_2015} discusses only the resolution of its trust-region subproblem.
-As their names suggest, they aim at solving unconstrained, bound-constrained and linearly-constrained problems respectively, using quadratic models of the objective function.
-All three use the underdetermined interpolation technique described above to build the quadratic models, so that \gls{newuoa} is more suitable than \gls{uobyqa} for solving problems with a relatively high dimension.
+As their names suggest, they aim to solve unconstrained, bound-constrained, and linearly-constrained problems, using quadratic models of the objective function.
+All three use the underdetermined interpolation technique described above to build the quadratic models so that \gls{newuoa} is more suitable than \gls{uobyqa} for solving problems with a relatively high dimension.
 The feasible region~$\set{\iter \in \R^n : \con{i}(\iter) \le 0, ~ i \in \iub}$ corresponds to the whole space for \gls{newuoa}, a box for \gls{bobyqa}, and a polyhedron for \gls{lincoa}.
 A subtlety of \gls{bobyqa} is that the constraints are always respected, for each iterate and each point in~$\xpt[k]$.
-Therefore, the geometry-improvement subproblem~\cref{eq:biglag} should be adapted to incorporate the bound constraints, which makes its resolution more difficult.
+Therefore, the geometry-improving subproblem~\cref{eq:biglag} should be adapted to incorporate the bound constraints, which makes its resolution more difficult.
 Moreover, as we already mentioned, at most one point of the interpolation set is altered at each iteration, which leads to an at-most rank-$2$ update of the coefficient matrix of the \gls{kkt} system of interpolation.
 This remark suggests that it can be much more efficient to update such a matrix instead of computing it from scratch at each iteration.
 Powell derived an updating formula in~\cite{Powell_2004b} that requires only~$\bigo(N^2)$ operations instead of~$\mathcal{O}(N^3)$ if the computation was made from scratch with no loss of accuracy, where~$N$ denotes the number of interpolation points.
 Details are given in \cref{subsec:implementation-symmetric-broyden-update}.
 When it comes to solving the trust-region subproblems~\cref{eq:powell-trust-region}, \gls{newuoa} employs the Steihaug-Toint truncated conjugate gradient algorithm~\cite{Steihaug_1983,Toint_1981}, and \gls{bobyqa} and \gls{lincoa} use an active-set variation of it.
-However, the trust-region subproblem solver of \gls{bobyqa} always respects the bounds, while the solver of \gls{lincoa} may visit point lying outside of the polyhedron of the constraints, and may even return points that are slightly infeasible.
+However, the trust-region subproblem solver of \gls{bobyqa} always respects the bounds, while the solver of \gls{lincoa} may visit points lying outside of the polyhedron of the constraints and may even return points that are slightly infeasible.
 
 \section{Core features of the \glsfmttext{pdfo} package}
 

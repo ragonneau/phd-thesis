@@ -17,8 +17,8 @@
 
 \section{Introduction and motivation}
 
-As mentioned in \cref{ch:introduction}, model-based \gls{dfo} methods necessitate to approximate locally the functions involved in optimization problems by simple functions, referred to as \emph{models} or \emph{surrogates}.
-These models are used to construct subproblems that are in turn approximately minimized.
+As mentioned in \cref{ch:introduction}, model-based \gls{dfo} methods necessitate approximating locally the functions involved in optimization problems by simple functions, referred to as \emph{models} or \emph{surrogates}.
+These models are used to construct subproblems that are, in turn, approximately minimized.
 Examples of such functions commonly used in the literature are polynomials and \glspl{rbf}~\cite{Powell_2004a}.
 In this thesis, we focus on linear and quadratic polynomial models, i.e., on polynomials of degree at most one and two, respectively.
 
@@ -53,7 +53,7 @@ However, we do not consider such models in this thesis due to the following obse
     \item The \gls{dfo} methods need to solve approximately subproblems (e.g., trust-region subproblems) built upon these models.
     Sophisticated models usually lead to complicated subproblems to solve.
     On the other hand, even with models that are not quadratic, practical algorithms normally solve the subproblems based on first- or second-order approximations of the models, e.g., calculate the approximate Cauchy point discussed in~\cite[\S~6.3.3]{Conn_Gould_Toint_2000}.
-    Therefore, building polynomial models of degree higher than two may not be necessary.
+    Therefore, building polynomial models of degrees higher than two may not be necessary.
 \end{enumerate}
 
 Although we do not study \gls{rbf} models, we mention that there also exist many \gls{dfo} methods based on these models.
@@ -132,7 +132,7 @@ One of the most important application of the Lagrange polynomials is to measure 
 
 As we mentioned above, the interpolation set~$\xpt$ is poised if it admits a unique interpolant in~$\qpoly$.
 However, given a poised set, how good is this interpolation set?
-This section will briefly discuss this topic and introduce the concept of~$\Lambda$-poisedness.
+This section briefly discusses this topic and introduce the concept of~$\Lambda$-poisedness.
 
 Suppose that~$\obj$ is thrice differentiable on~$\R^n$.
 It is well-known that for any~$\iter \in \R^n$, we have
@@ -187,11 +187,11 @@ It is a theoretical tool that we mostly use to justify design choices of algorit
 As before, we focus on quadratic interpolation in this section.
 Building a quadratic model by the interpolation system~\cref{eq:interpolation-conditions-quadratic} requires~$\mathcal{O}(n^2)$ function evaluations.
 Therefore, if a \gls{dfo} method employs such models, its initialization already costs~$\mathcal{O}(n^2)$ function evaluations, which are needed to build the first model.
-To reduce this amount of function evaluations, we use underdetermined interpolation, as presented hereinafter.
+We use underdetermined interpolation to reduce this amount of function evaluations, as presented hereinafter.
 
 Underdetermined interpolation works as follows.
 Assume that we are given an interpolation set~$\xpt \subseteq \R^n$ such that the interpolation conditions~\cref{eq:interpolation-conditions} are consistent.
-The number~$m$ of interpolation points may, however, be lower than~$\dim \qpoly$.
+However, the number~$m$ of interpolation points may be lower than~$\dim \qpoly$.
 In such a case, the interpolation conditions may \emph{not} define a unique interpolant.
 To select one, we choose a functional~$\mathcal{F} : \qpoly \to \R$ that reflects a desired property or regularity of the interpolants.
 An interpolant~$\objm$ of~$\obj$ is then defined as a solution of
@@ -222,8 +222,8 @@ In this context, a quadratic model~$\objm$ solves
     \end{align}
 \end{subequations}
 where~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm.
-This norm is chosen because it can be easily evaluated, unlike the spectral norm for example.
-The Frobenius norm also brings computational advantages, because~\cref{eq:least-frobenius-norm-models} is essentially a quadratic programming problem, which can be tackled by solving a linear system.
+This norm is chosen because it can be easily evaluated, unlike the spectral norm, for example.
+The Frobenius norm also brings computational advantages because~\cref{eq:least-frobenius-norm-models} is essentially a quadratic programming problem, which can be tackled by solving a linear system.
 Examples of \gls{dfo} methods that use least Frobenius norm quadratic models include \gls{mnh}~\cite{Wild_2008} and \gls{dfoalg}~\cite{Conn_Scheinberg_Toint_1997a,Conn_Scheinberg_Toint_1997b,Conn_Scheinberg_Toint_1998}.
 We also assume hereafter that~$m \ge n + 2$ as otherwise, any solution to~\cref{eq:least-frobenius-norm-models} would be linear.
 
@@ -278,7 +278,7 @@ where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\T}$,~$e \in 
     \end{bmatrix} \quad \text{and} \quad Y_H \eqdef \frac{1}{2} (Y_L^{\T} Y_L) \odot (Y_L^{\T} Y_L).
 \end{equation}
 \nomenclature[Oi]{$\odot$}{Hadamard product}%
-In~\cref{eq:least-frobenius-kkt-system-matrices},~$\odot$ denotes the Hadamard product and hence, the~$(i, j)$ entry of~$Y_H$ is given by~$[(y^i - \bar{x})^{\T} (y^j - \bar{x})]^2 / 2$.
+In~\cref{eq:least-frobenius-kkt-system-matrices},~$\odot$ denotes the Hadamard product and hence, the~$(i, j)$th entry of~$Y_H$ is given by~$[(y^i - \bar{x})^{\T} (y^j - \bar{x})]^2 / 2$.
 In fact, the problem~\cref{eq:least-frobenius-norm-models} is equivalent to the linear system~\cref{eq:least-frobenius-kkt-system}, where the matrix~$H$ can be retrieved from the value of~$\lm$ by~\cref{eq:least-frobenius-norm-kkt}~\cite[\S~2]{Powell_2004b}, and the interpolation set~$\xpt$ is poised if and only if the coefficient matrix in~\cref{eq:least-frobenius-kkt-system} is nonsingular~\cite[\S~5.3]{Conn_Scheinberg_Vicente_2009b}.
 Since the poisedness of~$\xpt$ does not depends on the choice of~$\bar{x}$, neither does the nonsingularity of the coefficient matrix in~\cref{eq:least-frobenius-kkt-system}.
 
@@ -333,7 +333,7 @@ Moreover, one can show that the set~$\xpt$ is~$\Lambda$-poised if and only if th
 
 In this section, we present another functional~$\mathcal{F}$ that can be used in the variational problem~\cref{eq:underdetermined-models}.
 It is introduced by \citeauthor{Powell_2004b}~\cite{Powell_2004b}.
-It takes up the freedom bequeathed by the interpolation conditions~\cref{eq:interpolation-conditions-quadratic} by minimizing the difference between the Hessian matrix of the interpolant and a prior estimation~$H_{\text{old}} \in \R^{n \times n}$ of this matrix, instead of minimizing the Frobenius norm of the Hessian matrix.
+It takes up the freedom bequeathed by the interpolation conditions~\cref{eq:interpolation-conditions-quadratic} by minimizing the difference between the Hessian matrix of the interpolant and a prior estimation~$H_{\text{old}} \in \R^{n \times n}$ of this matrix instead of minimizing the Frobenius norm of the Hessian matrix.
 More specifically, we build a quadratic model~$\objm$ by solving
 \begin{subequations}
     \label{eq:symmetric-broyden-models}
@@ -345,10 +345,10 @@ More specifically, we build a quadratic model~$\objm$ by solving
 \end{subequations}
 In a \gls{dfo} method, the model~$\objm[k] \in \qpoly$ of~$\obj$ at the~$k$th iteration can be constructed by solving~\cref{eq:symmetric-broyden-models} with~$H_{\text{old}} = \nabla^2 \objm[k - 1]$, and we define~$\objm[-1] \equiv 0$.
 This is referred to as the \emph{least Frobenius norm updating of quadratic models}~\cite{Powell_2004b}.
-Examples of \gls{dfo} methods that use this update include \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and~\gls{lincoa}~\cite{Powell_2015}, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
+Examples of \gls{dfo} methods that use this update include \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and~\gls{lincoa}, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
 The new method we introduce in \cref{ch:cobyqa-introduction} is also based on this update.
 
-The discussions we had on the minimum Frobenius norm models can be easily adapted to the least Frobenius norm updating.
+The above discussions we had on the minimum Frobenius norm models can be easily adapted to the least Frobenius norm updating.
 If we are given a function~$\objm[\text{old}]$ such that~$H_{\text{old}} = \nabla^2 \objm[\text{old}]$, then~$\objm - \objm[\text{old}]$ solves
 \begin{subequations}
     \label{eq:symmetric-broyden-models-reformulation}
@@ -487,7 +487,7 @@ The submatrices~$\Xi$ and~$\Upsilon$ can be stored directly, although the first 
 However,~$\Omega$ should not be stored as is, due to the following reason.
 As mentioned by \citeauthor{Powell_2004c}~\cite{Powell_2004c}, the submatrix~$\Omega$ is positive semidefinite with rank~$m - n - 1$.
 If~$\Omega$ is stored as an~$m \times m$ matrix, the rank property may be lost in practice due to computer rounding errors, as observed by \citeauthor{Powell_2004c} during the development of \gls{newuoa} (see~\cite[\S~1]{Powell_2004c} and the last paragraph of~\cite[\S~8]{Powell_2006}).
-To maintain the structure of~$\Omega$, it is stored in the factorized form~$Z D Z^{\T}$, with~$Z \in \R^{m \times (m - n - 1)}$ and~$D \in \R^{(m - n - 1) \times (m - n - 1)}$, where~$D$ is a diagonal matrix with elements~$\pm 1$ on the diagonal.
+To maintain the structure of~$\Omega$, we store the factorized form~$\Omega = Z D Z^{\T}$, with~$Z \in \R^{m \times (m - n - 1)}$ and~$D \in \R^{(m - n - 1) \times (m - n - 1)}$, where~$D$ is a diagonal matrix with elements~$\pm 1$ on the diagonal.
 Theoretically, the matrix~$D$ should always be the identity.
 However, in practice,~$D$ may have negative diagonal entries.
 This is because the positive semidefiniteness of~$\Omega$ can be lost due to computer rounding errors.
@@ -782,7 +782,7 @@ In this sense,~$\mathcal{Z}_{2n + 1}$ in an optimal interpolation set in~$\ball[
 The fact that~$\Lambda_p = 1$ for all~$p \in \set{1, 2}$ is in fact shown also by \cref{prop:lambda-poisedness-1,prop:lambda-poisedness-2}.
 
 In addition,~$m = 2n + 1$ is optimal for~$\mathcal{Z}_m$ in the sense that~$\Lambda_p$ attains the lower bound~$1$ in such a case, when~$p \in [1, 2]$.
-We conjecture that~$\Lambda_p$ is minimized when~$m = 2n + 1$ for any~$p \ge 1$, but we do not have any proof of such a statement yet.
+We conjecture that~$\Lambda_p$ is minimized at the value~$m = 2n + 1$ for any~$p \ge 1$, but we do not have any proof of such a statement yet.
 
 Note that the definition of~$\mathcal{Z}_m$ in~\cref{eq:initial-interpolation-set,eq:initial-interpolation-set-def} assumes that~$m \le 2n + 1$.
 \Citeauthor{Powell_2001}~\cite{Powell_2001} proposed an extension of~$\mathcal{Z}_m$ in the case~$m > 2n + 1$, and hence,~$\mathcal{Z}_m$ is defined for any~$m \in \set{1, 2, \dots, (n + 1) (n + 2) / 2}$.

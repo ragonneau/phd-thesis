@@ -477,7 +477,7 @@ However, there do exist smooth merit functions that enjoy exactness, as shown in
 For simplicity, we shall assume that~$\iub = \emptyset$ for this part.
 The augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973} of the problem~\cref{eq:problem-cobyqa-auglag} is then
 \begin{equation*}
-    \auglag(\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \sum_{i \in \ieq} \con{i}(\iter)^2, \quad \text{for~$\iter \ge 0$ and~$\lm = [\lm_i]_{i \in \ieq}$,}
+    \auglag(\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \sum_{i \in \ieq} \con{i}(\iter)^2, \quad \text{for~$\iter \ge 0$ and~$\lm = [\lm_i]_{i \in \ieq}^{\T}$,}
 \end{equation*}
 where~$\lag$ denotes the Lagrangian function of the problem~\cref{eq:problem-cobyqa-sqp}.
 The augmented Lagrangian merit function is then defined as
@@ -489,7 +489,7 @@ where~$\lm[\mathsf{LS}](\iter)$ denotes the least-squares solution to
     \label{eq:least-squares-lagrange-multipliers}
     \begin{align}
         \min        & \quad \norm[\bigg]{\nabla \obj(\iter) + \sum_{i \in \ieq} \lm_i \nabla \con{i}(x)}\\
-        \text{s.t.} & \quad \lm = [\lm_i]_{i \in \ieq}.
+        \text{s.t.} & \quad \lm = [\lm_i]_{i \in \ieq}^{\T}.
     \end{align}
 \end{subequations}
 The least-squares Lagrange multipliers attempts to satisfy the \gls{kkt} conditions as much as possible.
@@ -585,7 +585,7 @@ A similar framework for equality-constrained problems can be found in~\cite[\S~2
         }{
             Retain the trial point~$\iter[k + 1] \gets \iter[k]$\;
         }
-        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}$\;
+        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$\;
         Update the trust-region radius
         \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
             & \theta_1 \rad[k],  && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
@@ -977,7 +977,7 @@ In~\cite{Fletcher_Maza_1989}, the first-stage step is used as a safeguard that g
 
 There are many well-known software packages based on the \gls{sqp} method.
 For example, \gls{snopt}~\cite{Gill_Murray_Saunders_2002,Gill_Murray_Saunders_2005} is an implementation of the \gls{sqp} method for inequality-constrained optimization.
-It approximates the Hessians of the Lagrangian function with a limited-memory quasi-Newton technique\footnote{Although not studied in this thesis, the limited-memory quasi-Newton method is an important technique in numerical optimization. It originated from~\cite{Perry_1977,Shanno_1978}. See the historical comments in~\cite[\S~1, paragraph~3]{Liu_Nocedal_1989} for more details.}.
+It approximates the Hessians of the Lagrangian function with a limited-memory quasi-Newton technique\footnote{Although not studied in this thesis, the limited-memory quasi-Newton method is an important technique in numerical optimization. It originated from~\cite{Perry_1977,Shanno_1978}. See the historical comments in~\cite[\S~1, \P~3]{Liu_Nocedal_1989} for more details.}.
 The \gls{sqp} method is embedded in a line-search framework, which uses the augmented Lagrangian function as the merit function.
 It employs a reduced-Hessian algorithm (see~\cite{Byrd_Nocedal_1991} for more information about this class of methods) named \gls{sqopt}~\cite{Gill_Murray_Saunders_2008} for solving the subproblems.
 Moreover, the possible infeasibility of the \gls{sqp} subproblem is handled using an~$\ell_1$-penalty approach detailed in~\cite[\S~1.2]{Gill_Murray_Saunders_2005}.
