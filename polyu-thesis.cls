@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/07/21 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/08/02 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifmeeting
@@ -188,6 +188,7 @@
     longend,%
     linesnumbered,%
 ]{algorithm2e}
+\SetKwInput{KwNote}{Note}
 \renewenvironment{algorithm}[1][htbp]{\begin{algocf@algorithm}[#1]\begin{onehalfspace}}{\end{onehalfspace}\end{algocf@algorithm}}
 \renewenvironment{algomathdisplay}{\begin{equation*}}{\@endalgocfline\end{equation*}\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
 \newenvironment{algomathalign}[1]{\align #1}{\@endalgocfline\endalign\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
@@ -202,6 +203,7 @@
 % Automatic references
 % Note: cleveref must be imported after hyperref and algorithm2e
 \RequirePackage[noabbrev,capitalize]{cleveref}
+\newcommand{\creflastconjunction}{, and\nobreakspace}
 \crefname{equation}{}{}
 \Crefname{equation}{}{}
 \crefname{lstlisting}{Listing}{Listings}
@@ -214,7 +216,7 @@
 \pgfplotsset{%
     compat=1.18,%
 }
-\usetikzlibrary{calc,patterns}
+\usetikzlibrary{arrows,calc,patterns,shapes}
 \usepgfplotslibrary{external}
 \pgfplotscreateplotcyclelist{profiles}{%
     thick,mark=none,NavyBlue,solid\\%
@@ -248,6 +250,9 @@
 \tikzexternalize[%
     prefix=figures/,%
 ]
+\tikzstyle{decision} = [diamond,draw,text width=2.5cm,text badly centered,inner sep=0pt]
+\tikzstyle{block} = [rectangle,draw,text width=5.5cm,text centered,rounded corners,minimum height=1.5cm]
+\tikzstyle{line} = [draw,-latex']
 
 % Drafting packages
 \RequirePackage{ifdraft}
