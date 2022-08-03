@@ -64,8 +64,10 @@ We are also provided with an initial guess~$\iter[0] \in \R^n$ satisfying~$\xl \
     \rad[0] \le \frac{1}{2} \min_{i \in \set{1, 2, \dots, n}} (\xu_i - \xl_i),
 \end{equation*}
 so that~$\xu_i \ge \xl_i + 2 \rad[0]$ for all~$i \in \set{1, 2, \dots, n}$.
-Further, to avoid conflicts between the bounds and the interpolation points, the initial guess is modified so that each component is either on a bound or keeps a distance of at least~$\rad[0]$ from each bound.
-The first~$n + 1$ points of~$\xpt[0] = \set{y^1, y^2, \dots, y^m}$ are defined by
+Further, to avoid conflicts between the bounds and the interpolation points,~$\iter[0]$ is modified so that each component of~$\iter[0]$ is either on a bound or keeps a distance of at least~$\rad[0]$ from the corresponding bounds.
+
+The initial interpolation set~$\xpt[0] = \set{y^1, y^2, \dots, y^m}$ is constructed in the following way.
+The first~$n + 1$ points of~$\xpt[0]$ are defined by
 \begin{empheq}[left={y^i \eqdef \empheqlbrace}]{alignat*=2}
     & \iter[0]                      && \quad \text{if~$i = 1$,}\\
     & \iter[0] + \rad[0] e_{i - 1}  && \quad \text{if~$2 \le i \le n + 1$ and~$\xl_{i - 1} \le \iter[0]_{i - 1} < \xu_{i - 1}$,}\\
@@ -126,9 +128,11 @@ where~$\Phi$ is defined by
 The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hides many details, including the definition of \enquote{convergence} in the loop, the calculation of~$\step[k]$, the update of~$\lm[k]$, and the geometry improvement of the interpolation set, which will be specified in \cref{subsec:managing-trust-region-radius,subsec:solving-trust-region-subproblem,subsec:least-squares-lagrange-multipliers,subsec:geometry-improvement}, respectively.
 
 \begin{algorithm}
-    \caption{Derivative-free trust-region \glsfmtshort{sqp} method}
+    \caption[Derivative-free trust-region \glsfmtshort{sqp} method]{Derivative-free trust-region \glsfmtshort{sqp} method\textsuperscript{$\dagger$}}
     \label{alg:derivative-free-trust-region-sqp}
     \DontPrintSemicolon
+    \onehalfspacing
+    \algorithmfootnote{\textsuperscript{$\dagger$}Recall that supercripts are iteration counters rather than exponents.}
     \KwData{Initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
     Set the penalty parameter~$\gamma^{-1} \gets  0$\;
     Build the initial interpolation set~$\xpt[0] \subseteq \R^n$ described in \cref{subsec:interpolation-based-quadratic-models}\;
@@ -168,12 +172,11 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
     }
 \end{algorithm}
 
-In the implementation of \cref{alg:derivative-free-trust-region-sqp-iterate},~$\iter[k + 1]$ is always set to a best point in~$\xpt[k + 1]$ according to~$\merit[k]$, in the sense that
-\begin{equation*}
-    \iter[k + 1] \in \argmin_{y \in \xpt[k + 1]} \merit[k](y).
-\end{equation*}
-If~$\iter[k]$ is optimal in~$\xpt[k + 1]$ according to~$\merit[k]$, then we choose~$\iter[k + 1] = \iter[k]$, even if there are other optimal points.
-Note however that we cannot naively set~$\iter[k + 1]$ to be either~$\iter[k] + \step[k]$ if~$\ratio[k] > 0$, or~$\iter[k]$ otherwise.
+\todo[noline]{Why algorithmfootnote does not work}
+
+In the implementation of \cref{alg:derivative-free-trust-region-sqp-iterate},~$\iter[k + 1]$ is always set to a best point in~$\xpt[k + 1]$ according to~$\merit[k]$, in the sense that it minimizes~$\merit[k]$ in~$\xpt[k + 1]$.
+If~$\iter[k]$ turns out to be optimal in~$\xpt[k + 1]$ according to~$\merit[k]$, then we choose~$\iter[k + 1] = \iter[k]$, even if there are other optimal points.
+Note however that we cannot naively set~$\iter[k + 1]$ to either~$\iter[k] + \step[k]$ if~$\ratio[k] > 0$, or~$\iter[k]$ otherwise.
 This is because~$\iter[k]$ is a best point in~$\xpt[k]$ according to~$\merit[k - 1]$, but it may not be the best one according to~$\merit[k]$.
 
 % In a practical implementation, the quadratic models on \cref{alg:derivative-free-trust-region-sqp-models} of \cref{alg:derivative-free-trust-region-sqp} are not computed from scratch, because only one point differs~$\xpt[k + 1]$ from~$\xpt[k]$.
@@ -183,18 +186,20 @@ This is because~$\iter[k]$ is a best point in~$\xpt[k]$ according to~$\merit[k -
 \label{subsec:solving-trust-region-subproblem}
 
 To solve the trust-region \gls{sqp} subproblem~\cref{eq:derivative-free-trust-region-sqp-subproblem}, we employ a Byrd-Omojokun approach.
-It first generates a normal step~$\nstep[k]$ as the least-norm solution to
+It first generates a normal step as an approximate solution to
 \begin{subequations}
     \label{eq:cobyqa-normal}
     \begin{align}
         \min        & \quad \sum_{i \in \iub} \posp{\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step]^2\\
         \text{s.t.} & \quad \xl \le \iter[k] + \step \le \xu,\\
-                    & \quad \norm{\step} \le \zeta \rad[k],\\
-                    & \quad \step \in \R^n,
+                    & \quad \norm{\step} \le \zeta \rad[k], \label{eq:cobyqa-normal-tr}\\
+                    & \quad \step \in \R^n, \nonumber
     \end{align}
 \end{subequations}
 for some~$\zeta \in (0, 1)$.
-Further, it generates a tangential step~$\tstep[k]$ by solving
+In the implementation, we choose~$\zeta = 0.8$.
+If~$\iter[k]$ is feasible for the original problem~\cref{eq:problem-cobyqa}, we choose~$\nstep[k] = 0$.
+Further, it generates a tangential step~$\tstep[k]$ by solving approximately
 \begin{subequations}
     \label{eq:cobyqa-tangential-original}
     \begin{align}
@@ -203,18 +208,24 @@ Further, it generates a tangential step~$\tstep[k]$ by solving
                     & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
                     & \quad \xl \le \iter[k] + \nstep[k] + \step \le \xu,\\
                     & \quad \norm{\nstep[k] + \step} \le \rad[k],\\
-                    & \quad \step \in \R^n,
+                    & \quad \step \in \R^n, \nonumber
     \end{align}
 \end{subequations}
-and sets the composite step~$\step[k] = \nstep[k] + \tstep[k]$.
+and then sets the composite step~$\step[k] = \nstep[k] + \tstep[k]$.
 Details on the calculations of the tangential and normal steps are provided in \cref{sec:cobyqa-tangential,sec:cobyqa-normal}, respectively.
-In particular, the method we use to approximately minimize a quadratic subject to linear constraints and a trust-region constraint necessitates
+
+If~$\iub \cup \ieq = \emptyset$, we then have~$\nstep[k] = 0$ because our algorithm guarantees that~$\xl \le \iter[k] \le \xu$.
+The tangential subproblem is then identical to the original subproblem~\cref{eq:derivative-free-trust-region-sqp-subproblem}.
+In \gls{cobyqa}, such a subproblem is approximately solved using the \gls{tcg} method that \citeauthor{Powell_2009} employed in \gls{bobyqa}~\cite{Powell_2009}.
+
+When~$\iub \cup \ieq \neq \emptyset$, the tangential subproblem~\cref{eq:cobyqa-tangential-original} is approximately solved using the \gls{tcg} method that \citeauthor{Powell_2015} designed for \gls{lincoa}~\cite{Powell_2015}.
+This method requires that
 \begin{enumerate}
-    \item the origin to be feasible, and
-    \item the trust region to be centered on the origin.
+    \item the origin~$d = 0$ is feasible, and
+    \item the trust region is centered on the origin.
 \end{enumerate}
-The first requirement is satisfied by the tangential subproblem~\cref{eq:cobyqa-tangential-original}, but the second is not.
-To cope with this difficulty, we can solve instead
+The first requirement is satisfied by~\cref{eq:cobyqa-tangential-original}.
+To meet the second one, following~\cite[Eq.~(2.10)]{Lalee_Nocedal_Plantenga_1998} and~\cite[Eq.~(15.4.3)]{Conn_Gould_Toint_2000}, we can solve instead
 \begin{subequations}
     \label{eq:cobyqa-tangential}
     \begin{align}
@@ -223,24 +234,26 @@ To cope with this difficulty, we can solve instead
                     & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:cobyqa-tangential-eq}\\
                     & \quad \xl \le \iter[k] + \nstep[k] + \step \le \xu,\\
                     & \quad \norm{\step} \le \sqrt{(\rad[k])^2 - \norm{\nstep[k]}^2}, \label{eq:cobyqa-tangential-tr}\\
-                    & \quad \step \in \R^n.
+                    & \quad \step \in \R^n, \nonumber
     \end{align}
 \end{subequations}
+the only difference with~\cref{eq:cobyqa-tangential-original} being the trust-region constraint~\cref{eq:cobyqa-tangential-tr}.
 In doing so, we would have
 \begin{equation*}
     \norm{\step[k]} = \norm{\nstep[k] + \tstep[k]} \le \max_{d \in \R^n} \set[\Big]{\norm{d} + \sqrt{(\rad[k])^2 - \norm{\step}^2} : \norm{d} \le \rad[k]} = \sqrt{2} \rad[k].
 \end{equation*}
-Therefore, to maintain the property~$\norm{\step[k]} \le \rad[k]$, we replace the trust-region constraint of the tangential subproblem~\cref{eq:cobyqa-tangential-tr} with
-\begin{equation}
-    \label{eq:cobyqa-trust-region-radius}
-    \norm{\step} \le \sqrt{\frac{(\rad[k])^2}{2} - \norm{\nstep[k]}^2}.
-\end{equation}
-Of course, we must ensure that~$\norm{\nstep[k]} \le \rad[k] / \sqrt{2}$, so that the right-hand side in~\cref{eq:cobyqa-trust-region-radius} is well-defined.
-To do so, we select~$\zeta$ to satisfy~$\zeta \le 1 / \sqrt{2}$.
-To always provide some elbow room for the tangential step, we restrict the previous condition to~$\zeta < 1 / \sqrt{2}$, and we finally choose for \gls{cobyqa}
-\begin{equation*}
-    \zeta = \frac{2 \sqrt{2}}{5}.
-\end{equation*}
+Therefore, to maintain the property~$\norm{\step[k]} \le \rad[k]$, we replace~$\rad[k]$ in the constraints~\cref{eq:cobyqa-normal-tr,eq:cobyqa-tangential-tr} with~$\rad[k] / \sqrt{2}$.
+% Therefore, to maintain the property~$\norm{\step[k]} \le \rad[k]$, we replace the trust-region constraint of the tangential subproblem~\cref{eq:cobyqa-tangential-tr} with
+% \begin{equation}
+%     \label{eq:cobyqa-trust-region-radius}
+%     \norm{\step} \le \sqrt{\frac{(\rad[k])^2}{2} - \norm{\nstep[k]}^2}.
+% \end{equation}
+% Of course, we must ensure that~$\norm{\nstep[k]} \le \rad[k] / \sqrt{2}$, so that the right-hand side in~\cref{eq:cobyqa-trust-region-radius} is well-defined.
+% To do so, we select~$\zeta$ to satisfy~$\zeta \le 1 / \sqrt{2}$.
+% To always provide some elbow room for the tangential step, we restrict the previous condition to~$\zeta < 1 / \sqrt{2}$, and we finally choose for \gls{cobyqa}
+% \begin{equation*}
+%     \zeta = \frac{2 \sqrt{2}}{5}.
+% \end{equation*}
 
 % Theoretically, it is possible to evaluate the composite step directly.
 % However, the methods used to solve the subproblems usually require the trust-region center to be feasible, which is not the case for the composite subproblem.
@@ -248,18 +261,19 @@ To always provide some elbow room for the tangential step, we restrict the previ
 % Therefore, we build explicitely the tangential step.
 % See Trust-Region Methods, p.~660.
 
-\subsection{Least-squares Lagrange multipliers}
+\subsection{Least-squares Lagrange multiplier}
 \label{subsec:least-squares-lagrange-multipliers}
 
-We now provide details on the strategy employed by \gls{cobyqa} to estimate the Lagrange multipliers on \cref{alg:derivative-free-trust-region-sqp-multipliers} of \cref{alg:derivative-free-trust-region-sqp}.
+We now provide details on the strategy employed by \gls{cobyqa} to estimate the Lagrange multiplier on \cref{alg:derivative-free-trust-region-sqp-multipliers} of \cref{alg:derivative-free-trust-region-sqp}.
 
 Recall that the \gls{sqp} method can be regarded as an approximate Newton method on the \gls{kkt} system.
-Therefore, given the iterate~$\iter[k + 1]$, it is natural to set the estimated Lagrange multipliers~$\lm[k + 1]$ to the one that attempt to satisfy the \gls{kkt} conditions as much as possible using the information available so far.
+Therefore, given the iterate~$\iter[k + 1]$, it is natural to set the estimated Lagrange multiplier~$\lm[k + 1]$ to the one that attempt to satisfy the \gls{kkt} conditions as much as possible using the information available so far.
 We then let~$\lm[k + 1]$ be the least-norm solution to
 \begin{subequations}
+    \label{eq:least-squares-lagrange-multipliers-cobyqa}
     \begin{align}
         \min        & \quad \norm[\bigg]{\nabla \objm[k](\iter[k + 1]) + \sum_{i \in \iub \cup \ieq} \lm_i \nabla \conm[k]{i}(\iter[k + 1])}\\
-        \text{s.t.} & \quad \lm_i \conm[k]{i}(\iter[k + 1]) = 0, ~ i \in \iub \label{eq:least-squares-lagrange-multipliers-complementary-slackness}\\
+        \text{s.t.} & \quad \lm_i \conm[k]{i}(\iter[k + 1]) = 0, ~ i \in \iub \label{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness}\\
                     & \quad \lm_i \ge 0, ~ i \in \iub,\\
                     & \quad \lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T},
     \end{align}
@@ -267,7 +281,7 @@ We then let~$\lm[k + 1]$ be the least-norm solution to
 which is then referred to as the \emph{least-squares Lagrange multiplier}~\cite{Dussault_1995}.
 Note that this problem can be easily simplified as follows.
 For all the indices~$i \in \iub$ such that~$\conm[k]{i}(\iter[k + 1]) \neq 0$, we necessarily have~$\lm[k + 1]_i = 0$.
-Therefore, the linear constraints~\cref{eq:least-squares-lagrange-multipliers-complementary-slackness} can be removed from the problem by considering only the indices in
+Therefore, the linear constraints~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} can be removed from the problem by considering only the indices in
 \begin{equation*}
     \ieq \cup \set{i \in \iub : \conm[k]{i}(\iter[k + 1]) = 0},
 \end{equation*}
@@ -278,7 +292,7 @@ and by setting the remaining components of the least-squares Lagrange multiplier
 % \end{equation*}
 % and to set the remaining components of the least-squares Lagrange multiplier to zero.
 This is the method employed by \gls{cobyqa}.
-Details on the calculations of the least-squares Lagrange multipliers are provided in \cref{sec:cobyqa-lagrange-multipliers}.
+Details on the calculations of the least-squares Lagrange multiplier are provided in \cref{sec:cobyqa-lagrange-multipliers}.
 
 \subsection{Managing the trust-region radius}
 \label{subsec:managing-trust-region-radius}
@@ -298,6 +312,7 @@ This update is entertained at each iteration.
     \caption{Updating the trust-region radius}
     \label{alg:update-trust-region-radius}
     \DontPrintSemicolon
+    \onehalfspacing
     \KwData{Current lower bound on the trust-region radius~$\radlb[k] > 0$, current trust-region radius~$\rad[k] \ge \radlb[k]$, current trust-region ratio~$\ratio[k] \in \R$, current trial step~$\step \in \R^n$, and parameters~$0 < \eta_1 \le \eta_2 < 1 \le \eta_3$ and~$0 < \theta_1 < 1 < \theta_2$.}
     \KwResult{Updated trust-region radius~$\rad[k + 1]$.}
     Update the trust-region radius
@@ -323,6 +338,7 @@ The parameters chosen in \gls{cobyqa} are~$\eta_4 = 16$,~$\eta_5 = 250$, and~$\t
     \caption{Reducing the lower bound on the trust-region radius}
     \label{alg:reducing-lower-bound-trust-region-radius}
     \DontPrintSemicolon
+    \onehalfspacing
     \KwData{Final trust-region radius~$\radlb[\infty] > 0$, current lower bound on the trust-region radius~$\radlb[k] \ge \radlb[\infty]$, updated trust-region radius~$\rad[k + 1] \ge \radlb[k]$, and parameters~$1 \le \eta_4 < \eta_5$ and~$0 < \theta_3 < 1$.}
     \KwResult{Reduced lower bound on trust-region radius~$\radlb[k + 1]$ and modified trust-region radius~$\rad[k + 1]$.}
     \If{$\radlb[k] = \radlb[\infty]$}{
@@ -443,6 +459,7 @@ The complete framework of a geometry-improving phase is given in \cref{alg:geome
     \caption{Geometry-improving phase}
     \label{alg:geometry-improving}
     \DontPrintSemicolon
+    \onehalfspacing
     \KwData{Bounds~$\xl$ and~$\xu$, current interpolation set~$\xpt[k + 1] \subseteq \R^n$, current best point so far~$\iter[k + 1] \in \xpt[k + 1]$, current lower bound on the trust-region radius~$\radlb[k + 1] > 0$, and current penalty parameter~$\gamma^k$.}
     \KwResult{Updated interpolation set~$\xpt[k + 1]$, updated iterate~$\iter[k + 1]$, and updated Lagrange multiplier~$\lm[k + 1]$.}
     \If{$\norm{y - \iter[k + 1]} > \radlb[k + 1]$ for some~$y \in \xpt[k + 1]$}{
@@ -542,6 +559,7 @@ If~$\ieq \neq \emptyset$, \gls{cobyqa} will view each equality constraint as two
     \caption{Reducing the penalty parameter}
     \label{alg:reducting-penalty}
     \DontPrintSemicolon
+    \onehalfspacing
     \KwData{Current interpolation set~$\xpt[k + 1] \subseteq \R^n$ and current penalty parameter~$\gamma^k \ge 0$.}
     \KwResult{Modified penalty parameter~$\gamma^k \ge 0$.}
     \KwNote{We assume that~$\ieq = \emptyset$ as otherwise, each equality constraint is viewed as two inequality constraints.}

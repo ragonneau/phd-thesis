@@ -15,15 +15,17 @@
 \chapter{\glsfmttext{cobyqa} \textemdash\ solving the subproblems}
 \label{ch:cobyqa-subproblems}
 
+In this chapter, we present the methods employed by \gls{cobyqa} to solve its various subproblems, including the tangential subproblem~\cref{eq:cobyqa-tangential} (with a modified trust-region radius), the normal subproblem~\cref{eq:cobyqa-normal}, the least-squares problem~\cref{eq:least-squares-lagrange-multipliers-cobyqa} for estimating the Lagrange multiplier, and the geometry-improving subproblem~\cref{eq:geometry-subproblem}.
+
 \section{The \glsfmtlong{tcg} method}
 
-\section{Solving the tangential trust-region subproblem}
+\section{Solving the tangential subproblem}
 \label{sec:cobyqa-tangential}
 
-\section{Solving the normal trust-region subproblem}
+\section{Solving the normal subproblem}
 \label{sec:cobyqa-normal}
 
-\section{Evaluating the least-squares Lagrange multipliers}
+\section{Evaluating the least-squares Lagrange multiplier}
 \label{sec:cobyqa-lagrange-multipliers}
 
 \begin{itemize}

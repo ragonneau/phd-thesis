@@ -58,6 +58,7 @@ The classical \gls{sqp} framework is presented in \cref{alg:sqp}.
     \caption{Classical \glsfmtshort{sqp} method}
     \label{alg:sqp}
     \DontPrintSemicolon
+    \onehalfspacing
     \KwData{Initial guess~$\iter[0] \in \R^n$ and estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$.}
     \For{$k = 0, 1, \dots$}{
         Define~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$\;
@@ -222,8 +223,9 @@ By expressing its subproblem in this form, we see that the \gls{sqp} method is a
 
 \subsubsection{Approximation of the objective function in the tangent space of the feasible set}
 
-Inspired by an observation in~\cite[\S~2]{Gill_Wong_2011}, we can also interpret the \gls{sqp} subproblem as minimizing an approximation of the objective function in the tangent space of the feasible set.
-As shown in \cref{thm:sqp-path}, when approximating~$\obj$ in such a space, we will naturally get the Hessian matrix of the Lagrangian in the second-order term.
+% Inspired by an observation in~\cite[\S~2]{Gill_Wong_2011}, we can also interpret the \gls{sqp} subproblem as minimizing an approximation of the objective function in the tangent space of the feasible set.
+Inspired by an observation in~\cite[\S~2]{Gill_Wong_2011}, we can also interpret the objective function of the \gls{sqp} subproblem as an approximation of the original objective function in the tangent space of the feasible set.
+As shown in \cref{thm:sqp-path}, when approximating~$\obj$ in such a space, we will naturally get the Hessian matrix of the Lagrangian in the second-order term\todo{If there is a new theorem, this needs to be revised}.
 
 For this interpretation, we consider the problem
 \begin{subequations}
@@ -247,14 +249,16 @@ Let~$\bar{\iter} \in \R^n$,~$\bar{\lm} \in \R^m$ be given, and define
 \end{equation*}
 If~$\bar{\iter}$ and~$\bar{\lm}$ represent the current iterate and approximate Lagrange multiplier, then~$Q$ is the objective function of the \gls{sqp} subproblem with an exact second-order term.
 Therefore, the \gls{sqp} subproblem approximates~$\obj$ by~$Q$ and the feasible set by its tangent space.
-Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tangent space, which turns out to be true, as detailed by \cref{thm:sqp-path}.
+% Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tangent space, which turns out to be true, as detailed by \cref{thm:sqp-path}.
+Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tangent space.
+\Cref{thm:sqp-path} characterizes this approximation of~$\obj$ when~$\bar{\iter}$ is feasible.
 
 \begin{theorem}
     \label{thm:sqp-path}
-    Assume that~$\obj$ and~$h$ are twice differentiable, and that~$\nabla^2 \obj$ is Lipschitz continuous in a neighborhood of~$\bar{\iter}$.
+    Assume that~$\obj$ and~$h$ are twice differentiable with~$\nabla^2 \obj$ being locally Lipschitz continuous.
+    Suppose that~$\bar{\iter}$ is feasible for~\cref{eq:problem-cobyqa-auglag}.
     Let~$\iter(t)$ be a feasible path starting at~$\bar{\iter}$ and parametrized by a nonnegative scalar~$t$, i.e.,~$h(\iter(t)) = 0$ and~$\iter(t) \ge 0$ for~$t \ge 0$, and~$\iter(0) = \bar{\iter}$.
-    Assume that~$\iter$ is twice differentiable for~$t \ge 0$ and that~$\iter''$ is Lipschitz continuous in a neighborhood of~$0$.
-    Then, there exist constants~$\nu \ge 0$ and~$\epsilon > 0$ such that
+    If~$\iter$ is twice differentiable and~$\iter''$ is locally Lipschitz continuous for~$t \ge 0$, then there exist constants~$\nu \ge 0$ and~$\epsilon > 0$ such that
     \begin{equation*}
         \abs{\obj(\iter(t)) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2}\abs{\iter''(0)^{\T} [\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}]} \bigg) t^2 \quad \text{for all~$t \in [0, \epsilon]$.}
     \end{equation*}
@@ -275,22 +279,23 @@ Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tang
     We then have
     \begin{equation}
         \label{eq:sqp-path-proof-2}
-        \abs{\obj(\iter(t)) - Q(\iter'(0) t)} \le \abs{\phi(t) - \widehat{\phi}(t)} + \abs{\widehat{\phi}(t) - Q(\iter'(0) t)}.
+        \abs{\obj(\iter(t)) - Q(\iter'(0) t)} \le \abs{\phi(t) - \widehat{\phi}(t)} + \abs{\widehat{\phi}(t) - Q(\iter'(0) t)},
     \end{equation}
-    Due to the Lipschitz continuity of~$\phi''$, there exists a constants~$\nu \ge 0$ such that
+    and the Lipschitz continuity of~$\phi''$ ensures the existence of a constant~$\nu \ge 0$ such that
     \begin{equation}
         \label{eq:sqp-path-proof-3}
         \abs{\phi(t) - \widehat{\phi}(t)} \le \nu t^3 \quad \text{for~$t \in [0, \epsilon]$.}
     \end{equation}
     We now bound~$\abs{\widehat{\phi}(t) - Q(\iter'(0) t)}$.
-    According to~\cref{eq:sqp-path-proof-1}, only the second-order terms of~$\widehat{\phi}(t)$ and~$Q(\iter'(0) t)$ differ, and
+    According to~\cref{eq:sqp-path-proof-1}, only the second-order terms of~$\widehat{\phi}(t)$ and~$Q(\iter'(0) t)$ differ, so that
     \begin{subequations}
         \label{eq:sqp-path-proof-4}
         \begin{align}
             \abs{\widehat{\phi}(t) - Q(x'(0) t)}    & = \frac{t^2}{2} \abs{\phi''(0) - \iter'(0)^{\T} \nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm}) \iter'(0)}\\
-                                                    & = \frac{t^2}{2} \abs[\bigg]{\iter''(0)^{\T} \nabla \obj(\bar{\iter}) - \sum_{i = 1}^m \bar{\lm}_i \iter'(0) \nabla^2 h_i(\bar{\iter}) \iter'(0)}.
+                                                    & = \frac{t^2}{2} \abs[\bigg]{\iter''(0)^{\T} \nabla \obj(\bar{\iter}) - \sum_{i = 1}^m \bar{\lm}_i \iter'(0) \nabla^2 h_i(\bar{\iter}) \iter'(0)},
         \end{align}
     \end{subequations}
+    where the second equality uses the fact that~$\iter(0) = \bar{\iter}$.
     Moreover, since~$h(\iter(t)) = 0$ for all~$t \ge 0$, we have
     \begin{equation*}
         0 = \frac{\du^2 h_i(\iter(t))}{\du t^2}\bigg\vert_{t = 0} = \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) + \iter''(0)^{\T} \nabla h_i(\bar{\iter}), \quad \text{for~$i \in \set{1, 2, \dots, m}$.}
@@ -563,6 +568,7 @@ A similar framework for equality-constrained problems can be found in~\cite[\S~2
     \caption{Basic trust-region \glsfmtshort{sqp} method}
     \label{alg:trust-region-sqp}
     \DontPrintSemicolon
+    \onehalfspacing
     \KwData{Initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
     Set the penalty parameter~$\gamma^{-1} \gets 0$\;
     \For{$k = 0, 1, \dots$ until convergence}{
@@ -626,6 +632,7 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
     \caption{Increasing the penalty parameter}
     \label{alg:increase-penalty}
     \DontPrintSemicolon
+    \onehalfspacing
     \KwData{Merit function~$\meritm_{\gamma}$ for~$\gamma \ge 0$, trial step~$\step[k] \in \R^n$, Lagrange multiplier estimation~$\lm[k]$, previous penalty parameter~$\gamma^{k - 1} \ge 0$, and constants~$1 \le \eta_3 \le \eta_4$.}
     \KwResult{Updated penalty parameter~$\gamma^k \ge \gamma^{k - 1}$.}
     Set~$\bar{\gamma} \gets \argmin \set{\gamma \ge 0 : \meritm_{\gamma}(\step[k]) \le \meritm_{\gamma}(0)}$\;
@@ -635,7 +642,7 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
         Set~$\gamma^k \gets \gamma^{k - 1}$\;
     }
 \end{algorithm}
-\nomenclature[Oo]{$\argmin$}{Argument of the minimum operator}%
+\nomenclature[Oo]{$\argmin$}{Global minimizer operator}%
 
 \subsection{Composite steps for equality constrained optimization}
 \label{subsec:composite-step-equality}
@@ -1002,7 +1009,7 @@ The subproblem is solved with a \enquote{null-space, active-set approach} detail
 
 We presented in this chapter the classical \gls{sqp} framework, and we got some insights by presenting several interpretations of its subproblem.
 To the best of our knowledge, the result in \cref{thm:sqp-path} is new.
-It shows that the objective function of the \gls{sqp} subproblem is a quadratic approximation of the original objective function in the tangent space of the feasible region at the current iterate.
+It shows that the objective function of the \gls{sqp} subproblem is a quadratic approximation of the original objective function in the tangent space of the feasible region.
 Moreover, the quality of this approximation depends on the stationary residual of the current approximate \gls{kkt} pair.
 We also examined the augmented Lagrangian of the \gls{sqp} subproblem.
 This augmented Lagrangian turns out to be indeed the objective function used in the augmented Lagrangian methods studied in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.

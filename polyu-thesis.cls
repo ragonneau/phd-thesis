@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/08/02 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/08/03 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifmeeting
@@ -45,6 +45,8 @@
 \RequirePackage{booktabs}
 \RequirePackage{siunitx}
 \RequirePackage[en-US]{datetime2}
+% \RequirePackage{footnote}
+% \RequirePackage[bottom]{footmisc}
 
 % Latin and Chinese fonts
 \RequirePackage[T1]{fontenc}
@@ -189,7 +191,18 @@
     linesnumbered,%
 ]{algorithm2e}
 \SetKwInput{KwNote}{Note}
-\renewenvironment{algorithm}[1][htbp]{\begin{algocf@algorithm}[#1]\begin{onehalfspace}}{\end{onehalfspace}\end{algocf@algorithm}}
+\newcommand{\algorithmfootnote}[2][\footnotesize]{%
+    \let\old@algocf@finish\@algocf@finish
+    \def\@algocf@finish{%
+        \old@algocf@finish%
+        \leavevmode\rlap{%
+            \begin{minipage}{\linewidth}
+                #1#2
+            \end{minipage}%
+        }%
+    }%
+}
+% \renewenvironment{algorithm}[1][htbp]{\begin{algocf@algorithm}[#1]\begin{onehalfspace}}{\end{onehalfspace}\end{algocf@algorithm}}
 \renewenvironment{algomathdisplay}{\begin{equation*}}{\@endalgocfline\end{equation*}\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
 \newenvironment{algomathalign}[1]{\align #1}{\@endalgocfline\endalign\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
 \newenvironment{algomathalign*}[1]{\start@align\@ne\st@rredtrue\m@ne #1}{\@endalgocfline\endalign\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}

@@ -80,11 +80,12 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
     \caption{Gaussian elimination with partial pivoting}
     \label{alg:gaussian-elimination}
     \DontPrintSemicolon
+    \onehalfspacing
     \KwData{Matrix~$A \in \R^{n \times n}$.}
     \KwResult{Factorized matrix~$A^{(n - 1)} \in \R^{n \times n}$.}
     Initialize $A^{(0)} \gets A$\;
     \For{$k = 1, 2, \dots, n - 1$}{
-        Determine the pivot index~$j = \argmax \set[\big]{\abs[\big]{A_{i, k}^{(k - 1)}} : k \le i \le n}$\;
+        Determine a pivot index~$j$ that solves~$\max \set[\big]{\abs[\big]{A_{i, k}^{(k - 1)}} : k \le i \le n}$\;
         \eIf{$A_{j, k}^{(k - 1)} \neq 0$}{
             Exchange the~$k$th and the~$j$th rows of~$A^{(k - 1)}$\;
             Evaluate the multiplier~$\tau^k \in \R^n$ with components
@@ -102,7 +103,7 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
 \nomenclature[Ne]{$I_n$}{Identity matrix on~$\R^{n \times n}$}%
 \nomenclature[Nf]{$e_i$}{Standard coordinate vector of~$\R^n$ ($i$th column of~$I_n$), with~$1 \le i \le n$}%
 \nomenclature[Oc]{$\abs{\cdot}$}{Modulus operator}%
-\nomenclature[Op]{$\argmax$}{Argument of the maximum operator}%
+% \nomenclature[Op]{$\argmax$}{Global maximizer operator}%
 
 \Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of \P~10 and~$g$ at the end of p.~97) demonstrates that the growth factor of the Gaussian elimination, defined as
 \begin{equation}
@@ -134,6 +135,7 @@ For example, consider \cref{alg:trust-region}, a basic trust-region method for s
     \caption{Basic trust-region method for unconstrained optimization}
     \label{alg:trust-region}
     \DontPrintSemicolon
+    \onehalfspacing
     \KwData{Objective function~$\obj$, initial guess~$\iter[0] \in \R^n$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
     \For{$k = 0, 1, \dots$}{
         Define a simple function~$m_k$ such that~$m_k(d) \approx f(\iter[k] + d)$ for~$\norm{d} \le \rad[k]$\;
@@ -217,6 +219,7 @@ The general~$k$-fold cross-validation to define~$P(C, \gamma)$ is presented in \
     \caption{$k$-fold cross-validation of an \glsfmtshort{svc} with parameters~$C$ and~$\gamma$}
     \label{alg:cross-validation}
     \DontPrintSemicolon
+    \onehalfspacing
     \KwData{Labeled dataset~$\set{(\iter_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$ and fold number~$k > 0$.}
     \KwResult{Performance measure~$P(C, \gamma)$.}
     Split the dataset into~$k$ balanced groups\;
@@ -258,7 +261,7 @@ The objective and constraint functions of an \gls{mdo} problem can be provided b
 It is the case in aircraft engine engineering~\cite{Gazaix_Etal_2019}, where the design problem of one component is solved while taking into account constraints imposed by other components handled by different departments.
 \Gls{mdo} problems often involve simulations or experiments, and therefore, \gls{dfo} methods are often needed.
 In \cref{ch:pdfo} of this thesis, we will present a piece of software we implemented for solving \gls{dfo} problems based on methods by Powell~\cite{Powell_1994,Powell_2002,Powell_2006,Powell_2009,Powell_2015}.
-It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry\footnote{See \url{https://www.irt-saintexupery.com}} in France.
+It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry\footnote{See \url{https://www.irt-saintexupery.com}.} in France.
 
 \section{Optimality conditions for smooth optimization}
 
@@ -860,3 +863,5 @@ We will mainly use the~$\ell_2$-norm in this thesis.
 Hence,~$\norm{\cdot}$ denotes the~$\ell_2$-norm, unless otherwise stated.
 If any other norm is needed, its choice is clarified using subscripts.
 For example,~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm of a matrix, and~$\norm{\cdot}_1$ denotes the~$\ell_1$-norm of a vector or the corresponding induced norm of a matrix.
+
+\todo[noline]{Do an organization of the thesis}
