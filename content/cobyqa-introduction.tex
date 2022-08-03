@@ -172,8 +172,6 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
     }
 \end{algorithm}
 
-\todo[noline]{Why algorithmfootnote does not work}
-
 In the implementation of \cref{alg:derivative-free-trust-region-sqp-iterate},~$\iter[k + 1]$ is always set to a best point in~$\xpt[k + 1]$ according to~$\merit[k]$, in the sense that it minimizes~$\merit[k]$ in~$\xpt[k + 1]$.
 If~$\iter[k]$ turns out to be optimal in~$\xpt[k + 1]$ according to~$\merit[k]$, then we choose~$\iter[k + 1] = \iter[k]$, even if there are other optimal points.
 Note however that we cannot naively set~$\iter[k + 1]$ to either~$\iter[k] + \step[k]$ if~$\ratio[k] > 0$, or~$\iter[k]$ otherwise.
@@ -266,19 +264,18 @@ Therefore, to maintain the property~$\norm{\step[k]} \le \rad[k]$, we replace~$\
 
 We now provide details on the strategy employed by \gls{cobyqa} to estimate the Lagrange multiplier on \cref{alg:derivative-free-trust-region-sqp-multipliers} of \cref{alg:derivative-free-trust-region-sqp}.
 
-Recall that the \gls{sqp} method can be regarded as an approximate Newton method on the \gls{kkt} system.
-Therefore, given the iterate~$\iter[k + 1]$, it is natural to set the estimated Lagrange multiplier~$\lm[k + 1]$ to the one that attempt to satisfy the \gls{kkt} conditions as much as possible using the information available so far.
-We then let~$\lm[k + 1]$ be the least-norm solution to
+Recall that the \gls{sqp} method can be regarded as an approximate Newton method applied to the \gls{kkt} system.
+Therefore, it is natural to set the estimated Lagrange multiplier~$\lm[k + 1]$ to the one that attempts to satisfy the \gls{kkt} conditions as much as possible using the information available so far.
+Thus, we let~$\lm[k + 1]$ be a \emph{least-squares Lagrange multiplier}~\cite[\S~3.3]{Dussault_1995}, i.e., a solution to
 \begin{subequations}
     \label{eq:least-squares-lagrange-multipliers-cobyqa}
     \begin{align}
-        \min        & \quad \norm[\bigg]{\nabla \objm[k](\iter[k + 1]) + \sum_{i \in \iub \cup \ieq} \lm_i \nabla \conm[k]{i}(\iter[k + 1])}\\
-        \text{s.t.} & \quad \lm_i \conm[k]{i}(\iter[k + 1]) = 0, ~ i \in \iub \label{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness}\\
-                    & \quad \lm_i \ge 0, ~ i \in \iub,\\
-                    & \quad \lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T},
+        \min_{\lm}  & \quad \norm[\bigg]{\nabla \objm[k](\iter[k]) + \sum_{i \in \iub \cup \ieq} \lm_i \nabla \conm[k]{i}(\iter[k])}\\
+        \text{s.t.} & \quad \lm_i \conm[k]{i}(\iter[k]) = 0, ~ i \in \iub \label{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness}\\
+                    & \quad \lm_i \ge 0, ~ i \in \iub,
     \end{align}
 \end{subequations}
-which is then referred to as the \emph{least-squares Lagrange multiplier}~\cite{Dussault_1995}.
+where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
 Note that this problem can be easily simplified as follows.
 For all the indices~$i \in \iub$ such that~$\conm[k]{i}(\iter[k + 1]) \neq 0$, we necessarily have~$\lm[k + 1]_i = 0$.
 Therefore, the linear constraints~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} can be removed from the problem by considering only the indices in
