@@ -208,12 +208,12 @@ However, the trust-region subproblem solver of \gls{bobyqa} always respects the 
 
 \section{Core features of the \glsfmttext{pdfo} package}
 
-Powell implemented all five methods in Fortran, in a very robust and efficient manner.
-However, less and less people are using Fortran in our present-day world, and Fortran has quite old standards.
+Powell implemented all five methods in Fortran in a very robust and efficient manner.
+However, fewer and fewer people are using Fortran in our present-day world, and Fortran has quite old standards.
 The authors developed therefore \gls{pdfo}\footnote{Available at \url{https://www.pdfo.net/}.}, named after \emph{\glsdesc{pdfo}}.
-It is cross-platform package providing MATLAB and Python interfaces for using all five Powell's \gls{dfo} solvers, available for Linux, macOS and Windows.
-\Gls{pdfo} does not reimplement Powell's solvers, but rather links the modern languages MATLAB and Python with the Fortran source code.
-At a low-level, it uses F2PY~\cite{Peterson_2009} to interface Python with Fortran, and MEX to interface it with MATLAB.
+It is a cross-platform package providing MATLAB and Python interfaces for using all five Powell's \gls{dfo} solvers, available for Linux, macOS, and Windows.
+\Gls{pdfo} does not reimplement Powell's solvers but rather links the modern languages MATLAB and Python with the Fortran source code.
+At a low level, it uses F2PY~\cite{Peterson_2009} to interface Python with Fortran and MEX to interface it with MATLAB.
 
 \subsection{Main structure of the package}
 
@@ -228,12 +228,13 @@ It takes for input an optimization problem of the form
                     & \quad A_{\ieq} \iter = b_{\ieq}, \label{eq:pdfo-leq}\\
                     & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:pdfo-nlub}\\
                     & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:pdfo-nleq}\\
+                    & \quad \iter \in \R^n, \nonumber
     \end{align}
 \end{subequations}
 where~$\xl, \xu \in (\R \cup \set{\pm \infty})^n$,~$A_{\iub}$ and~$A_{\ieq}$ are real matrices,~$b _{\iub}$ and~$b _{\ieq}$ are real vectors, and~$\con{i}$, for~$i \in \iub \cup \ieq$, is a real-valued function.
 The problem~\cref{eq:pdfo} covers every possible case, since all matrices, vectors and functions can be set to zero from a mathematical viewpoint and \gls{pdfo} does not require the constraints~\cref{eq:pdfo-bds,eq:pdfo-lub,eq:pdfo-leq,eq:pdfo-nlub,eq:pdfo-nleq} to be provided.
-A broad example of use is shown in MATLAB in \cref{lst:minimum-example-matlab} and in Python in \cref{lst:minimum-example-python}, where variable names have clear correspondances with the problem~\cref{eq:pdfo}.
-For both MATLAB and Python, \gls{pdfo} returns the best point calculated (evaluated via a merit function), and (optionally) the corresponding optimal value, together with different fields describing the backend calculations and their behaviors.
+A broad example of use is shown in MATLAB in \cref{lst:minimum-example-matlab} and Python in \cref{lst:minimum-example-python}, where variable names have clear correspondences with the problem~\cref{eq:pdfo}.
+For both MATLAB and Python, \gls{pdfo} returns the best point calculated (evaluated via a merit function) and (optionally) the corresponding optimal value, together with different fields describing the backend calculations and their behaviors.
 
 \begin{lstmatlab}[%
     caption=An elementary example of \gls{pdfo} in MATLAB,
@@ -281,14 +282,14 @@ For both MATLAB and Python, \gls{pdfo} returns the best point calculated (evalua
 
 \subsection{Problem preprocessing}
 
-The package \gls{pdfo} preprocesses the arguments provided by the user, detects the type of the problem and then invokes the Powell's solver that match the best the given problem.
-The initial preprocessing of the arguments includes a handling of their internal types together with some programming-related procedures to allow as much freedom in the problem definition as possible, to make the use of \gls{pdfo} as easy as possible.
-More importantly, \gls{pdfo} preprocesses the constraints provided, to generate a problem as simple as possible.
+The package \gls{pdfo} preprocesses the arguments provided by the user, detects the type of the problem, and then invokes the Powell's solver that best matches the given problem.
+The initial preprocessing of the arguments include handling their internal types together with some programming-related procedures to allow as much freedom in the problem definition as possible, in order to make the use of \gls{pdfo} as easy as possible.
+More importantly, \gls{pdfo} preprocesses the constraints provided to generate a problem as simple as possible.
 For instance, all linear constraints in~\cref{eq:pdfo-lub,eq:pdfo-leq} that are satisfied for every point in~$\R^n$ are removed and obvious infeasibility in the constraints~\cref{eq:pdfo-bds,eq:pdfo-lub,eq:pdfo-leq} are detected.
 Another noticeable preprocessing of the constraints made by \gls{pdfo} is the treatment of the linear equality constraints~\cref{eq:pdfo-leq}.
 As long as these constraints are consistent, they define a subspace of~$\R^n$ of lower dimension, and \gls{pdfo} takes into account this property to generate a new~$(n - \rank A_{\ieq})$\nomenclature[Om]{$\rank$}{Rank operator}-dimensional problem that is exactly equivalent to~\cref{eq:pdfo}, using the QR factorization of~$A_{\ieq}$.
 
-A crucial point of \gls{bobyqa} and \gls{lincoa} is that they require the initial guess to be feasible, so that \gls{pdfo} attempts to project the provided initial guess onto the feasible set (\gls{lincoa} would otherwise increase the coefficients of the right-hand side of the linear constraints to make the initial guess feasible).
+A crucial point of \gls{bobyqa} and \gls{lincoa} is that they require the initial guess to be feasible so that \gls{pdfo} attempts to project the provided initial guess onto the feasible set (\gls{lincoa} would otherwise increase the coefficients of the right-hand side of the linear constraints to make the initial guess feasible).
 
 \subsection{Automatic selection of the solver}
 \label{subsec:solver-selection}
@@ -299,24 +300,24 @@ For example, when \gls{pdfo} receives a problem that admits both bound constrain
 It is possible on some examples that \gls{lincoa} gives better results than \gls{bobyqa} on bound-constrained problems.
 This is likely because \gls{bobyqa} is a feasible method, while \gls{lincoa} may visit infeasible points (but on an engineering problem, these points may be unassessable).
 At last, when \gls{pdfo} receives an unconstrained problem, it will attempt to solve it with \gls{uobyqa} when its size is reasonable ($2 \le n \le 8$, say), and with \gls{newuoa} otherwise.
-We note that \gls{uobyqa} cannot handle problem with univariate objective function.
+We note that \gls{uobyqa} cannot handle problems with univariate objective functions.
 
 \subsection{Bug corrections in the Fortran source files}
 \label{subsec:bug-corrections}
 
-The authors wanted to keep the source code of all solvers in its original states, but introduced some minor revisions and corrections.
+The authors wanted to keep the source code of all solvers in its original states but introduced some minor revisions and corrections.
 A new parameter has been added to allow each solver to exit whenever a target value has been reached, and a flag of termination has been included in the returned values.
 A revision has also been made to the source code of \gls{cobyla}.
-In the original version, trial points may be discarded prematurely, before the update of the penalty coefficient of the merit function.
+In the original version, trial points may be discarded prematurely before the update of the penalty coefficient of the merit function.
 This has been revised in \gls{pdfo}.
 The authors also detected some minor bugs on failure exits, for which some returned values might not have been updated.
-Although very rarely, \gls{lincoa} might moreover encounter infinite cycling, even on well-conditioned problems.
+Although very rarely, \gls{lincoa} might encounter infinite cycling, even on well-conditioned problems.
 These bugs have been patched.
 \Gls{pdfo} also handle more carefully ill-conditioned problems, for which NaN values (resulting, e.g., from a division by zero) may occur.
 These values might cause infinite cycling or segmentation faults in the original code.
-In the early stage of \gls{pdfo}, such errors occurred on the CUTEst problems~\cite{Gould_Orban_Toint_2015} DANWOODLS or GAUSS1LS for example.
-NaN values detected in the objective or constraint functions are managed using extreme barriers, but NaN values encountered in the variables internal to the Fortran code result in early exit.
-Besides, when interfacing Fortran with MATLAB and Python, rounding errors occur in the problem's variables, which led in extreme cases to failures.
+In the early stage of \gls{pdfo}, such errors occurred on the CUTEst problems~\cite{Gould_Orban_Toint_2015} DANWOODLS or GAUSS1LS, for example.
+NaN values detected in the objective or constraint functions are managed using extreme barriers, but NaN values encountered in the variables internal to the Fortran code result in early exits.
+Besides, when interfacing Fortran with MATLAB and Python, rounding errors occured in the problem's variables, leading to failures in extreme cases.
 For example, when using \gls{pdfo}, the user may provided initial and final trust-region radii~$\rad[0]$ and~$\rad[\infty]$ (respectively set to~$1$ and~$10^{-6}$ by default).
 If these values are chosen to be very close, although the condition~$\rad[0] \le \rad[\infty]$ is satisfied in the MATLAB or Python code, the Fortran code may receive perturbed values with~$\rad[0] > \rad[\infty]$, leading to failure exit in the original code.
 Therefore, the conditions required by Powell are ensured in the Fortran code directly.
@@ -329,7 +330,7 @@ Therefore, the conditions required by Powell are ensured in the Fortran code dir
 We make a comparison of the \gls{pdfo}'s solvers on different problems from the CUTEst library~\cite{Gould_Orban_Toint_2015}.
 Performance profiles~\cite{Dolan_More_2002,More_Wild_2009} on unconstrained problem of dimensions at most~$10$ and~$50$ are provided respectively in \cref{fig:ppu-10,fig:ppu-50}.
 For details on performance profiles, see \cref{sec:benchmarking-tools}.
-We can observe an expected behavior; \gls{uobyqa} performs better on small problems than all the others, as it is based on quadratic models obtained by fully-determined interpolation, and the performances of \gls{cobyla} decrease with the dimension rise, as it uses only linear models to approximate locally the problem.
+We can observe an expected behavior; \gls{uobyqa} performs better on small problems than all the others, as it is based on quadratic models obtained by fully-determined interpolation, and the performances of \gls{cobyla} decrease with the dimension rise, as it uses only linear models to approximate the problem locally.
 
 \begin{figure}[ht]
     \begin{subfigure}[b]{0.49\textwidth}
@@ -358,7 +359,7 @@ where~$\epsilon(x)$ is a random variable that follows a standard normal distribu
 Because of the stochastic behavior of the experiment, the convergence test~\cref{eq:convergence-test-profiles-unconstrained} needs to be adapted.
 Each problem is solved~$10$ times by each solver, the objective value considered at each iteration is the average value for all runs, and the optimal value of a given problem is decided as follows.
 It is the least value reached by the solvers for every run on the noised variation of the problem and by all the solvers on the noise-free original problem.
-In doing so, one should expect a decrease of the proportion of problems solved when compared with the previous experiment.
+In doing so, one should expect a decrease in the proportion of problems solved when compared with the previous experiment.
 
 \begin{figure}[ht]
     \centering
@@ -367,16 +368,16 @@ In doing so, one should expect a decrease of the proportion of problems solved w
     \label{fig:ppun-50}
 \end{figure}
 
-We observe however a peculiar behavior of \gls{cobyla} on this experiment, as it defeats all other solvers on unconstrained problems even though it is not defined for such kind of problem, and uses the simplest models.
+We observe, however, a peculiar behavior of \gls{cobyla} in this experiment, as it defeats all other solvers on unconstrained problems even though it is not defined for such kind of problem and uses the simplest models.
 It seems that the linear models of \gls{cobyla} are, in some sense, less sensitive to Gaussian noise, but the authors did not derive a theory for this behavior as of today.
 
 \subsection{An example of hyperparameter tuning problem}
 
-We consider now the more practical problem of the hyperparameter tuning of a \gls{svm}.
+We now consider the more practical problem of the hyperparameter tuning of a \gls{svm}.
 The model we consider is a~$C$-SVM~\cite{Chang_Lin_2011} for binary classification problems with an \gls{rbf} kernel, admitting two hyperparameters: a regularization parameter~$C > 0$ and a kernel parameter~$\gamma > 0$.
 We want to compare the performance of \gls{pdfo} with a prominent Bayesian optimization method and a \gls{rs} method.
 To this end, we use the Python package hyperopt~\cite{Bergstra_Yamins_Cox_2013} for solving the optimization problems, which provides both the \gls{tpe} and the \gls{rs} methods.
-Our experiments are based on binary classifications problems from the LIBSVM datasets\footnote{Available at \url{https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/}.}.
+Our experiments are based on binary classification problems from the LIBSVM datasets\footnote{Available at \url{https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/}.}.
 A description of the datasets employed is provided in \cref{tab:htdata}.
 
 \begin{table}[ht]
@@ -479,6 +480,6 @@ The numerical results for this experiment are provided in \cref{tab:splice,tab:s
 \end{table}
 
 The \gls{auc} scores and accuracies presented in the tables correspond to the ones computed on~$\mathcal{T}_2$ with an \gls{svm} trained on~$\mathcal{T}_1$, with the tuned parameters~$C$ and~$\gamma$.
-In a nutshell, it globally shows that the numerical performances of \gls{pdfo} against the two classical approaches are very similar, but the computations requires much fewer \gls{auc} evaluations, and hence, much less computation time.
+In a nutshell, it globally shows that the numerical performances of \gls{pdfo} against the two classical approaches are very similar, but the computations require much fewer \gls{auc} evaluations, and hence, much less computation time.
 This behavior is particularly visible on the dataset \enquote{ijcnn1} in \cref{tab:ijcnn1}, as the size of this dataset is much larger than the others.
 Thus, we can conclude that \gls{pdfo} performed better than the package hyperopt on these problems, even though the final numerical results are mostly similar.

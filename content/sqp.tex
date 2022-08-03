@@ -26,7 +26,7 @@ However, we highlight \cref{thm:sqp-path,thm:auglag-sqp-3,prop:vardi-byrd-omojok
 \Cref{thm:sqp-path} interprets the objective function of the \gls{sqp} subproblem as a quadratic approximation of the original objective function in the tangent space of the feasible region.
 This explains in a new way why the objective function of the \gls{sqp} subproblem is not the second-order Taylor expansion of~$\obj$ in the general case.
 \Cref{thm:auglag-sqp-3} shows that the augmented Lagrangian of the \gls{sqp} subproblem is a particular quadratic approximation of the augmented Lagrangian used in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
-Finally, \cref{prop:vardi-byrd-omojokun} provides an interpretation of the Vardi approach as an approximation to the Byrd-Omojokun approach.
+Finally, \cref{prop:vardi-byrd-omojokun} interprets the Vardi approach as an approximation to the Byrd-Omojokun approach.
 
 \section{The method}
 \label{sec:sqp-method}
@@ -78,7 +78,6 @@ The classical \gls{sqp} framework is presented in \cref{alg:sqp}.
 
 The earliest reference to such a method appeared in the Ph.D. thesis of \citeauthor{Wilson_1963}~\cite{Wilson_1963}, with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
 \Citeauthor{Robinson_1974}~\cite{Robinson_1974} showed the local R-quadratic convergence rate of this method.
-% Check for Q-quadratic convergence.
 Later, \citeauthor{Garcia-Palomares_Mangasarian_1976}~\cite{Garcia-Palomares_1973,Garcia-Palomares_Mangasarian_1976} modified it using a quasi-Newton update for calculating~$H^k$ and established a local R-superlinear convergence rate for such an algorithm.
 A similar method was introduced by \citeauthor{Han_1976}~\cite{Han_1976,Han_1977}, but he only approximated~$\nabla_{x, x}^2 \lag(\iter[k], \lm[k])$, while \citeauthor{Garcia-Palomares_Mangasarian_1976} applied quasi-Newton approximations to the whole matrix~$\nabla^2 \lag(\iter[k], \lm[k])$.
 In addition, \citeauthor{Han_1976} introduced a line-search strategy to guarantee the global convergence and local Q-superlinear convergence rate, requiring that~$\nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast])$ is positive definite at the solution~$(\iter[\ast], \lm[\ast])$.
@@ -105,7 +104,7 @@ We consider
 \end{align*}
 whose solution is~$\iter[\ast] = [1, 0]^{\T}$ with the associated Lagrange multiplier~$\lm[\ast] = 1/2$.
 Suppose that we have an iterate~$\iter[k] = [t, 0]^{\T}$ with~$t \approx 1$, so it is already close to the solution.
-If~$H^k = \nabla^2 \obj(\iter[k])$, then the \gls{sqp} subproblem would become
+If~$H^k = \nabla^2 \obj(\iter[k])$, then the \gls{sqp} subproblem becomes
 \begin{subequations}
     \begin{align}
         \min        & \quad -\step_1 - \frac{(\step_2)^2}{4} \label{eq:boggs-tolle-sp-obj}\\
@@ -115,7 +114,7 @@ If~$H^k = \nabla^2 \obj(\iter[k])$, then the \gls{sqp} subproblem would become
 \end{subequations}
 This subproblem is unbounded from below, regardless of the value of~$t$.
 In addition, the more~$\step[k]$ reduces~\cref{eq:boggs-tolle-sp-obj}, the larger~$\norm{\iter[k] + \step[k] - \iter[\ast]}$ is.
-Moreover, if~$t = 1$, we have~$\iter[k] = \iter[\ast]$, but any feasible point~$\step[k]$ for~\cref{eq:boggs-tolle-sp-eq} will push~$\iter[k] + \step[k]$ away from~$\iter[\ast]$, unless~$\step[k]$ is the global maximizer of~\cref{eq:boggs-tolle-sp-obj} subject to~\cref{eq:boggs-tolle-sp-eq}.
+If~$t = 1$, we have~$\iter[k] = \iter[\ast]$, but any feasible point~$\step[k]$ for~\cref{eq:boggs-tolle-sp-eq} will push~$\iter[k] + \step[k]$ away from~$\iter[\ast]$, unless~$\step[k]$ is the global maximizer of~\cref{eq:boggs-tolle-sp-obj} subject to~\cref{eq:boggs-tolle-sp-eq}.
 
 Let us now consider the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ for a dual variable~$\lm[k] \approx \lm[\ast] = 1/2$.
 It is
@@ -159,24 +158,24 @@ This is the most classical interpretation of the \gls{sqp} subproblem.
 According to \cref{thm:first-order-necessary-conditions}, if~$\iter[\ast] \in \R^n$ is a local solution to the problem~\cref{eq:problem-cobyqa-sqp}, under some mild assumptions, there exists a Lagrange multiplier~$\lm[\ast] = [\lm[\ast]_i]_{i \in \iub \cup \ieq}^{\T}$ with~$\lm[\ast]_i \in \R$ for all~$i \in \iub \cup \ieq$ such that
 \begin{subequations}
     \label{eq:sqp-kkt}
-    \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \nabla_x \lag(\iter[\ast], \lm[\ast]) = 0,    && \\
-        & \con{i}(\iter[\ast]) \le 0,                   && \quad \text{if~$i \in \iub$,}\\
-        & \con{i}(\iter[\ast]) = 0,                     && \quad \text{if~$i \in \ieq$,}\\
-        & \lm[\ast]_i \con{i}(\iter[\ast]) = 0,         && \quad \text{if~$i \in \iub$,} \label{eq:sqp-kkt-complementary-slackness}\\
-        & \lm[\ast]_i \ge 0,                            && \quad \text{if~$i \in \iub$.}
+    \begin{empheq}[left=\empheqlbrace]{alignat=1}
+        & \nabla_x \lag(\iter[\ast], \lm[\ast]) = 0,\\
+        & \con{i}(\iter[\ast]) \le 0, ~ i \in \iub,\\
+        & \con{i}(\iter[\ast]) = 0, ~ i \in \ieq,\\
+        & \lm[\ast]_i \con{i}(\iter[\ast]) = 0, ~ i \in \iub, \label{eq:sqp-kkt-complementary-slackness}\\
+        & \lm[\ast]_i \ge 0, ~ i \in \iub.
     \end{empheq}
 \end{subequations}
 Regard~\cref{eq:sqp-kkt} as a nonlinear system of inequalities and equalities, and~$(\iter[k], \lm[k])$ as an approximation of~$(\iter[\ast], \lm[\ast])$.
 If we want to solve this system by the Newton-Raphson method\footnote{Discussions are needed on how to apply the Newton-Raphson method to systems of nonlinear inequalities and equalities. We will not go further in this direction but refer to \cite{Pshenichnyi_1970a,Pshenichnyi_1970b,Robinson_1972b,Daniel_1973} for fundamental works on this topic.} starting from~$(\iter[k], \lm[k])$, we would seek a step~$(\step, \mu)$ that satisfies the system
 \begin{subequations}
     \label{eq:sqp-kkt-linearization}
-    \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \nabla_x \lag(\iter[k], \lm[k] + \mu) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step = 0,         && \\
-        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,                                    && \quad \text{if~$i \in \iub$,}\\
-        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,                                      && \quad \text{if~$i \in \ieq$,}\\
-        & \lm[k]_i [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step] + \mu_i \con{i}(\iter[k]) = 0, && \quad \text{if~$i \in \iub$,} \label{eq:sqp-kkt-linearization-complementary-slackness}\\
-        & \lm[k]_i + \mu_i \ge 0,                                                                           && \quad \text{if~$i \in \iub$,}
+    \begin{empheq}[left=\empheqlbrace]{alignat=1}
+        & \nabla_x \lag(\iter[k], \lm[k] + \mu) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step = 0,\\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
+        & \lm[k]_i [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step] + \mu_i \con{i}(\iter[k]) = 0, ~ i \in \iub, \label{eq:sqp-kkt-linearization-complementary-slackness}\\
+        & \lm[k]_i + \mu_i \ge 0, ~ i \in \iub,
     \end{empheq}
 \end{subequations}
 which is a linear approximation of~\cref{eq:sqp-kkt} at~$(\iter[k], \lm[k])$.
@@ -184,15 +183,15 @@ However, as pointed out by \citeauthor{Robinson_1972a}~\cite[Rem.~3]{Robinson_19
 To cope with this deffect, we let~$(d, \mu)$ solve instead the following bilinear approximation of~\cref{eq:sqp-kkt},
 \begin{subequations}
     \label{eq:sqp-subproblem-kkt}
-    \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \nabla_x \lag(\iter[k], \lm[k] + \mu) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step = 0, && \\
-        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,                            && \quad \text{if~$i \in \iub$,}\\
-        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,                              && \quad \text{if~$i \in \ieq$,}\\
-        & (\lm[k]_i + \mu_i) [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step] = 0,         && \quad \text{if~$i \in \iub$,} \label{eq:sqp-subproblem-kkt-complementary-slackness}\\
-        & \lm[k]_i + \mu_i \ge 0,                                                                   && \quad \text{if~$i \in \iub$.}
+    \begin{empheq}[left=\empheqlbrace]{alignat=1}
+        & \nabla_x \lag(\iter[k], \lm[k] + \mu) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step = 0,\\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
+        & (\lm[k]_i + \mu_i) [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step] = 0, ~ i \in \iub, \label{eq:sqp-subproblem-kkt-complementary-slackness}\\
+        & \lm[k]_i + \mu_i \ge 0, ~ i \in \iub.
     \end{empheq}
 \end{subequations}
-Its only difference from the system~\cref{eq:sqp-kkt-linearization} lies in the condition~\cref{eq:sqp-subproblem-kkt-complementary-slackness}, which includes the bilinear term~$\mu_i \nabla \con{i}(\iter[k])^{\T} \step$.
+Its only difference with the system~\cref{eq:sqp-kkt-linearization} lies in the condition~\cref{eq:sqp-subproblem-kkt-complementary-slackness}, which includes the bilinear term~$\mu_i \nabla \con{i}(\iter[k])^{\T} \step$.
 If the problem~\cref{eq:problem-cobyqa-sqp} is a linear program, then~\cref{eq:sqp-subproblem-kkt} is precisely its \gls{kkt} system, while~\cref{eq:sqp-kkt-linearization} is only an approximation.
 Observe that the bilinear system~\cref{eq:sqp-subproblem-kkt} is nothing but the \gls{kkt} conditions of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}, with~$\lm[k] + \mu$ being the Lagrange multiplier.
 Therefore, a \gls{kkt} pair for the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} is similar to a Newton-Raphson step for the \gls{kkt} system of the problem~\cref{eq:problem-cobyqa-sqp}, and it is even better in the sense that the resulting method solves a linear program in one iteration.
@@ -211,7 +210,7 @@ where~$\delta_i$, for~$i \in \iub \cup \ieq$, is defined by
     \delta_i(\iter) \eqdef \con{i}(\iter) - \con{i}(\iter[k]) - \nabla \con{i}(\iter[k])^{\T} (\iter - \iter[k]), \quad \text{for~$\iter \in \R^n$.}
 \end{equation*}
 The function~$\delta_i$ is referred to as the departure from linearity\footnote{When~$\con{i}$ is strictly convex,~$\delta_i$ defines the Bregman distance~\cite{Bregman_1967} associated with~$\con{i}$.} for~$\con{i}$ at the point~$\iter[k]$ (see~\cite[\S~2]{Gill_Wong_2011} and~\cite[\S~2.3]{Gill_Murray_Saunders_2005}).
-The \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ can then be seen as the minimization of the second-order Taylor approximation of~$\widetilde{\lag}$ subject to the linear approximations of the constraints~\cref{eq:problem-cobyqa-sqp-ub,eq:problem-cobyqa-sqp-eq} at~$(\iter[k], \lm[k])$, i.e.,
+The \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ can then be seen as the minimization of the second-order Taylor approximation of~$\widetilde{\lag}$ subject to the linearizations of the constraints~\cref{eq:problem-cobyqa-sqp-ub,eq:problem-cobyqa-sqp-eq} at~$(\iter[k], \lm[k])$, i.e.,
 \begin{align*}
     \min        & \quad \nabla_x \widetilde{\lag}(\iter[k], \lm[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \widetilde{\lag}(\iter[k], \lm[k]) \step\\
     \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
@@ -219,12 +218,12 @@ The \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \l
                 & \quad \step \in \R^n.
 \end{align*}
 
-By expressing its subproblem in this form, we observe that the \gls{sqp} method is a special case of \citeauthor{Robinson_1972a}'s method~\cite{Robinson_1972a}, known to have a local R-quadratic convergence rate.
+By expressing its subproblem in this form, we see that the \gls{sqp} method is a special case of \citeauthor{Robinson_1972a}'s method~\cite{Robinson_1972a}, known to have a local R-quadratic convergence rate.
 
 \subsubsection{Approximation of the objective function in the tangent space of the feasible set}
 
 Inspired by an observation in~\cite[\S~2]{Gill_Wong_2011}, we can also interpret the \gls{sqp} subproblem as minimizing an approximation of the objective function in the tangent space of the feasible set.
-As will be shown in \cref{thm:sqp-path}, when approximating~$\obj$ in such a space, we will naturally get the Hessian matrix of the Lagrangian in the second-order term.
+As shown in \cref{thm:sqp-path}, when approximating~$\obj$ in such a space, we will naturally get the Hessian matrix of the Lagrangian in the second-order term.
 
 For this interpretation, we consider the problem
 \begin{subequations}
@@ -236,7 +235,7 @@ For this interpretation, we consider the problem
     \end{align}
 \end{subequations}
 with~$h : \R^n \to \R^m$.
-The problem~\cref{eq:problem-cobyqa-sqp} can be reformulated in this form\footnote{In the reformulation, the dimension and the meaning of~$\iter$ may be altered, but we do not change the notations since it does not lead to confusion}.
+The problem~\cref{eq:problem-cobyqa-sqp} can be reformulated in this form\footnote{In the reformulation, the dimension and the meaning of~$\iter$ may be altered, but we do not change the notations since it does not lead to confusion.}.
 Recall that the Lagrangian of~\cref{eq:problem-cobyqa-auglag} is
 \begin{equation*}
     \lag(\iter, \lm) \eqdef \obj(\iter) + \lm^{\T} h(\iter), \quad \text{for~$\iter \ge 0$ and~$\lm \in \R^m$.}
@@ -246,13 +245,13 @@ Let~$\bar{\iter} \in \R^n$,~$\bar{\lm} \in \R^m$ be given, and define
 \begin{equation*}
     Q(\step) \eqdef \obj(\bar{\iter}) + \nabla \obj(\bar{\iter})^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm}) \step.
 \end{equation*}
-If~$\bar{\iter}$ and~$\bar{\lm}$ represent the current iterate and approximate Lagrange multiplier, then~$Q$ is the objective function of the \gls{sqp} subproblem with the exact second-order term.
+If~$\bar{\iter}$ and~$\bar{\lm}$ represent the current iterate and approximate Lagrange multiplier, then~$Q$ is the objective function of the \gls{sqp} subproblem with an exact second-order term.
 Therefore, the \gls{sqp} subproblem approximates~$\obj$ by~$Q$ and the feasible set by its tangent space.
 Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tangent space, which turns out to be true, as detailed by \cref{thm:sqp-path}.
 
 \begin{theorem}
     \label{thm:sqp-path}
-    Assume that~$\obj$ and~$h$ are twice differentiable and that~$\nabla^2 \obj$ is Lipschitz continuous in a neighborhood of~$\bar{\iter}$.
+    Assume that~$\obj$ and~$h$ are twice differentiable, and that~$\nabla^2 \obj$ is Lipschitz continuous in a neighborhood of~$\bar{\iter}$.
     Let~$\iter(t)$ be a feasible path starting at~$\bar{\iter}$ and parametrized by a nonnegative scalar~$t$, i.e.,~$h(\iter(t)) = 0$ and~$\iter(t) \ge 0$ for~$t \ge 0$, and~$\iter(0) = \bar{\iter}$.
     Assume that~$\iter$ is twice differentiable for~$t \ge 0$ and that~$\iter''$ is Lipschitz continuous in a neighborhood of~$0$.
     Then, there exist constants~$\nu \ge 0$ and~$\epsilon > 0$ such that
@@ -303,6 +302,7 @@ Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tang
     \end{equation}
     Plugging~\cref{eq:sqp-path-proof-3,eq:sqp-path-proof-5} into~\cref{eq:sqp-path-proof-2}, we obtain the desired result.
 \end{proof}
+
 We observe that the magnitude of~$\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}$ affects the error term in \cref{thm:sqp-path} in general.
 If~$(\bar{\iter}, \bar{\lm})$ is close to \gls{kkt} pair, then~$\norm{\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}}$ is small.
 On the other hand, if we defined~$\nabla^2 Q$ by~$\nabla^2 \obj(\bar{x})$ instead of~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$, then under the assumptions of \cref{thm:sqp-path}, we would have
@@ -310,13 +310,13 @@ On the other hand, if we defined~$\nabla^2 Q$ by~$\nabla^2 \obj(\bar{x})$ instea
     \abs{\obj(\iter(t)) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2}\abs{\iter''(0)^{\T} \nabla \obj(\bar{\iter})} \bigg) t^2 \quad \text{for all~$t \in [0, \epsilon]$,}
 \end{equation*}
 which can be obtained by setting~$\bar{\lm} = 0$ in \cref{thm:sqp-path}.
-However, since we are considering constrained optimization, we cannot expect~$\norm{\nabla \obj(\bar{\iter})}$ to be small even if~$\bar{\iter}$ is close to a solution, unless no constraint is active at this solution.
+However, since we are considering constrained optimization, we cannot expect~$\norm{\nabla \obj(\bar{\iter})}$ to be small even if~$\bar{\iter}$ is close to a solution unless no constraint is active at this solution.
 This explains why the second-order term of the \gls{sqp} subproblem should be defined by the Hessian matrix of the Lagrangian, rather than that of~$\obj$.
 
 \subsection{Lagrangian and augmented Lagrangian of the \glsfmtshort{sqp} subproblem}
 \label{subsec:lagrangian-augmented-lagrangian}
 
-In this section, we study the Lagrangian and the augmented Lagrangian of the \gls{sqp} subproblem, and observe their relations with those of the original optimization problem.
+In this section, we study the Lagrangian and the augmented Lagrangian of the \gls{sqp} subproblem and observe their relations with those of the original optimization problem.
 We also point out that the augmented Lagrangian of the \gls{sqp} subproblem is exactly the approximate augmented Lagrangian used in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 
 For simplicity, instead of the problem~\cref{eq:problem-cobyqa-sqp}, we consider still the problem~\cref{eq:problem-cobyqa-auglag}.
@@ -350,7 +350,7 @@ and by~$\auglagalt$ the augmented Lagrangian of the \gls{sqp} subproblem~\cref{e
     \auglagalt(\step, \lm) \eqdef \lagalt(\step, \lm) + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) \step}^2, \quad \text{for~$\step \ge -\iter[k]$ and~$\lm \in \R^m$.}
 \end{equation*}
 
-We now present some relations between~$\lag$ and~$\lagalt$, and also between~$\auglag$ and~$\auglagalt$.
+We now present some relations between~$\lag$ and~$\lagalt$, and between~$\auglag$ and~$\auglagalt$.
 
 \begin{theorem}
     \label{thm:auglag-sqp-1}
@@ -412,7 +412,7 @@ This approximation turns out to be the augmented Lagrangian of the \gls{sqp} sub
 \end{theorem}
 
 \begin{proof}
-    Simarlarly to \cref{thm:auglag-sqp-1}, this theorem can be verified by a straightforward calculation.
+    As \cref{thm:auglag-sqp-1}, this can be verified by a straightforward calculation.
 \end{proof}
 
 Several possibilities of~$H^k$ are proposed in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
@@ -427,16 +427,15 @@ Then, \cref{thm:auglag-sqp-3} tells us that the algorithm can be regarded as an 
 \label{sec:sqp-merit-functions}
 
 In unconstrained optimization, a point~$x \in \R^n$ is normally considered to be better than another point~$y \in \R^n$ if~$\obj(x) < \obj(y)$.
-However, this is not true in constrained optimization, because the constraints must also be taken into account.
+However, this is not true in constrained optimization because the constraints must also be taken into account.
 This is usually done using \emph{merit functions}.
 A merit function assesses the quality of a point by considering both~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$.
 We present in what follows some classical merit functions.
 
 We also mention that there exists an alternative to merit functions, known as the filter method~\cite{Fletcher_Leyffer_2002,Fletcher_Leyffer_Toint_1998,Fletcher_Leyffer_Toint_2002,Fletcher_Leyffer_Toint_2006,Riberio_Karas_Gonzaga_2008}.
-Roughly speaking, it attempts to minimize simultaneously the objective function and the constraint violation, as in biobjective optimization.
+Roughly speaking, it attempts to minimize the objective function and the constraint violation simultaneously, as in biobjective optimization.
 However, we do not study the filter method in this thesis.
-Interested readers may refer to the above-mentioned references for more details.
-% Moreover, if the current \gls{sqp} subproblem is infeasible, it will only focus on reducing the constraint violation.
+Interested readers may refer to the references mentioned above for more details.
 
 \subsection{The Courant merit function}
 
@@ -458,7 +457,7 @@ Other examples of merit functions are the~$\ell_p$-merit functions, defined by
 \end{equation*}
 Such merit functions enjoy the property of being exact under some mild assumptions.
 Roughly speaking, this means that a solution\footnote{Here, the term \enquote{solution} may be interpreted in different ways. It may be a global solution, a local solution, or a stationary point.} to the constrained problem~\cref{eq:problem-cobyqa-sqp} can be obtained by minimizing~$\merit_{\gamma}$ when~$\gamma$ is big enough.
-We will not discuss this concept further, but only provide the following theorem for later reference.
+We will not discuss this concept further but only provide the following theorem for later reference.
 Interested readers may refer to~\cite{Han_Mangasarian_1979,Mayne_1980,Pillo_Grippo_1989}.
 
 \begin{theorem}[{\cite[Thm.~14.5.1]{Conn_Gould_Toint_2000}}]
@@ -470,11 +469,11 @@ Interested readers may refer to~\cite{Han_Mangasarian_1979,Mayne_1980,Pillo_Grip
 \end{theorem}
 
 An inconvenience of the~$\ell_p$-merit functions is that, even if~$\obj$ and~$\con{i}$ are differentiable for all~$i \in \iub \cup \ieq$,~$\merit_{\gamma}$ is likely not differentiable at the points~$\iter \in \R^n$ where~$\con{i}(\iter) = 0$ for all~$i \in \iub \cup \ieq$.
-However, there do exist smooth merit functions that enjoy exactness, as shown in the next section.
+However, smooth merit functions that enjoy exactness do exist, as shown in the next section.
 
 \subsection{The augmented Lagrangian merit function}
 
-For simplicity, we shall assume that~$\iub = \emptyset$ for this part.
+For simplicity, we assume here that~$\iub = \emptyset$.
 The augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973} of the problem~\cref{eq:problem-cobyqa-auglag} is then
 \begin{equation*}
     \auglag(\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \sum_{i \in \ieq} \con{i}(\iter)^2, \quad \text{for~$\iter \ge 0$ and~$\lm = [\lm_i]_{i \in \ieq}^{\T}$,}
@@ -496,7 +495,7 @@ The least-squares Lagrange multipliers attempts to satisfy the \gls{kkt} conditi
 If~$\iter[\ast]$ is a solution to the problem~\cref{eq:problem-cobyqa-sqp}, then~$(\iter[\ast], \lm(\iter[\ast]))$ is a \gls{kkt} pair.
 When~$\iub \neq \emptyset$, to achieve the same property, the complamentary slackness conditions must be taken into account in~\cref{eq:least-squares-lagrange-multipliers}.
 
-A clear drawback of such a merit function is that it is expensive to evaluate, as one evaluation necessitates to solve a linear least-squares problem that involves the gradients of~$\obj$ and~$\con{i}$, with~$i \in \ieq$.
+A clear drawback of such a merit function is that it is expensive to evaluate, as one evaluation necessitates solving a linear least-squares problem that involves the gradients of~$\obj$ and~$\con{i}$, with~$i \in \ieq$.
 Nonetheless, this merit function offers several advantages.
 First of all, if~$\obj$ and~$\con{i}$, for~$i \in \ieq$, are differentiable, and if~$\set{\nabla \con{i}(\iter)}_{i \in \ieq}$ are linearly independent for~$\iter \in \R^n$, then~$\lm[\mathsf{LS}]$ is differentiable at~$x$~\cite[Lem.~14.2.1]{Conn_Gould_Toint_2000}, and hence, so is~$\merit_{\gamma}$.
 Moreover, under some mild assumptions, when~$\gamma$ is large enough, the second-order sufficient conditions of~\cref{eq:problem-cobyqa-sqp} and of minimizing~$\merit_{\gamma}$ are equivalent~\cite[Thm.~14.6.1]{Conn_Gould_Toint_2000}.
@@ -507,7 +506,7 @@ In practice, to have global convergence, the \gls{sqp} method needs to be global
 However, the merit function may jeopardize the fast local convergence of the \gls{sqp} method.
 This is known as the \emph{Maratos effect}~\cite{Maratos_1978}.
 
-The reason behind the effect is that, for certain problems, the \gls{sqp} method can generate a step that increases both the objective function and the constraint violation, no matter how close is the current iterate to a solution.
+The reason behind the effect is that, for certain problems, the \gls{sqp} method can generate a step that increases both the objective function and the constraint violation, no matter how close the current iterate is to a solution.
 Such a step would be rejected by any merit function that combines the objective function and the constraint violation so that it increases with respect to both.
 See examples of this phenomenon in~\cite[\S~3.5]{Maratos_1978} and~\cite{Powell_1987}.
 
@@ -526,8 +525,8 @@ Perhaps the simplest of these steps, similar to~\cite[Eqs.~(21) and~(22)]{Mayne_
 \end{equation*}
 Many other second-order correction steps can also be defined (see, e.g.,~\cite{Colman_Conn_1982a,Colman_Conn_1982b,Fletcher_1982b,Fukushima_1986}).
 
-Another possibility to handle the Maratos effect is to choose the merit function properly.
-For example, \citeauthor{Powell_Yuan_1986}~\cite[\S~4]{Powell_Yuan_1986} showed that the Maratos effect cannot occur when using the augmented Lagrangian merit function in a line-search \gls{sqp} method.
+Another possibility to handle the Maratos effect is properly choosing the merit function.
+For example, \citeauthor{Powell_Yuan_1986}~\cite[\S~4]{Powell_Yuan_1986} showed that the Maratos effect could not occur when using the augmented Lagrangian merit function in a line-search \gls{sqp} method.
 We refer to~\cite[\S~7]{Schittkowski_Yuan_2011} for other techniques to cope with the Maratos effect.
 
 \section{The trust-region \glsfmtshort{sqp} method}
@@ -547,13 +546,16 @@ The merit function we consider from now on is the~$\ell_2$-merit function, defin
 where~$\gamma$ is the penalty parameter.
 The algorithm we present below maintains a penalty parameter~$\gamma^k \ge 0$ at the~$k$th iteration and we use~$\merit[k]$ to denote the function~$\merit_{\gamma^k}$.
 We denote by~$\meritm[k]$\nomenclature[Fi]{$\meritm$}{Quadratic model of~$\merit$} the~$\ell_2$-merit function computed on the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}, i.e.,
-\begin{align*}
-    \meritm[k](\step)   & \eqdef \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
-                        & \qquad + \gamma^k \sqrt{\sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2}, \quad \text{for~$\step \in \R^n$.}
-\end{align*}
+\begin{equation*}
+    \meritm[k](\step) \eqdef \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step + \gamma^k \Phi(\step), \quad \text{for~$\step \in \R^n$,}
+\end{equation*}
+where~$\Phi$ is defined by
+\begin{equation*}
+    \Phi(\step) \eqdef \sqrt{\sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2}, \quad \text{for~$\step \in \R^n$.}
+\end{equation*}
 Note that although~$\merit[k]$ is a function of~$\iter$, we define~$\meritm[k]$ as a function of~$\step$ for convenience.
 As mentioned in~\cite[\S~15.3.2.1]{Conn_Gould_Toint_2000}, such a function is a quadratic approximation of~$\merit[k]$ at~$\iter[k]$, which is suitable for use in trust-region \gls{sqp} method.
-The basic framework is given in \cref{alg:trust-region-sqp}, where we do not explicit the second-order correction mechanism for simplicity.
+The basic framework is given in \cref{alg:trust-region-sqp}, where we do not explicitize the second-order correction mechanism for simplicity.
 Note that this framework is conceptual, as many details are hidden, including the definition of \enquote{convergence} in the loop and the update of~$\lm[k]$, which should be specified in a practical implementation.
 A similar framework for equality-constrained problems can be found in~\cite[\S~2]{Powell_Yuan_1991} and~\cite[Alg.~18.4]{Nocedal_Wright_2006}.
 
@@ -608,15 +610,15 @@ or if these two term equals, then
 \begin{equation*}
     \nabla \obj(\iter[k])^{\T} \step[k] + \frac{1}{2} (\step[k])^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step[k] < 0.
 \end{equation*}
-In other words, the step~$\step[k]$ either improves the feasibility of~$\iter[k]$ for the \gls{sqp} subproblem, or decreases the objective function of the \gls{sqp} subproblem without worsening the aforementioned feasibility.
+In other words, the step~$\step[k]$ either improves the feasibility of~$\iter[k]$ for the \gls{sqp} subproblem or decreases the objective function of the \gls{sqp} subproblem without worsening the aforementioned feasibility.
 In practice, it is possible that neither the constraint violation nor the objective function of the \gls{sqp} subproblem can be reduced.
 A practical algorithm must handle such a case.
 However, from a theoretical point of view, it is possible to avoid such cases by making some mild assumptions (see, e.g.,~\cite[Asm.~3.1]{Powell_Yuan_1991}).
 
 Note moreover that we imposed~$\gamma^k \ge \norm{\lm[k]}$.
 This is because \cref{thm:exact-merit-function} tells us that if ~$\gamma^k > \norm{\lm[\ast]}$, where~$\lm[\ast]$ is the Lagrange multiplier at the solution, then the merit function~$\merit[k]$ enjoys an exactness property.
-Therefore, we attempt to fulfil this condition as much as possible using the information available so far.
-An scheme for updating the penalty parameter is given in \cref{alg:increase-penalty}.
+Therefore, we attempt to fulfill this condition as much as possible using the information available so far.
+A scheme for updating the penalty parameter is given in \cref{alg:increase-penalty}.
 \citeauthor{Powell_1994} used in his solver \gls{cobyla}~\cite{Powell_1994} a very similar scheme, with the constants~$\eta_3 = 3/2$ and~$\eta_4 = 2$.
 See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_2006} for more discussions on the update of the penalty parameter.
 
@@ -624,7 +626,7 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
     \caption{Increasing the penalty parameter}
     \label{alg:increase-penalty}
     \DontPrintSemicolon
-    \KwData{Merit functions~$\meritm_{\gamma}$ for~$\gamma \ge 0$, trial step~$\step[k] \in \R^n$, Lagrange multiplier estimation~$\lm[k]$, previous penalty parameter~$\gamma^{k - 1} \ge 0$, and constants~$1 \le \eta_3 \le \eta_4$.}
+    \KwData{Merit function~$\meritm_{\gamma}$ for~$\gamma \ge 0$, trial step~$\step[k] \in \R^n$, Lagrange multiplier estimation~$\lm[k]$, previous penalty parameter~$\gamma^{k - 1} \ge 0$, and constants~$1 \le \eta_3 \le \eta_4$.}
     \KwResult{Updated penalty parameter~$\gamma^k \ge \gamma^{k - 1}$.}
     Set~$\bar{\gamma} \gets \argmin \set{\gamma \ge 0 : \meritm_{\gamma}(\step[k]) \le \meritm_{\gamma}(0)}$\;
     \eIf{$\gamma^{k - 1} \le \eta_3 \max \set{\bar{\gamma}, \norm{\lm[k]}}$}{
@@ -645,7 +647,7 @@ Since the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sq
 We review in this section the composite-step approach to coping with this difficulty in the equality-constrained case (i.e.,~$\iub = \emptyset$).
 Most discussions here are covered in~\cite[\S~15.4]{Conn_Gould_Toint_2000}, except \cref{prop:vardi-byrd-omojokun}, which gives a simple observation on the Vardi approach introduced below.
 
-The composite-step approach is to define~$\step[k]$ as the sum of two steps, a \emph{normal step}~$\nstep[k]$ that aims at reducing the constraint violation and a \emph{tangential step}~$\tstep[k]$ that aims at reducing the objective function~\cref{eq:trust-region-sqp-subproblem-obj} without increasing the violation of the linearized contraints.
+The composite-step approach is to define~$\step[k]$ as the sum of two steps, a \emph{normal step}~$\nstep[k]$ that aims at reducing the constraint violation, and a \emph{tangential step}~$\tstep[k]$ that aims at reducing the objective function~\cref{eq:trust-region-sqp-subproblem-obj} without increasing the violation of the linearized constraints.
 More specifically, the normal step~$\nstep[k]$ is an exact or approximate solution to the normal subproblem
 \begin{subequations}
     \label{eq:byrd-omojokun-original}
@@ -669,7 +671,7 @@ either exactly or approximately, where~$\mathcal{V}$ denotes some set such that 
 The exact formulation of~$\mathcal{V}$ depends on how we measure the constraint violation.
 
 In what follows, we describe three methods that are covered by this composite-step framework, namely the Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989}, the Vardi approach~\cite{Vardi_1985}, and the \gls{cdt} approach~\cite{Celis_Dennis_Tapia_1985}.
-It is noteworthy that \citeauthor{Vardi_1985} did not explicitely formulate his method as a composite-step approach, but it fits well in the composite-step framework as explained in the sequel.
+It is noteworthy that \citeauthor{Vardi_1985} did not explicitly formulate his method as a composite-step approach, but it fits well in the composite-step framework as explained in the sequel.
 
 \subsubsection{Byrd-Omojokun approach}
 
@@ -680,7 +682,7 @@ Further, it defines the tangential step~$\tstep[k]$ as a solution to~\cref{eq:ta
     \label{eq:tangential-subproblem-feasible-set}
     \mathcal{V} \eqdef \set{\step \in \R^n : \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq}.
 \end{equation}
-Note that~$\zeta$ should not be set to one as otherwise, the feasible region of~\cref{eq:tangential-step-original} might be a singleton.
+Note that~$\zeta$ should not be set to one; otherwise, the feasible region of~\cref{eq:tangential-step-original} might be a singleton.
 In practice, we can take for example~$\zeta = 0.8$ (see, e.g.,~\cite[Eq.~(18.45)]{Nocedal_Wright_2006}).
 
 \subsubsection{Vardi approach}
@@ -706,7 +708,6 @@ The choice of~$\alpha$ is important, and we refer to~\cite[\S~15.4.1]{Conn_Gould
 
 As explained in~\cite[\S~15.4.1]{Conn_Gould_Toint_2000}, the Vardi method can be understood as a composite-step approach as follows.
 Define the normal step~$\nstep[k]$ as the least-norm solution to~\cref{eq:vardi-original}, which can be interpreted as an approximate solution to the normal subproblem~\cref{eq:byrd-omojokun-original} with a certain~$\zeta \in [0, 1]$ (see \cref{prop:vardi-byrd-omojokun}).
-% , which then satisfies~$\norm{\nstep[k]} \le \rad[k]$.
 Further, define~$\tstep[k]$ as a solution to~\cref{eq:tangential-step-original} with~$\mathcal{V}$ expressed in~\cref{eq:tangential-subproblem-feasible-set}.
 It is then elementary to check that the composite step~$\nstep[k] + \tstep[k]$ solves~\cref{eq:sqp-subproblem-vardi-original}.
 
@@ -723,8 +724,8 @@ We now point out that the above-mentioned normal step~$\nstep[k]$ is an approxim
 \end{proposition}
 
 \begin{proof}
-    For simplicity, we let~$A$ be the matrix whose rows are~$\nabla \con{i}(\iter[k])^{\T}$ and~$b$ the vector whose components are~$\con{i}(\iter[k])$, with~$i \in \ieq$, arranged in the same order.
-    Then we have~$\step[\ast] = -A^{\dagger} b$ and
+    For simplicity, we let~$A$ be the matrix whose rows are~$\nabla \con{i}(\iter[k])^{\T}$ and~$b$ the vector with components~$\con{i}(\iter[k])$, with~$i \in \ieq$, arranged in the same order.
+    We have~$\step[\ast] = -A^{\dagger} b$ and
     \begin{equation*}
         \nstep[k] = \argmin_{\step \in \R^n} \set{\norm{\step} : \alpha b + A \step = 0} = -\alpha A^{\dagger} b = \alpha \step[\ast],
     \end{equation*}
@@ -733,14 +734,14 @@ We now point out that the above-mentioned normal step~$\nstep[k]$ is an approxim
     \begin{equation*}
         \zeta \rad[k] = \norm{\nstep[k]} = \alpha \norm{\step[\ast]}.
     \end{equation*}
-    Hence we only need to show that~$\alpha \step[\ast]$ minimizes~$\norm{b + A \step}^2$ on the line segment~$\set{t \step[\ast] : t \in [0, \alpha]}$.
+    Hence we only need to show that~$\alpha \step[\ast]$ is a least-squares solution to~$b + A \step$ on the line segment~$\set{t \step[\ast] : t \in [0, \alpha]}$.
     This holds because $\alpha \le 1$ and~$\norm{b + A \step}^2$ is nonincreasing when $\step$ varies from~$0$ to~$\step[\ast]$ along a straight line, the monotonicity of~$\norm{b + A \step}^2$ coming from its convexity and the fact that~$\step[\ast]$ is its global minimizer.
 \end{proof}
 
 Note that~$\step[\ast]$ is a Newton step for~\cref{eq:byrd-omojokun-original-obj} at the trust region center.
-Therefore, the normal step~$\nstep[k]$ of the Vardi approach is a truncated Newton step for~\cref{eq:byrd-omojokun-original} with~$\zeta = \norm{\nstep[k]} / \rad[k]  = \alpha \norm{\step[\ast]} / \rad[k]$.
+Therefore, the normal step~$\nstep[k]$ of the Vardi approach is a truncated Newton step for~\cref{eq:byrd-omojokun-original} by setting~$\zeta = \norm{\nstep[k]} / \rad[k]  = \alpha \norm{\step[\ast]} / \rad[k]$.
 This also reveals a relation between the Vardi and the Byrd-Omojokun approaches.
-The Vardi approach with~$\alpha = \zeta \rad[k] / \norm{\step[\ast]}$ can be regarded as an approximation to the Byrd-Omojokun approach, because the former solves the normal subproblem~\cref{eq:byrd-omojokun-original} by a truncated Newton step, while the latter intends to solve this subproblem exactly, and the two approaches have no difference in the way they define the tangential step.
+The Vardi approach with~$\alpha = \zeta \rad[k] / \norm{\step[\ast]}$ can be regarded as an approximation to the Byrd-Omojokun approach because the former solves the normal subproblem~\cref{eq:byrd-omojokun-original} by a truncated Newton step, while the latter intends to solve this subproblem exactly, and the two approaches have no difference in the way they define the tangential step.
 
 \subsubsection{\Glsfmtlong{cdt} (\glsfmtshort{cdt}) approach}
 
@@ -758,7 +759,7 @@ for some~$\delta \ge 0$, so that the trust-region subproblem after replacement b
                     & \quad \step \in \R^n. \nonumber
     \end{align}
 \end{subequations}
-The method selects the scalar~$\delta$ in a composite-step fashion as follows.
+The method selects the scalar~$\delta$ in a composite-step fashion, as follows.
 It first takes a normal step~$\nstep[k]$ by solving approximately the problem~\cref{eq:byrd-omojokun-original} with~$\zeta = 1$.
 Once such a normal step is defined, it sets
 \begin{equation*}
@@ -771,16 +772,15 @@ The \gls{cdt} approach does not explicit a tangential step, but we can define it
 \end{equation*}
 The set~$\mathcal{V}$ consists of all the~$d$ such that~$\nstep[k] + d$ does not violate the linearized constraints more than~$\nstep[k]$ in terms of the~$\ell_2$ constraint violation.
 
-Unlike the two former approaches, the tangential step of the \gls{cdt} approach does not attempt to maintain or decrease the violation of each constraint, but rather the global violation of all the constraints simultaneously.
+Unlike the two former approaches, the tangential step of the \gls{cdt} approach does not attempt to maintain or decrease the violation of each constraint but rather the global violation of all the constraints simultaneously.
 The advantage of the \gls{cdt} approach over the Vardi and the Byrd-Omojokun approaches is that the feasible region of the tangential subproblem is usually wider given a certain normal step.
 Hence, a larger reduction in the objective function is usually obtained.
 However, solving such a subproblem in practice is challenging, because of the constraints~\cref{eq:cdt-composite-step-original-eq,eq:cdt-composite-step-original-tr}.
-The subproblem, commonly known as the \gls{cdt} subproblem, has enjoyed a continued research interest since it was proposed (see, e.g.,~\cite{Chen_Yuan_1999,Ai_Zhang_2009,Bomze_Overton_2015,Bienstock_2016,Xu_Xia_Wang_2021}).
+The subproblem, commonly known as the \gls{cdt} subproblem, has enjoyed continued research interest since it was proposed (see, e.g.,~\cite{Chen_Yuan_1999,Ai_Zhang_2009,Bomze_Overton_2015,Bienstock_2016,Xu_Xia_Wang_2021}).
 
 \subsection{Composite steps for general constrained optimization}
 \label{subsec:composite-step-inequality}
 
-% We now consider the general case with~$\iub \neq \emptyset$.
 In what follows, we discuss how to apply the composite-step approach to problems with inequality constraints, i.e., when~$\iub \neq \emptyset$.
 
 For the normal step, as formulated in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}, we let~$\nstep[k]$ solve
@@ -797,7 +797,7 @@ Further, similar to the equality-constrained case, we let the tangential step~$\
 
 \subsubsection{Byrd-Omojokun approach}
 
-The Byrd-Omojokun approach has originally been introduced in a method that tackles both equality and inequality constraints.
+The Byrd-Omojokun approach has been originally introduced in a method that tackles both equality and inequality constraints.
 However, this method employes an active-set strategy, where the inequality constraints considered active are handled as equalities (see~\cite[\S~3.2.6]{Omojokun_1989}).
 In other words, the Byrd-Omojokun approach has been defined from an equality-constrained perspective.
 
@@ -829,7 +829,7 @@ This extension of the Byrd-Omojokun approach is slightly different from the one 
 \end{equation}
 Note that if~$\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k] < 0$, then the constraint in~\cref{eq:composite-step-restrictive} is more restrictive than the original linearized constraint, which is~$\nabla \con{i}(\iter[k])^{\T} \step \le -\con{i}(\iter[k])$.
 Recall that the motivation of the composite-step approach is to relax the linearized constraints so that the trust-region subproblem becomes feasible.
-It seems therefore unnecessary to make a constraint become more restrictive.
+It seems, therefore, unnecessary to make a constraint become more restrictive.
 The feasible region of the subproblem~\cref{eq:vardi-composite-step} is usually wider than the one with~\cref{eq:composite-step-restrictive} and hence, a larger reduction in the objective function~\cref{eq:vardi-composite-step-obj} can be expected.
 Note that the subproblem~\cref{eq:vardi-composite-step} is not more difficult to solve than its counterpart with~\cref{eq:composite-step-restrictive}.
 
@@ -888,7 +888,6 @@ We now explain why this method can be understood as a composite-step approach, a
 \end{subequations}
 admits a solution whose norm is at most~$\rad[k]$, which ensures that~\cref{eq:sqp-subproblem-vardi} is feasible.
 Define the normal step~$\nstep[k]$ as the least-norm solution to~\cref{eq:vardi-normal-step}.
-%, which then satisfies~$\norm{\nstep[k]} \le \rad[k]$.
 Then~$\nstep[k]$ can be regarded as an approximate solution to the normal subproblem~\cref{eq:byrd-omojokun} with~$\zeta = 1$, because it satisfies~$\norm{\nstep[k]} \le \rad[k]$ and reduces~\cref{eq:byrd-omojokun-obj} to
 \begin{equation*}
     (1 - \alpha)^2 \bigg[ \sum_{i \in \iub} \posp{\con{i}(\iter[k])}^2 + \sum_{i \in \ieq} \con{i}(\iter[k])^2 \bigg],
@@ -941,9 +940,8 @@ and solves the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subpr
 \subsection{Other methods for handling the trust-region \glsfmtshort{sqp} subproblem}
 
 There exist other methods to deal with the possible infeasibility of the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem}.
-Here, we briefly introduce \gls{slpqp} and \gls{slqp} as examples.
+In what follows, we briefly introduce the  \gls{slpqp} and \gls{slqp} methods.
 
-% Gould_2021
 The \gls{slpqp} method was first proposed by \citeauthor{Fletcher_1982a}~\cite{Fletcher_1982a} and further studied for example by \citeauthor{Yuan_1995}~\cite{Yuan_1995}.
 Instead of the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem}, it solves
 \begin{subequations}
@@ -965,8 +963,8 @@ The idea of \citeauthor{Yuan_1995}~\cite{Yuan_1995} is similar.
 For more information on \gls{slpqp}, see~\cite[\S~8.4.1]{Gould_2021}.
 
 \Gls{slqp}~\cite{Fletcher_Maza_1989,Byrd_Etal_2004} computes an \gls{sqp} step by a two-stage approach.
-The first stage minimizes approximately the linear part of the objective function of the \gls{sqp} subproblem subject to the linearized constraints and a trust-region.
-Similar to \gls{slpqp}, it handles the linear constraints using an~$\ell_1$-penalty function, to avoid a possible infeasibility.
+The first stage minimizes approximately the linear part of the objective function of the \gls{sqp} subproblem subject to the linearized constraints and a trust region.
+Similar to \gls{slpqp}, it handles the linear constraints using an~$\ell_1$-penalty function to avoid a possible infeasibility.
 With the approximate minimizer of the first stage, it estimates the active set at the solution, imposing the linear independence of the constraints in this set.
 The second stage minimizes the objective function of the \gls{sqp} subproblem subject to the linearized constraints that are in the estimated active set, taking the inequalities as equalities.
 A major difference between~\cite{Fletcher_Maza_1989} and~\cite{Byrd_Etal_2004} is that the former does not include a trust-region constraint in the second stage, while the latter does.
@@ -975,8 +973,8 @@ In~\cite{Fletcher_Maza_1989}, the first-stage step is used as a safeguard that g
 \section{Software based on the \glsfmtshort{sqp} method}
 \label{sec:existing-sqp-software}
 
-There are many well-known software packages based on the \gls{sqp} method.
-For example, \gls{snopt}~\cite{Gill_Murray_Saunders_2002,Gill_Murray_Saunders_2005} is an implementation of the \gls{sqp} method for inequality-constrained optimization.
+Many well-known software packages are based on the \gls{sqp} method.
+\Gls{snopt}~\cite{Gill_Murray_Saunders_2002,Gill_Murray_Saunders_2005} for example is an implementation of the \gls{sqp} method for inequality-constrained optimization.
 It approximates the Hessians of the Lagrangian function with a limited-memory quasi-Newton technique\footnote{Although not studied in this thesis, the limited-memory quasi-Newton method is an important technique in numerical optimization. It originated from~\cite{Perry_1977,Shanno_1978}. See the historical comments in~\cite[\S~1, \P~3]{Liu_Nocedal_1989} for more details.}.
 The \gls{sqp} method is embedded in a line-search framework, which uses the augmented Lagrangian function as the merit function.
 It employs a reduced-Hessian algorithm (see~\cite{Byrd_Nocedal_1991} for more information about this class of methods) named \gls{sqopt}~\cite{Gill_Murray_Saunders_2008} for solving the subproblems.
@@ -985,18 +983,18 @@ Moreover, the possible infeasibility of the \gls{sqp} subproblem is handled usin
 Another classical \gls{sqp} solver is \gls{nlpqlp}~\cite{Schittkowski_2015}.
 It is a line-search \gls{sqp} method based on the augmented Lagrangian merit function.
 It approximates the Hessian of the Lagrangian function by the \gls{bfgs} formula.
-The possible infeasibility of the \gls{sqp} subproblem is handled by increasing the dimension of the decision variable by one, to include a new variable that relaxes the infeasible constraints.
+The possible infeasibility of the \gls{sqp} subproblem is handled by increasing the dimension of the decision variable by one to include a new variable that relaxes the infeasible constraints.
 Details on this mechanism are given in~\cite[Eq.~(9)]{Schittkowski_1986}.
 A remarkable feature of \gls{nlpqlp} is its robustness with respect to inaccurate function and gradient evaluations.
 See~\cite{Schittkowski_2015} for more information.
 
 Another instance is the \gls{etr} method~\cite{Lalee_Nocedal_Plantenga_1998} for equality-constrained optimization.
-It is a trust-region \gls{sqp} method based on the~$\ell_2$-merit function, which approximates the Hessians of the Lagrangian function by a limited-memory quasi-Newton method, unless the user provides the Hessian matrices of the objective and constraint functions.
+It is a trust-region \gls{sqp} method based on the~$\ell_2$-merit function, which approximates the Hessians of the Lagrangian function by a limited-memory quasi-Newton method unless the user provides the Hessian matrices of the objective and constraint functions.
 The trust-region \gls{sqp} subproblem is solved using a Byrd-Omojokun approach, described in \cref{subsec:composite-step-equality}.
 
 We also mention \gls{condor}~\cite{Berghen_2004,Berghen_Bersini_2004}, a trust-region method that extends Powell's \gls{uobyqa}~\cite{Powell_2002} to constrained optimization.
-It is not an \gls{sqp} method on its own, but employs an \gls{sqp} algorithm to solve its subproblem.
-This method assumes that derivatives of the objective function are unavailable, but both the values and the derivatives of the constraint functions can be evaluated unexpensively.
+It is not an \gls{sqp} method on its own but employs an \gls{sqp} algorithm to solve its subproblem.
+This method assumes that derivatives of the objective function are unavailable, but both the values and the derivatives of the constraint functions can be evaluated inexpensively.
 It is a trust-region method based on the~$\ell_1$-merit function, where at each iteration, a quadratic model of the objective function is minimized subject to the original constraints (rather than a model of them) and a trust-region constraint.
 The subproblem is solved with a \enquote{null-space, active-set approach} detailed in~\cite[\S~9.3]{Berghen_2004}, and a line-search \gls{sqp} method is applied to this subproblem in the presence of active nonlinear constraints.
 
@@ -1009,9 +1007,9 @@ Moreover, the quality of this approximation depends on the stationary residual o
 We also examined the augmented Lagrangian of the \gls{sqp} subproblem.
 This augmented Lagrangian turns out to be indeed the objective function used in the augmented Lagrangian methods studied in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 
-We then introduced the trust-region \gls{sqp} framework, and presented several methods to solve its subproblem.
+We then introduced the trust-region \gls{sqp} framework and presented several methods to solve its subproblem.
 Interestingly, we derived in \cref{prop:vardi-byrd-omojokun} a relation between two of  these methods, namely the Byrd-Omojokun and the Vardi approaches, in the equality-constrained case.
 We also discussed how to extend these methods to handle inequality constraints, the extensions of the Byrd-Omojokun and the Vardi approaches being slightly different from those presented in~\cite[\S~15.4]{Conn_Gould_Toint_2000}.
-It is necessary to make numerical experiments to test the performance of our extensions in practice.
+It is necessary to do numerical experiments to test the performance of our extensions in practice.
 We will later in this thesis use the Byrd-Omojokun approach for our new optimization method presented in \cref{ch:cobyqa-introduction}.
-The other approaches need also to be tested in the future.
+The other approaches also need to be tested in the future.
