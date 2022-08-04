@@ -481,7 +481,7 @@ These methods employ the approximation
     \auglag(\iter[k] + \step, \lm[k]) \approx \lag(\iter[k], \lm[k]) + \nabla_x \lag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} H^k d + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) \step}^2,
 \end{equation}
 which is a quadratic approximation obtained by replacing~$\lag(\iter[k] + d, \lm[k])$ with a quadratic approximation, and replacing~$h(\iter[k] + d)$ in the penalty term with its first-order Taylor expansion.
-This approximation turns out to be the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag}, as shown by \cref{thm:auglag-sqp-3}.
+This approximation turns out to be the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag}, as specified by \cref{thm:auglag-sqp-3}.
 
 \begin{theorem}
     \label{thm:auglag-sqp-3}
@@ -816,7 +816,7 @@ We now point out that the above-mentioned normal step~$\nstep[k]$ is an approxim
 \end{proof}
 
 Note that~$\step[\ast]$ is a Newton step for~\cref{eq:byrd-omojokun-original-obj} at the trust region center.
-Therefore, the normal step~$\nstep[k]$ of the Vardi approach is a truncated Newton step for~\cref{eq:byrd-omojokun-original} by setting~$\zeta = \norm{\nstep[k]} / \rad[k]  = \alpha \norm{\step[\ast]} / \rad[k]$.
+Therefore, the normal step~$\nstep[k]$ of the Vardi approach is a truncated Newton step for the normal subproblem~\cref{eq:byrd-omojokun-original} if~$\zeta = \norm{\nstep[k]} / \rad[k]  = \alpha \norm{\step[\ast]} / \rad[k]$.
 This also reveals a relation between the Vardi and the Byrd-Omojokun approaches.
 The Vardi approach with~$\alpha = \zeta \rad[k] / \norm{\step[\ast]}$ can be regarded as an approximation to the Byrd-Omojokun approach because the former solves the normal subproblem~\cref{eq:byrd-omojokun-original} by a truncated Newton step, while the latter intends to solve this subproblem exactly, and the two approaches have no difference in the way they define the tangential step.
 
