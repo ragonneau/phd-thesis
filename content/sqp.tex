@@ -23,7 +23,7 @@ Further, \cref{sec:sqp-trust-region} focuses on the trust-region \gls{sqp} frame
 
 Most of the materials in this chapter are not new, and can be found for example in~\cite{Boggs_Tolle_1995,Gould_Toint_2000},~\cite[Ch.~15]{Conn_Gould_Toint_2000},~\cite[Ch.~12]{Sun_Yuan_2006},~\cite[Ch.~18]{Nocedal_Wright_2006}, and~\cite{Schittkowski_Yuan_2011,Gill_Wong_2011}.
 However, we highlight \cref{thm:sqp-path,thm:auglag-sqp-3,prop:vardi-byrd-omojokun}, which are new to the best of our knowledge, although the last two are easy to establish.
-\Cref{thm:sqp-path} interprets the objective function of the \gls{sqp} subproblem as a quadratic approximation of the original objective function in the tangent space of the feasible region.
+\Cref{thm:sqp-path} interprets the objective function of the \gls{sqp} subproblem as a quadratic approximation of the original objective function in the tangent space of a surface.
 This explains in a new way why the objective function of the \gls{sqp} subproblem is not the second-order Taylor expansion of~$\obj$ in the general case.
 \Cref{thm:auglag-sqp-3} shows that the augmented Lagrangian of the \gls{sqp} subproblem is a particular quadratic approximation of the augmented Lagrangian used in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 Finally, \cref{prop:vardi-byrd-omojokun} interprets the Vardi approach as an approximation to the Byrd-Omojokun approach.
@@ -386,8 +386,9 @@ Given~\cref{eq:sqp-path-alt}, we will have
 Plugging this into~\cref{eq:sqp-path-proof-4-2}, we obtain again~\cref{eq:sqp-path-proof-5} and hence, establish the same estimation of~$\abs{\obj(\iter(t)) - Q(x'(0) t)}$.
 Therefore, $Q$ is indeed a quadratic approximation of~$\obj$ in
 \begin{equation*}
-    \mathcal{T}_{\bar{\iter}, \bar{\lm}} = \set{\step \in \R^n : \bar{\lm}^{\T} \nabla h(\bar{\iter}) \step = 0}.
+    \mathcal{T}_{\bar{\iter}, \bar{\lm}} = \set{\step \in \R^n : \bar{\lm}^{\T} \nabla h(\bar{\iter}) \step = 0},
 \end{equation*}
+which is linear space that contains~$\mathcal{T}_{\bar{\iter}}$ as a subset. 
 Note that the dimension of~$\mathcal{T}_{\bar{\iter}, \bar{\lm}}$ is at least~$n - 1$, while that of~$\mathcal{T}_{\bar{\iter}}$ is~$n - \rank \nabla h(\bar{\iter})$.
 
 \subsection{Lagrangian and augmented Lagrangian of the \glsfmtshort{sqp} subproblem}
@@ -878,7 +879,7 @@ However, this method employes an active-set strategy, where the inequality const
 In other words, the Byrd-Omojokun approach has been defined from an equality-constrained perspective.
 
 To extend the Byrd-Omojokun approach to the general case without employing an active-set method, we define the normal step~$\nstep[k]$ by solving~\cref{eq:byrd-omojokun} for some~$\zeta \in (0, 1]$.
-Further, we define the tangential step~$\tstep[k]$ as a solution to~\cref{eq:tangential-step-original} with~$\mathcal{V}$ being all steps~$d \in \R^n$ that satisfy
+Further, we define the tangential step~$\tstep[k]$ as a solution to~\cref{eq:tangential-step-original} with the set~$\mathcal{V}$ being all steps~$d \in \R^n$ that satisfy
 \begin{subequations}
     \label{eq:byrd-omojokun-feasible-set}
     \begin{empheq}[left=\empheqlbrace]{alignat=2}
@@ -1051,7 +1052,7 @@ In~\cite{Fletcher_Maza_1989}, the first-stage step is used as a safeguard that g
 
 Many well-known software packages are based on the \gls{sqp} method.
 \Gls{snopt}~\cite{Gill_Murray_Saunders_2002,Gill_Murray_Saunders_2005} for example is an implementation of the \gls{sqp} method for inequality-constrained optimization.
-It approximates the Hessians of the Lagrangian function with a limited-memory quasi-Newton technique\footnote{Although not studied in this thesis, the limited-memory quasi-Newton method is an important technique in numerical optimization. It originated from~\cite{Perry_1977,Shanno_1978}. See the historical comments in~\cite[\S~1, \P~3]{Liu_Nocedal_1989} for more details.}.
+It approximates the Hessians of the Lagrangian function with a limited-memory quasi-Newton technique\footnote{Although not studied in this thesis, the limited-memory quasi-Newton method~\cite{Perry_1977,Shanno_1978} is an important technique in numerical optimization. See the historical comments in~\cite[\S~1, \P~3]{Liu_Nocedal_1989} for more details.}.
 The \gls{sqp} method is embedded in a line-search framework, which uses the augmented Lagrangian function as the merit function.
 It employs a reduced-Hessian algorithm (see~\cite{Byrd_Nocedal_1991} for more information about this class of methods) named \gls{sqopt}~\cite{Gill_Murray_Saunders_2008} for solving the subproblems.
 Moreover, the possible infeasibility of the \gls{sqp} subproblem is handled using an~$\ell_1$-penalty approach detailed in~\cite[\S~1.2]{Gill_Murray_Saunders_2005}.
@@ -1078,7 +1079,7 @@ The subproblem is solved with a \enquote{null-space, active-set approach} detail
 
 We presented in this chapter the classical \gls{sqp} framework, and we got some insights by presenting several interpretations of its subproblem.
 To the best of our knowledge, the result in \cref{thm:sqp-path} is new.
-It shows that the objective function of the \gls{sqp} subproblem is a quadratic approximation of the original objective function in the tangent space of the feasible region.
+It shows that the objective function of the \gls{sqp} subproblem is a natural approximation of the original objective function in the tangent space of a surface, this surface being the contour of the constraints at the current iterate.
 Moreover, the quality of this approximation depends on the stationary residual of the current approximate \gls{kkt} pair.
 We also examined the augmented Lagrangian of the \gls{sqp} subproblem.
 This augmented Lagrangian turns out to be indeed the objective function used in the augmented Lagrangian methods studied in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.

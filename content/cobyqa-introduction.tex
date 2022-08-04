@@ -277,8 +277,8 @@ Similar to~\cite[\S~15.2, p.~626]{Conn_Gould_Toint_2000} and~\cite[Eq.~(18.22)]{
 \end{subequations}
 where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
 Note that for all~$i \in \iub$,~$\conm[k]{i}(\iter[k]) = \con{i}(\iter[k])$, because~$\conm[k]{i}$ interpolates~$\con{i}$ on~$\xpt[k]$ and~$\iter[k] \in \xpt[k]$.
-The condition~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} attempts to satisfy the complementary slackness conditions on the inequality constraints that are satisfied.
-We do not take into account the complementary slackness conditions on the inequality constraints that are not satisfied, because these constraints are likely to be active at the solution\todo{Improve the two previous sentence}.
+The constraints~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} correspond to the complementary slackness conditions of the inequality constraints that are satisfied at~$\iter[k]$.
+If a constraint is not satisfied at~$\iter[k]$, i.e., if~$\conm[k]{i}(\iter[k]) > 0$ for some~$i \in \iub$, then forcing~$\lm_i^{k + 1} = 0$ is unnecessary as this constraint may become active at the solution.
 % This problem can be easily simplified as follows.
 % For all indices~$i \in \iub$ such that~$\conm[k]{i}(\iter[k]) \neq 0$, we necessarily have~$\lm[k + 1]_i = 0$.
 % Therefore, the linear constraints~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} can be removed from the problem by considering only the indices in
