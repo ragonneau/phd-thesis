@@ -116,7 +116,7 @@ The complete framework is described in \cref{alg:tcg-bounds}, where~$\Pi^k(v)$ i
     \onehalfspacing
     \KwData{Bounds~$\xl$ and~$\xu$, and trust-region radius~$\rad > 0$.}
     \KwResult{A step that approximately solve~\cref{eq:problem-tcg-bounds}.}
-    Set the initial values~$\sstep[0] \gets 0$,~$\pstep[0] \gets -\Pi^k(\nabla Q(\sstep[0]))$, and~$\mathcal{W}^0$ according to~\cref{eq:bounds-initial-working-set}\;
+    Set the initial values~$\sstep[0] \gets 0$,~$\pstep[0] \gets -\Pi^0(\nabla Q(\sstep[0]))$, and~$\mathcal{W}^0$ according to~\cref{eq:bounds-initial-working-set}\;
     \For{$k = 0, 1, \dots$ until~$\norm{\pstep[k]} = 0$}{
         Set
         \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
@@ -129,15 +129,15 @@ The complete framework is described in \cref{alg:tcg-bounds}, where~$\Pi^k(v)$ i
         Update the step~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
         \uIf{$\alpha^k = \alpha_B^k$}{
             Add a new active constraint to~$\mathcal{W}^k$ to obtain~$\mathcal{W}^{k + 1}$\;
-            Set~$\pstep[k + 1] \gets -\Pi^k(\nabla Q(\sstep[k + 1]))$\;
+            Set~$\pstep[k + 1] \gets -\Pi^{k + 1}(\nabla Q(\sstep[k + 1]))$\;
         }
         \uElseIf{$\alpha^k = \alpha_{\rad}^k$}{
             Break\;
         }
         \Else{
             Preserve the working set~$\mathcal{W}^{k + 1} \gets \mathcal{W}^k$\;
-            Evaluate the ratio~$\beta^k \gets \norm{\Pi^k(\nabla Q(\sstep[k + 1]))}^2 / \norm{\Pi^k(\nabla Q(\sstep[k]))}^2$\;
-            Update the step~$\pstep[k + 1] \gets -\Pi^k(\nabla Q(\sstep[k])) + \beta^k \pstep[k]$\;
+            Evaluate the ratio~$\beta^k \gets \norm{\Pi^{k + 1}(\nabla Q(\sstep[k + 1]))}^2 / \norm{\Pi^{k + 1}(\nabla Q(\sstep[k]))}^2$\;
+            Update the step~$\pstep[k + 1] \gets -\Pi^{k + 1}(\nabla Q(\sstep[k])) + \beta^k \pstep[k]$\;
         }
     }
     The last value of~$\sstep[k]$ is the desired step\;
