@@ -334,9 +334,9 @@ space~$\mathcal{T}_{\bar{\iter}}$ but the linearized feasible direction set
 \end{equation*}
 This set equals~$\mathcal{T}_{\bar{\iter}}$ only if~$\bar{\iter}$ is feasible so that~$h(\bar{\iter}) = 0$.
 When~$\bar{\iter}$ is infeasible, $\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ is a shifted copy of~$\mathcal{T}_{\bar{\iter}}$ as illustrated in \cref{fig:sqp-path}.
-The distance between~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ and~$\mathcal{T}_{\bar{\iter}}$ is~$\delta_{\bar{\iter}} = \norm{\nabla h(\bar{\iter})^{\dagger} h(\bar{\iter})}$ unless~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ is emptyset, where~$\nabla h(\bar{\iter})^{\dagger}$ denotes the Moore-Penrose pseudoinverse of~$\nabla h(\bar{\iter})$, as can be seen by considering the distance from~$0 \in \mathcal{T}_{\bar{\iter}}$ to~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$.
+The distance between~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ and~$\mathcal{T}_{\bar{\iter}}$ is~$\delta_{\bar{\iter}} = \norm{\nabla h(\bar{\iter})^{\dagger} h(\bar{\iter})}$ unless~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ is an empty set, where~$\nabla h(\bar{\iter})^{\dagger}$ denotes the Moore-Penrose pseudoinverse of~$\nabla h(\bar{\iter})$, as can be seen by considering the distance from~$0 \in \mathcal{T}_{\bar{\iter}}$ to~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$.
 The purpose of this shifting is to improve the feasibility.
-Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion provides~$\norm{h(\bar{\iter} + \step)} =\bigo(\norm{\step}^2)$ for all $\step$ in a bounded subset of~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, whereas it provides~$\norm{h(\bar{\iter} + \step)} = \norm{h(\bar{\iter})} + \bigo(\norm{\step}^2)$ if~$\step$ stays in a bounded subset of~$\mathcal{T}_{\bar{\iter}}$.
+Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion provides~$\norm{h(\bar{\iter} + \step)} =\bigo(\norm{\step}^2)$ for all $\step$ in a bounded subset of~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, whereas~$\norm{h(\bar{\iter} + \step)} = \norm{h(\bar{\iter})} + \bigo(\norm{\step}^2)$ if~$\step$ stays in a bounded subset of~$\mathcal{T}_{\bar{\iter}}$.
 
 \begin{figure}[ht]
     \centering
@@ -389,7 +389,7 @@ Therefore, $Q$ is indeed a quadratic approximation of~$\obj$ in
     \mathcal{T}_{\bar{\iter}, \bar{\lm}} = \set{\step \in \R^n : \bar{\lm}^{\T} \nabla h(\bar{\iter}) \step = 0},
 \end{equation*}
 which is linear space that contains~$\mathcal{T}_{\bar{\iter}}$ as a subset. 
-Note that the dimension of~$\mathcal{T}_{\bar{\iter}, \bar{\lm}}$ is at least~$n - 1$, while that of~$\mathcal{T}_{\bar{\iter}}$ is~$n - \rank \nabla h(\bar{\iter})$.
+Note that the dimension of~$\mathcal{T}_{\bar{\iter}, \bar{\lm}}$ is at least~$n - 1$, while that of~$\mathcal{T}_{\bar{\iter}}$ is~$n - \rank(\nabla h(\bar{\iter}))$.
 
 \subsection{Lagrangian and augmented Lagrangian of the \glsfmtshort{sqp} subproblem}
 \label{subsec:lagrangian-augmented-lagrangian}
