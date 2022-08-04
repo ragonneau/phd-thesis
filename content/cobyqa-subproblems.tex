@@ -19,8 +19,143 @@ In this chapter, we present the methods employed by \gls{cobyqa} to solve its va
 
 \section{The \glsfmtlong{tcg} method}
 
+Trust-region methods often involve the minimization of a quadratic function subject to a trust-region constraint, i.e., a problem of the form
+\begin{subequations}
+    \label{eq:problem-tcg}
+    \begin{align}
+        \min        & \quad Q(\step)\\
+        \text{s.t.} & \quad \norm{\step} \le \rad,\\
+                    & \quad \step \in \R^n, \nonumber
+    \end{align}
+\end{subequations}
+with~$Q \in \qpoly$ and~$\rad > 0$.
+The usual convergence results for trust-region methods do not require a given solution~$\step[\ast]$ to~\cref{eq:problem-tcg} to be exact.
+Rather, they only necessitate to satisfy the Cauchy decrease condition
+\begin{equation*}
+    Q(0) - Q(\step[\ast]) \ge c \norm{\nabla Q(0)} \min \set[\bigg]{\frac{\norm{\nabla Q(0)}}{\norm{\nabla^2 Q}}, \rad},
+\end{equation*}
+for some~$c \in (0, 1]$, where we assume that~$\norm{\nabla Q(0)} / \norm{\nabla^2 Q} = \infty$ if~$\nabla^2 Q \equiv 0$.
+
+Therefore, in trust-region method, we solve~\cref{eq:problem-tcg} approximately.
+A well-known method for evaluating~$\step[\ast]$ is the Steihaug-Toint \gls{tcg} method~\cite{Steihaug_1983,Toint_1981}, presented in this section\todo{Other methods exist}.
+The framework for solving~\cref{eq:problem-tcg} using the \gls{tcg} method is given in \cref{alg:tcg}.
+The idea of the algorithm is to entertain conjugate gradients iterations, and stop the computations if a step reaches the boundary of the trust region.
+
+\begin{algorithm}
+    \caption{Steihaug-Toint \glsfmtshort{tcg} method}
+    \label{alg:tcg}
+    \DontPrintSemicolon
+    \onehalfspacing
+    \KwData{Trust-region radius~$\rad > 0$.}
+    \KwResult{A step that approximately solve~\cref{eq:problem-tcg}.}
+    Set the initial values~$\sstep[0] \gets 0$ and~$\pstep[0] \gets -\nabla Q(\sstep[0])$\;
+    \For{$k = 0, 1, \dots$ until~$\norm{\pstep[k]} = 0$}{
+        Set
+        \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
+            & \frac{- \nabla Q(\sstep[k])^{\T} \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}  && \quad \text{if~$(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k] > 0$,}\\
+            & \infty                                                                                && \quad \text{otherwise}
+        \end{algoempheq}
+        Compute~$\alpha_{\rad}^k \gets \argmax \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$\nomenclature[Op]{$\argmax$}{Global maximizer operator}\;
+        Set the steplength~$\alpha^k \gets \min \set{\alpha_Q^k, \alpha_{\rad}^k}$\;
+        Update the step~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
+        \eIf{$\alpha^k = \alpha_{\rad}^k$}{
+            Break\;
+        }{
+            Evaluate the ratio~$\beta^k \gets \norm{\nabla Q(\sstep[k + 1])}^2 / \norm{\nabla Q(\sstep[k])}^2$\;
+            Update the step~$\pstep[k + 1] \gets -\nabla Q(\sstep[k]) + \beta^k \pstep[k]$\;
+        }
+    }
+    The last value of~$\sstep[k]$ is the desired step\;
+\end{algorithm}
+
+This algorithm enjoys many good properties.
+In particular, \citeauthor{Yuan_2000}~\cite{Yuan_2000} showed that the step~$\step[\ast]$ provided by the \gls{tcg} method provides a least half the reduction provided by an exact solution to~\cref{eq:problem-tcg}.
+The \gls{tcg} method underlies the subproblem solvers employed by \gls{cobyqa}, as presented hereinafter.
+
 \section{Solving the tangential subproblem}
 \label{sec:cobyqa-tangential}
+
+We now present the constrained variations of the \gls{tcg} method we use in \gls{cobyqa} to solve the tangential subproblem~\cref{eq:cobyqa-tangential}.
+Recall that \gls{cobyqa} uses a modified trust-region radius, but this does not affect our discussion below.
+
+\subsection{Bound-constrained case}
+
+We present here the bound-constrained variation of the \gls{tcg} method designed by \citeauthor{Powell_2009} for his solver \gls{bobyqa}~\cite{Powell_2009}.
+This is the method employed by \gls{cobyqa} when only bound constraints are provided (i.e., when~$\iub \cup \ieq = \empty$ in~\cref{eq:problem-cobyqa}).
+In such a case, the trust-region \gls{sqp} subproblem is of the form
+\begin{subequations}
+    \label{eq:problem-tcg-bounds}
+    \begin{align}
+        \min        & \quad Q(\step) \label{eq:problem-tcg-bounds-obj}\\
+        \text{s.t.} & \quad \xl \le \step \le \xu,\\
+                    & \quad \norm{\step} \le \rad,\\
+                    & \quad \step \in \R^n,
+    \end{align}
+\end{subequations}
+where the lower bounds~$\xl \in (\R \cup \set{-\infty})^n$ and the upper bounds~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl < \xu$.
+Note that these bounds are not the same as in~\cref{eq:problem-cobyqa}.
+
+The method designed by \citeauthor{Powell_2009} is an active-set variation of the \gls{tcg} method.
+At each iteration, a truncate conjugate gradient step is performed on the coordinates that are not fixed by a given working set.
+If a new bound is hit during such iteration, the bound is added to the working set, and the procedure is restarted.
+The working set is only enlarged through the iterations, which then ensures the termination of the method.
+
+The initial working set is a subset of the active bounds at the origin.
+Clearly, an active bound should not be included in the working set if a positive step along~$-\nabla Q(0)$ would depart from the bound, as the bound is never removed from the working set.
+Therefore, the initial working set is set to be
+\begin{equation}
+    \label{eq:bounds-initial-working-set}
+    \mathcal{W}^0 \eqdef \set[\bigg]{i \in \set{1, 2, \dots, n} : \xl_i = 0 ~ \text{and} ~ \frac{\partial Q}{\partial \iter_i}(0) \ge 0, ~ \text{or} ~ \xu_i = 0 ~ \text{and} ~ \frac{\partial Q}{\partial \iter_i}(0) \le 0}.
+\end{equation}
+The complete framework is described in \cref{alg:tcg-bounds}, where~$\Pi^k(v)$ is denotes the vector whose~$i$th component is~$v_i$ if~$i \notin \mathcal{W}^k$, and zero otherwise.
+
+\begin{algorithm}
+    \caption{Bound-constrained \glsfmtshort{tcg} method}
+    \label{alg:tcg-bounds}
+    \DontPrintSemicolon
+    \onehalfspacing
+    \KwData{Bounds~$\xl$ and~$\xu$, and trust-region radius~$\rad > 0$.}
+    \KwResult{A step that approximately solve~\cref{eq:problem-tcg-bounds}.}
+    Set the initial values~$\sstep[0] \gets 0$,~$\pstep[0] \gets -\Pi^k(\nabla Q(\sstep[0]))$, and~$\mathcal{W}^0$ according to~\cref{eq:bounds-initial-working-set}\;
+    \For{$k = 0, 1, \dots$ until~$\norm{\pstep[k]} = 0$}{
+        Set
+        \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
+            & \frac{- \nabla Q(\sstep[k])^{\T} \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}  && \quad \text{if~$(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k] > 0$,}\\
+            & \infty                                                                                && \quad \text{otherwise}
+        \end{algoempheq}
+        Compute~$\alpha_{\rad}^k \gets \argmax \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$\;
+        Compute~$\alpha_B^k \gets \argmax \set{\alpha \ge 0 : \xl \le \sstep[k] + \alpha \pstep[k] \le \xu}$\;
+        Set the steplength~$\alpha^k \gets \min \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_B^k}$\;
+        Update the step~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
+        \uIf{$\alpha^k = \alpha_B^k$}{
+            Add a new active constraint to~$\mathcal{W}^k$ to obtain~$\mathcal{W}^{k + 1}$\;
+            Set~$\pstep[k + 1] \gets -\Pi^k(\nabla Q(\sstep[k + 1]))$\;
+        }
+        \uElseIf{$\alpha^k = \alpha_{\rad}^k$}{
+            Break\;
+        }
+        \Else{
+            Preserve the working set~$\mathcal{W}^{k + 1} \gets \mathcal{W}^k$\;
+            Evaluate the ratio~$\beta^k \gets \norm{\Pi^k(\nabla Q(\sstep[k + 1]))}^2 / \norm{\Pi^k(\nabla Q(\sstep[k]))}^2$\;
+            Update the step~$\pstep[k + 1] \gets -\Pi^k(\nabla Q(\sstep[k])) + \beta^k \pstep[k]$\;
+        }
+    }
+    The last value of~$\sstep[k]$ is the desired step\;
+\end{algorithm}
+
+\Gls{cobyqa} employed a modification of this algorithm for solving its trust-region subproblem when the user supplied a bound-constrained problem.
+The modification, also proposed by \citeauthor{Powell_2009} and implemented in \gls{bobyqa}~\cite{Powell_2009} is based on the following observation.
+If the step~$\step[\ast]$ returned by \cref{alg:tcg-bounds} satisfies~$\norm{\step[\ast]} = \rad$, it is likely that the objective function in~\cref{eq:problem-tcg-bounds-obj} can be further decreased by moving this point round the trust-region boundary.
+In fact, the global solution of~\cref{eq:problem-tcg-bounds} is on the trust-region boundary in such a case.
+The method employed by \gls{cobyqa} then attempts to further reduce the objective function by returning an approximate solution to
+\begin{align*}
+    \min        & \quad Q(\step)\\
+    \text{s.t.} & \quad \xl \le \step \le \xu,\\
+                & \quad \norm{\step} \le \rad,\\
+                & \quad \step \in \spn \set{\Pi^{\ast}(\step[\ast]), \Pi^{\ast}(\nabla Q(\step[\ast]))} \subseteq \R^n.
+\end{align*}
+
+\subsection{Linearly-constrained case}
 
 \section{Solving the normal subproblem}
 \label{sec:cobyqa-normal}

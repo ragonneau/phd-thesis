@@ -262,27 +262,30 @@ Therefore, to maintain the property~$\norm{\step[k]} \le \rad[k]$, we replace~$\
 \subsection{Least-squares Lagrange multiplier}
 \label{subsec:least-squares-lagrange-multipliers}
 
-We now provide details on the strategy employed by \gls{cobyqa} to estimate the Lagrange multiplier on \cref{alg:derivative-free-trust-region-sqp-multipliers} of \cref{alg:derivative-free-trust-region-sqp}.
+We now introduce the strategy employed by \gls{cobyqa} to estimate the Lagrange multiplier on \cref{alg:derivative-free-trust-region-sqp-multipliers} of \cref{alg:derivative-free-trust-region-sqp}.
 
-Recall that the \gls{sqp} method can be regarded as an approximate Newton method applied to the \gls{kkt} system.
-Therefore, it is natural to set the estimated Lagrange multiplier~$\lm[k + 1]$ to the one that attempts to satisfy the \gls{kkt} conditions as much as possible using the information available so far.
-Thus, we let~$\lm[k + 1]$ be a \emph{least-squares Lagrange multiplier}~\cite[\S~3.3]{Dussault_1995}, i.e., a solution to
+% Recall that the \gls{sqp} method can be regarded as an approximate Newton method applied to the \gls{kkt} system.
+Similar to~\cite[\S~15.2, p.~626]{Conn_Gould_Toint_2000} and~\cite[Eq.~(18.22)]{Nocedal_Wright_2006}, we let~$\lm[k + 1]$ be a \emph{least-squares Lagrange multiplier} (see also~\cite[\S~3.3]{Dussault_1995}), i.e., a solution to
+% It is natural to set the estimated Lagrange multiplier~$\lm[k + 1]$ to the one that attempts to satisfy the \gls{kkt} conditions as much as possible using the information available so far.
 \begin{subequations}
     \label{eq:least-squares-lagrange-multipliers-cobyqa}
     \begin{align}
         \min_{\lm}  & \quad \norm[\bigg]{\nabla \objm[k](\iter[k]) + \sum_{i \in \iub \cup \ieq} \lm_i \nabla \conm[k]{i}(\iter[k])}\\
-        \text{s.t.} & \quad \lm_i \conm[k]{i}(\iter[k]) = 0, ~ i \in \iub \label{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness}\\
+        \text{s.t.} & \quad \lm_i = 0, ~ i \in \set{j \in \iub : \conm[k]{j}(\iter[k]) < 0} \label{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness}\\
                     & \quad \lm_i \ge 0, ~ i \in \iub,
     \end{align}
 \end{subequations}
 where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
-Note that this problem can be easily simplified as follows.
-For all the indices~$i \in \iub$ such that~$\conm[k]{i}(\iter[k + 1]) \neq 0$, we necessarily have~$\lm[k + 1]_i = 0$.
-Therefore, the linear constraints~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} can be removed from the problem by considering only the indices in
-\begin{equation*}
-    \ieq \cup \set{i \in \iub : \conm[k]{i}(\iter[k + 1]) = 0},
-\end{equation*}
-and by setting the remaining components of the least-squares Lagrange multiplier to zero.
+Note that for all~$i \in \iub$,~$\conm[k]{i}(\iter[k]) = \con{i}(\iter[k])$, because~$\conm[k]{i}$ interpolates~$\con{i}$ on~$\xpt[k]$ and~$\iter[k] \in \xpt[k]$.
+The condition~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} attempts to satisfy the complementary slackness conditions on the inequality constraints that are satisfied.
+We do not take into account the complementary slackness conditions on the inequality constraints that are not satisfied, because these constraints are likely to be active at the solution\todo{Improve the two previous sentence}.
+% This problem can be easily simplified as follows.
+% For all indices~$i \in \iub$ such that~$\conm[k]{i}(\iter[k]) \neq 0$, we necessarily have~$\lm[k + 1]_i = 0$.
+% Therefore, the linear constraints~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} can be removed from the problem by considering only the indices in
+% \begin{equation*}
+%     \ieq \cup \set{i \in \iub : \conm[k]{i}(\iter[k]) \ge 0},
+% \end{equation*}
+% and by setting the remaining components of the least-squares Lagrange multiplier to zero.
 % Another possibility, leading to a slightly different problem, is to consider only the indices in
 % \begin{equation*}
 %     \ieq \cup \set{i \in \iub : \conm[k]{i}(\iter[k + 1]) \le 0},
@@ -290,6 +293,9 @@ and by setting the remaining components of the least-squares Lagrange multiplier
 % and to set the remaining components of the least-squares Lagrange multiplier to zero.
 This is the method employed by \gls{cobyqa}.
 Details on the calculations of the least-squares Lagrange multiplier are provided in \cref{sec:cobyqa-lagrange-multipliers}.
+
+We also mention that the least-squares multiplier can be regarded as an approximation of the multiplier of the \gls{sqp} subproblem, known as the QP multiplier.
+See~\cite[pp.~538--539]{Nocedal_Wright_2006} for more details.
 
 \subsection{Managing the trust-region radius}
 \label{subsec:managing-trust-region-radius}
@@ -553,13 +559,13 @@ For simplicity, we assume that~$\ieq = \emptyset$.
 If~$\ieq \neq \emptyset$, \gls{cobyqa} will view each equality constraint as two inequality constraints when invoking \cref{alg:reducting-penalty}.
 
 \begin{algorithm}
-    \caption{Reducing the penalty parameter}
+    \caption[Reducing the penalty parameter]{Reducing the penalty parameter\textsuperscript{$\ddagger$}}
     \label{alg:reducting-penalty}
     \DontPrintSemicolon
     \onehalfspacing
+    \algorithmfootnote{\textsuperscript{$\ddagger$}We assume that~$\ieq = \emptyset$; otherwise, each equality constraint is viewed as two inequality constraints.}
     \KwData{Current interpolation set~$\xpt[k + 1] \subseteq \R^n$ and current penalty parameter~$\gamma^k \ge 0$.}
     \KwResult{Modified penalty parameter~$\gamma^k \ge 0$.}
-    \KwNote{We assume that~$\ieq = \emptyset$ as otherwise, each equality constraint is viewed as two inequality constraints.}
     Set indices of the important constraints
     \begin{algomathdisplay}
         \iub^{\ast} \eqdef \set[\big]{i \in \iub : \min_{y \in \xpt[k + 1]} \con{i}(y) < \max_{y \in \xpt[k + 1]} 2 \con{i}(y)}

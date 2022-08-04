@@ -23,7 +23,7 @@
 \label{sec:overview}
 
 Optimization is the study of extremal points and values of mathematical functions.
-It aims at minimizing (or maximizing) a real-valued function~$\obj$\nomenclature[Fa]{$\obj$}{Real-valued objective function defined on~$\R^n$}, referred to as the \emph{objective function}, within a given set of points~$\fset \subseteq \R^n$\nomenclature[Nb]{$\subseteq$}{Set inclusion notation}\nomenclature[Se]{$\R^n$}{Real coordinate space of dimension~$n$}\nomenclature[Si]{$\fset$}{Feasible set, included in~$\R^n$}, referred to as the \emph{feasible set}.
+It aims at minimizing (or maximizing) a real-valued function~$\obj$\nomenclature[Fa]{$\obj$}{Real-valued objective function defined on~$\R^n$}, referred to as the \emph{objective function}, within a given set of points~$\fset \subseteq \R^n$\nomenclature[Nb]{$\subseteq$}{Set inclusion notation}\nomenclature[Sf]{$\R^n$}{Real coordinate space of dimension~$n$}\nomenclature[Sj]{$\fset$}{Feasible set, included in~$\R^n$}, referred to as the \emph{feasible set}.
 It is well known that essential information for optimization is embraced in the (possibly generalized) derivatives of the functions involved.
 However, in practice, evaluations of such derivatives may be unreliable or prohibitively expensive, if not impossible.
 It motivates the study of \gls{dfo}~\cite{Conn_Scheinberg_Vicente_2009b,Audet_Hare_2017,Custodio_Scheinberg_Vicente_2017,Larson_Menickelly_Wild_2019}, where problems are solved using only function values.
@@ -55,8 +55,8 @@ In this introduction, we consider the nonlinearly-constrained problem
 \end{subequations}
 \nomenclature[Fb]{$\con{i}$}{Real-valued constraint function defined on~$\R^n$, with~$i \in \iub \cup \ieq$}%
 \nomenclature[Na]{$\in$}{Set membership notation}%
-\nomenclature[Sj]{$\ieq$}{Set of indices of the equality constraints}%
-\nomenclature[Sk]{$\iub$}{Set of indices of the inequality constraints}%
+\nomenclature[Sk]{$\ieq$}{Set of indices of the equality constraints}%
+\nomenclature[Sl]{$\iub$}{Set of indices of the inequality constraints}%
 where the \emph{objective} and \emph{constraint functions}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and where the sets of indices~$\iub$ and~$\ieq$ are finite (perhaps empty) and disjoint.
 The feasible set of this problem is
 \begin{equation*}
@@ -85,7 +85,7 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
     \KwResult{Factorized matrix~$A^{(n - 1)} \in \R^{n \times n}$.}
     Initialize $A^{(0)} \gets A$\;
     \For{$k = 1, 2, \dots, n - 1$}{
-        Determine a pivot index~$j$ that solves~$\max \set[\big]{\abs[\big]{A_{i, k}^{(k - 1)}} : k \le i \le n}$\;
+        Determine a pivot index~$j$ that solves~$\max \set[\big]{\abs[\big]{A_{i, k}^{(k - 1)}} : k \le i \le n}$\nomenclature[Oc]{$\abs{\cdot}$}{Modulus operator}\;
         \eIf{$A_{j, k}^{(k - 1)} \neq 0$}{
             Exchange the~$k$th and the~$j$th rows of~$A^{(k - 1)}$\;
             Evaluate the multiplier~$\tau^k \in \R^n$ with components
@@ -93,17 +93,12 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
                 & A_{i, k}^{(k - 1)} / A_{k, k}^{(k - 1)},  && \quad \text{if~$i > k$,}\\
                 & 0,                                        && \quad \text{otherwise}
             \end{algoempheq}
-            Update~$A^{(k)} \gets (I_n - \tau^k e_k^{\T})A^{(k - 1)}$\;
+            Update~$A^{(k)} \gets (I_n - \tau^k e_k^{\T})A^{(k - 1)}$\nomenclature[Nd]{$A^{\T}$,~$v^{\T}$}{Transpose of a matrix or a vector}\nomenclature[Ne]{$I_n$}{Identity matrix on~$\R^{n \times n}$}\nomenclature[Nf]{$e_i$}{Standard coordinate vector of~$\R^n$ ($i$th column of~$I_n$), with~$1 \le i \le n$}\;
         }{
             Set~$A^{(k)} \gets A^{(k - 1)}$\;
         }
     }
 \end{algorithm}
-\nomenclature[Nd]{$A^{\T}$,~$v^{\T}$}{Transpose of a matrix or a vector}%
-\nomenclature[Ne]{$I_n$}{Identity matrix on~$\R^{n \times n}$}%
-\nomenclature[Nf]{$e_i$}{Standard coordinate vector of~$\R^n$ ($i$th column of~$I_n$), with~$1 \le i \le n$}%
-\nomenclature[Oc]{$\abs{\cdot}$}{Modulus operator}%
-% \nomenclature[Op]{$\argmax$}{Global maximizer operator}%
 
 \Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of \P~10 and~$g$ at the end of p.~97) demonstrates that the growth factor of the Gaussian elimination, defined as
 \begin{equation}
@@ -204,7 +199,7 @@ Binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by
     \end{align}
 \end{subequations}
 where~$\varphi_{\gamma}$ is a function mapping the data to a higher-dimensional space~$\R^{\ell}$ and~$\gamma > 0$ and~$C > 0$ are parameters.
-Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$\nomenclature[Sd]{$\R$}{Set of real numbers} to the problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$\iter \in \R^n$ according to
+Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$\nomenclature[Se]{$\R$}{Set of real numbers} to the problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$\iter \in \R^n$ according to
 \begin{equation}
     \label{eq:csvc-classifier}
     \delta(\iter) \eqdef \sgn(\beta^{\ast} + (\omega^{\ast})^{\T} \varphi_{\gamma}(\iter)),

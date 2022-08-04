@@ -22,7 +22,7 @@ These models are used to construct subproblems that are, in turn, approximately 
 Examples of such functions commonly used in the literature are polynomials and \glspl{rbf}~\cite{Powell_2004a}.
 In this thesis, we focus on linear and quadratic polynomial models, i.e., on polynomials of degree at most one and two, respectively.
 
-Let~$\lpoly$\nomenclature[Sg]{$\lpoly$}{Space of linear polynomials in~$\R^n$} and~$\qpoly$\nomenclature[Sh]{$\qpoly$}{Space of quadratic polynomials in~$\R^n$} denote the spaces of linear and quadratic polynomials on~$\R^n$, respectively.
+Let~$\lpoly$\nomenclature[Sh]{$\lpoly$}{Space of linear polynomials in~$\R^n$} and~$\qpoly$\nomenclature[Si]{$\qpoly$}{Space of quadratic polynomials in~$\R^n$} denote the spaces of linear and quadratic polynomials on~$\R^n$, respectively.
 In a \gls{dfo} context, models from~$\lpoly$ or~$\qpoly$ are built for a real-valued function~$\obj$ without using derivatives.
 This can be done by interpolation schemes based on function values.
 Given a finite set of points~$\xpt = \set{y^1, y^2, \dots, y^m} \subseteq \R^n$, we construct a model~$\objm$ that interpolates the function~$\obj$ on~$\xpt$, i.e.,
@@ -269,7 +269,7 @@ Combining~\cref{eq:least-frobenius-norm-kkt} with the primal feasibility conditi
         0
     \end{bmatrix},
 \end{equation}
-where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\T}$,~$e \in \R^m$ is the all-one vector, while~$Y_L \in \R^{n \times m}$ and~$Y_H \in \R^{m \times m}$\nomenclature[Sf]{$\R^{m \times n}$}{Real matrix space of dimension~$m \times n$} are defined by
+where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\T}$,~$e \in \R^m$ is the all-one vector, while~$Y_L \in \R^{n \times m}$ and~$Y_H \in \R^{m \times m}$\nomenclature[Sg]{$\R^{m \times n}$}{Real matrix space of dimension~$m \times n$} are defined by
 \begin{equation}
     \label{eq:least-frobenius-kkt-system-matrices}
     Y_L \eqdef 

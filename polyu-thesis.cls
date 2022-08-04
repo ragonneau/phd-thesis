@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/08/03 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/08/04 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifmeeting
@@ -318,6 +318,7 @@
     \chapter*{#1\markboth{#1}{#1}}%
     \addcontentsline{toc}{chapter}{#1}%
 }
+\apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
 \appto{\bibsetup}{\sloppy}
 
 % Customize listings environments

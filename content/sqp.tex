@@ -221,24 +221,23 @@ The \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \l
 
 By expressing its subproblem in this form, we see that the \gls{sqp} method is a special case of \citeauthor{Robinson_1972a}'s method~\cite{Robinson_1972a}, known to have a local R-quadratic convergence rate.
 
-\subsubsection{Approximation of the objective function in the tangent space of the feasible set}
+\subsubsection{Approximation of the objective function in the tangent space of a surface}
 
 % Inspired by an observation in~\cite[\S~2]{Gill_Wong_2011}, we can also interpret the \gls{sqp} subproblem as minimizing an approximation of the objective function in the tangent space of the feasible set.
-Inspired by an observation in~\cite[\S~2]{Gill_Wong_2011}, we can also interpret the objective function of the \gls{sqp} subproblem as an approximation of the original objective function in the tangent space of the feasible set.
-As shown in \cref{thm:sqp-path}, when approximating~$\obj$ in such a space, we will naturally get the Hessian matrix of the Lagrangian in the second-order term\todo{If there is a new theorem, this needs to be revised}.
+Inspired by an observation in~\cite[\S~2]{Gill_Wong_2011}, we can also interpret the objective function of the \gls{sqp} subproblem as an approximation of the original objective function in the tangent space of a particular surface described below.
+As shown in \cref{thm:sqp-path}, when approximating~$\obj$ in this space, we will naturally get the Hessian matrix of the Lagrangian in the second-order term.
 
-For this interpretation, we consider the problem
+For this interpretation, we focus on the equality-constrained problem
 \begin{subequations}
     \label{eq:problem-cobyqa-auglag}
     \begin{align}
         \min        & \quad \obj(\iter)\\
         \text{s.t.} & \quad h(\iter) = 0,\\
-                    & \quad \iter \ge 0, ~ \iter \in \R^n, \nonumber
+                    & \quad \iter \in \R^n, \nonumber
     \end{align}
 \end{subequations}
 with~$h : \R^n \to \R^m$.
-The problem~\cref{eq:problem-cobyqa-sqp} can be reformulated in this form\footnote{In the reformulation, the dimension and the meaning of~$\iter$ may be altered, but we do not change the notations since it does not lead to confusion.}.
-Recall that the Lagrangian of~\cref{eq:problem-cobyqa-auglag} is
+Recall that the Lagrangian function of~\cref{eq:problem-cobyqa-auglag} is
 \begin{equation*}
     \lag(\iter, \lm) \eqdef \obj(\iter) + \lm^{\T} h(\iter), \quad \text{for~$\iter \ge 0$ and~$\lm \in \R^m$.}
 \end{equation*}
@@ -248,35 +247,36 @@ Let~$\bar{\iter} \in \R^n$,~$\bar{\lm} \in \R^m$ be given, and define
     Q(\step) \eqdef \obj(\bar{\iter}) + \nabla \obj(\bar{\iter})^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm}) \step.
 \end{equation*}
 If~$\bar{\iter}$ and~$\bar{\lm}$ represent the current iterate and approximate Lagrange multiplier, then~$Q$ is the objective function of the \gls{sqp} subproblem with an exact second-order term.
-Therefore, the \gls{sqp} subproblem approximates~$\obj$ by~$Q$ and the feasible set by its tangent space.
+% Therefore, the \gls{sqp} subproblem approximates~$\obj$ by~$Q$ and the feasible set by its tangent space.
 % Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tangent space, which turns out to be true, as detailed by \cref{thm:sqp-path}.
-Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tangent space.
-\Cref{thm:sqp-path} characterizes this approximation of~$\obj$ when~$\bar{\iter}$ is feasible.
+% Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tangent space.
+At first glance,~$Q$ does not seem to be a natural approximation of~$\obj$ due to its second-order term.
+However, this approximation turns out to be indeed natural if we focus on the contour surface of~$h$ at~$\bar{\iter}$ and its tangent space.
+This is detailed in \cref{thm:sqp-path}.
 
 \begin{theorem}
     \label{thm:sqp-path}
     Assume that~$\obj$ and~$h$ are twice differentiable with~$\nabla^2 \obj$ being locally Lipschitz continuous.
-    Suppose that~$\bar{\iter}$ is feasible for~\cref{eq:problem-cobyqa-auglag}.
-    Let~$\iter(t)$ be a feasible path starting at~$\bar{\iter}$ and parametrized by a nonnegative scalar~$t$, i.e.,~$h(\iter(t)) = 0$ and~$\iter(t) \ge 0$ for~$t \ge 0$, and~$\iter(0) = \bar{\iter}$.
-    If~$\iter$ is twice differentiable and~$\iter''$ is locally Lipschitz continuous for~$t \ge 0$, then there exist constants~$\nu \ge 0$ and~$\epsilon > 0$ such that
+    % Suppose that~$\bar{\iter}$ is feasible for~\cref{eq:problem-cobyqa-auglag}.
+    Consider a curve parametrized by~$\iter : \R \to \R^n$, satisfying
+    \begin{equation}
+        \label{eq:sqp-path}
+        h(\iter(t)) = h(\bar{\iter}) \quad \text{for all~$t \in \R$}, \quad \text{and} \quad \iter(0) = \bar{\iter}.
+    \end{equation}
+    If~$\iter$ is twice differentiable and~$\iter''$ is locally Lipschitz continuous, then there exist constants~$\nu \ge 0$ and~$\epsilon > 0$ such that
     \begin{equation*}
-        \abs{\obj(\iter(t)) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2}\abs{\iter''(0)^{\T} [\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}]} \bigg) t^2 \quad \text{for all~$t \in [0, \epsilon]$.}
+        \abs{\obj(\iter(t)) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2}\abs{\iter''(0)^{\T} [\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}]} \bigg) t^2 \quad \text{for all~$t \in (-\epsilon, \epsilon)$.}
     \end{equation*}
 \end{theorem}
 
 \begin{proof}
-    Define~$\phi(t) = \obj(x(t))$ for~$t \ge 0$.
-    For any~$t \ge 0$, we have
-    \begin{subequations}
-        \label{eq:sqp-path-proof-1}
-        \begin{empheq}[left=\empheqlbrace]{alignat=1}
-            & \phi'(t) = \iter'(t)^{\T} \nabla \obj(\iter(t)),\\
-            & \phi''(t) = \iter'(t)^{\T} \nabla^2 \obj(\iter(t)) \iter'(t) + \iter''(t)^{\T} \nabla \obj(\iter(t)),
-        \end{empheq}
-    \end{subequations}
-    and by assumption, there exists~$\epsilon > 0$ such that~$\phi''$ is Lipschitz continuous in~$[0, \epsilon]$.
+    Define
+    \begin{equation*}
+        \phi(t) \eqdef \obj(x(t)), \quad \text{for~$t \in \R$.}
+    \end{equation*}
+    By assumption,~$\phi$ is twice differentiable and there exists~$\epsilon > 0$ such that~$\phi''$ is Lipschitz continuous in~$(-\epsilon, \epsilon)$.
     Let~$\widehat{\phi}$ be the second-order Taylor expansion of~$\phi$ at~$0$.
-    We then have
+    Then
     \begin{equation}
         \label{eq:sqp-path-proof-2}
         \abs{\obj(\iter(t)) - Q(\iter'(0) t)} \le \abs{\phi(t) - \widehat{\phi}(t)} + \abs{\widehat{\phi}(t) - Q(\iter'(0) t)},
@@ -284,21 +284,29 @@ Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tang
     and the Lipschitz continuity of~$\phi''$ ensures the existence of a constant~$\nu \ge 0$ such that
     \begin{equation}
         \label{eq:sqp-path-proof-3}
-        \abs{\phi(t) - \widehat{\phi}(t)} \le \nu t^3 \quad \text{for~$t \in [0, \epsilon]$.}
+        \abs{\phi(t) - \widehat{\phi}(t)} \le \nu t^3 \quad \text{for~$t \in (-\epsilon, \epsilon)$.}
     \end{equation}
     We now bound~$\abs{\widehat{\phi}(t) - Q(\iter'(0) t)}$.
-    According to~\cref{eq:sqp-path-proof-1}, only the second-order terms of~$\widehat{\phi}(t)$ and~$Q(\iter'(0) t)$ differ, so that
+    Noting that~$\iter(0) = \bar{\iter}$, we have
+    \begin{subequations}
+        \label{eq:sqp-path-proof-1}
+        \begin{empheq}[left=\empheqlbrace]{alignat=1}
+            & \phi'(0) = \iter'(0)^{\T} \nabla \obj(\bar{\iter}),\\
+            & \phi''(0) = \iter'(0)^{\T} \nabla^2 \obj(\bar{\iter}) \iter'(0) + \iter''(0)^{\T} \nabla \obj(\bar{\iter}). \label{eq:sqp-path-proof-1-2}
+        \end{empheq}
+    \end{subequations}
+    According to~\cref{eq:sqp-path-proof-1}, only the second-order terms of~$\widehat{\phi}(t)$ and~$Q(\iter'(0) t)$ differ. Hence,
     \begin{subequations}
         \label{eq:sqp-path-proof-4}
         \begin{align}
             \abs{\widehat{\phi}(t) - Q(x'(0) t)}    & = \frac{t^2}{2} \abs{\phi''(0) - \iter'(0)^{\T} \nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm}) \iter'(0)}\\
-                                                    & = \frac{t^2}{2} \abs[\bigg]{\iter''(0)^{\T} \nabla \obj(\bar{\iter}) - \sum_{i = 1}^m \bar{\lm}_i \iter'(0) \nabla^2 h_i(\bar{\iter}) \iter'(0)},
+                                                    & = \frac{t^2}{2} \abs[\bigg]{\iter''(0)^{\T} \nabla \obj(\bar{\iter}) - \sum_{i = 1}^m \bar{\lm}_i \iter'(0) \nabla^2 h_i(\bar{\iter}) \iter'(0)}, \label{eq:sqp-path-proof-4-2}
         \end{align}
     \end{subequations}
-    where the second equality uses the fact that~$\iter(0) = \bar{\iter}$.
-    Moreover, since~$h(\iter(t)) = 0$ for all~$t \ge 0$, we have
+    where the second equality uses the formula of~$\phi''(0)$ in~\cref{eq:sqp-path-proof-1-2} and the definition of~$\lag$.
+    Moreover, since~$h(\iter(t)) = h(\bar{\iter})$ for all~$t \in \R$, we have
     \begin{equation*}
-        0 = \frac{\du^2 h_i(\iter(t))}{\du t^2}\bigg\vert_{t = 0} = \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) + \iter''(0)^{\T} \nabla h_i(\bar{\iter}), \quad \text{for~$i \in \set{1, 2, \dots, m}$.}
+        0 = \frac{\du^2}{\du t^2} h_i(\iter(t)) \bigg\vert_{t = 0} = \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) + \iter''(0)^{\T} \nabla h_i(\bar{\iter}), \quad \text{for~$i \in \set{1, 2, \dots, m}$.}
     \end{equation*}
     Therefore,~$\iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) = -\iter''(0)^{\T} \nabla h_i(\bar{\iter})$ for each~$i$ and hence,~\cref{eq:sqp-path-proof-4} leads to
     \begin{equation}
@@ -308,15 +316,79 @@ Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tang
     Plugging~\cref{eq:sqp-path-proof-3,eq:sqp-path-proof-5} into~\cref{eq:sqp-path-proof-2}, we obtain the desired result.
 \end{proof}
 
-We observe that the magnitude of~$\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}$ affects the error term in \cref{thm:sqp-path} in general.
-If~$(\bar{\iter}, \bar{\lm})$ is close to \gls{kkt} pair, then~$\norm{\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}}$ is small.
+Note that~$\iter'(0)$ in \cref{thm:sqp-path} is a vector in
+\begin{equation*}
+    \mathcal{T}_{\bar{\iter}} = \set{\step \in \R^n : \nabla h(\bar{\iter}) \step = 0}.
+\end{equation*}
+This is the tangent space of
+\begin{equation*}
+    \mathcal{S}_{\bar{x}} = \set{\iter \in \R^n : h(\iter) = h(\bar{\iter})},
+\end{equation*}
+at~$\bar{\iter}$, and~$\mathcal{S}_{\bar{x}}$ is the contour surface of the constraints at~$\bar{\iter}$.
+Therefore, \cref{thm:sqp-path} reveals that the objective function of the \gls{sqp} subproblem is a quadratic approximation of~$\obj$ in this tangent space.
+
+However, the feasible region of the \gls{sqp} subproblem is in general not the tangent
+space~$\mathcal{T}_{\bar{\iter}}$ but the linearized feasible direction set
+\begin{equation*}
+    \mathcal{F}_{\bar{\iter}}^{\mathsf{L}} = \set{\step \in \R^n : h(\bar{\iter}) +\nabla h(\bar{\iter}) \step  = 0}.
+\end{equation*}
+This set equals~$\mathcal{T}_{\bar{\iter}}$ only if~$\bar{\iter}$ is feasible so that~$h(\bar{\iter}) = 0$.
+When~$\bar{\iter}$ is infeasible, $\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ is a shifted copy of~$\mathcal{T}_{\bar{\iter}}$ as illustrated in \cref{fig:sqp-path}.
+The distance between~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ and~$\mathcal{T}_{\bar{\iter}}$ is~$\delta_{\bar{\iter}} = \norm{\nabla h(\bar{\iter})^{\dagger} h(\bar{\iter})}$ unless~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ is emptyset, where~$\nabla h(\bar{\iter})^{\dagger}$ denotes the Moore-Penrose pseudoinverse of~$\nabla h(\bar{\iter})$, as can be seen by considering the distance from~$0 \in \mathcal{T}_{\bar{\iter}}$ to~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$.
+The purpose of this shifting is to improve the feasibility.
+Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion provides~$\norm{h(\bar{\iter} + \step)} =\bigo(\norm{\step}^2)$ for all $\step$ in a bounded subset of~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, whereas it provides~$\norm{h(\bar{\iter} + \step)} = \norm{h(\bar{\iter})} + \bigo(\norm{\step}^2)$ if~$\step$ stays in a bounded subset of~$\mathcal{T}_{\bar{\iter}}$.
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+        \draw[thick,BlueViolet] plot[smooth,tension=1] coordinates {(0,2) (2,3) (3,6)};
+        \draw[thick,MidnightBlue] plot[smooth,tension=1] coordinates {(2,-0.5) (4,1) (6,4)};
+        \draw[thick,OliveGreen] (0,1/3) -- (4.5,19/3);
+        \draw[thick,Brown] (1,-2/3) -- (6,18/3);
+        \draw[latex-latex] (1,5/3) -- (53/25,62/75);
+        
+        \node at (2,3) {$\bullet$};
+        
+        \node[below right] at (2,3) {$\bar{x}$};
+        \node[above right] at (39/25,187/150) {$\delta_{\bar{x}}$};
+        \node[above,BlueViolet] at (3,6) {$\mathcal{S}_{\bar{x}}$};
+        \node[above,OliveGreen] at (4.5,19/3) {$\bar{x} + \mathcal{T}_{\bar{x}}$};
+        \node[right,Brown] at (6,18/3) {$\bar{x} + \mathcal{F}_{\bar{x}}^{\mathsf{L}}$};
+        \node[right,MidnightBlue] at (6,4) {$\{x \in \mathbb{R}^n : h(x) = 0\}$};
+    \end{tikzpicture}
+    \caption{An illustration of~$\mathcal{T}_{\bar{\iter}}$,~$\mathcal{S}_{\bar{x}}$,~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, and the feasible set}
+    \label{fig:sqp-path}
+\end{figure}
+
+Therefore, the \gls{sqp} subproblem models the objective function in the tangent space of the contour surface of the constraint at the current iterate, and then minimizes this model in a linear space that shifts the tangent space towards improvement of feasibility.
+% Thanks to the~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$ term, the model enjoys a second to third order accuracy if $(\bar{\iter}, \bar{\lm})$ is a good approximate \gls{kkt} pair.
+% If we replace~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$ with~$\nabla^2 \obj(\bar{\iter})$, the accuracy is only second order.
+We observe that the magnitude of~$\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}$ affects the quality of the model in general, as indicated by the error estimation in \cref{thm:sqp-path}.
+If~$(\bar{\iter}, \bar{\lm})$ is close to a \gls{kkt} pair, then~$\norm{\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}}$ is small.
 On the other hand, if we defined~$\nabla^2 Q$ by~$\nabla^2 \obj(\bar{x})$ instead of~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$, then under the assumptions of \cref{thm:sqp-path}, we would have
 \begin{equation*}
-    \abs{\obj(\iter(t)) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2}\abs{\iter''(0)^{\T} \nabla \obj(\bar{\iter})} \bigg) t^2 \quad \text{for all~$t \in [0, \epsilon]$,}
+    \abs{\obj(\iter(t)) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2}\abs{\iter''(0)^{\T} \nabla \obj(\bar{\iter})} \bigg) t^2 \quad \text{for all~$t \in (-\epsilon, \epsilon)$,}
 \end{equation*}
 which can be obtained by setting~$\bar{\lm} = 0$ in \cref{thm:sqp-path}.
 However, since we are considering constrained optimization, we cannot expect~$\norm{\nabla \obj(\bar{\iter})}$ to be small even if~$\bar{\iter}$ is close to a solution unless no constraint is active at this solution.
 This explains why the second-order term of the \gls{sqp} subproblem should be defined by the Hessian matrix of the Lagrangian, rather than that of~$\obj$.
+
+It is worth mentioning that \cref{thm:sqp-path} still holds if~$\iter$ satisfies
+\begin{equation}
+    \label{eq:sqp-path-alt}
+    \bar{\lm}^{\T} h(\iter(t)) = \bar{\lm}^{\T} h(\bar{\iter}) \quad \text{for all~$t \in \R$}, \quad \text{and} \quad \iter(0) = \bar{\iter}
+\end{equation}
+instead of~\cref{eq:sqp-path}.
+Given~\cref{eq:sqp-path-alt}, we will have
+\begin{equation*}
+    0 = \frac{\du^2}{\du t^2} \bar{\lm}^{\T} h(\iter(t)) \bigg\vert_{t = 0} = \bar{\lm}^{\T} \nabla h(\bar{\iter}) \iter''(0) + \sum_{i = 1}^n \bar{\lm}_i \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0).
+\end{equation*}
+Plugging this into~\cref{eq:sqp-path-proof-4-2}, we obtain again~\cref{eq:sqp-path-proof-5} and hence, establish the same estimation of~$\abs{\obj(\iter(t)) - Q(x'(0) t)}$.
+Therefore, $Q$ is indeed a quadratic approximation of~$\obj$ in
+\begin{equation*}
+    \mathcal{T}_{\bar{\iter}, \bar{\lm}} = \set{\step \in \R^n : \bar{\lm}^{\T} \nabla h(\bar{\iter}) \step = 0}.
+\end{equation*}
+Note that the dimension of~$\mathcal{T}_{\bar{\iter}, \bar{\lm}}$ is at least~$n - 1$, while that of~$\mathcal{T}_{\bar{\iter}}$ is~$n - \rank \nabla h(\bar{\iter})$.
 
 \subsection{Lagrangian and augmented Lagrangian of the \glsfmtshort{sqp} subproblem}
 \label{subsec:lagrangian-augmented-lagrangian}
@@ -488,15 +560,13 @@ The augmented Lagrangian merit function is then defined as
 \begin{equation*}
     \merit_{\gamma}(\iter) = \auglag(\iter, \lm[\mathsf{LS}](\iter)),
 \end{equation*}
-where~$\lm[\mathsf{LS}](\iter)$ denotes the least-squares solution to
-\begin{subequations}
+where~$\lm[\mathsf{LS}](\iter)$ denotes the least-norm solution to
+\begin{equation}
     \label{eq:least-squares-lagrange-multipliers}
-    \begin{align}
-        \min        & \quad \norm[\bigg]{\nabla \obj(\iter) + \sum_{i \in \ieq} \lm_i \nabla \con{i}(x)}\\
-        \text{s.t.} & \quad \lm = [\lm_i]_{i \in \ieq}^{\T}.
-    \end{align}
-\end{subequations}
-The least-squares Lagrange multipliers attempts to satisfy the \gls{kkt} conditions as much as possible.
+    \min_{\lm} \norm[\bigg]{\nabla \obj(\iter) + \sum_{i \in \ieq} \lm_i \nabla \con{i}(x)},
+\end{equation}
+where~$\lm = [\lm_i]_{i \in \ieq}^{\T}$.
+% The least-squares Lagrange multipliers attempts to satisfy the \gls{kkt} conditions as much as possible.
 If~$\iter[\ast]$ is a solution to the problem~\cref{eq:problem-cobyqa-sqp}, then~$(\iter[\ast], \lm(\iter[\ast]))$ is a \gls{kkt} pair.
 When~$\iub \neq \emptyset$, to achieve the same property, the complamentary slackness conditions must be taken into account in~\cref{eq:least-squares-lagrange-multipliers}.
 
@@ -635,14 +705,13 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
     \onehalfspacing
     \KwData{Merit function~$\meritm_{\gamma}$ for~$\gamma \ge 0$, trial step~$\step[k] \in \R^n$, Lagrange multiplier estimation~$\lm[k]$, previous penalty parameter~$\gamma^{k - 1} \ge 0$, and constants~$1 \le \eta_3 \le \eta_4$.}
     \KwResult{Updated penalty parameter~$\gamma^k \ge \gamma^{k - 1}$.}
-    Set~$\bar{\gamma} \gets \argmin \set{\gamma \ge 0 : \meritm_{\gamma}(\step[k]) \le \meritm_{\gamma}(0)}$\;
+    Set~$\bar{\gamma} \gets \argmin \set{\gamma \ge 0 : \meritm_{\gamma}(\step[k]) \le \meritm_{\gamma}(0)}$\nomenclature[Oo]{$\argmin$}{Global minimizer operator}\;
     \eIf{$\gamma^{k - 1} \le \eta_3 \max \set{\bar{\gamma}, \norm{\lm[k]}}$}{
         Set~$\gamma^k \gets \eta_4 \max \set{\bar{\gamma}, \norm{\lm[k]}}$\;
     }{
         Set~$\gamma^k \gets \gamma^{k - 1}$\;
     }
 \end{algorithm}
-\nomenclature[Oo]{$\argmin$}{Global minimizer operator}%
 
 \subsection{Composite steps for equality constrained optimization}
 \label{subsec:composite-step-equality}
@@ -683,7 +752,7 @@ It is noteworthy that \citeauthor{Vardi_1985} did not explicitly formulate his m
 \subsubsection{Byrd-Omojokun approach}
 
 Even though the Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989} is not the earliest composite-step method, we first present it because it is the most straightforward implementation of the idea.
-It defines the normal step~$\nstep[k]$ by solving~\cref{eq:byrd-omojokun-original} for some constant~$\zeta \in (0, 1]$.
+It defines the normal step~$\nstep[k]$ by solving~\cref{eq:byrd-omojokun-original} for some constant~$\zeta \in (0, 1]$\nomenclature[Sd]{$(a, b]$}{Semi-open set~$\set{\iter \in \R : a < \iter \le b}$ with~$a < b$}.
 Further, it defines the tangential step~$\tstep[k]$ as a solution to~\cref{eq:tangential-step-original} with
 \begin{equation}
     \label{eq:tangential-subproblem-feasible-set}
@@ -808,7 +877,7 @@ The Byrd-Omojokun approach has been originally introduced in a method that tackl
 However, this method employes an active-set strategy, where the inequality constraints considered active are handled as equalities (see~\cite[\S~3.2.6]{Omojokun_1989}).
 In other words, the Byrd-Omojokun approach has been defined from an equality-constrained perspective.
 
-To extend the Byrd-Omojokun approach to the general case without employing an active-set method, we define the normal step~$\nstep[k]$ by solving~\cref{eq:byrd-omojokun} for some constant~$\zeta \in (0, 1]$.
+To extend the Byrd-Omojokun approach to the general case without employing an active-set method, we define the normal step~$\nstep[k]$ by solving~\cref{eq:byrd-omojokun} for some~$\zeta \in (0, 1]$.
 Further, we define the tangential step~$\tstep[k]$ as a solution to~\cref{eq:tangential-step-original} with~$\mathcal{V}$ being all steps~$d \in \R^n$ that satisfy
 \begin{subequations}
     \label{eq:byrd-omojokun-feasible-set}
