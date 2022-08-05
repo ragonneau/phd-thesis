@@ -24,7 +24,7 @@ Further, \cref{sec:sqp-trust-region} focuses on the trust-region \gls{sqp} frame
 Most of the materials in this chapter are not new, and can be found for example in~\cite{Boggs_Tolle_1995,Gould_Toint_2000},~\cite[Ch.~15]{Conn_Gould_Toint_2000},~\cite[Ch.~12]{Sun_Yuan_2006},~\cite[Ch.~18]{Nocedal_Wright_2006}, and~\cite{Schittkowski_Yuan_2011,Gill_Wong_2011}.
 However, we highlight \cref{thm:sqp-path,thm:auglag-sqp-3,prop:vardi-byrd-omojokun}, which are new to the best of our knowledge, although the last two are easy to establish.
 \Cref{thm:sqp-path} interprets the objective function of the \gls{sqp} subproblem as a quadratic approximation of the original objective function in the tangent space of a surface.
-This explains in a new way why the objective function of the \gls{sqp} subproblem is not the second-order Taylor expansion of~$\obj$ in the general case.
+This explains in a new way why the \gls{sqp} subproblem should not minimize second-order Taylor expansion of the original objective function unless the constraints are all linear.
 \Cref{thm:auglag-sqp-3} shows that the augmented Lagrangian of the \gls{sqp} subproblem is a particular quadratic approximation of the augmented Lagrangian used in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 Finally, \cref{prop:vardi-byrd-omojokun} interprets the Vardi approach as an approximation to the Byrd-Omojokun approach.
 
@@ -373,6 +373,10 @@ which can be obtained by setting~$\bar{\lm} = 0$ in \cref{thm:sqp-path}.
 However, since we are considering constrained optimization, we cannot expect~$\norm{\nabla \obj(\bar{\iter})}$ to be small even if~$\bar{\iter}$ is close to a solution unless no constraint is active at this solution.
 This explains why the second-order term of the \gls{sqp} subproblem should be defined by the Hessian matrix of the Lagrangian, rather than that of~$\obj$.
 
+More geometrically speaking, when we regard~$\obj$ as a function on the surface~$\mathcal{S}_{\bar{\iter}}$ and approximate it in the tangent space~$\mathcal{T}_{\bar{\iter}}$, the second-order Taylor expansion of~$\obj$ does not attain the same accuracy as it does in~$\R^n$, because neither this Taylor expansion nor~$\mathcal{T}_{\bar{\iter}}$ can reflect the curvature information
+of~$\mathcal{S}_{\bar{\iter}}$.
+In contrast, the objective function of the \gls{sqp} subproblem achieves a better accuracy by including such curvature information via~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$.
+
 It is worth mentioning that \cref{thm:sqp-path} still holds if~$\iter$ satisfies
 \begin{equation}
     \label{eq:sqp-path-alt}
@@ -554,7 +558,7 @@ However, smooth merit functions that enjoy exactness do exist, as shown in the n
 For simplicity, we assume here that~$\iub = \emptyset$.
 The augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973} of the problem~\cref{eq:problem-cobyqa-auglag} is then
 \begin{equation*}
-    \auglag(\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \sum_{i \in \ieq} \con{i}(\iter)^2, \quad \text{for~$\iter \ge 0$ and~$\lm = [\lm_i]_{i \in \ieq}^{\T}$,}
+    \auglag(\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \sum_{i \in \ieq} \con{i}(\iter)^2, \quad \text{for~$\iter \in \R^n$ and~$\lm = [\lm_i]_{i \in \ieq}^{\T}$,}
 \end{equation*}
 where~$\lag$ denotes the Lagrangian function of the problem~\cref{eq:problem-cobyqa-sqp}.
 The augmented Lagrangian merit function is then defined as
@@ -631,15 +635,16 @@ where~$\Phi$ is defined by
 \end{equation*}
 Note that although~$\merit[k]$ is a function of~$\iter$, we define~$\meritm[k]$ as a function of~$\step$ for convenience.
 As mentioned in~\cite[\S~15.3.2.1]{Conn_Gould_Toint_2000}, such a function is a quadratic approximation of~$\merit[k]$ at~$\iter[k]$, which is suitable for use in trust-region \gls{sqp} method.
-The basic framework is given in \cref{alg:trust-region-sqp}, where we do not explicitize the second-order correction mechanism for simplicity.
+The basic framework is given in \cref{alg:trust-region-sqp}, where we do not include the second-order correction mechanism for simplicity.
 Note that this framework is conceptual, as many details are hidden, including the definition of \enquote{convergence} in the loop and the update of~$\lm[k]$, which should be specified in a practical implementation.
 A similar framework for equality-constrained problems can be found in~\cite[\S~2]{Powell_Yuan_1991} and~\cite[Alg.~18.4]{Nocedal_Wright_2006}.
 
 \begin{algorithm}
-    \caption{Basic trust-region \glsfmtshort{sqp} method}
+    \caption[Basic trust-region \glsfmtshort{sqp} method]{Basic trust-region \glsfmtshort{sqp} method\textsuperscript{$\dagger$}}
     \label{alg:trust-region-sqp}
     \DontPrintSemicolon
     \onehalfspacing
+    \algorithmfootnote{\textsuperscript{$\dagger$}Recall that superscripts are iteration counters rather than exponents.}
     \KwData{Initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
     Set the penalty parameter~$\gamma^{-1} \gets 0$\;
     \For{$k = 0, 1, \dots$ until convergence}{
