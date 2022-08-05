@@ -374,7 +374,7 @@ On the other hand, if we defined~$\nabla^2 Q$ by~$\nabla^2 \obj(\bar{x})$ instea
     \abs{\obj(\iter(t)) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2}\abs{\iter''(0)^{\T} \nabla \obj(\bar{\iter})} \bigg) t^2 \quad \text{for all~$t \in (-\epsilon, \epsilon)$,}
 \end{equation}
 which can be obtained by setting~$\bar{\lm} = 0$ in \cref{thm:sqp-path}.
-However, since we are considering constrained optimization, we cannot expect~$\norm{\nabla \obj(\bar{\iter})}$ to be small even if~$\bar{\iter}$ is close to a solution unless no constraint is active at this solution.
+However, since we are considering constrained optimization, we cannot expect~$\norm{\nabla \obj(\bar{\iter})}$ to be small even if~$\bar{\iter}$ is close to a solution unless no constraint is taking effect at this solution.
 This explains why the second-order term of the \gls{sqp} subproblem should be defined by the Hessian matrix of the Lagrangian, rather than that of~$\obj$.
 A special case occurs if the Lagrangian and~$\obj$ have the same Hessian, for example when~$h$ is linear.
 In such a case,~\cref{eq:sqp-path-proof-6} implies

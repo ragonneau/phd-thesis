@@ -300,43 +300,50 @@ See~\cite[pp.~538--539]{Nocedal_Wright_2006} for more details.
 \subsection{Managing the trust-region radius}
 \label{subsec:managing-trust-region-radius}
 
-Inspired by the performance of \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa} (see \cref{subsec:uobyqa,subsec:newuoa-bobyqa-lincoa}), we employ the following paradigm for managing the trust-region radius in \gls{cobyqa}, proposed by Powell~\cite{Powell_2002,Powell_2006,Powell_2009}, in place of \cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}.
-It consists in maintaining both the trust-region radius~$\rad[k] > 0$ and a lower-bound of it~$\radlb[k] > 0$.
-The idea behind this technique is to use~$\rad[k]$ as the trust-region radius in the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem}, and~$\radlb[k]$ to maintain an adequate distance between the points in~$\xpt[k]$.
-Further, the method never increases~$\radlb[k]$, but adapt the value of~$\rad[k]$ in a typical trust-region way.
-Of course, the method always ensures that~$\rad[k] \ge \radlb[k]$.
-% As noted by \citeauthor{Powell_2002}, allowing trial step to have a length larger than~$\radlb[k]$ prevent loss in efficiency that occurred otherwise in his software \gls{uobyqa}.
+Inspired by the performance of \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa} (see \cref{subsec:uobyqa,subsec:newuoa-bobyqa-lincoa}), we employ their trust-region radius management strategy in \gls{cobyqa}, in place of \cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}.
+It consists in maintaining both the trust-region radius~$\rad[k]$ and a lower bound~$\radlb[k]$ of it.
 
-The update of the trust-region radius~$\rad[k]$ is given in \cref{alg:update-trust-region-radius}.
-The parameters chosen in \gls{cobyqa} are~$\eta_1 = 0.1$,~$\eta_2 = 0.7$,~$\theta_1 = 0.5$,~$\theta_2 = \sqrt{2}$,~$\theta_3 = 2$, and~$\theta_4 = 1.5$.
-% This update is entertained at each iteration.
+The update of~$\rad[k]$ is given in \cref{alg:update-trust-region-radius}, which is typical for trust-region methods, except that the lower bound~$\radlb[k]$ is imposed.
+The idea behind~$\radlb[k]$ will be explained later.
+The parameters chosen in \gls{cobyqa} are~$\eta_1 = 0.1$,~$\eta_2 = 0.7$,~$\theta_1 = 0.5$,~$\theta_2 = 1.4$,~$\theta_3 = \sqrt{2}$, and~$\theta_4 = 2$.
+Note that it is crucial to ensure that~$\theta_2 < \theta_3$.
+Otherwise, if~$\rad[k] = \radlb[k]$ and the trial step~$\step[k]$ performs very well (i.e.,~$\ratio[k] > \eta_2$), then the method would set~$\rad[k + 1] = \rad[k]$, but~$\rad[k + 1] > \rad[k]$ is expected if~$\norm{\step[k]}$ is close to~$\rad[k]$.
 
 \begin{algorithm}
     \caption{Updating the trust-region radius}
     \label{alg:update-trust-region-radius}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{Current lower bound on the trust-region radius~$\radlb[k] > 0$, current trust-region radius~$\rad[k] \ge \radlb[k]$, current trust-region ratio~$\ratio[k] \in \R$, current trial step~$\step[k] \in \R^n$, and parameters~$0 < \eta_1 \le \eta_2 < 1$,~$0 < \theta_1 < 1 < \theta_2 < \theta_3$, and~$\theta_4 \ge 1$.}
+    \KwData{Current lower bound on the trust-region radius~$\radlb[k] > 0$, current trust-region radius~$\rad[k] \ge \radlb[k]$, current trust-region ratio~$\ratio[k] \in \R$, current trial step~$\step[k] \in \R^n$, and parameters~$0 < \eta_1 \le \eta_2 < 1$, and~$0 < \theta_1 < 1 \le \theta_2 < \theta_3 < \theta_4$.}
     \KwResult{Updated trust-region radius~$\rad[k + 1]$.}
     Update the trust-region radius
     \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
-        & \theta_1 \rad[k]                                                                  && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
-        & \min \set{\theta_1 \rad[k], \norm{\step[k]}}                                      && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
-        & \min \set{\theta_2 \rad[k], \max \set{\theta_1 \rad[k], \theta_3 \norm{\step}}}   && \quad \text{otherwise}
+        & \theta_1 \rad[k]                                                                      && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
+        & \max \set{\theta_1 \rad[k], \norm{\step[k]}}                                          && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
+        & \min \set{\theta_3 \rad[k], \max \set{\theta_1 \rad[k], \theta_4 \norm{\step[k]}}}    && \quad \text{otherwise}
     \end{algoempheq}
-    \If{$\rad[k + 1] \le \theta_4 \radlb[k]$}{
+    \If{$\rad[k + 1] \le \theta_2 \radlb[k]$}{
         $\rad[k + 1] \gets \radlb[k]$\;
     }
 \end{algorithm}
 
-As we mentioned already, the method maintains~$\rad[k] \ge \radlb[k]$ and it never increases~$\radlb[k]$.
-Therefore, the value of~$\radlb[k]$ is decreased only if~$\rad[k] = \radlb[k]$.
-Moreover, since~$\radlb[k]$ is designed to maintain a good distance between the interpolation points, it must be decreased only if the performance of the models is poor.
-Hence, it is decreased only if the trial step~$\norm{\step[k]}$ is small compared with~$\rad[k]$ and the trust-region ratio~$\ratio[k]$ is small.
-Otherwise, it is maintained, i.e.,~$\radlb[k + 1] = \radlb[k]$.
-\Cref{alg:reducing-lower-bound-trust-region-radius} presents the method employed by \gls{cobyqa} to reduce~$\radlb[k]$.
-It is identical to the one in \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}.
+The value of~$\radlb[k]$ can be regarded as an indicator of the resolution of the algorithm.
+If we do not impose~$\rad[k] \ge \radlb[k]$, the trust-region radius~$\rad[k]$ may be reduced to a value that is too small for the current precision of the algorithm, making the interpolation points concentrating too much.
+The value of~$\radlb[k]$ is never increased, and is decreased when the algorithm decides that the work for the current value of~$\radlb[k]$ is finished.
+This is reflected in practice by 
+\begin{enumerate}
+    \item the fact that~$\rad[k]$ reaches its lower bound~$\radlb[k]$,
+    \item a poor performance of the trust-region trial step~$\step[k]$, and
+    \item the fact that the interpolation points are all close enough to~$\iter[k + 1]$.
+\end{enumerate}
+More specifically, similar to Powell's solvers, \gls{cobyqa} reduces the value of~$\radlb[k]$ if
+\begin{equation*}
+    \radlb[k] = \rad[k], \quad \ratio[k] \le \eta_1, \quad \text{and} \quad \max_{y \in \xpt[k + 1]} \norm{y  - \iter[k + 1]} \le 2 \radlb[k].
+\end{equation*}
+There is also another exceptional case where~$\radlb[k]$ is reduced, which will be detailed at the end of \cref{subsec:geometry-improvement}.
+\Cref{alg:reducing-lower-bound-trust-region-radius} presents the method employed by \gls{cobyqa} to reduce~$\radlb[k]$ in such a case.
 The parameters chosen in \gls{cobyqa} are~$\eta_3 = 16$,~$\eta_4 = 250$, and~$\theta_5 = 0.1$.
+The algorithm and the parameters are identical to those of \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}.
 
 \begin{algorithm}
     \caption{Reducing the lower bound on the trust-region radius}
@@ -358,74 +365,76 @@ The parameters chosen in \gls{cobyqa} are~$\eta_3 = 16$,~$\eta_4 = 250$, and~$\t
     }
 \end{algorithm}
 
-If \cref{alg:reducing-lower-bound-trust-region-radius-stop} of \cref{alg:reducing-lower-bound-trust-region-radius} is reached, we consider that the optimization method should stop.
-This is in fact the definition of \enquote{convergence} we mentioned in \cref{alg:derivative-free-trust-region-sqp}, which is the stopping criterion used in the Powell's solvers.
-% This is because~$\radlb[k]$ measures to some extend the distance between the interpolation points.
+If \cref{alg:reducing-lower-bound-trust-region-radius-stop} of \cref{alg:reducing-lower-bound-trust-region-radius} is reached, then the algorithm has finished the work for the smallest desired resolution and hence, we stop the computations.
+This is in fact the definition of \enquote{convergence} we mentioned in \cref{alg:derivative-free-trust-region-sqp}, which is also the stopping criterion used in the Powell's solvers.
 
 \subsection{Updating the interpolation set}
 
-We now detail the choice of~$\bar{y}$ in \cref{alg:derivative-free-trust-region-sqp-remove-1,alg:derivative-free-trust-region-sqp-remove-2} of \cref{alg:derivative-free-trust-region-sqp}.
-Let us first consider the case~$\ratio[k] \ge 0$.
-We want to replace a point from~$\xpt[k]$ by~$\iter[k] + \step[k]$ to obtain~$\xpt[k + 1]$.
+We now detail how \gls{cobyqa} updates the interpolation set~$\xpt[k]$.
+To this end, we only need to detail the choice of~$\bar{y}$ in \cref{alg:derivative-free-trust-region-sqp-remove-1,alg:derivative-free-trust-region-sqp-remove-2} of \cref{alg:derivative-free-trust-region-sqp}.
+Then,~$\xpt[k + 1]$ will be set to~$(\xpt[k] \setminus \set{\bar{y}}) \cup \set{\iter[k] + \step[k]}$.
+
+Let us first consider the case~$\ratio[k] \ge 0$, so that~$\bar{y}$ is chosen from~$\xpt[k]$.
 We denote by~$\bar{\iter}$ the closest point from~$\iter[k]$ that solves
 \begin{equation*}
     \min_{y \in \xpt[k]} \merit[k](y).
 \end{equation*}
-This point is not necessarily~$\iter[k]$, because the penalty parameter is already updated.
-If several such points exists, we select any of them.
-Further, \gls{dfo} methods usually set~$\bar{y}$ to be a solution to
-\begin{equation*}
-    \max_{y \in \xpt[k]} \norm{y - \bar{\iter}}.
-\end{equation*}
-This is because we want the model to be accurate only locally, around the best point.
-Although this choice is possible, we decide in \gls{cobyqa} to set~$\bar{y}$ to be a solution to
+This point is not necessarily~$\iter[k]$, because~$\merit[k]$ may differ from~$\merit[k - 1]$ due to the update of the penalty parameter.
+If several such points exist, we select any of them.
+We then set~$\bar{y}$ to a solution to
 \begin{equation}
     \label{eq:choice-point-to-remove-trust-region}
     \max_{y \in \xpt[k]} \abs{\omega(y)} \norm{y - \bar{\iter}}^4,
 \end{equation}
-where~$\omega(y)$ is a scaling factor, detailed below.
-Recall from \cref{subsec:implementation-symmetric-broyden-update} that the inverse of the coefficient matrix of the interpolation problem is maintained.
-The corresponding updating formula, detailed in~\cite[Eq.~(2.12)]{Powell_2004c} has a scalar denominator.
-We then set~$\omega(y)$ to be this denominator if~$y \in \xpt[k]$ were to be replaced with~$\iter[k] + \step[k]$.
-This is because we want both the points to be close from each others, and this denominator to be far away from zero to avoid numerical difficulties.
+where~$\omega(y)$ is a scaling factor, detailed later.
+The term~$\norm{y - \bar{\iter}}$ in~\cref{eq:choice-point-to-remove-trust-region} intends to set~$\bar{y}$ to a point far away from~$\bar{\iter}$, because the interpolation points must be reasonably close in order to achieve a good precision of the models.
+% Further, \gls{dfo} methods usually set~$\bar{y}$ to be a solution to
+% \begin{equation*}
+%     \max_{y \in \xpt[k]} \norm{y - \bar{\iter}}.
+% \end{equation*}
+To explain the scalar factor~$\omega(y)$, recall from \cref{subsec:implementation-symmetric-broyden-update} that the inverse of the coefficient matrix of the interpolation problem is maintained.
+Whenever an interpolation point is replaced with a new one, this inverse will be updated by the formula detailed in~\cite[Eq.~(2.12)]{Powell_2004c}, which has a scalar denominator.
+We set~$\omega(y)$ to this denominator corresponding to the replacement of~$y \in \xpt[k]$ with~$\iter[k] + \step[k]$.
+This is because we want this denominator to be far away from zero to avoid numerical difficulties.
 The choice of the formula~\cref{eq:choice-point-to-remove-trust-region} is taken from \gls{lincoa}, the most recent \gls{dfo} solver of \citeauthor{Powell_2015}.
 He also made very similar choices for \gls{newuoa}~\cite[Eq.~(7.4)]{Powell_2006} and \gls{bobyqa}~\cite[Eq.~(6.1)]{Powell_2009}.
 
-Coping with the case~$\ratio[k] < 0$ is now clear.
-We set~$\bar{y}$ to be a solution to
+The strategy for the case~$\ratio[k] < 0$ is quite similar.
+We set~$\bar{y}$ to a solution to
 \begin{equation*}
-    \max_{y \in \xpt[k] \setminus \set{\iter[k]}} \abs{\omega(y)} \norm{y - \bar{\iter}}^4,
+    \max_{y \in \xpt[k] \setminus \set{\iter[k]}} \abs{\omega(y)} \norm{y - \bar{\iter}}^4.
 \end{equation*}
-for the same reasons.
+This case enforces~$\bar{y} \neq \iter[k]$ to avoid removing~$\iter[k]$ from~$\xpt[k]$, as this point is better than~$\iter[k] + \step[k]$ according to~$\merit[k - 1]$.
 
-Note that a possibility that has stronger theoretical motivations would be to set~$\bar{y}$ to be the point that would make~$\xpt[k + 1]$ being~$\Lambda$-poised (see \cref{subsec:symmetric-broyden-updates}) in some set, say
+Theoretically, it is tempting to set~$\bar{y}$ to the point that optimizes the~$\Lambda$-poisedness (see \cref{subsec:symmetric-broyden-updates}) of~$\xpt[k + 1]$ in some set, say
 \begin{equation}
     \label{eq:ball-lambda-poisedness}
-    \set{x \in \R^n : \norm{x - \bar{\iter}} \le \radlb[k]},
+    \set{x \in \R^n : \norm{x - \bar{\iter}} \le \radlb[k]}.
 \end{equation}
-with the least possible~$\Lambda$.
-This technique has however a major drawback: it is extremely expensive, and would require to minimize~$\card(\xpt[k + 1])$ absolute values of quadratic functions subject to~\cref{eq:ball-lambda-poisedness} at each iteration.
-Hence, from a clear computational perspective, we decide not employ this technique in \gls{cobyqa}.
+This idea has however a major drawback: it is expensive to implement due to the definition of the~$\Lambda$-poisedness.
+Hence, from a computational perspective, we decide not employ this technique in \gls{cobyqa}.
 
 \subsection{Geometry of the interpolation set}
 \label{subsec:geometry-improvement}
 
-We now provide details for \cref{alg:derivative-free-trust-region-sqp-geometry} of \cref{alg:derivative-free-trust-region-sqp}.
-As we mentioned in \cref{ch:interpolation}, the interpolation set~$\xpt[k]$ is adequate only if it is poised, i.e., only if the interpolation problem admits a solution for any function that is interpolated.
-Moreover, we may wish that~$\xpt[k]$ is~$\Lambda$-poised in
-\begin{equation*}
-    \set{\iter \in \R^n : \norm{x - \iter[k]} \le \radlb[k]},
-\end{equation*}
-for some reasonably low~$\Lambda$, because the purpose of~$\radlb[k]$ is to maintain adequate distance between the interpolation points.
-However, \cref{alg:derivative-free-trust-region-sqp} never ensures that such properties hold.
-It is known that model-based methods tends in practice to lose the poisedness property of their interpolation set as the iterations progress.
-To cope with this difficulty, model-based \gls{dfo} methods are usually modified to include geometry-improving mechanisms~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b,Fasano_Morales_Nocedal_2009}.
+In this section, we detail the geometry-improving procedure of \gls{cobyqa}, corresponding to \cref{alg:derivative-free-trust-region-sqp-geometry} of \cref{alg:derivative-free-trust-region-sqp}.
+As we mentioned in \cref{ch:interpolation}, the interpolation set has to be reasonably well-poised to ensure the accuracy of the interpolation models.
+% As we mentioned in \cref{ch:interpolation}, the interpolation set~$\xpt[k]$ is adequate only if it is poised, i.e., only if the interpolation problem admits a solution for any function that is interpolated.
+% Moreover, we may wish that~$\xpt[k]$ is~$\Lambda$-poised in
+% \begin{equation*}
+%     \set{\iter \in \R^n : \norm{x - \iter[k]} \le \radlb[k]},
+% \end{equation*}
+% for some reasonably low~$\Lambda$, because the purpose of~$\radlb[k]$ is to maintain adequate distance between the interpolation points.
+% However, \cref{alg:derivative-free-trust-region-sqp} never ensures that such properties hold.
+However, it is known that model-based \gls{dfo} methods tend to lose the poisedness of their interpolation set as the iterations progress.
+To cope with this difficulty, such methods usually include a geometry-improving mechanism.
+This topic is well studied, see for example~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b,Fasano_Morales_Nocedal_2009,Scheinberg_Toint_2010}.
 
-We present in this section the geometry-improving mechanism that we employ in \gls{cobyqa}, which is adapted from \gls{bobyqa}~\cite{Powell_2009}.
+In \gls{cobyqa}, we adopt a geometry-improving strategy designed by \citeauthor{Powell_2009} for \gls{bobyqa}~\cite{Powell_2009}.
 % Some trust-region iterations are replaced with a geometry-improving iteration.
 A point~$\bar{y} \in \xpt[k + 1]$ is chosen to be replaced by another one~$\iter[k + 1] + \rstep[k + 1]$, where the \emph{restoration step}~$\rstep[k + 1] \in \R^n$ is chosen to improve the geometry of~$\xpt[k + 1]$.
 
-First of all, the point~$\bar{y}$ is chosen to be the closest point from~$\iter[k + 1]$ that solves
+First of all, the point~$\bar{y}$ is chosen to be a solution to
 \begin{equation}
     \label{eq:choice-point-geometry-improving}
     \max_{y \in \xpt[k + 1]} \norm{y - \iter[k + 1]}.
@@ -436,55 +445,62 @@ Further, similar to~\cite[Eq.~(6.6)]{Powell_2006}, we let~$\rstep[k + 1] \in \R^
     \begin{align}
         \max        & \quad \abs{\lagp[\bar{y}](\iter[k + 1] + \step)}\\
         \text{s.t.} & \quad \xl \le \iter[k + 1] + \step \le \xu,\\
-                    & \quad \norm{\step} \le \radlb[k + 1],\\
+                    & \quad \norm{\step} \le \bar{\rad},\\
                     & \quad \step \in \R^n,
     \end{align}
 \end{subequations}
 where~$\lagp[\bar{y}]$ denotes the minimum Frobenius norm Lagrange polynomials for~$\xpt[k + 1]$ associated with~$\bar{y}$ (see \cref{def:lagrange-polynomials-minimum-norm}).
-Details on the calculations of the restoration step are provided in \cref{sec:cobyqa-geometry-improving}.
+As in \gls{lincoa}, we set~$\bar{\rad} = \max \set{\rad[k + 1] / 10, \radlb[k + 1]}$.
+We will detail how to solve~\cref{eq:geometry-subproblem} in \cref{sec:cobyqa-geometry-improving}.
 
-The reason for choosing such an objective function is twofold.
-First of all, recall that the updating formula detailed in~\cite[Eq.~(2.12)]{Powell_2004c} to compute the new inverse of the coefficient matrix of the interpolation problem has a scalar denominator.
-Moreover,~\cite[Eq.~(6.5)]{Powell_2006} shows that this denominator is always lower bounded by~$\lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1])^2$.
-Therefore, by selecting the restoration step~$\rstep[k + 1]$ to maximize~$\abs{\lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1])}$, we keep the denominator away from zero, and we avoid numerical difficulties.
-Second of all, denote by~$B$ and~$\widetilde{B}$ the coefficient matrices of the interpolation problems on the original and the modified sets~$\xpt[k + 1]$, respectively.
-\Citeauthor{Powell_2001}~\cite[\S~2]{Powell_2001} showed that
+The reason for choosing such an objective function is as follows.
+Recall that we need to update the inverse of the coefficient matrix of the interpolation problem to replace~$\bar{y}$ with~$\iter[k + 1] + \rstep[k + 1]$ in~$\xpt[k + 1]$.
+As already mentioned, the updating formula has a scalar denominator.
+This denominator is always lower bounded by~$\lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1])^2$ as shown in~\cite[Eq.~(6.5)]{Powell_2006}.
+Therefore, by selecting the restoration step~$\rstep[k + 1]$ to maximize~$\abs{\lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1])}$, we keep the denominator away from zero, avoiding numerical difficulties.
+% Second of all, denote by~$B$ and~$\widetilde{B}$ the coefficient matrices of the interpolation problems on the original and the modified sets~$\xpt[k + 1]$, respectively.
+% \Citeauthor{Powell_2001}~\cite[\S~2]{Powell_2001} showed that
+% \begin{equation*}
+%     \lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1]) = \frac{\det \widetilde{B}}{\det B}.
+% \end{equation*}
+% This property also encourages us to let the restoration step~$\rstep[k + 1]$ solve~\cref{eq:geometry-subproblem}.
+
+Now that the general framework of the geometry-improving phase is set up, we need to decide when to entertain such a mechanism.
+It is trigerred when
+\begin{enumerate}
+    \item the trust-region trial step~$\step[k]$ performed poorly, and
+    \item some interpolation points are far away from~$\iter[k + 1]$.
+\end{enumerate}
+More specifically, \gls{cobyqa} modifies the interpolation set~$\xpt[k + 1]$ if
 \begin{equation*}
-    \lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1]) = \frac{\det \widetilde{B}}{\det B}.
+    \ratio[k] \le \eta_1 \quad \text{and} \quad \max_{y \in \xpt[k + 1]} \norm{y - \iter[k + 1]} \ge \max \set{\rad[k + 1], 2 \radlb[k + 1]}.
 \end{equation*}
-This property also encourages us to let the restoration step~$\rstep[k + 1]$ solve~\cref{eq:geometry-subproblem}.
-
-Now that the general framework of the geometry-improving phase is set up, we need to decide when to entertained such iterations.
-First of all, recall that~$\radlb[k + 1]$ is designed to maintain adequate distance between the interpolation points.
-Therefore, if~$\norm{y - \iter[k + 1]} \le \radlb[k + 1]$ for all~$y \in \xpt[k + 1]$, then no geometry-improving phase should be entertained.
-In general, a geometry-improving step is entertained if the trust-region ratio is small,~$\ratio[k] < 0.1$ say.
-This is because a low trust-region ratio usually indicates that the models do not represent the true function accurately.
-The complete framework of a geometry-improving phase is given in \cref{alg:geometry-improving}.
+When this condition holds, \gls{cobyqa} entertains the geometry-improving phase given in \cref{alg:geometry-improving}.
 
 \begin{algorithm}
     \caption{Geometry-improving phase}
     \label{alg:geometry-improving}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{Bounds~$\xl$ and~$\xu$, current interpolation set~$\xpt[k + 1] \subseteq \R^n$, current best point so far~$\iter[k + 1] \in \xpt[k + 1]$, current lower bound on the trust-region radius~$\radlb[k + 1] > 0$, and current penalty parameter~$\gamma^k$.}
-    \KwResult{Updated interpolation set~$\xpt[k + 1]$, updated iterate~$\iter[k + 1]$, and updated Lagrange multiplier~$\lm[k + 1]$.}
-    \If{$\norm{y - \iter[k + 1]} > \radlb[k + 1]$ for some~$y \in \xpt[k + 1]$}{
-        Set~$\bar{y}$ to be the closest point from~$\iter[k + 1]$ that solves~\cref{eq:choice-point-geometry-improving}\;
-        Set the step~$\rstep[k + 1] \in \R^n$ to be an approximate solution to~\cref{eq:geometry-subproblem}\;
-        Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k + 1] \setminus \set{\bar{y}}) \cup \set{\iter[k + 1] + \rstep[k + 1]}$\;
-        Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$ \label{alg:geometry-improving-iterate}\;
-        % Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$ \label{alg:geometry-improving-multiplier}\;
-    }
+    \KwData{Bounds~$\xl$ and~$\xu$, current interpolation set~$\xpt[k + 1] \subseteq \R^n$, and current best point so far~$\iter[k + 1] \in \xpt[k + 1]$.}
+    \KwResult{Updated interpolation set~$\xpt[k + 1]$ and updated iterate~$\iter[k + 1]$.}
+    Set~$\bar{y}$ to be a solution to~\cref{eq:choice-point-geometry-improving}\;
+    Set the step~$\rstep[k + 1] \in \R^n$ to be an approximate solution to~\cref{eq:geometry-subproblem}\;
+    Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k + 1] \setminus \set{\bar{y}}) \cup \set{\iter[k + 1] + \rstep[k + 1]}$\;
+    Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$ \label{alg:geometry-improving-iterate}\;
 \end{algorithm}
 
-We also entertain this geometry-improving phase without terminating the current trust-region iteration after reducing~$\rad[k + 1]$ if the step~$\step[k]$ generated at \cref{alg:derivative-free-trust-region-sqp-subproblem} of \cref{alg:derivative-free-trust-region-sqp} is small compared to the current trust-region radius,~$\norm{\step[k]} < \rad[k] / 2$ say.
-Of course, the indices of the variables in \cref{alg:geometry-improving} need to be modified in such a case, as none of them are updated by the trust-region iteration.
-However, if this process has been trigerred several times consecutively, then the method decreases~$\radlb[k + 1]$ before generating a new trust-region step.
-This mechanism has been developed by Powell in his solvers \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}.
-
-% It is important to note that it is unlikely that~$\iter[k + 1]$ is modified in \cref{alg:geometry-improving-iterate}, because the step~$\rstep[k + 1]$ is not designed to provide any decrease of the merit function.
-% It is however not impossible, and if~$\iter[k + 1]$ is modified, it is important to update the multipliers in \cref{alg:geometry-improving-multiplier}.
-% This is the geometry-improving steps employed by \gls{cobyqa}.
+There is an exceptional case where we jump from \cref{alg:derivative-free-trust-region-sqp-subproblem} to \cref{alg:derivative-free-trust-region-sqp-geometry}, after setting~$\gamma^k = \gamma^{k - 1}$,~$\xpt[k + 1] = \xpt[k]$,~$\iter[k + 1] = \iter[k]$, and~$\lm[k + 1] = \lm[k]$.
+\Cref{alg:derivative-free-trust-region-sqp} omits this case for simplicity, and we detail it now.
+This jump is performed if the trust-region trial step~$\step[k]$ generated at \cref{alg:derivative-free-trust-region-sqp-subproblem} of \cref{alg:derivative-free-trust-region-sqp} is small compared to the current trust-region radius, more precisely, if~$\norm{\step[k]} < \rad[k] / 2$.
+In this case, we first reduce~$\rad[k + 1]$ to~$\rad[k + 1] / 2$, setting it further to~$\radlb[k]$ if this reduced value is below~$\theta_2 \radlb[k]$.
+We then invoke \cref{alg:geometry-improving} if
+\begin{equation*}
+    \max_{y \in \xpt[k + 1]} \norm{y - \iter[k + 1]} \ge \rad[k + 1].
+\end{equation*}
+However, if~$\norm{\step[k]} < \rad[k] / 2$ has happened at five consective iterations, or~$\norm{\step[k]} < \rad[k] / 10$ at three consecutive iterations, then the geometry-improving phase is not invoked.
+Instead, we decrease~$\radlb[k]$ by invoking \cref{alg:reducing-lower-bound-trust-region-radius}, and continue with the next trust-region iteration.
+This mechanism has been developed by Powell in his solver \gls{lincoa}, and similar strategies exist in \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, and \gls{bobyqa}~\cite{Powell_2009}.
 
 \section{Management of bound and linear constraints}
 \label{sec:simple-constraints}
