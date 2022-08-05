@@ -277,8 +277,8 @@ Similar to~\cite[\S~15.2, p.~626]{Conn_Gould_Toint_2000} and~\cite[Eq.~(18.22)]{
 \end{subequations}
 where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
 Note that for all~$i \in \iub$,~$\conm[k]{i}(\iter[k]) = \con{i}(\iter[k])$, because~$\conm[k]{i}$ interpolates~$\con{i}$ on~$\xpt[k]$ and~$\iter[k] \in \xpt[k]$.
-The constraints~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} correspond to the complementary slackness conditions of the inequality constraints that are satisfied at~$\iter[k]$.
-If a constraint is not satisfied at~$\iter[k]$, i.e., if~$\conm[k]{i}(\iter[k]) > 0$ for some~$i \in \iub$, then forcing~$\lm_i^{k + 1} = 0$ is unnecessary as this constraint may become active at the solution.
+The conditions~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} correspond to the complementary slackness conditions of the inactive constraints at~$\iter[k]$.
+Even though the complementary slackness conditions at the solution are~$\lm[\ast]_i \con{i}(\iter[\ast]) = 0$ for~$i \in \iub$, it is unreasonable to force~$\lm_i^{k + 1} = 0$ if~$\con{i}(\iter[k]) > 0$ and~$i \in \iub$, because the corresponding constraint is currently active.
 % This problem can be easily simplified as follows.
 % For all indices~$i \in \iub$ such that~$\conm[k]{i}(\iter[k]) \neq 0$, we necessarily have~$\lm[k + 1]_i = 0$.
 % Therefore, the linear constraints~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} can be removed from the problem by considering only the indices in
@@ -291,7 +291,7 @@ If a constraint is not satisfied at~$\iter[k]$, i.e., if~$\conm[k]{i}(\iter[k]) 
 %     \ieq \cup \set{i \in \iub : \conm[k]{i}(\iter[k + 1]) \le 0},
 % \end{equation*}
 % and to set the remaining components of the least-squares Lagrange multiplier to zero.
-This is the method employed by \gls{cobyqa}.
+% This is the method employed by \gls{cobyqa}.
 Details on the calculations of the least-squares Lagrange multiplier are provided in \cref{sec:cobyqa-lagrange-multipliers}.
 
 We also mention that the least-squares multiplier can be regarded as an approximation of the multiplier of the \gls{sqp} subproblem, known as the QP multiplier.
@@ -300,31 +300,31 @@ See~\cite[pp.~538--539]{Nocedal_Wright_2006} for more details.
 \subsection{Managing the trust-region radius}
 \label{subsec:managing-trust-region-radius}
 
-Inspired by the performance of \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa} (see \cref{subsec:uobyqa,subsec:newuoa-bobyqa-lincoa}), we employ the following paradigm for managing the trust-region radius in \gls{cobyqa}, proposed by Powell~\cite{Powell_2002,Powell_2006,Powell_2009}, in place of \cref{alg:derivative-free-trust-region-sqp-radius} or \cref{alg:derivative-free-trust-region-sqp}.
+Inspired by the performance of \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa} (see \cref{subsec:uobyqa,subsec:newuoa-bobyqa-lincoa}), we employ the following paradigm for managing the trust-region radius in \gls{cobyqa}, proposed by Powell~\cite{Powell_2002,Powell_2006,Powell_2009}, in place of \cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}.
 It consists in maintaining both the trust-region radius~$\rad[k] > 0$ and a lower-bound of it~$\radlb[k] > 0$.
 The idea behind this technique is to use~$\rad[k]$ as the trust-region radius in the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem}, and~$\radlb[k]$ to maintain an adequate distance between the points in~$\xpt[k]$.
 Further, the method never increases~$\radlb[k]$, but adapt the value of~$\rad[k]$ in a typical trust-region way.
 Of course, the method always ensures that~$\rad[k] \ge \radlb[k]$.
-As noted by \citeauthor{Powell_2002}, allowing trial step to have a length larger than~$\radlb[k]$ prevent loss in efficiency that occurred otherwise in his software \gls{uobyqa}.
+% As noted by \citeauthor{Powell_2002}, allowing trial step to have a length larger than~$\radlb[k]$ prevent loss in efficiency that occurred otherwise in his software \gls{uobyqa}.
 
 The update of the trust-region radius~$\rad[k]$ is given in \cref{alg:update-trust-region-radius}.
-The parameters chosen in \gls{cobyqa} are~$\eta_1 = 0.1$,~$\eta_2 = 0.7$,~$\eta_3 = 1.4$,~$\theta_1 = 0.5$, and~$\theta_2 = \sqrt{2}$.
-This update is entertained at each iteration.
+The parameters chosen in \gls{cobyqa} are~$\eta_1 = 0.1$,~$\eta_2 = 0.7$,~$\theta_1 = 0.5$,~$\theta_2 = \sqrt{2}$,~$\theta_3 = 2$, and~$\theta_4 = 1.5$.
+% This update is entertained at each iteration.
 
 \begin{algorithm}
     \caption{Updating the trust-region radius}
     \label{alg:update-trust-region-radius}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{Current lower bound on the trust-region radius~$\radlb[k] > 0$, current trust-region radius~$\rad[k] \ge \radlb[k]$, current trust-region ratio~$\ratio[k] \in \R$, current trial step~$\step \in \R^n$, and parameters~$0 < \eta_1 \le \eta_2 < 1 \le \eta_3$ and~$0 < \theta_1 < 1 < \theta_2$.}
+    \KwData{Current lower bound on the trust-region radius~$\radlb[k] > 0$, current trust-region radius~$\rad[k] \ge \radlb[k]$, current trust-region ratio~$\ratio[k] \in \R$, current trial step~$\step[k] \in \R^n$, and parameters~$0 < \eta_1 \le \eta_2 < 1$,~$0 < \theta_1 < 1 < \theta_2 < \theta_3$, and~$\theta_4 \ge 1$.}
     \KwResult{Updated trust-region radius~$\rad[k + 1]$.}
     Update the trust-region radius
     \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
-        & \theta_1 \rad[k]                                                                      && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
-        & \min \set{\theta_1 \rad[k], \norm{\step}}                                             && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
-        & \min \set{\theta_2 \rad[k], \max \set{\theta_1 \rad[k], \theta_1^{-1} \norm{\step}}}  && \quad \text{otherwise}
+        & \theta_1 \rad[k]                                                                  && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
+        & \min \set{\theta_1 \rad[k], \norm{\step[k]}}                                      && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
+        & \min \set{\theta_2 \rad[k], \max \set{\theta_1 \rad[k], \theta_3 \norm{\step}}}   && \quad \text{otherwise}
     \end{algoempheq}
-    \If{$\rad[k + 1] \le \eta_3 \radlb[k]$}{
+    \If{$\rad[k + 1] \le \theta_4 \radlb[k]$}{
         $\rad[k + 1] \gets \radlb[k]$\;
     }
 \end{algorithm}
@@ -335,29 +335,32 @@ Moreover, since~$\radlb[k]$ is designed to maintain a good distance between the 
 Hence, it is decreased only if the trial step~$\norm{\step[k]}$ is small compared with~$\rad[k]$ and the trust-region ratio~$\ratio[k]$ is small.
 Otherwise, it is maintained, i.e.,~$\radlb[k + 1] = \radlb[k]$.
 \Cref{alg:reducing-lower-bound-trust-region-radius} presents the method employed by \gls{cobyqa} to reduce~$\radlb[k]$.
-The parameters chosen in \gls{cobyqa} are~$\eta_4 = 16$,~$\eta_5 = 250$, and~$\theta_3 = 0.1$.
+It is identical to the one in \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}.
+The parameters chosen in \gls{cobyqa} are~$\eta_3 = 16$,~$\eta_4 = 250$, and~$\theta_5 = 0.1$.
 
 \begin{algorithm}
     \caption{Reducing the lower bound on the trust-region radius}
     \label{alg:reducing-lower-bound-trust-region-radius}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{Final trust-region radius~$\radlb[\infty] > 0$, current lower bound on the trust-region radius~$\radlb[k] \ge \radlb[\infty]$, updated trust-region radius~$\rad[k + 1] \ge \radlb[k]$, and parameters~$1 \le \eta_4 < \eta_5$ and~$0 < \theta_3 < 1$.}
+    \KwData{Final trust-region radius~$\radlb[\infty] > 0$, current lower bound on the trust-region radius~$\radlb[k] \ge \radlb[\infty]$, updated trust-region radius~$\rad[k + 1] \ge \radlb[k]$, and parameters~$1 \le \eta_3 < \eta_4$ and~$0 < \theta_5 < 1$.}
     \KwResult{Reduced lower bound on trust-region radius~$\radlb[k + 1]$ and modified trust-region radius~$\rad[k + 1]$.}
-    \If{$\radlb[k] = \radlb[\infty]$}{
+    \eIf{$\radlb[k] = \radlb[\infty]$}{
         Terminate the optimization method\; \nllabel{alg:reducing-lower-bound-trust-region-radius-stop}
+    }{
+        Update the lower bound on the trust-region radius
+        \begin{algoempheq}[left={\radlb[k + 1] \gets \empheqlbrace}]{alignat*=2}
+            & \theta_5 \radlb[k]                && \quad \text{if~$\eta_4 < \radlb[k] / \radlb[\infty]$,}\\
+            & \sqrt{\radlb[k] \radlb[\infty]}   && \quad \text{if~$\eta_3 < \radlb[k] / \radlb[\infty] \le \eta_4$,}\\
+            & \radlb[\infty]                    && \quad \text{otherwise}
+        \end{algoempheq}
+        Update the trust-region radius~$\rad[k + 1] \gets \max \set{\rad[k + 1], \radlb[k + 1]}$\;
     }
-    Update the lower bound on the trust-region radius
-    \begin{algoempheq}[left={\radlb[k + 1] \gets \empheqlbrace}]{alignat*=2}
-        & \theta_3 \radlb[k]                && \quad \text{if~$\eta_5 < \radlb[k] / \radlb[\infty]$,}\\
-        & \sqrt{\radlb[k] \radlb[\infty]}   && \quad \text{if~$\eta_4 < \radlb[k] / \radlb[\infty] \le \eta_5$,}\\
-        & \radlb[\infty]                    && \quad \text{otherwise}
-    \end{algoempheq}
-    Update the trust-region radius~$\rad[k + 1] \gets \max \set{\rad[k + 1], \radlb[k + 1]}$\;
 \end{algorithm}
 
-If \cref{alg:reducing-lower-bound-trust-region-radius-stop} of \cref{alg:reducing-lower-bound-trust-region-radius} is reached, we consider that the optimization method should stop, and that the method is successful.
-This is because~$\radlb[k]$ measures to some extend the distance between the interpolation points.
+If \cref{alg:reducing-lower-bound-trust-region-radius-stop} of \cref{alg:reducing-lower-bound-trust-region-radius} is reached, we consider that the optimization method should stop.
+This is in fact the definition of \enquote{convergence} we mentioned in \cref{alg:derivative-free-trust-region-sqp}, which is the stopping criterion used in the Powell's solvers.
+% This is because~$\radlb[k]$ measures to some extend the distance between the interpolation points.
 
 \subsection{Updating the interpolation set}
 
@@ -470,18 +473,18 @@ The complete framework of a geometry-improving phase is given in \cref{alg:geome
         Set the step~$\rstep[k + 1] \in \R^n$ to be an approximate solution to~\cref{eq:geometry-subproblem}\;
         Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k + 1] \setminus \set{\bar{y}}) \cup \set{\iter[k + 1] + \rstep[k + 1]}$\;
         Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$ \label{alg:geometry-improving-iterate}\;
-        Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$ \label{alg:geometry-improving-multiplier}\;
+        % Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$ \label{alg:geometry-improving-multiplier}\;
     }
 \end{algorithm}
 
 We also entertain this geometry-improving phase without terminating the current trust-region iteration after reducing~$\rad[k + 1]$ if the step~$\step[k]$ generated at \cref{alg:derivative-free-trust-region-sqp-subproblem} of \cref{alg:derivative-free-trust-region-sqp} is small compared to the current trust-region radius,~$\norm{\step[k]} < \rad[k] / 2$ say.
 Of course, the indices of the variables in \cref{alg:geometry-improving} need to be modified in such a case, as none of them are updated by the trust-region iteration.
-However, if this process has been trigerred several times in a row, then the method decreases~$\radlb[k + 1]$ before generating a new trust-region step.
+However, if this process has been trigerred several times consecutively, then the method decreases~$\radlb[k + 1]$ before generating a new trust-region step.
 This mechanism has been developed by Powell in his solvers \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}.
 
-It is important to note that it is unlikely that~$\iter[k + 1]$ is modified in \cref{alg:geometry-improving-iterate}, because the step~$\rstep[k + 1]$ is not designed to provide any decrease of the merit function.
-It is however not impossible, and if~$\iter[k + 1]$ is modified, it is important to update the multipliers in \cref{alg:geometry-improving-multiplier}.
-This is the geometry-improving steps employed by \gls{cobyqa}.
+% It is important to note that it is unlikely that~$\iter[k + 1]$ is modified in \cref{alg:geometry-improving-iterate}, because the step~$\rstep[k + 1]$ is not designed to provide any decrease of the merit function.
+% It is however not impossible, and if~$\iter[k + 1]$ is modified, it is important to update the multipliers in \cref{alg:geometry-improving-multiplier}.
+% This is the geometry-improving steps employed by \gls{cobyqa}.
 
 \section{Management of bound and linear constraints}
 \label{sec:simple-constraints}

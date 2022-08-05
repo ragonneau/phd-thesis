@@ -839,28 +839,27 @@ The Vardi approach with~$\alpha = \zeta \rad[k] / \norm{\step[\ast]}$ can be reg
 
 The \gls{cdt} approach~\cite{Celis_1985,Celis_Dennis_Tapia_1985} consists in replacing the constraints~\cref{eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem with
 \begin{equation*}
-    \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \le \delta^2
+    \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \le \tau
 \end{equation*}
-for some~$\delta \ge 0$, so that the trust-region subproblem after replacement becomes feasible, this subproblem being
+for some~$\tau \ge 0$, so that the trust-region subproblem after replacement becomes feasible, this subproblem being
 \begin{subequations}
     \label{eq:cdt-composite-step-original}
     \begin{align}
         \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
-        \text{s.t.} & \quad \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \le \delta^2, \label{eq:cdt-composite-step-original-eq}\\
+        \text{s.t.} & \quad \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \le \tau, \label{eq:cdt-composite-step-original-eq}\\
                     & \quad \norm{\step} \le \rad[k], \label{eq:cdt-composite-step-original-tr}\\
                     & \quad \step \in \R^n. \nonumber
     \end{align}
 \end{subequations}
-The method selects the scalar~$\delta$ in a composite-step fashion, as follows.
-It first takes a normal step~$\nstep[k]$ by solving approximately the problem~\cref{eq:byrd-omojokun-original} with~$\zeta = 1$.
-Once such a normal step is defined, it sets
+The method selects the scalar~$\tau$ in a composite-step fashion, as follows.
+It first takes a normal step~$\nstep[k]$ by solving approximately the problem~\cref{eq:byrd-omojokun-original} with~$\zeta = 1$, and then sets
 \begin{equation*}
-    \delta = \sqrt{\sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]]^2},
+    \tau = \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]]^2.
 \end{equation*}
-and solves~\cref{eq:cdt-composite-step-original}.
-The \gls{cdt} approach does not explicit a tangential step, but we can define it to be~$\tstep[k] = \step[k] - \nstep[k]$, which solves~\cref{eq:tangential-step-original} with
+% and solves~\cref{eq:cdt-composite-step-original}.
+The \gls{cdt} approach does not contain a tangential step explicitly, but we can define it as~$\tstep[k] = \step[k] - \nstep[k]$, which solves~\cref{eq:tangential-step-original} with
 \begin{equation*}
-    \mathcal{V} = \set[\bigg]{d \in \R^n : \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} (\nstep[k] + \step)]^2 \le \delta^2}.
+    \mathcal{V} = \set[\bigg]{d \in \R^n : \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} (\nstep[k] + \step)]^2 \le \tau}.
 \end{equation*}
 The set~$\mathcal{V}$ consists of all the~$d$ such that~$\nstep[k] + d$ does not violate the linearized constraints more than~$\nstep[k]$ in terms of the~$\ell_2$ constraint violation.
 
@@ -1018,16 +1017,12 @@ The extension of the \gls{cdt} approach is very direct and presented already in~
 It consists in replacing the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
 \begin{equation}
     \label{eq:cdt}
-    \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \le \delta^2
+    \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \le \tau
 \end{equation}
-for some~$\delta \ge 0$, so that the trust-region subproblem after replacement becomes feasible.
-The method selects the scalar~$\delta$ in a composite-step fashion as follows.
-It first takes a normal step~$\nstep[k]$ by solving (approximately) the problem~\cref{eq:byrd-omojokun} with~$\zeta = 1$.
-Once~$\nstep[k]$ is defined, it sets
-\begin{equation*}
-    \delta = \sqrt{\sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]]^2},
-\end{equation*}
-and solves the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem} after replacing~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} with~\cref{eq:cdt}.
+for some~$\tau \ge 0$, so that the trust-region subproblem after replacement becomes feasible.
+The method selects the scalar~$\tau$ in a composite-step fashion as follows.
+It first takes a normal step~$\nstep[k]$ by solving (approximately) the problem~\cref{eq:byrd-omojokun} with~$\zeta = 1$, and then sets~$\tau$ to the left-hand side in~\cref{eq:cdt} with~$\step = \nstep[k]$.
+% and solves the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subproblem} after replacing~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} with~\cref{eq:cdt}.
 
 \subsection{Other methods for handling the trust-region \glsfmtshort{sqp} subproblem}
 
