@@ -152,8 +152,30 @@ The method employed by \gls{cobyqa} then attempts to further reduce the objectiv
     \min        & \quad Q(\step)\\
     \text{s.t.} & \quad \xl \le \step \le \xu,\\
                 & \quad \norm{\step} \le \rad,\\
-                & \quad \step \in \spn \set{\Pi^{\ast}(\step[\ast]), \Pi^{\ast}(\nabla Q(\step[\ast]))} \subseteq \R^n.
+                & \quad \step \in \spn \set{\Pi^{\ast}(\step[\ast]), \Pi^{\ast}(\nabla Q(\step[\ast]))} \subseteq \R^n,
 \end{align*}
+where~$\Pi^{\ast}$ denotes the function~$\Pi^{k}$ at the last iteration.
+Note that a substantial reduction in~$Q$ is possible only if both~$\Pi^{\ast}(\nabla Q(\step[\ast]))$ and the angle between~$\Pi^{\ast}(\step[\ast])$ and~$-\Pi^{\ast}(\nabla Q(\step[\ast]))$ are important.
+The method designed by \citeauthor{Powell_2009} attempts to move round the trust-region boundary only if
+\begin{equation*}
+    \norm{\Pi^{\ast}(\step[\ast])}^2 \norm{\Pi^{\ast}(\nabla Q(\step[\ast]))}^2 - [\Pi^{\ast}(\step[\ast])^{\T} \Pi^{\ast}(\nabla Q(\step[\ast]))]^2 \le \xi [Q(0) - Q(\step[\ast])]^2,
+\end{equation*}
+for some~$\xi \in (0, 1)$.
+In \gls{cobyqa}, we have~$\xi = 10^{-4}$.
+When the amelioration mechanism is entertain, it builds an orthogonal basis~$\set{\Pi^{\ast}(\step[\ast]), w}$ of~$\spn \set{\Pi^{\ast}(\step[\ast]), \Pi^{\ast}(\nabla Q(\step[\ast]))}$ by computing the vector~$w \in \R^n$ that satisfy
+\begin{empheq}[left=\empheqlbrace]{alignat*=1}
+    & w^{\T} \Pi^{\ast}(\step[\ast]) = 0\\
+    & w^{\T} \Pi^{\ast}(\nabla Q(\step[\ast])) < 0\\
+    & \norm{w} = \norm{\Pi^{\ast}(\step[\ast])}.
+\end{empheq}
+Further, the method considers the function~$\step(\theta) = \step[\ast] + (\cos \theta - 1) \Pi^{\ast}(\step[\ast]) + sin \theta w$ with~$0 \le \theta \le \pi / 4$ and solve
+\begin{align*}
+    \min        & \quad Q(\step(\theta))\\
+    \text{s.t.} & \quad \xl \le \step(\theta) \le \xu,\\
+                & \quad 0 \le \theta \le \pi / 4,
+\end{align*}
+the trust-region condition being automatically ensured by the choice of~$w$.
+
 
 \subsection{Linearly-constrained case}
 

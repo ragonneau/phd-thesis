@@ -330,13 +330,15 @@ Therefore, \cref{thm:sqp-path} reveals that the objective function of the \gls{s
 However, the feasible region of the \gls{sqp} subproblem is in general not the tangent
 space~$\mathcal{T}_{\bar{\iter}}$ but the linearized feasible direction set
 \begin{equation*}
-    \mathcal{F}_{\bar{\iter}}^{\mathsf{L}} = \set{\step \in \R^n : h(\bar{\iter}) +\nabla h(\bar{\iter}) \step  = 0}.
+    \mathcal{F}_{\bar{\iter}}^{\mathsf{L}} = \set{\step \in \R^n : h(\bar{\iter}) +\nabla h(\bar{\iter}) \step  = 0},
 \end{equation*}
+which is assumed nonempty for the current discussion.
 This set equals~$\mathcal{T}_{\bar{\iter}}$ only if~$\bar{\iter}$ is feasible so that~$h(\bar{\iter}) = 0$.
 When~$\bar{\iter}$ is infeasible, $\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ is a shifted copy of~$\mathcal{T}_{\bar{\iter}}$ as illustrated in \cref{fig:sqp-path}.
-The distance between~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ and~$\mathcal{T}_{\bar{\iter}}$ is~$\delta_{\bar{\iter}} = \norm{\nabla h(\bar{\iter})^{\dagger} h(\bar{\iter})}$ unless~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ is an empty set, where~$\nabla h(\bar{\iter})^{\dagger}$ denotes the Moore-Penrose pseudoinverse of~$\nabla h(\bar{\iter})$, as can be seen by considering the distance from~$0 \in \mathcal{T}_{\bar{\iter}}$ to~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$.
+The distance between~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ and~$\mathcal{T}_{\bar{\iter}}$ is~$\delta_{\bar{\iter}} = \norm{\step[\ast]} = \norm{\nabla h(\bar{\iter})^{\dagger} h(\bar{\iter})}$, where~$\step[\ast]$ is the projection of~$0 \in \mathcal{T}_{\bar{\iter}}$ onto~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, and~$\nabla h(\bar{\iter})^{\dagger}$ denotes the Moore-Penrose pseudoinverse of~$\nabla h(\bar{\iter})$.
 The purpose of this shifting is to improve the feasibility.
-Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion provides~$\norm{h(\bar{\iter} + \step)} =\bigo(\norm{\step}^2)$ for all $\step$ in a bounded subset of~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, whereas~$\norm{h(\bar{\iter} + \step)} = \norm{h(\bar{\iter})} + \bigo(\norm{\step}^2)$ if~$\step$ stays in a bounded subset of~$\mathcal{T}_{\bar{\iter}}$.
+% Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion provides~$\norm{h(\bar{\iter} + \step)} =\bigo(\norm{\step}^2)$ for all $\step$ in a bounded subset of~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, whereas~$\norm{h(\bar{\iter} + \step)} = \norm{h(\bar{\iter})} + \bigo(\norm{\step}^2)$ if~$\step$ stays in a bounded subset of~$\mathcal{T}_{\bar{\iter}}$.
+Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion provides~$\norm{h(\bar{\iter} + \step)} = \bigo(\norm{\step}^2)$ for all~$\step$ in a bounded subset of~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, which further implies~$\norm{h(\bar{\iter} + \step)} = \bigo(\norm{h(\bar{\iter})}^2)$ unless~$\norm{\step}$ is much larger than~$\norm{\step[\ast]}$; in contrast,~$\norm{h(\bar{\iter} + \step)} = \norm{h(\bar{\iter})} + \bigo(\norm{\step}^2)$ if~$\step$ stays in a bounded subset of~$\mathcal{T}_{\bar{\iter}}$.
 
 \begin{figure}[ht]
     \centering
