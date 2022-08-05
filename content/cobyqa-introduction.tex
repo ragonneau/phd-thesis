@@ -28,7 +28,7 @@ In this chapter, we introduce a new model-based \gls{dfo} method for solving non
                     & \quad \iter \in \R^n, \nonumber
     \end{align}
 \end{subequations}
-where~$\obj$ and~$\con{i}$ represent the objective and constraint functions, with~$i \in \iub \cup \ieq$ and the sets of indices~$\iub$ and~$\ieq$ being finite and disjoint, but possibly empty. 
+where~$\obj$ and~$\con{i}$ represent the objective and constraint functions, with~$i \in \iub \cup \ieq$ and the sets of indices~$\iub$ and~$\ieq$ being finite and disjoint, but possibly empty.
 The lower bounds~$\xl \in (\R \cup \set{-\infty})^n$ and the upper bounds~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl < \xu$.
 Note that the bound constraints~\cref{eq:problem-cobyqa-bd} are not included in the inequality constraints~\cref{eq:problem-cobyqa-ub}, because they will be handled separately, as detailed in \cref{sec:simple-constraints}.
 
@@ -61,7 +61,7 @@ The user provides a number~$m$, satisfying
 which will be the number interpolation points at each iteration.
 We are also provided with an initial guess~$\iter[0] \in \R^n$ satisfying~$\xl \le \iter[0] \le \xu$ and an initial trust-region radius~$\rad[0] > 0$ that satisfies
 \begin{equation*}
-    \rad[0] \le \frac{1}{2} \min_{i \in \set{1, 2, \dots, n}} (\xu_i - \xl_i),
+    \rad[0] \le \frac{1}{2} \min_{1 \le i \le n} (\xu_i - \xl_i),
 \end{equation*}
 so that~$\xu_i \ge \xl_i + 2 \rad[0]$ for all~$i \in \set{1, 2, \dots, n}$.
 Further, to avoid conflicts between the bounds and the interpolation points,~$\iter[0]$ is modified so that each component of~$\iter[0]$ is either on a bound or keeps a distance of at least~$\rad[0]$ from the corresponding bounds.
@@ -330,7 +330,7 @@ Otherwise, if~$\rad[k] = \radlb[k]$ and the trial step~$\step[k]$ performs very 
 The value of~$\radlb[k]$ can be regarded as an indicator of the resolution of the algorithm.
 If we do not impose~$\rad[k] \ge \radlb[k]$, the trust-region radius~$\rad[k]$ may be reduced to a value that is too small for the current precision of the algorithm, making the interpolation points concentrating too much.
 The value of~$\radlb[k]$ is never increased, and is decreased when the algorithm decides that the work for the current value of~$\radlb[k]$ is finished.
-This is reflected in practice by 
+This is reflected in practice by
 \begin{enumerate}
     \item the fact that~$\rad[k]$ reaches its lower bound~$\radlb[k]$,
     \item a poor performance of the trust-region trial step~$\step[k]$, and

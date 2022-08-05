@@ -25,7 +25,8 @@ Most of the materials in this chapter are not new, and can be found for example 
 However, we highlight \cref{thm:sqp-path,thm:auglag-sqp-3,prop:vardi-byrd-omojokun}, which are new to the best of our knowledge, although the last two are easy to establish.
 \Cref{thm:sqp-path} interprets the objective function of the \gls{sqp} subproblem as a quadratic approximation of the original objective function in the tangent space of a surface.
 This explains in a new way why the \gls{sqp} subproblem should not minimize second-order Taylor expansion of the original objective function unless the constraints are all linear.
-\Cref{thm:auglag-sqp-3} shows that the augmented Lagrangian of the \gls{sqp} subproblem is a particular quadratic approximation of the augmented Lagrangian used in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
+\Cref{thm:auglag-sqp-3} shows that the augmented Lagrangian of the \gls{sqp} subproblem is
+a particular quadratic approximation of the augmented Lagrangian used by Yuan et al.~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 Finally, \cref{prop:vardi-byrd-omojokun} interprets the Vardi approach as an approximation to the Byrd-Omojokun approach.
 
 \section{The method}
@@ -133,7 +134,7 @@ When~$\lm[k] > 1/4$, the solution to this subproblem is
 \end{equation*}
 We thus have
 \begin{equation*}
-    \iter[k] + \step[k] = 
+    \iter[k] + \step[k] =
     \begin{bmatrix}
         \dfrac{t^2 + 1}{2 t}  & 0
     \end{bmatrix}^{\T}.
@@ -229,7 +230,7 @@ As shown in \cref{thm:sqp-path}, when approximating~$\obj$ in this space, we wil
 
 For this interpretation, we focus on the equality-constrained problem
 \begin{subequations}
-    \label{eq:problem-cobyqa-auglag}
+    \label{eq:problem-sqp-econ}
     \begin{align}
         \min        & \quad \obj(\iter)\\
         \text{s.t.} & \quad h(\iter) = 0,\\
@@ -237,7 +238,7 @@ For this interpretation, we focus on the equality-constrained problem
     \end{align}
 \end{subequations}
 with~$h : \R^n \to \R^m$.
-Recall that the Lagrangian function of~\cref{eq:problem-cobyqa-auglag} is
+Recall that the Lagrangian function of~\cref{eq:problem-sqp-econ} is
 \begin{equation*}
     \lag(\iter, \lm) \eqdef \obj(\iter) + \lm^{\T} h(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lm \in \R^m$.}
 \end{equation*}
@@ -257,7 +258,7 @@ This is detailed in \cref{thm:sqp-path}.
 \begin{theorem}
     \label{thm:sqp-path}
     Assume that~$\obj$ and~$h$ are twice differentiable with~$\nabla^2 \obj$ being locally Lipschitz continuous.
-    % Suppose that~$\bar{\iter}$ is feasible for~\cref{eq:problem-cobyqa-auglag}.
+    % Suppose that~$\bar{\iter}$ is feasible for~\cref{eq:problem-sqp-econ}.
     Consider a curve parametrized by~$\iter : \R \to \R^n$, satisfying
     \begin{equation}
         \label{eq:sqp-path}
@@ -349,9 +350,9 @@ Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion p
         \draw[thick,OliveGreen] (0,1/3) -- (4.5,19/3);
         \draw[thick,Brown] (1,-2/3) -- (6,18/3);
         \draw[latex-latex] (1,5/3) -- (53/25,62/75);
-        
+
         \node at (2,3) {$\bullet$};
-        
+
         \node[below right] at (2,3) {$\bar{x}$};
         \node[above right] at (39/25,187/150) {$\delta_{\bar{x}}$};
         \node[above,BlueViolet] at (3,6) {$\mathcal{S}_{\bar{x}}$};
@@ -402,7 +403,7 @@ Therefore, $Q$ is indeed a quadratic approximation of~$\obj$ in
 \begin{equation*}
     \mathcal{T}_{\bar{\iter}, \bar{\lm}} = \set{\step \in \R^n : \bar{\lm}^{\T} \nabla h(\bar{\iter}) \step = 0},
 \end{equation*}
-which is linear space that contains~$\mathcal{T}_{\bar{\iter}}$ as a subset. 
+which is linear space that contains~$\mathcal{T}_{\bar{\iter}}$ as a subset.
 Note that the dimension of~$\mathcal{T}_{\bar{\iter}, \bar{\lm}}$ is at least~$n - 1$, while that of~$\mathcal{T}_{\bar{\iter}}$ is~$n - \rank(\nabla h(\bar{\iter}))$.
 
 \subsection{Lagrangian and augmented Lagrangian of the \glsfmtshort{sqp} subproblem}
@@ -411,7 +412,22 @@ Note that the dimension of~$\mathcal{T}_{\bar{\iter}, \bar{\lm}}$ is at least~$n
 In this section, we study the Lagrangian and the augmented Lagrangian of the \gls{sqp} subproblem and observe their relations with those of the original optimization problem.
 We also point out that the augmented Lagrangian of the \gls{sqp} subproblem is exactly the approximate augmented Lagrangian used in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 
-For simplicity, instead of the problem~\cref{eq:problem-cobyqa-sqp}, we consider still the problem~\cref{eq:problem-cobyqa-auglag}.
+For simplicity, instead of the problem~\cref{eq:problem-cobyqa-sqp}, we consider the problem
+\begin{subequations}
+    \label{eq:problem-cobyqa-auglag}
+    \begin{align}
+        \min        & \quad \obj(\iter)\\
+        \text{s.t.} & \quad h(\iter) = 0,\\
+                    & \quad \iter \ge 0, ~ \iter \in \R^n, \nonumber
+    \end{align}
+\end{subequations}
+with~$h : \R^n \to \R^m$.
+The problem~\cref{eq:problem-cobyqa-sqp} can be reformulated in this form\footnote{In the reformulation, the dimension and the meaning of~$\iter$ may be altered, but we do not change the notations since it does not lead to confusion.}.
+Recall that the Lagrangian of~\cref{eq:problem-cobyqa-auglag} is
+\begin{equation*}
+    \lag(\iter, \lm) \eqdef \obj(\iter) + \lm^{\T} h(\iter), \quad \text{for~$\iter \ge 0$ and~$\lm \in \R^m$.}
+\end{equation*}
+
 Let~$\iter[k] \ge 0$ and~$\lm[k] \in \R^m$ be given.
 Correspondingly, the \gls{sqp} subproblem of the problem~\cref{eq:problem-cobyqa-auglag} is
 \begin{subequations}
@@ -476,7 +492,11 @@ We now present some relations between~$\lag$ and~$\lagalt$, and between~$\auglag
     \end{equation*}
     Therefore, the second-order Taylor expansion of~$\auglag(\iter[k] + d, \lm[k])$ with respect to~$d$ at~$0$ is
     \begin{equation*}
-        \auglag(\iter[k] + d, \lm[k]) = \lag(\iter[k], \lm[k]) + \nabla_x \lag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} H^k d + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) d}^2 + \smallo(\norm{d}^2),
+        %\auglag(\iter[k] + d, \lm[k]) = \lag(\iter[k], \lm[k]) + \nabla_x \lag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} H^k d + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) d}^2 + \smallo(\norm{d}^2),
+        \begin{split}
+            \; & \auglag(\iter[k], \lm[k]) + \nabla_x \auglag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} \nabla_{x, x}^2 \auglag(\iter[k], \lm[k]) d \\
+        = \; & \lag(\iter[k], \lm[k]) + \nabla_x \lag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} H^k d + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) d}^2,
+        \end{split}
     \end{equation*}
     \nomenclature[Nh]{$\smallo(\cdot)$}{Little-O notation}%
     where~$H^k$ is defined by~\cref{eq:auglag-sqp-2}.
@@ -488,7 +508,7 @@ Intriguingly, an augmented Lagrangian method for solving the problem~\cref{eq:pr
 \end{equation*}
 Therefore, the second-order Taylor expansion of~$\auglag$ can be interpreted as the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k + 1])$.
 
-There is an interesting connection between the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} and the trust-region augmented Lagrange methods studied in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
+There is an interesting connection between the augmented Lagrangian of the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} and the trust-region augmented Lagrange methods studied by Yuan et al.~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 These methods employ the approximation
 \begin{equation}
     \label{eq:niu-yuan-auglag}
@@ -566,7 +586,7 @@ However, smooth merit functions that enjoy exactness do exist, as shown in the n
 \subsection{The augmented Lagrangian merit function}
 
 For simplicity, we assume here that~$\iub = \emptyset$.
-The augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973} of the problem~\cref{eq:problem-cobyqa-auglag} is then
+The augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973} of the problem~\cref{eq:problem-cobyqa-sqp} is then
 \begin{equation*}
     \auglag(\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \sum_{i \in \ieq} \con{i}(\iter)^2, \quad \text{for~$\iter \in \R^n$ and~$\lm = [\lm_i]_{i \in \ieq}^{\T}$,}
 \end{equation*}
