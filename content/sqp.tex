@@ -304,10 +304,11 @@ This is detailed in \cref{thm:sqp-path}.
         \end{align}
     \end{subequations}
     where the second equality uses the formula of~$\phi''(0)$ in~\cref{eq:sqp-path-proof-1-2} and the definition of~$\lag$.
-    Moreover, since~$h(\iter(t)) = h(\bar{\iter})$ for all~$t \in \R$, we have
-    \begin{equation*}
-        0 = \frac{\du^2}{\du t^2} h_i(\iter(t)) \bigg\vert_{t = 0} = \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) + \iter''(0)^{\T} \nabla h_i(\bar{\iter}), \quad \text{for~$i \in \set{1, 2, \dots, m}$.}
-    \end{equation*}
+    Moreover, since~$h(\iter(t)) = h(\bar{\iter})$ for all~$t \in \R$, we have for each~$i \in \set{1, 2, \dots, m}$ that
+    \begin{equation}
+        \label{eq:sqp-path-proof-6}
+        0 = \frac{\du^2}{\du t^2} h_i(\iter(t)) \bigg\vert_{t = 0} = \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) + \iter''(0)^{\T} \nabla h_i(\bar{\iter}).
+    \end{equation}
     Therefore,~$\iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) = -\iter''(0)^{\T} \nabla h_i(\bar{\iter})$ for each~$i$ and hence,~\cref{eq:sqp-path-proof-4} leads to
     \begin{equation}
         \label{eq:sqp-path-proof-5}
@@ -365,19 +366,26 @@ Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion p
 Therefore, the \gls{sqp} subproblem models the objective function in the tangent space of the contour surface of the constraint at the current iterate, and then minimizes this model in a linear space that shifts the tangent space towards improvement of feasibility.
 % Thanks to the~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$ term, the model enjoys a second to third order accuracy if $(\bar{\iter}, \bar{\lm})$ is a good approximate \gls{kkt} pair.
 % If we replace~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$ with~$\nabla^2 \obj(\bar{\iter})$, the accuracy is only second order.
-We observe that the magnitude of~$\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}$ affects the quality of the model in general, as indicated by the error estimation in \cref{thm:sqp-path}.
+We observe that a smaller magnitude of~$\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}$ implies a better accuracy of the model, as indicated by the error estimation in \cref{thm:sqp-path}.
 If~$(\bar{\iter}, \bar{\lm})$ is close to a \gls{kkt} pair, then~$\norm{\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}}$ is small.
 On the other hand, if we defined~$\nabla^2 Q$ by~$\nabla^2 \obj(\bar{x})$ instead of~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$, then under the assumptions of \cref{thm:sqp-path}, we would have
-\begin{equation*}
+\begin{equation}
+    \label{eq:sqp-path-obj-only}
     \abs{\obj(\iter(t)) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2}\abs{\iter''(0)^{\T} \nabla \obj(\bar{\iter})} \bigg) t^2 \quad \text{for all~$t \in (-\epsilon, \epsilon)$,}
-\end{equation*}
+\end{equation}
 which can be obtained by setting~$\bar{\lm} = 0$ in \cref{thm:sqp-path}.
 However, since we are considering constrained optimization, we cannot expect~$\norm{\nabla \obj(\bar{\iter})}$ to be small even if~$\bar{\iter}$ is close to a solution unless no constraint is active at this solution.
 This explains why the second-order term of the \gls{sqp} subproblem should be defined by the Hessian matrix of the Lagrangian, rather than that of~$\obj$.
+A special case occurs if the Lagrangian and~$\obj$ have the same Hessian, for example when~$h$ is linear.
+In such a case,~\cref{eq:sqp-path-proof-6} implies
+\begin{equation*}
+    \iter''(0)^{\T} \nabla h(\bar{\iter})^{\T} \bar{\lm} = -\sum_{i = 1}^m \bar{\lm}_i \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) = \iter'(0)^{\T} [\nabla^2 \obj(\bar{\iter}) - \nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})] \iter'(0) = 0,
+\end{equation*}
+and hence~$\iter''(0)^{\T} \nabla \obj(\bar{\iter})$ in~\cref{eq:sqp-path-obj-only} equals~$\iter''(0)^{\T} [\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}]$, leading to the same error estimation as in \cref{thm:sqp-path}.
 
-More geometrically speaking, when we regard~$\obj$ as a function on the surface~$\mathcal{S}_{\bar{\iter}}$ and approximate it in the tangent space~$\mathcal{T}_{\bar{\iter}}$, the second-order Taylor expansion of~$\obj$ does not attain the same accuracy as it does in~$\R^n$, because neither this Taylor expansion nor~$\mathcal{T}_{\bar{\iter}}$ can reflect the curvature information
-of~$\mathcal{S}_{\bar{\iter}}$.
-In contrast, the objective function of the \gls{sqp} subproblem achieves a better accuracy by including such curvature information via~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$.
+Geometrically speaking, when we regard~$\obj$ as a function on the surface~$\mathcal{S}_{\bar{\iter}}$ and approximate it in the tangent space~$\mathcal{T}_{\bar{\iter}}$, the second-order Taylor expansion of~$\obj$ generally does not attain the same accuracy as it does in~$\R^n$, because neither this Taylor expansion nor~$\mathcal{T}_{\bar{\iter}}$ can reflect the curvature information
+of~$\mathcal{S}_{\bar{\iter}}$, unless the curvature is zero.
+In contrast, the objective function of the \gls{sqp} subproblem can achieve a better accuracy since it includes such curvature information via~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$.
 
 It is worth mentioning that \cref{thm:sqp-path} still holds if~$\iter$ satisfies
 \begin{equation}
@@ -387,7 +395,7 @@ It is worth mentioning that \cref{thm:sqp-path} still holds if~$\iter$ satisfies
 instead of~\cref{eq:sqp-path}.
 Given~\cref{eq:sqp-path-alt}, we will have
 \begin{equation*}
-    0 = \frac{\du^2}{\du t^2} \bar{\lm}^{\T} h(\iter(t)) \bigg\vert_{t = 0} = \bar{\lm}^{\T} \nabla h(\bar{\iter}) \iter''(0) + \sum_{i = 1}^n \bar{\lm}_i \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0).
+    0 = \frac{\du^2}{\du t^2} \bar{\lm}^{\T} h(\iter(t)) \bigg\vert_{t = 0} = \bar{\lm}^{\T} \nabla h(\bar{\iter}) \iter''(0) + \sum_{i = 1}^m \bar{\lm}_i \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0).
 \end{equation*}
 Plugging this into~\cref{eq:sqp-path-proof-4-2}, we obtain again~\cref{eq:sqp-path-proof-5} and hence, establish the same estimation of~$\abs{\obj(\iter(t)) - Q(x'(0) t)}$.
 Therefore, $Q$ is indeed a quadratic approximation of~$\obj$ in
