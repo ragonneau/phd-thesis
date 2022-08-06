@@ -25,8 +25,7 @@ Most of the materials in this chapter are not new, and can be found for example 
 However, we highlight \cref{thm:sqp-path,thm:auglag-sqp-3,prop:vardi-byrd-omojokun}, which are new to the best of our knowledge, although the last two are easy to establish.
 \Cref{thm:sqp-path} interprets the objective function of the \gls{sqp} subproblem as a quadratic approximation of the original objective function in the tangent space of a surface.
 This explains in a new way why the \gls{sqp} subproblem should not minimize second-order Taylor expansion of the original objective function unless the constraints are all linear.
-\Cref{thm:auglag-sqp-3} shows that the augmented Lagrangian of the \gls{sqp} subproblem is
-a particular quadratic approximation of the augmented Lagrangian used by Yuan et al.~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
+\Cref{thm:auglag-sqp-3} shows that the augmented Lagrangian of the \gls{sqp} subproblem is a particular quadratic approximation of the augmented Lagrangian used by Yuan et al.~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 Finally, \cref{prop:vardi-byrd-omojokun} interprets the Vardi approach as an approximation to the Byrd-Omojokun approach.
 
 \section{The method}
@@ -89,7 +88,7 @@ This formula guarantees the positive definiteness of such a matrix, which is ben
 Moreover, he introduced a practical line-search technique based on a merit function suggested by \citeauthor{Han_1976}~\cite{Han_1976}.
 Furthermore, \citeauthor{Powell_1978c} established the global convergence and the local R-superlinear convergence rate for his method without requiring the positive definiteness of~$\nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast])$ as \citeauthor{Han_1976} did.
 Recognizing the contributions of \citeauthor{Wilson_1963}, \Citeauthor{Han_1976}, and \citeauthor{Powell_1978a}, the \gls{sqp} method is also referred to as the Wilson-Han-Powell method~\cite{Schittkowski_1981,Burke_1992}.
-See~\cite{Boggs_Tolle_1995} for a more detailed review of the history, theory, and practice of the \gls{sqp} method.
+See~\cite{Boggs_Tolle_1995,Gould_Toint_2000,Schittkowski_Yuan_2011,Gill_Wong_2011} for more detailed reviews of the history, theory, and practice of the \gls{sqp} method.
 
 \subsection{A simple example}
 \label{subsec:sqp-simple-example}
@@ -296,7 +295,8 @@ This is detailed in \cref{thm:sqp-path}.
             & \phi''(0) = \iter'(0)^{\T} \nabla^2 \obj(\bar{\iter}) \iter'(0) + \iter''(0)^{\T} \nabla \obj(\bar{\iter}). \label{eq:sqp-path-proof-1-2}
         \end{empheq}
     \end{subequations}
-    According to~\cref{eq:sqp-path-proof-1}, only the second-order terms of~$\widehat{\phi}(t)$ and~$Q(\iter'(0) t)$ differ. Hence,
+    According to~\cref{eq:sqp-path-proof-1}, only the second-order terms of~$\widehat{\phi}(t)$ and~$Q(\iter'(0) t)$ differ.
+    Hence,
     \begin{subequations}
         \label{eq:sqp-path-proof-4}
         \begin{align}
@@ -364,7 +364,7 @@ Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion p
     \label{fig:sqp-path}
 \end{figure}
 
-Therefore, the \gls{sqp} subproblem models the objective function in the tangent space of the contour surface of the constraint at the current iterate, and then minimizes this model in a linear space that shifts the tangent space towards improvement of feasibility.
+Therefore, the \gls{sqp} subproblem models the objective function in the tangent space of the contour surface of the constraint at the current iterate, and then minimizes this model in an affine space that shifts the tangent space towards improvement of feasibility.
 % Thanks to the~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$ term, the model enjoys a second to third order accuracy if $(\bar{\iter}, \bar{\lm})$ is a good approximate \gls{kkt} pair.
 % If we replace~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$ with~$\nabla^2 \obj(\bar{\iter})$, the accuracy is only second order.
 We observe that a smaller magnitude of~$\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}$ implies a better accuracy of the model, as indicated by the error estimation in \cref{thm:sqp-path}.
@@ -441,7 +441,7 @@ Correspondingly, the \gls{sqp} subproblem of the problem~\cref{eq:problem-cobyqa
 with~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
 Note that the constant term~$\obj(\iter[k])$ in~\cref{eq:sqp-subproblem-auglag-obj} may be excluded, as in~\cref{eq:sqp-subproblem-obj}, but including it facilitates the discussion in the sequel.
 
-Recall that the augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973} of the problem~\cref{eq:problem-cobyqa-auglag} is
+Recall that the augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973,Rockafellar_2022} of the problem~\cref{eq:problem-cobyqa-auglag} is
 \begin{equation}
     \label{eq:augmented-lagrangian-inequality}
     \auglag(\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \norm{h(\iter)}^2, \quad \text{for~$\iter \ge 0$ and~$\lm \in \R^m$,}
@@ -491,13 +491,10 @@ We now present some relations between~$\lag$ and~$\lagalt$, and between~$\auglag
         \nabla_{x, x}^2 \auglag(\iter[k], \lm[k]) = \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) + \gamma \bigg[ \nabla h(\iter[k])^{\T} \nabla h(\iter[k]) + \sum_{i = 1}^m h_i(\iter[k]) \nabla^2 h_i(\iter[k]) \bigg].
     \end{equation*}
     Therefore, the second-order Taylor expansion of~$\auglag(\iter[k] + d, \lm[k])$ with respect to~$d$ at~$0$ is
-    \begin{equation*}
-        %\auglag(\iter[k] + d, \lm[k]) = \lag(\iter[k], \lm[k]) + \nabla_x \lag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} H^k d + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) d}^2 + \smallo(\norm{d}^2),
-        \begin{split}
-            \; & \auglag(\iter[k], \lm[k]) + \nabla_x \auglag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} \nabla_{x, x}^2 \auglag(\iter[k], \lm[k]) d \\
-        = \; & \lag(\iter[k], \lm[k]) + \nabla_x \lag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} H^k d + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) d}^2,
-        \end{split}
-    \end{equation*}
+    \begin{align*}
+        & \auglag(\iter[k], \lm[k]) + \nabla_x \auglag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} \nabla_{x, x}^2 \auglag(\iter[k], \lm[k]) d\\
+        & \qquad = \lag(\iter[k], \lm[k]) + \nabla_x \lag(\iter[k], \lm[k])^{\T} d + \frac{1}{2} d^{\T} H^k d + \frac{\gamma}{2} \norm{h(\iter[k]) + \nabla h(\iter[k]) d}^2,
+    \end{align*}
     \nomenclature[Nh]{$\smallo(\cdot)$}{Little-O notation}%
     where~$H^k$ is defined by~\cref{eq:auglag-sqp-2}.
 \end{proof}
@@ -586,7 +583,7 @@ However, smooth merit functions that enjoy exactness do exist, as shown in the n
 \subsection{The augmented Lagrangian merit function}
 
 For simplicity, we assume here that~$\iub = \emptyset$.
-The augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973} of the problem~\cref{eq:problem-cobyqa-sqp} is then
+The augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973,Rockafellar_2022} of the problem~\cref{eq:problem-cobyqa-sqp} is then
 \begin{equation*}
     \auglag(\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \sum_{i \in \ieq} \con{i}(\iter)^2, \quad \text{for~$\iter \in \R^n$ and~$\lm = [\lm_i]_{i \in \ieq}^{\T}$,}
 \end{equation*}
