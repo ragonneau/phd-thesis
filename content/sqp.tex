@@ -324,10 +324,12 @@ Note that~$\iter'(0)$ in \cref{thm:sqp-path} is a vector in
 \end{equation*}
 This is the tangent space of
 \begin{equation*}
-    \mathcal{S}_{\bar{x}} = \set{\iter \in \R^n : h(\iter) = h(\bar{\iter})},
+    \mathcal{S}_{\bar{\iter}} = \set{\iter \in \R^n : h(\iter) = h(\bar{\iter})},
 \end{equation*}
-at~$\bar{\iter}$, and~$\mathcal{S}_{\bar{x}}$ is the contour surface of the constraints at~$\bar{\iter}$.
-Therefore, \cref{thm:sqp-path} reveals that the objective function of the \gls{sqp} subproblem is a quadratic approximation of~$\obj$ in this tangent space.
+at~$\bar{\iter}$, and~$\mathcal{S}_{\bar{\iter}}$ is the contour surface of the constraints at~$\bar{\iter}$.
+Therefore, \cref{thm:sqp-path} reveals that the objective function of the \gls{sqp} subproblem is
+a natural approximation of~$\obj$ in this tangent space if we regard $\obj$ as a function
+on~$\mathcal{S}_{\bar{\iter}}$.
 
 However, the feasible region of the \gls{sqp} subproblem is in general not the tangent
 space~$\mathcal{T}_{\bar{\iter}}$ but the linearized feasible direction set
@@ -353,14 +355,14 @@ Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion p
 
         \node at (2,3) {$\bullet$};
 
-        \node[below right] at (2,3) {$\bar{x}$};
-        \node[above right] at (39/25,187/150) {$\delta_{\bar{x}}$};
-        \node[above,BlueViolet] at (3,6) {$\mathcal{S}_{\bar{x}}$};
-        \node[above,OliveGreen] at (4.5,19/3) {$\bar{x} + \mathcal{T}_{\bar{x}}$};
-        \node[right,Brown] at (6,18/3) {$\bar{x} + \mathcal{F}_{\bar{x}}^{\mathsf{L}}$};
+        \node[below right] at (2,3) {$\bar{\iter}$};
+        \node[above right] at (39/25,187/150) {$\delta_{\bar{\iter}}$};
+        \node[above,BlueViolet] at (3,6) {$\mathcal{S}_{\bar{\iter}}$};
+        \node[above,OliveGreen] at (4.5,19/3) {$\bar{\iter} + \mathcal{T}_{\bar{\iter}}$};
+        \node[right,Brown] at (6,18/3) {$\bar{\iter} + \mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$};
         \node[right,MidnightBlue] at (6,4) {$\{x \in \mathbb{R}^n : h(x) = 0\}$};
     \end{tikzpicture}
-    \caption{An illustration of~$\mathcal{T}_{\bar{\iter}}$,~$\mathcal{S}_{\bar{x}}$,~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, and the feasible set}
+    \caption{An illustration of~$\mathcal{T}_{\bar{\iter}}$,~$\mathcal{S}_{\bar{\iter}}$,~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, and the feasible set}
     \label{fig:sqp-path}
 \end{figure}
 
@@ -369,7 +371,7 @@ Therefore, the \gls{sqp} subproblem models the objective function in the tangent
 % If we replace~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$ with~$\nabla^2 \obj(\bar{\iter})$, the accuracy is only second order.
 We observe that a smaller magnitude of~$\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}$ implies a better accuracy of the model, as indicated by the error estimation in \cref{thm:sqp-path}.
 If~$(\bar{\iter}, \bar{\lm})$ is close to a \gls{kkt} pair, then~$\norm{\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}}$ is small.
-On the other hand, if we defined~$\nabla^2 Q$ by~$\nabla^2 \obj(\bar{x})$ instead of~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$, then under the assumptions of \cref{thm:sqp-path}, we would have
+On the other hand, if we defined~$\nabla^2 Q$ by~$\nabla^2 \obj(\bar{\iter})$ instead of~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$, then under the assumptions of \cref{thm:sqp-path}, we would have
 \begin{equation}
     \label{eq:sqp-path-obj-only}
     \abs{\obj(\iter(t)) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2}\abs{\iter''(0)^{\T} \nabla \obj(\bar{\iter})} \bigg) t^2 \quad \text{for all~$t \in (-\epsilon, \epsilon)$,}
