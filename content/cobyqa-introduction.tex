@@ -430,7 +430,7 @@ However, it is known that model-based \gls{dfo} methods tend to lose the poisedn
 To cope with this difficulty, such methods usually include a geometry-improving mechanism.
 This topic is well studied, see for example~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b,Fasano_Morales_Nocedal_2009,Scheinberg_Toint_2010}.
 
-In \gls{cobyqa}, we adopt a geometry-improving strategy designed by \citeauthor{Powell_2009} for \gls{bobyqa}~\cite{Powell_2009}.
+In \gls{cobyqa}, we adopt a geometry-improving strategy designed by \citeauthor{Powell_2009} for his solver \gls{bobyqa}~\cite{Powell_2009}.
 % Some trust-region iterations are replaced with a geometry-improving iteration.
 A point~$\bar{y} \in \xpt[k + 1]$ is chosen to be replaced by another one~$\iter[k + 1] + \rstep[k + 1]$, where the \emph{restoration step}~$\rstep[k + 1] \in \R^n$ is chosen to improve the geometry of~$\xpt[k + 1]$.
 
