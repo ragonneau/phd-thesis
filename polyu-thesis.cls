@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/08/04 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/08/08 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifmeeting
@@ -43,6 +43,7 @@
 \RequirePackage{morewrites}
 \RequirePackage{titling}
 \RequirePackage{booktabs}
+\RequirePackage{tabularx}
 \RequirePackage{siunitx}
 \RequirePackage[en-US]{datetime2}
 % \RequirePackage{footnote}
@@ -332,7 +333,7 @@
     breaklines=true,
     commentstyle=\itshape\color{black!50},
     frame=tb,
-    keywordstyle=\bfseries,
+    keywordstyle=\bfseries\color{Maroon},
     numbers=left,
     numberstyle=\scriptsize\bfseries,
     postbreak=\space,
@@ -363,6 +364,8 @@
 \captionsetup[table]{position=above}
 
 % Repair contents and lists from the book class
+\RequirePackage{etoolbox}
+\patchcmd{\@chapter}{\addtocontents}{\addtocontents{lol}{\protect\addvspace{10\p@}}\addtocontents}{}{}
 \renewcommand{\tableofcontents}{%
     \chapter*{\contentsname\markboth{\contentsname}{\contentsname}}%
     \addcontentsline{toc}{chapter}{\contentsname}%

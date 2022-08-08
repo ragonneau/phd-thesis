@@ -14,3 +14,299 @@
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \chapter{\glsfmttext{cobyqa} \textemdash\ description of the Python implementation and experiments}
 \label{ch:cobyqa-implementation}
+
+In this chapter, we provide details on the Python implementation of \gls{cobyqa}, made publicly available.
+We also provide some numerical experiments, comparing \gls{cobyqa} with \gls{newuoa}, \gls{bobyqa}, \gls{lincoa}, and \gls{cobyla}.
+
+\section{Additional implementation details}
+
+\subsection{Preprocessing of the arguments}
+
+When presenting the framework of \gls{cobyqa} in \cref{ch:cobyqa-introduction}, we assumed that
+\begin{enumerate}
+    \item the bound constraints satisfy~$\xl < \xu$,
+    \item the initial guess is feasible with respect to the bound constraints, and
+    \item the initial trust-region radius satisfy
+    \begin{equation}
+        \label{eq:initial-trust-region-radius-condition}
+        \rad[0] \le \frac{1}{2} \min_{1 \le i \le n} (\xu_i - \xl_i).
+    \end{equation}
+\end{enumerate}
+In the implementation of \gls{cobyqa}, we try to satisfy these conditions as long as possible.
+
+First of all, if~$\xl_i > \xu_i$ for some~$i \in \set{1, 2, \dots, n}$, then no computation is attempted since the problem is infeasible.
+However, all the constraints that satisfy~$\xl_i = \xu_i$ are excluded from the computations.
+Moreover, if \cref{eq:initial-trust-region-radius-condition} does not hold, then the value of~$\rad[0]$ is reduced.
+
+Now that~$\xl < \xu$, we must ensure that the initial guess is feasible.
+If it is not, it must be projected onto the bounds constraints.
+Note that this projection is already described in \cref{subsec:interpolation-based-quadratic-models}, because the initial is modified so that each component is either on a bound or keeps a distance of at least~$\rad[0]$ from the corresponding bounds.
+
+Recall that the package \gls{pdfo} removes the linear equality constraints by defining a subspace of~$\R^n$ of lower dimension, and ensures that each iterate lies in this subspace.
+This is not done in \gls{cobyqa}, because it handles directly equality constraints.
+Moreover, the author plans to include \gls{cobyqa} into \gls{pdfo} in the future.
+Hence, this feature will become available.
+
+\subsection{Additional stopping criteria}
+
+The only stopping criterion we presented so far is when the lower-bound~$\radlb[k]$ on the trust-region radius reaches a threshold value~$\radlb[\infty]$.
+However, \gls{cobyqa} also stops the computations if
+\begin{enumerate}
+    \item the number of function evaluations reaches a threshold value,
+    \item the number of iteration reaches a threshold value,
+    \item a target value on the objective function is reached by a feasible iterate,
+    \item an absolute tolerance on the objective values of two successive iterates is achieved,
+    \item a relative tolerance on the objective values of two successive iterates is achieved,
+    \item an absolute tolerance on two successive iterates in~$\ell_2$-norm is achieved, or
+    \item a relative tolerance on two successive iterates in~$\ell_2$-norm is achieved.
+\end{enumerate}
+The only remaining stopping criterion is when the computations must stop due to computer rounding error.
+In practice, this happens if the denominator of the updating formula discussed in \cref{ch:cobyqa-introduction} is zero.
+
+\begin{table}[ht]
+    \caption{Exit statuses of \gls{cobyqa}}
+    \label{tab:exit-statuses}
+    \centering
+    \begin{tabularx}{\textwidth}{cX}
+        \toprule
+        $0$     & The lower bound for the trust-region radius has been reached.\\
+        \midrule
+        $1$     & A feasible iterate reached the target value on the objective values.\\
+        \midrule
+        $2$     & The desired absolute tolerance on the objective values of two successive iterates is reached.\\
+        \midrule
+        $3$     & The desired relative tolerance on the objective values of two successive iterates is reached.\\
+        \midrule
+        $4$     & The desired absolute tolerance on two successive iterates in~$\ell_2$-norm is reached.\\
+        \midrule
+        $5$     & The desired relative tolerance on two successive iterates in~$\ell_2$-norm is reached.\\
+        \midrule
+        $6$     & The maximum number of function evaluations has been exceeded.\\
+        \midrule
+        $7$     & The maximum number of iterations has been exceeded.\\
+        \midrule
+        $8$     & The denominator of the updating formula is zero.\\
+        \midrule
+        $9$     & All variables are fixed by the constraints.\\
+        \midrule
+        $-1$    & The bound constraints are infeasible.\\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Retention of the history}
+
+It is important to remark that~$\iter[k]$ may not be the best point ever encountered by \gls{cobyqa}.
+Indeed, it is possible that a point close from feasibility (or even feasible) has been discarded because it had a large objective function value and only low penalty parameters were encountered.
+Therefore, \gls{cobyqa} can store the history of all the points visited, together with the corresponding objective and constraint values.
+Since this mechanism is expensive in terms of memory, it is executed only if the user desires it.
+
+Amoung all the iterates, the best one is finally selected as follows.
+First of all, only the points whose constraint violation is at most twice as large as the least one are considered.
+Hence, if a feasible point is encountered, a feasible point will be returned by \gls{cobyqa}.
+Among all these points, \gls{cobyqa} selects the one with the least merit value, using the last penalty parameter.
+If several minimizers exist, we select the one with the least constraint violation and if several minimizers still exist, we select one with the least objective value.
+
+Since this implementation is very expensive in terms of memory, the following technique will be implemented in the future.
+The user will provide a maximum number~$N$ of iterate to retain, and only the last~$N$ iterates will be kept in memory, together with the interpolation set.
+Finally, the procedure described in the previous paragraph will be applied.
+
+\section{Description of the Python implementation}
+
+In this section, we provide details on the Python implementation of \gls{cobyqa}, its testing, and its distribution.
+
+\subsection{Choice of programming languages}
+
+We chose to develop \gls{cobyqa} in Python because it is a simple open-source language, perfectly adapted to experimentation.
+Although the current version of \gls{cobyqa} is mostly written in Python, the author plans to develop a Fortran version in the future.
+This would have the ability to be interfaced with several other languages, such a Python, MATLAB, or Julia.
+However, developing software in Fortran is time-consuming, and hence, this work will be carried out in the future.
+
+The initial version of \gls{cobyqa} was entirely written in pure Python.
+However, its execution time was prohibitively long on problems of dimensions~$50$ and above.
+Since most of the work was done in the subproblem solvers, the author decided to implement them in Cython~\cite{Behnel_Etal_2011}.
+It is a compiled language that aims at improving the performance of Python code.
+All the functions implemented in the module \texttt{cobyqa.linalg} are implemented in Cython.
+
+Other motivativations for the author to develop the initial version of \gls{cobyqa} in Python are the extensive librairies that are available.
+\Gls{cobyqa} does not only rely on Cython, but also on NumPy~\cite{Harris_Etal_2020} and Scipy~\cite{Virtanen_Etal_2020}.
+These packages provides array structures, together with basic mathematical operations on them, and basic scientific computing tools.
+In particular, the subproblem solvers call BLAS~\cite{Blackford_Etal_2002} for making matrices and vectors operations, and the implementation of \gls{nnls} relies on the DGELSY subroutine of LAPACK~\cite{Anderson_Etal_1999} to solve its unconstrained linear least-squares subproblem.
+
+\subsection{Using \glsfmttext{cobyqa} in practice}
+
+The package \gls{cobyqa} provides a function \texttt{minimize}, which takes as parameters
+\begin{enumerate}
+    \item the objective function to be minimized,
+    \item the initial guess,
+    \item bound constraints (optional),
+    \item linear constriants (optional),
+    \item nonlinear constraints (optional), and
+    \item a dictionary of options (each being optional).
+\end{enumerate}
+
+We provide an list of the available options in \cref{tab:cobyqa-options}.
+
+\begin{table}[ht]
+    \caption{Options of \gls{cobyqa}}
+    \label{tab:cobyqa-options}
+    \centering
+    \begin{tabularx}{\textwidth}{cX}
+        \toprule
+        \texttt{rhobeg}     & Initial trust-region radius.\\
+        \midrule
+        \texttt{rhoend}     & Final trust-region radius.\\
+        \midrule
+        \texttt{npt}        & Number of interpolation points.\\
+        \midrule
+        \texttt{maxfev}     & Maximum number of objective and constraint function evaluations.\\
+        \midrule
+        \texttt{maxiter}    & Maximum number of iterations.\\
+        \midrule
+        \texttt{target}     & Target value on the objective function.\\
+        \midrule
+        \texttt{ftol\_abs}  & Absolute tolerance on the objective function.\\
+        \midrule
+        \texttt{ftol\_rel}  & Relative tolerance on the objective function.\\
+        \midrule
+        \texttt{xtol\_abs}  & Absolute tolerance on the decision variables.\\
+        \midrule
+        \texttt{xtol\_rel}  & Relative tolerance on the decision variables.\\
+        \midrule
+        \texttt{disp}       & Whether to print pieces of information on the execution of the solver.\\
+        \midrule
+        \texttt{debug}      & Whether to make debugging tests during the execution.\\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsubsection{Examples of usage}
+
+For example, consider the unconstrained minimization of the chained Rosenbrock function
+\begin{equation*}
+    \obj(x) = \sum_{i = 1}^{n - 1} 100(x_{i + 1} - x_i^2)^2 + (1 - x_i)^2, \quad \text{for~$x \in \R^n$.}
+\end{equation*}
+As those afterwards, it is clearly unreasonable to employ a \gls{dfo} method to solve such a problem and it only serves as an example.
+\Cref{lst:cobyqa-rosenbrock} shows how to solve such a problem with~$n = 5$ using \gls{cobyqa}.
+
+\begin{lstpython}[%
+    caption=Solving the Rosenbrock problem using \gls{cobyqa},
+    label=lst:cobyqa-rosenbrock,
+]
+    >>> from scipy.optimize import rosen
+    >>> from cobyqa import minimize
+    >>>
+    >>> x0 = [1.3, 0.7, 0.8, 1.9, 1.2]  # or anything else
+    >>> res = minimize(rosen, x0)
+    >>> res.x
+    array([1., 1., 1., 1., 1.]) 
+\end{lstpython}
+
+To see how to supply to \gls{cobyqa} bound and linear constraints, consider the Example 16.4 of~\cite{Nocedal_Wright_2006}, defined as
+\begin{align*}
+    \min        & \quad (\iter_1 - 1)^2 + (\iter_2 - 2.5)^2\\
+    \text{s.t.} & \quad -\iter_1 + 2 \iter_2 \le 2,\\
+                & \quad \iter_1 + 2 \iter_2 \le 6,\\
+                & \quad \iter_1 - 2 \iter_2 \le 2,\\
+                & \quad \iter_1 \ge 0,\\
+                & \quad \iter_2 \ge 0,\\
+                & \quad \iter \in \R^2.
+\end{align*}
+\Cref{lst:cobyqa-bound-linear} shows how to solve this problem using \gls{cobyqa}.
+
+\begin{lstpython}[%
+    caption=An example of \gls{cobyqa} with linear constraints,
+    label=lst:cobyqa-bound-linear,
+]
+    >>> from cobyqa import minimize
+    >>>
+    >>> def obj(x):
+    ...     return (x[0] - 1.0) ** 2.0 + (x[1] - 2.5) ** 2.0
+    >>>
+    >>> x0 = [2.0, 0.0]
+    >>> xl = [0.0, 0.0]
+    >>> Aub = [[-1.0, 2.0], [1.0, 2.0], [1.0, -2.0]]
+    >>> bub = [2.0, 6.0, 2.0]
+    >>> res = minimize(quadratic, x0, xl=xl, Aub=Aub, bub=bub)
+    >>> res.x
+    array([1.4, 1.7])
+\end{lstpython}
+
+Thus, to see how to supply nonlinear constraints to \gls{cobyqa}, consider the Problem G of~\cite{Powell_1994}, defined as
+\begin{align*}
+    \min        & \quad \iter_3\\
+    \text{s.t.} & \quad -5 \iter_1 + \iter_2 - \iter_3 \le 0,\\
+                & \quad 5 \iter_1 + \iter_2 - \iter_3 \le 0,\\
+                & \quad \iter_1^2 + \iter_2^2 + 4 \iter_2 - \iter_3 \le 0,\\
+                & \quad \iter \in \R^3.
+\end{align*}
+\Cref{lst:cobyqa-problem-g} shows how to solve such a problem using \gls{cobyqa}, starting from the initial guess~$\iter[0] = [1, 1, 1]^{\T}$.
+
+\begin{lstpython}[%
+    caption=An example of \gls{cobyqa} with nonlinear constraints,
+    label=lst:cobyqa-problem-g,
+]
+    >>> from cobyqa import minimize
+    >>>
+    >>> def obj(x):
+    ...     return x[2]
+    >>>
+    >>> def cub(x):
+    ...     return x[0] ** 2.0 + x[1] ** 2.0 + 4.0 * x[1] - x[2] 
+    >>>
+    >>> x0 = [1.0, 1.0, 1.0]
+    >>> Aub = [[-5.0, 1.0, -1.0], [5.0, 1.0, -1.0]]
+    >>> bub = [0.0, 0.0]
+    >>> res = minimize(obj, x0, Aub=Aub, bub=bub, cub=cub)
+    >>> res.x
+    array([ 0., -3., -3.])   
+\end{lstpython}
+
+\subsubsection{Details on the returned structure}
+
+The function \texttt{minimize} returns a structure (that we named \texttt{res} in the examples above) whose attributes are details in \cref{tab:optimize-result}.
+
+\begin{table}[ht]
+    \caption{Structure for the result of the optimization algorithm}
+    \label{tab:optimize-result}
+    \centering
+    \begin{tabularx}{\textwidth}{cX}
+        \toprule
+        \texttt{x}          & Solution point provided by the optimization solver.\\
+        \midrule
+        \texttt{success}    & Flag indicating whether the optimization solver terminated successfully.\\
+        \midrule
+        \texttt{status}     & Termination status of the optimization solver.\\
+        \midrule
+        \texttt{message}    & Description of the termination status of the optimization solver.\\
+        \midrule
+        \texttt{fun}        & Value of the objective function at the solution point provided by the optimization solver.\\
+        \midrule
+        \texttt{jac}        & Approximation of the gradient of the objective function at the solution point provided by the optimization solver. If the value of a component is unknown, it is replaced by NaN.\\
+        \midrule
+        \texttt{nfev}       & Number of objective and constraint function evaluations.\\
+        \midrule
+        \texttt{nit}        & Number of iterations performed by the optimization solver.\\
+        \midrule
+        \texttt{maxcv}      & Maximum constraint violation at the solution point provided by the optimization solver. It is set only if the problem is not declared unconstrained by the optimization solver.\\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Distribution of the package}
+
+The subproblem solvers of \gls{cobyqa} are written in Cython, which necessitate a C/C++ compiler to work.
+However, we made wheel distributions available for
+\begin{enumerate}
+    \item Windows, for both 32-bit and 64-bit operating systems,
+    \item macOS, for both X64 and ARM64 architectures, and
+    \item Linux, for both X64 and ARM64 architectures.
+\end{enumerate}
+The current version of \gls{cobyqa} is available for Python 3.7, 3.8, 3.9, and 3.10 (i.e., all the Python version available as of today).
+The compilation is made using GitHub Actions, and relies on the Python package cibuildwheel\footnote{See \url{https://cibuildwheel.readthedocs.io/}.}.
+
+\section{Some numerical experiments}
+
+To conclude this chapter, we present some numerical results of \gls{cobyqa}.
+The performance profiles presented in this section have been obtained on the CUTEst library~\cite{Gould_Orban_Toint_2015}.
+See \cref{sec:benchmarking-tools} for the definition of the performance profiles in a \gls{dfo} context.
