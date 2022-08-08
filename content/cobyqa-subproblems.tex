@@ -37,7 +37,7 @@ Rather, they only necessitate to satisfy the Cauchy decrease condition
 for some~$c \in (0, 1]$, where we assume that~$\norm{\nabla Q(0)} / \norm{\nabla^2 Q} = \infty$ if~$\nabla^2 Q \equiv 0$.
 
 Therefore, in trust-region method, we solve~\cref{eq:problem-tcg} approximately.
-A well-known method for evaluating~$\iter[\ast]$ is the Steihaug-Toint \gls{tcg} method~\cite{Steihaug_1983,Toint_1981}, presented in this section\todo{Other methods exist}.
+A well-known method for evaluating~$\iter[\ast]$ is the Steihaug-Toint \gls{tcg} method~\cite{Steihaug_1983,Toint_1981}, presented in this section.
 The framework for solving~\cref{eq:problem-tcg} using the \gls{tcg} method is given in \cref{alg:tcg}.
 The idea of the algorithm is to entertain conjugate gradients iterations, and stop the computations if a step reaches the boundary of the trust region.
 

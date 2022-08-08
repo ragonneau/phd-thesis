@@ -861,4 +861,17 @@ For example,~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm of a matrix,
 
 \section{Organization of the thesis}
 
-\todo[noline]{Do the organization of the thesis}
+The remaining of this thesis is organized as follows.
+\begin{itemize}
+    \item \Cref{ch:interpolation} presents interpolation models that are useful to \gls{dfo}.
+    We will focus on linear and quadratic models, as these are the models employed by the \gls{dfo} methods presented later in this thesis.
+    \item \Cref{ch:pdfo} introduces \gls{pdfo}, a package providing MATLAB and Python interfaces for using late Prof.\ M. J. D. Powell's \gls{dfo} solvers.
+    \item \Cref{ch:sqp} first presents an overview of the \gls{sqp} method, before providing some perspectives.
+    In particular, we provide an interpretation of the \gls{sqp} subproblem that is new to the best of our knowledge.
+    We also present a general trust-region \gls{sqp} method, discuss different alternatives for solving its subproblem, and show an interesting connection between two of them.
+    \item \Cref{ch:cobyqa-introduction} presents our new model-based \gls{dfo} method \gls{cobyqa}.
+    It is a trust-region \gls{sqp} method, designed to tackle nonlinearly-constrained problems that include equality and inequality constraints.
+    It builds the trust-region quadratic models using derivative-free symmetric Broyden update presented in \cref{ch:interpolation}.
+    \item \Cref{ch:cobyqa-subproblems} introduces the methods employed by \gls{cobyqa} to solve its different subproblem.
+    \item \Cref{ch:cobyqa-implementation} provides some insight on the Python implementation of \gls{cobyqa}, together with some numerical experiments.
+\end{itemize}
