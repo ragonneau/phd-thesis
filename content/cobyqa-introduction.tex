@@ -149,7 +149,7 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
                             & \quad \step \in \R^n, \nonumber
             \end{algomathalign}
         \end{subequations} \nllabel{alg:derivative-free-trust-region-sqp-subproblem}
-        Pick a penalty parameter~$\gamma^k \ge \max \set{\gamma^{k - 1}, \norm{\lm[k]}}$ providing~$\meritm[k](\step[k]) < \meritm[k](0)$ \nllabel{alg:derivative-free-trust-region-sqp-penalty}\;
+        Pick a penalty parameter~$\gamma^k \ge \max @@ \set{\gamma^{k - 1}, \norm{\lm[k]}}$ providing~$\meritm[k](\step[k]) < \meritm[k](0)$ \nllabel{alg:derivative-free-trust-region-sqp-penalty}\;
         Evaluate the trust-region ratio
         \begin{algomathdisplay}
             \ratio[k] \gets \frac{\merit[k](\iter[k]) - \merit[k](\iter[k] + \step[k])}{\meritm[k](0) - \meritm[k](\step[k])}
@@ -202,7 +202,7 @@ Further, it generates a tangential step~$\tstep[k]$ by solving approximately
     \label{eq:cobyqa-tangential-original}
     \begin{align}
         \min        & \quad [\nabla \objm[k](\iter[k]) + \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
-        \text{s.t.} & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max \set{-\conm[k]{i}(\iter[k]) - \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub,\\
+        \text{s.t.} & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max @@ \set{-\conm[k]{i}(\iter[k]) - \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub,\\
                     & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
                     & \quad \xl \le \iter[k] + \nstep[k] + \step \le \xu,\\
                     & \quad \norm{\nstep[k] + \step} \le \rad[k],\\
@@ -212,7 +212,7 @@ Further, it generates a tangential step~$\tstep[k]$ by solving approximately
 and then sets the composite step~$\step[k] = \nstep[k] + \tstep[k]$.
 Details on the calculations of the tangential and normal steps are provided in \cref{sec:cobyqa-tangential,sec:cobyqa-normal}, respectively.
 
-If~$\iub \cup \ieq = \emptyset$, we then have~$\nstep[k] = 0$ because our algorithm guarantees that~$\xl \le \iter[k] \le \xu$.
+If we have~$\iub \cup \ieq = \emptyset$, we then necessarily have~$\nstep[k] = 0$ because our algorithm guarantees that~$\xl \le \iter[k] \le \xu$.
 The tangential subproblem is then identical to the original subproblem~\cref{eq:derivative-free-trust-region-sqp-subproblem}.
 In \gls{cobyqa}, such a subproblem is approximately solved using the \gls{tcg} method that \citeauthor{Powell_2009} employed in \gls{bobyqa}~\cite{Powell_2009}.
 
@@ -223,12 +223,12 @@ This method requires that
     \item the trust region is centered on the origin.
 \end{enumerate}
 The first requirement is satisfied by~\cref{eq:cobyqa-tangential-original}.
-To meet the second one, following~\cite[Eq.~(2.10)]{Lalee_Nocedal_Plantenga_1998} and~\cite[Eq.~(15.4.3)]{Conn_Gould_Toint_2000}, we can solve instead
+To meet the second one, following the work of~\cite[Eq.~(2.10)]{Lalee_Nocedal_Plantenga_1998} and~\cite[Eq.~(15.4.3)]{Conn_Gould_Toint_2000}, we can solve instead
 \begin{subequations}
     \label{eq:cobyqa-tangential}
     \begin{align}
         \min        & \quad [\nabla \objm[k](\iter[k]) + \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
-        \text{s.t.} & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max \set{-\conm[k]{i}(\iter[k]) - \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub, \label{eq:cobyqa-tangential-ub}\\
+        \text{s.t.} & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max @@ \set{-\conm[k]{i}(\iter[k]) - \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub, \label{eq:cobyqa-tangential-ub}\\
                     & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:cobyqa-tangential-eq}\\
                     & \quad \xl \le \iter[k] + \nstep[k] + \step \le \xu,\\
                     & \quad \norm{\step} \le \sqrt{(\rad[k])^2 - \norm{\nstep[k]}^2}, \label{eq:cobyqa-tangential-tr}\\
@@ -238,7 +238,7 @@ To meet the second one, following~\cite[Eq.~(2.10)]{Lalee_Nocedal_Plantenga_1998
 the only difference with~\cref{eq:cobyqa-tangential-original} being the trust-region constraint~\cref{eq:cobyqa-tangential-tr}.
 In doing so, we would have
 \begin{equation*}
-    \norm{\step[k]} = \norm{\nstep[k] + \tstep[k]} \le \max_{d \in \R^n} \set[\Big]{\norm{d} + \sqrt{(\rad[k])^2 - \norm{\step}^2} : \norm{d} \le \rad[k]} = \sqrt{2} \rad[k].
+    \norm{\step[k]} = \norm{\nstep[k] + \tstep[k]} \le \max_{d \in \R^n} @@ \set[\Big]{\norm{d} + \sqrt{(\rad[k])^2 - \norm{\step}^2} : \norm{d} \le \rad[k]} = \sqrt{2} \rad[k].
 \end{equation*}
 Therefore, to maintain the property~$\norm{\step[k]} \le \rad[k]$, we replace~$\rad[k]$ in the constraints~\cref{eq:cobyqa-normal-tr,eq:cobyqa-tangential-tr} with~$\rad[k] / \sqrt{2}$.
 % Therefore, to maintain the property~$\norm{\step[k]} \le \rad[k]$, we replace the trust-region constraint of the tangential subproblem~\cref{eq:cobyqa-tangential-tr} with
@@ -319,8 +319,8 @@ Otherwise, if~$\rad[k] = \radlb[k]$ and the trial step~$\step[k]$ performs very 
     Update the trust-region radius
     \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
         & \theta_1 \rad[k]                                                                      && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
-        & \max \set{\theta_1 \rad[k], \norm{\step[k]}}                                          && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
-        & \min \set{\theta_3 \rad[k], \max \set{\theta_1 \rad[k], \theta_4 \norm{\step[k]}}}    && \quad \text{otherwise}
+        & \max @@ \set{\theta_1 \rad[k], \norm{\step[k]}}                                          && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
+        & \min @@ \set{\theta_3 \rad[k], \max @@ \set{\theta_1 \rad[k], \theta_4 \norm{\step[k]}}}    && \quad \text{otherwise}
     \end{algoempheq}
     \If{$\rad[k + 1] \le \theta_2 \radlb[k]$}{
         $\rad[k + 1] \gets \radlb[k]$\;
@@ -338,7 +338,7 @@ This is reflected in practice by
 \end{enumerate}
 More specifically, similar to Powell's solvers, \gls{cobyqa} reduces the value of~$\radlb[k]$ if
 \begin{equation*}
-    \radlb[k] = \rad[k], \quad \ratio[k] \le \eta_1, \quad \text{and} \quad \max_{y \in \xpt[k + 1]} \norm{y  - \iter[k + 1]} \le 2 \radlb[k].
+    \radlb[k] = \rad[k], \quad \ratio[k] \le \eta_1, \quad \text{and} \quad \max_{y \in \xpt[k + 1]} @@ \norm{y  - \iter[k + 1]} \le 2 \radlb[k].
 \end{equation*}
 There is also another exceptional case where~$\radlb[k]$ is reduced, which will be detailed at the end of \cref{subsec:geometry-improvement}.
 \Cref{alg:reducing-lower-bound-trust-region-radius} presents the method employed by \gls{cobyqa} to reduce~$\radlb[k]$ in such a case.
@@ -361,7 +361,7 @@ The algorithm and the parameters are identical to those of \gls{uobyqa}~\cite{Po
             & \sqrt{\radlb[k] \radlb[\infty]}   && \quad \text{if~$\eta_3 < \radlb[k] / \radlb[\infty] \le \eta_4$,}\\
             & \radlb[\infty]                    && \quad \text{otherwise}
         \end{algoempheq}
-        Update the trust-region radius~$\rad[k + 1] \gets \max \set{\rad[k + 1], \radlb[k + 1]}$\;
+        Update the trust-region radius~$\rad[k + 1] \gets \max @@ \set{\rad[k + 1], \radlb[k + 1]}$\;
     }
 \end{algorithm}
 
@@ -377,14 +377,14 @@ Then,~$\xpt[k + 1]$ will be set to~$(\xpt[k] \setminus \set{\bar{y}}) \cup \set{
 Let us first consider the case~$\ratio[k] \ge 0$, so that~$\bar{y}$ is chosen from~$\xpt[k]$.
 We denote by~$\bar{\iter}$ the closest point from~$\iter[k]$ that solves
 \begin{equation*}
-    \min_{y \in \xpt[k]} \merit[k](y).
+    \min_{y \in \xpt[k]} @@ \merit[k](y).
 \end{equation*}
 This point is not necessarily~$\iter[k]$, because~$\merit[k]$ may differ from~$\merit[k - 1]$ due to the update of the penalty parameter.
 If several such points exist, we select any of them.
 We then set~$\bar{y}$ to a solution to
 \begin{equation}
     \label{eq:choice-point-to-remove-trust-region}
-    \max_{y \in \xpt[k]} \abs{\omega(y)} \norm{y - \bar{\iter}}^4,
+    \max_{y \in \xpt[k]} @@ \abs{\omega(y)} \norm{y - \bar{\iter}}^4,
 \end{equation}
 where~$\omega(y)$ is a scaling factor, detailed later.
 The term~$\norm{y - \bar{\iter}}$ in~\cref{eq:choice-point-to-remove-trust-region} intends to set~$\bar{y}$ to a point far away from~$\bar{\iter}$, because the interpolation points must be reasonably close in order to achieve a good precision of the models.
@@ -402,7 +402,7 @@ He also made very similar choices for \gls{newuoa}~\cite[Eq.~(7.4)]{Powell_2006}
 The strategy for the case~$\ratio[k] < 0$ is quite similar.
 We set~$\bar{y}$ to a solution to
 \begin{equation*}
-    \max_{y \in \xpt[k] \setminus \set{\iter[k]}} \abs{\omega(y)} \norm{y - \bar{\iter}}^4.
+    \max_{y \in \xpt[k] \setminus \set{\iter[k]}} @@ \abs{\omega(y)} \norm{y - \bar{\iter}}^4.
 \end{equation*}
 This case enforces~$\bar{y} \neq \iter[k]$ to avoid removing~$\iter[k]$ from~$\xpt[k]$, as this point is better than~$\iter[k] + \step[k]$ according to~$\merit[k - 1]$.
 
@@ -430,7 +430,7 @@ However, it is known that model-based \gls{dfo} methods tend to lose the poisedn
 To cope with this difficulty, such methods usually include a geometry-improving mechanism.
 This topic is well studied, see for example~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b,Fasano_Morales_Nocedal_2009,Scheinberg_Toint_2010}.
 
-In \gls{cobyqa}, we adopt a geometry-improving strategy designed by \citeauthor{Powell_2009} for his solver \gls{bobyqa}~\cite{Powell_2009}.
+We adopt a geometry-improving strategy designed by \citeauthor{Powell_2009} for \gls{bobyqa}~\cite{Powell_2009}.
 % Some trust-region iterations are replaced with a geometry-improving iteration.
 A point~$\bar{y} \in \xpt[k + 1]$ is chosen to be replaced by another one~$\iter[k + 1] + \rstep[k + 1]$, where the \emph{restoration step}~$\rstep[k + 1] \in \R^n$ is chosen to improve the geometry of~$\xpt[k + 1]$.
 
@@ -473,7 +473,7 @@ It is trigerred when
 \end{enumerate}
 More specifically, \gls{cobyqa} modifies the interpolation set~$\xpt[k + 1]$ if
 \begin{equation*}
-    \ratio[k] \le \eta_1 \quad \text{and} \quad \max_{y \in \xpt[k + 1]} \norm{y - \iter[k + 1]} \ge \max \set{\rad[k + 1], 2 \radlb[k + 1]}.
+    \ratio[k] \le \eta_1 \quad \text{and} \quad \max_{y \in \xpt[k + 1]} @@ \norm{y - \iter[k + 1]} \ge \max @@ \set{\rad[k + 1], 2 \radlb[k + 1]}.
 \end{equation*}
 When this condition holds, \gls{cobyqa} entertains the geometry-improving phase given in \cref{alg:geometry-improving}.
 
@@ -490,13 +490,13 @@ When this condition holds, \gls{cobyqa} entertains the geometry-improving phase 
     Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$ \label{alg:geometry-improving-iterate}\;
 \end{algorithm}
 
-There is an exceptional case where we jump from \cref{alg:derivative-free-trust-region-sqp-subproblem} to \cref{alg:derivative-free-trust-region-sqp-geometry}, after setting~$\gamma^k = \gamma^{k - 1}$,~$\xpt[k + 1] = \xpt[k]$,~$\iter[k + 1] = \iter[k]$, and~$\lm[k + 1] = \lm[k]$.
+There is an exceptional case where we jump from \cref{alg:derivative-free-trust-region-sqp-subproblem} to \cref{alg:derivative-free-trust-region-sqp-geometry}, after setting the values~$\gamma^k = \gamma^{k - 1}$,~$\xpt[k + 1] = \xpt[k]$,~$\iter[k + 1] = \iter[k]$, and~$\lm[k + 1] = \lm[k]$.
 \Cref{alg:derivative-free-trust-region-sqp} omits this case for simplicity, and we detail it now.
-This jump is performed if the trust-region trial step~$\step[k]$ generated at \cref{alg:derivative-free-trust-region-sqp-subproblem} of \cref{alg:derivative-free-trust-region-sqp} is small compared to the current trust-region radius, more precisely, if~$\norm{\step[k]} < \rad[k] / 2$.
+This jump is done if the trust-region trial step~$\step[k]$ generated at \cref{alg:derivative-free-trust-region-sqp-subproblem} of \cref{alg:derivative-free-trust-region-sqp} is small compared to the current trust-region radius, more precisely, if~$\norm{\step[k]} < \rad[k] / 2$.
 In this case, we first reduce~$\rad[k + 1]$ to~$\rad[k + 1] / 2$, setting it further to~$\radlb[k]$ if this reduced value is below~$\theta_2 \radlb[k]$.
 We then invoke \cref{alg:geometry-improving} if
 \begin{equation*}
-    \max_{y \in \xpt[k + 1]} \norm{y - \iter[k + 1]} \ge \rad[k + 1].
+    \max_{y \in \xpt[k + 1]} @@ \norm{y - \iter[k + 1]} \ge \rad[k + 1].
 \end{equation*}
 However, if~$\norm{\step[k]} < \rad[k] / 2$ has happened at five consective iterations, or~$\norm{\step[k]} < \rad[k] / 10$ at three consecutive iterations, then the geometry-improving phase is not invoked.
 Instead, we decrease~$\radlb[k]$ by invoking \cref{alg:reducing-lower-bound-trust-region-radius}, and continue with the next trust-region iteration.
@@ -553,7 +553,7 @@ Note that we did not include the bound constraints in the definition of the meri
     Moreover, the least possible such value is
     \begin{empheq}[left={\bar{\gamma} = \empheqlbrace}]{alignat*=2}
         & 0                                                                                                                                                                         && \quad \text{if~$\Phi(\step[k]) = \Phi(0)$,}\\
-        & \posp[\bigg]{\frac{\nabla \objm[k](\iter[k])^{\T} \step[k] + \frac{1}{2} (\step[k])^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step[k]}{\Phi(0) - \Phi(\step[k])}}  && \quad \text{otherwise.}
+        & \posp[\bigg]{\frac{\nabla \objm[k](\iter[k])^{\T} \step[k] + (\step[k])^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step[k] / 2}{\Phi(0) - \Phi(\step[k])}}  && \quad \text{otherwise.}
     \end{empheq}
 \end{proposition}
 
@@ -587,14 +587,14 @@ If~$\ieq \neq \emptyset$, \gls{cobyqa} will view each equality constraint as two
     \KwResult{Modified penalty parameter~$\gamma^k \ge 0$.}
     Set indices of the important constraints
     \begin{algomathdisplay}
-        \iub^{\ast} \eqdef \set[\big]{i \in \iub : \min_{y \in \xpt[k + 1]} \con{i}(y) < \max_{y \in \xpt[k + 1]} 2 \con{i}(y)}
+        \iub^{\ast} \eqdef \set[\big]{i \in \iub : \min_{y \in \xpt[k + 1]} @@ \con{i}(y) < \max_{y \in \xpt[k + 1]} @@ 2 \con{i}(y)}
     \end{algomathdisplay}
     \eIf{$\mathcal{K} = \emptyset$}{
         Set~$\gamma^k \gets 0$\;
     }{
         Replace~$\gamma^k$ by
         \begin{algomathdisplay}
-            \min \set[\bigg]{\frac{\max_{y \in \xpt[k + 1]} \obj(y) - \min_{y \in \xpt[k + 1]}  \obj(y)}{\min_{i \in \iub^{\ast}} \{ \max_{y \in \xpt[k + 1]} \con{i}(y) - \min_{y \in \xpt[k + 1]} \negp{\con{i}(y)} \}}, \gamma^k}
+            \min @@ \set[\bigg]{\frac{\max_{y \in \xpt[k + 1]} @@ \obj(y) - \min_{y \in \xpt[k + 1]} @@ \obj(y)}{\min_{i \in \iub^{\ast}} @@ \{ \max_{y \in \xpt[k + 1]} @@ \con{i}(y) - \min_{y \in \xpt[k + 1]} @@ \negp{\con{i}(y)} \}}, \gamma^k}
         \end{algomathdisplay} \label{alg:reducting-penalty-replace}
     }
 \end{algorithm}
@@ -604,7 +604,7 @@ The notation~$\negp{\cdot}$ in \cref{alg:reducting-penalty-replace} of \cref{alg
 The term in \cref{alg:reducting-penalty-replace} is explained in~\cite[\S~4]{Powell_1994}.
 Its numerator corresponds to a typical change in the objective function, while the denominator's term
 \begin{equation*}
-    \max_{y \in \xpt[k + 1]} \con{i}(y) - \min_{y \in \xpt[k + 1]} \negp{\con{i}(y)}
+    \max_{y \in \xpt[k + 1]} @@ \con{i}(y) - \min_{y \in \xpt[k + 1]} @@ \negp{\con{i}(y)}
 \end{equation*}
 represents a typical change in the~$i$th constraint if~$\min_{y \in \xpt[k + 1]} \con{i}(y) \le 0$, and some distance to feasibility otherwise.
 Of course, this term is very empirical, and other choices could be made.

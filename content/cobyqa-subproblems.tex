@@ -32,7 +32,7 @@ with~$Q \in \qpoly$ and~$\rad > 0$.
 The usual convergence results for trust-region methods do not require a given solution~$\iter[\ast]$ to~\cref{eq:problem-tcg} to be exact.
 Rather, they only necessitate to satisfy the Cauchy decrease condition
 \begin{equation*}
-    Q(0) - Q(\iter[\ast]) \ge c \norm{\nabla Q(0)} \min \set[\bigg]{\frac{\norm{\nabla Q(0)}}{\norm{\nabla^2 Q}}, \rad},
+    Q(0) - Q(\iter[\ast]) \ge c \norm{\nabla Q(0)} \min @@ \set[\bigg]{\frac{\norm{\nabla Q(0)}}{\norm{\nabla^2 Q}}, \rad},
 \end{equation*}
 for some~$c \in (0, 1]$, where we assume that~$\norm{\nabla Q(0)} / \norm{\nabla^2 Q} = \infty$ if~$\nabla^2 Q \equiv 0$.
 
@@ -56,8 +56,8 @@ The idea of the algorithm is to entertain conjugate gradients iterations, and st
             & \frac{- \nabla Q(\sstep[k])^{\T} \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}  && \quad \text{if~$(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k] > 0$,}\\
             & \infty                                                                                && \quad \text{otherwise}
         \end{algoempheq}
-        Compute~$\alpha_{\rad}^k \gets \argmax \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$\nomenclature[Op]{$\argmax$}{Global maximizer operator}\;
-        Set the steplength~$\alpha^k \gets \min \set{\alpha_Q^k, \alpha_{\rad}^k}$\;
+        Compute~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$\nomenclature[Op]{$\argmax$}{Global maximizer operator}\;
+        Set the steplength~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k}$\;
         Update the iterate~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
         \eIf{$\alpha^k = \alpha_{\rad}^k$}{
             Break\;
@@ -125,9 +125,9 @@ The complete framework is described in \cref{alg:bvtcg}, where~$\Pi^k(v)$ is den
             & \frac{- \nabla Q(\sstep[k])^{\T} \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}  && \quad \text{if~$(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k] > 0$,}\\
             & \infty                                                                                && \quad \text{otherwise}
         \end{algoempheq}
-        Compute~$\alpha_{\rad}^k \gets \argmax \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$\;
-        Compute~$\alpha_B^k \gets \argmax \set{\alpha \ge 0 : \xl \le \sstep[k] + \alpha \pstep[k] \le \xu}$\;
-        Set the steplength~$\alpha^k \gets \min \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_B^k}$\;
+        Compute~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$\;
+        Compute~$\alpha_B^k \gets \argmax @@ \set{\alpha \ge 0 : \xl \le \sstep[k] + \alpha \pstep[k] \le \xu}$\;
+        Set the steplength~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_B^k}$\;
         Update the iterate~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
         \uIf{$\alpha^k = \alpha_B^k$}{
             Add a new active constraint to~$\mathcal{W}^k$ to obtain~$\mathcal{W}^{k + 1}$\;
@@ -154,7 +154,7 @@ The method employed by \gls{cobyqa} then attempts to further reduce the objectiv
     \min        & \quad Q(\iter)\\
     \text{s.t.} & \quad \xl \le \iter \le \xu,\\
                 & \quad \norm{\iter} \le \rad,\\
-                & \quad \iter \in \vspan \set{\Pi^{\ast}(\iter[\ast]), \Pi^{\ast}(\nabla Q(\iter[\ast]))} \subseteq \R^n,
+                & \quad \iter \in \vspan @@ \set{\Pi^{\ast}(\iter[\ast]), \Pi^{\ast}(\nabla Q(\iter[\ast]))} \subseteq \R^n,
 \end{align*}
 where~$\Pi^{\ast}$ denotes the function~$\Pi^{k}$ at the last iteration.
 Note that a substantial reduction in~$Q$ is possible only if both~$\Pi^{\ast}(\nabla Q(\iter[\ast]))$ and the angle between~$\Pi^{\ast}(\iter[\ast])$ and~$-\Pi^{\ast}(\nabla Q(\iter[\ast]))$ are important.
@@ -221,7 +221,7 @@ If~$j$ does not belong to the working set and if~$e_j^{\T} A \nabla Q(\sstep[0])
 Therefore, we must consider a constraint as active whenever its residual becomes small.
 More precisely, for some feasible~$\iter \in \R^n$, we let
 \begin{equation*}
-    \mathcal{J}(\iter) \eqdef \set{j \le m_1 : b_j - e_j^{\T} A \iter \le \sigma \rad \norm{e_j^{\T} A}},
+    \mathcal{J}(\iter) \eqdef \set[\big]{j \le m_1 : b_j - e_j^{\T} A \iter \le \sigma \rad \norm{e_j^{\T} A}},
 \end{equation*}
 for some~$\sigma \in (0, 1)$, set to~$\sigma = 0.2$ in \gls{cobyqa}, and the initial working set is a subset of~$\mathcal{J}(\sstep[0])$.
 Moreover, the initial search direction~$\pstep[0]$ should be close to~$-\nabla Q(\iter[0])$ and prevent the point~$\sstep[1]$ to be close from~$\sstep[0]$.
@@ -260,20 +260,20 @@ The complete framework is described in \cref{alg:lctcg}.
     \KwData{Matrices~$A$ and~$C$, right-hand side~$b$, trust-region radius~$\rad > 0$, and constant~$\sigma \in (0, 1)$.}
     \KwResult{An approximate solution to~\cref{eq:problem-lctcg}.}
     Set~$\sstep[0] \gets 0$ and~$\hat{k} \gets 0$\;
-    Set the search direction~$\pstep[0] \gets -\Pi^{\hat{k}}(\nabla Q(\sstep[0]))$\; \nllabel{alg:lctcg-sd-init}
+    Set the search direction~$\pstep[0] \gets -\Pi^{\hat{k}} \big( \nabla Q(\sstep[0]) \big)$\; \nllabel{alg:lctcg-sd-init}
     \For{$k = 0, 1, \dots$ until~$\norm{\pstep[k]} = 0$}{
         Set
         \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
             & \frac{- \nabla Q(\sstep[k])^{\T} \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}  && \quad \text{if~$(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k] > 0$,}\\
             & \infty                                                                                && \quad \text{otherwise}
         \end{algoempheq}
-        Compute~$\alpha_{\rad}^k \gets \argmax \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$\;
-        Compute~$\alpha_L^k \gets \argmax \set{\alpha \ge 0 : A(\sstep[k] + \alpha \pstep[k]) \le b}$\;
-        Set the steplength~$\alpha^k \gets \min \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_L^k}$\;
+        Compute~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$\;
+        Compute~$\alpha_L^k \gets \argmax @@ \set{\alpha \ge 0 : A(\sstep[k] + \alpha \pstep[k]) \le b}$\;
+        Set the steplength~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_L^k}$\;
         Update the iterate~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
         \uIf{$\alpha^k = \alpha_L^k$ and~$\norm{\sstep[k + 1]} \le (1 - \sigma) \rad$}{
             Update~$\hat{k} = k + 1$\;
-            Set~$\pstep[k + 1] \gets -\Pi^{\hat{k}}(\nabla Q(\sstep[k + 1]))$\; \nllabel{alg:lctcg-sd-restart}
+            Set~$\pstep[k + 1] \gets -\Pi^{\hat{k}} \big( \nabla Q(\sstep[k + 1]) \big)$\; \nllabel{alg:lctcg-sd-restart}
         }
         \uElseIf{$\alpha^k = \alpha_{\rad}^k$ or $\alpha^k = \alpha_L^k$ and~$\norm{\sstep[k + 1]} > (1 - \sigma) \rad$}{
             Break\;
@@ -281,9 +281,9 @@ The complete framework is described in \cref{alg:lctcg}.
         \Else{
             Evaluate the ratio
             \begin{algomathdisplay}
-                \beta^k \gets \frac{\Pi^{\hat{k}}(\nabla Q(\sstep[k + 1]))^{\T} (\nabla^2 Q) \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}
+                \beta^k \gets \frac{\Pi^{\hat{k}} \big( \nabla Q(\sstep[k + 1]) \big)^{\T} (\nabla^2 Q) \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}
             \end{algomathdisplay}
-            Update~$\pstep[k + 1] \gets -\Pi^{\hat{k}}(\nabla Q(\sstep[k])) + \beta^k \pstep[k]$\;
+            Update~$\pstep[k + 1] \gets -\Pi^{\hat{k}} \big( \nabla Q(\sstep[k]) \big) + \beta^k \pstep[k]$\;
         }
     }
     The last value of~$\sstep[k]$ is the desired point\;
@@ -305,7 +305,7 @@ In such a case, the method first moves~$\sstep[k]$ towards the boundaries of the
 \Citeauthor{Powell_2015} also proposed two additional stopping criteria, to avoid doing unworthy computations.
 First of all, the computations are stopped if~$\nabla Q(\sstep[k])$ is small along the current search direction, namely if
 \begin{equation*}
-    \alpha_{\rad}^k \abs{\nabla Q(\sstep[k])^{\T} \pstep[k]} \le \nu [Q(0) - Q(\sstep[k])],
+    \alpha_{\rad}^k \abs[\big]{\nabla Q(\sstep[k])^{\T} \pstep[k]} \le \nu [Q(0) - Q(\sstep[k])],
 \end{equation*}
 for some constant~$\nu > 0$, set to~$\nu = 0.01$ in \gls{cobyqa}.
 Moreover, the computations are also stopped if the reduction provided by the current search direction is tiny compared to the reduction so far, that is if
@@ -387,7 +387,7 @@ To solve problem~\cref{eq:problem-cpqp-reformulated}, and hence~\cref{eq:problem
 
 Just as in \cref{subsec:lctcg}, we define
 \begin{equation*}
-    \mathcal{J}(\iter, y) \eqdef \set[\big]{j \le 2n + 2m_1 : h_j - e_j^{\T}(E \iter + F y) \le \sigma \rad \sqrt{\norm{e_j^{\T} E}^2 + \norm{e_j^{T} F}^2}},
+    \mathcal{J}(\iter, y) \eqdef \set[\Big]{j \le 2n + 2m_1 : h_j - e_j^{\T}(E \iter + F y) \le \sigma \rad \sqrt{\norm{e_j^{\T} E}^2 + \norm{e_j^{T} F}^2}},
 \end{equation*}
 for some~$\sigma \in (0, 1)$, set to~$\sigma = 0.2$ in \gls{cobyqa}.
 Further, the initial working set is a subset of~$\mathcal{J}(\sstep[0]_{\iter}, \sstep[0]_y)$, with~$\sstep[0]_{\iter} = 0$ and~$\sstep[0]_y = \posp{-b}$.
@@ -399,8 +399,8 @@ To define the initial search directions, let~$(\Pi_{\iter}^k(u, v), \Pi_y^k(u, v
 \end{align*}
 The initial search directions are
 \begin{empheq}[left=\empheqlbrace]{alignat*=1}
-    & \pstep[0]_{\iter} = -\Pi_{\iter}^0(\nabla_x Q(\sstep[0]_{\iter}, \sstep[0]_y), \nabla_y Q(\sstep[0]_{\iter}, \sstep[0]_y)),\\
-    & \pstep[0]_y = -\Pi_y^0(\nabla_x Q(\sstep[0]_{\iter}, \sstep[0]_y), \nabla_y Q(\sstep[0]_{\iter}, \sstep[0]_y)).
+    & \pstep[0]_{\iter} = -\Pi_{\iter}^0 \big( \nabla_x Q(\sstep[0]_{\iter}, \sstep[0]_y), \nabla_y Q(\sstep[0]_{\iter}, \sstep[0]_y) \big),\\
+    & \pstep[0]_y = -\Pi_y^0 \big( \nabla_x Q(\sstep[0]_{\iter}, \sstep[0]_y), \nabla_y Q(\sstep[0]_{\iter}, \sstep[0]_y) \big).
 \end{empheq}
 This problem is solved numerically using the \citeauthor{Goldfarb_Idnani_1983} method~\cite{Goldfarb_Idnani_1983}, briefly described in \cref{subsec:lctcg}.
 
@@ -424,9 +424,9 @@ The complete framework is described in \cref{alg:cpqp}.
             & \frac{- (g_{\iter}^k)^{\T} \pstep[k]_{\iter} - (\sstep[k]_y)^{\T} \pstep[k]_y}{\norm{C \pstep[k]_{\iter}}^2 + \norm{\pstep[k]_y}^2}   && \quad \text{if~$\norm{C \pstep[k]_{\iter}}^2 + \norm{\pstep[k]_y}^2 > 0$,}\\
             & \infty                                                                                                                                && \quad \text{otherwise}
         \end{algoempheq}
-        Compute~$\alpha_{\rad}^k \gets \argmax \set{\alpha \ge 0 : \norm{\sstep[k]_{\iter} + \alpha \pstep[k]_{\iter}} \le \rad}$\;
-        Compute~$\alpha_L^k \gets \argmax \set{\alpha \ge 0 : E (\sstep[k]_{\iter} + \alpha \pstep[k]_{\iter}) + F (\sstep[k]_y + \alpha \pstep[k]_y) \le h}$\;
-        Set the steplength~$\alpha^k \gets \min \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_L^k}$\;
+        Compute~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k]_{\iter} + \alpha \pstep[k]_{\iter}} \le \rad}$\;
+        Compute~$\alpha_L^k \gets \argmax @@ \set{\alpha \ge 0 : E (\sstep[k]_{\iter} + \alpha \pstep[k]_{\iter}) + F (\sstep[k]_y + \alpha \pstep[k]_y) \le h}$\;
+        Set the steplength~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_L^k}$\;
         Update the iterates~$\sstep[k + 1]_{\iter} \gets \sstep[k]_{\iter} + \alpha^k \pstep[k]_{\iter}$ and~$\sstep[k + 1]_y \gets \sstep[k]_y + \alpha^k \pstep[k]_y$\;
         Update the gradient~$g_{\iter}^{k + 1} \gets g_{\iter}^k + \alpha^k C^{\T} C \pstep[k]_{\iter}$\;
         \uIf{$\alpha^k = \alpha_L^k$}{
@@ -499,13 +499,13 @@ where~$\hat{A}$ is the matrix whose~$i$th column is that of~$A$ if~$i \notin \ma
     \While{the \gls{kkt} conditions do not hold at~$\sstep[k]$}{ \nllabel{alg:nnls-kkt}
         Build~$\mathcal{W}^k$ by removing from~$\mathcal{W}^{k - 1}$ an index yielding
         \begin{algomathdisplay}
-            \min_{i \in \mathcal{W}^k} \frac{\partial \mu}{\partial \iter_i}(\sstep[k])
+            \min_{i \in \mathcal{W}^k} @@ \frac{\partial \mu}{\partial \iter_i}(\sstep[k])
         \end{algomathdisplay} \nllabel{alg:nnls-remove}
         Set the trial point~$\pstep[k] \gets \Pi(\mathcal{W}^k)$\; \nllabel{alg:nnls-trial-1}
         \While{$\pstep[k]_i \le 0$ for some~$i \notin \mathcal{W}^k$ with~$i \le n_0$}{  \nllabel{alg:nnls-inner}
             Set the steplength
             \begin{algomathdisplay}
-                \alpha^k \gets \min \set[\bigg]{\frac{\sstep[k]_i}{\sstep[k]_i - \pstep[k]_i} : \pstep[k]_i \le 0, ~ i \notin \mathcal{W}^k, ~ i \le n_0}
+                \alpha^k \gets \min @@ \set[\bigg]{\frac{\sstep[k]_i}{\sstep[k]_i - \pstep[k]_i} : \pstep[k]_i \le 0, ~ i \notin \mathcal{W}^k, ~ i \le n_0}
             \end{algomathdisplay}
             Update~$\sstep[k + 1] \gets \sstep[k] + \alpha^k (\pstep[k] - \sstep[k])$ and increment~$k$\; 
             Expand the working set~$\mathcal{W}^k \gets \mathcal{W}^{k - 1} \cup \set{i \le n_0 : \sstep[k]_i = 0}$\;

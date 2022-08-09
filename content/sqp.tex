@@ -95,7 +95,7 @@ See~\cite{Boggs_Tolle_1995,Gould_Toint_2000,Schittkowski_Yuan_2011,Gill_Wong_201
 
 In \cref{alg:sqp}, it is crucial that~$H^k$ approximates~$\nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
 It may be tempting to set~$H^k \approx \nabla \obj(\iter[k])$, because the objective function of the \gls{sqp} subproblem would then be a local quadratic approximation of~$\obj$ at~$\iter[k]$.
-However, such a naive idea does not work, as illustrated by the following~$2$-dimensional example inspired by \citeauthor{Boggs_Tolle_1995}~\cite[\S~2.2]{Boggs_Tolle_1995}.
+However, such a naive idea does not work, as illustrated by the following example inspired by \citeauthor{Boggs_Tolle_1995}~\cite[\S~2.2]{Boggs_Tolle_1995}.
 
 We consider
 \begin{align*}
@@ -261,7 +261,7 @@ This is detailed in \cref{thm:sqp-path}.
     Consider a curve parametrized by~$\iter : \R \to \R^n$, satisfying
     \begin{equation}
         \label{eq:sqp-path}
-        h(\iter(t)) = h(\bar{\iter}) \quad \text{for all~$t \in \R$}, \quad \text{and} \quad \iter(0) = \bar{\iter}.
+        h \big( \iter(t) \big) = h(\bar{\iter}) \quad \text{for all~$t \in \R$}, \quad \text{and} \quad \iter(0) = \bar{\iter}.
     \end{equation}
     If~$\iter$ is twice differentiable and~$\iter''$ is locally Lipschitz continuous, then there exist constants~$\nu \ge 0$ and~$\epsilon > 0$ such that
     \begin{equation*}
@@ -272,21 +272,21 @@ This is detailed in \cref{thm:sqp-path}.
 \begin{proof}
     Define
     \begin{equation*}
-        \phi(t) \eqdef \obj(x(t)), \quad \text{for~$t \in \R$.}
+        \phi(t) \eqdef \obj \big( x(t) \big), \quad \text{for~$t \in \R$.}
     \end{equation*}
     By assumption,~$\phi$ is twice differentiable and there exists~$\epsilon > 0$ such that~$\phi''$ is Lipschitz continuous in~$(-\epsilon, \epsilon)$.
     Let~$\widehat{\phi}$ be the second-order Taylor expansion of~$\phi$ at~$0$.
     Then
     \begin{equation}
         \label{eq:sqp-path-proof-2}
-        \abs{\obj(\iter(t)) - Q(\iter'(0) t)} \le \abs{\phi(t) - \widehat{\phi}(t)} + \abs{\widehat{\phi}(t) - Q(\iter'(0) t)},
+        \abs[\big]{\obj \big(\iter(t) \big) - Q(\iter'(0) t)} \le \abs[\big]{\phi(t) - \widehat{\phi}(t)} + \abs[\big]{\widehat{\phi}(t) - Q(\iter'(0) t)},
     \end{equation}
     and the Lipschitz continuity of~$\phi''$ ensures the existence of a constant~$\nu \ge 0$ such that
     \begin{equation}
         \label{eq:sqp-path-proof-3}
-        \abs{\phi(t) - \widehat{\phi}(t)} \le \nu t^3 \quad \text{for~$t \in (-\epsilon, \epsilon)$.}
+        \abs[\big]{\phi(t) - \widehat{\phi}(t)} \le \nu t^3 \quad \text{for~$t \in (-\epsilon, \epsilon)$.}
     \end{equation}
-    We now bound~$\abs{\widehat{\phi}(t) - Q(\iter'(0) t)}$.
+    We now bound~$\abs[\big]{\widehat{\phi}(t) - Q(\iter'(0) t)}$.
     Noting that~$\iter(0) = \bar{\iter}$, we have
     \begin{subequations}
         \label{eq:sqp-path-proof-1}
@@ -300,20 +300,20 @@ This is detailed in \cref{thm:sqp-path}.
     \begin{subequations}
         \label{eq:sqp-path-proof-4}
         \begin{align}
-            \abs{\widehat{\phi}(t) - Q(x'(0) t)}    & = \frac{t^2}{2} \abs{\phi''(0) - \iter'(0)^{\T} \nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm}) \iter'(0)}\\
-                                                    & = \frac{t^2}{2} \abs[\bigg]{\iter''(0)^{\T} \nabla \obj(\bar{\iter}) - \sum_{i = 1}^m \bar{\lm}_i \iter'(0) \nabla^2 h_i(\bar{\iter}) \iter'(0)}, \label{eq:sqp-path-proof-4-2}
+            \abs[\big]{\widehat{\phi}(t) - Q(x'(0) t)}  & = \frac{t^2}{2} \abs[\big]{\phi''(0) - \iter'(0)^{\T} \nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm}) \iter'(0)}\\
+                                                        & = \frac{t^2}{2} \abs[\bigg]{\iter''(0)^{\T} \nabla \obj(\bar{\iter}) - \sum_{i = 1}^m \bar{\lm}_i \iter'(0) \nabla^2 h_i(\bar{\iter}) \iter'(0)}, \label{eq:sqp-path-proof-4-2}
         \end{align}
     \end{subequations}
     where the second equality uses the formula of~$\phi''(0)$ in~\cref{eq:sqp-path-proof-1-2} and the definition of~$\lag$.
-    Moreover, since~$h(\iter(t)) = h(\bar{\iter})$ for all~$t \in \R$, we have for each~$i \in \set{1, 2, \dots, m}$ that
+    Moreover, since~$h \big( \iter(t) \big) = h(\bar{\iter})$ for all~$t \in \R$, we have for each~$i \in \set{1, 2, \dots, m}$ that
     \begin{equation}
         \label{eq:sqp-path-proof-6}
-        0 = \frac{\du^2}{\du t^2} h_i(\iter(t)) \bigg\vert_{t = 0} = \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) + \iter''(0)^{\T} \nabla h_i(\bar{\iter}).
+        0 = \frac{\du^2}{\du t^2} h_i \big( \iter(t) \big) \bigg\vert_{t = 0} = \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) + \iter''(0)^{\T} \nabla h_i(\bar{\iter}).
     \end{equation}
     Therefore,~$\iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) = -\iter''(0)^{\T} \nabla h_i(\bar{\iter})$ for each~$i$ and hence,~\cref{eq:sqp-path-proof-4} leads to
     \begin{equation}
         \label{eq:sqp-path-proof-5}
-        \abs{\widehat{\phi}(t) - Q(x'(0) t)} \le \frac{t^2}{2} \abs{\iter''(0)^{\T} [\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}]}.
+        \abs[\big]{\widehat{\phi}(t) - Q(x'(0) t)} \le \frac{t^2}{2} \abs[\big]{\iter''(0)^{\T} \big[ \nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm} \big]}.
     \end{equation}
     Plugging~\cref{eq:sqp-path-proof-3,eq:sqp-path-proof-5} into~\cref{eq:sqp-path-proof-2}, we obtain the desired result.
 \end{proof}
@@ -372,7 +372,7 @@ If~$(\bar{\iter}, \bar{\lm})$ is close to a \gls{kkt} pair, then~$\norm{\nabla \
 On the other hand, if we defined~$\nabla^2 Q$ by~$\nabla^2 \obj(\bar{\iter})$ instead of~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$, then under the assumptions of \cref{thm:sqp-path}, we would have
 \begin{equation}
     \label{eq:sqp-path-obj-only}
-    \abs{\obj(\iter(t)) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2}\abs{\iter''(0)^{\T} \nabla \obj(\bar{\iter})} \bigg) t^2 \quad \text{for all~$t \in (-\epsilon, \epsilon)$,}
+    \abs[\big]{\obj \big( \iter(t) \big) - Q(x'(0) t)} \le \bigg( \nu t + \frac{1}{2} \abs[\big]{\iter''(0)^{\T} \nabla \obj(\bar{\iter})} \bigg) t^2 \quad \text{for all~$t \in (-\epsilon, \epsilon)$,}
 \end{equation}
 which can be obtained by setting~$\bar{\lm} = 0$ in \cref{thm:sqp-path}.
 However, since we are considering constrained optimization, we cannot expect~$\norm{\nabla \obj(\bar{\iter})}$ to be small even if~$\bar{\iter}$ is close to a solution unless no constraint is taking effect at this solution.
@@ -391,20 +391,20 @@ In contrast, the objective function of the \gls{sqp} subproblem can achieve a be
 It is worth mentioning that \cref{thm:sqp-path} still holds if~$\iter$ satisfies
 \begin{equation}
     \label{eq:sqp-path-alt}
-    \bar{\lm}^{\T} h(\iter(t)) = \bar{\lm}^{\T} h(\bar{\iter}) \quad \text{for all~$t \in \R$}, \quad \text{and} \quad \iter(0) = \bar{\iter}
+    \bar{\lm}^{\T} h \big( \iter(t) \big) = \bar{\lm}^{\T} h(\bar{\iter}) \quad \text{for all~$t \in \R$}, \quad \text{and} \quad \iter(0) = \bar{\iter}
 \end{equation}
 instead of~\cref{eq:sqp-path}.
 Given~\cref{eq:sqp-path-alt}, we will have
 \begin{equation*}
-    0 = \frac{\du^2}{\du t^2} \bar{\lm}^{\T} h(\iter(t)) \bigg\vert_{t = 0} = \bar{\lm}^{\T} \nabla h(\bar{\iter}) \iter''(0) + \sum_{i = 1}^m \bar{\lm}_i \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0).
+    0 = \frac{\du^2}{\du t^2} \bar{\lm}^{\T} h \big( \iter(t) \big) \bigg\vert_{t = 0} = \bar{\lm}^{\T} \nabla h(\bar{\iter}) \iter''(0) + \sum_{i = 1}^m \bar{\lm}_i \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0).
 \end{equation*}
 Plugging this into~\cref{eq:sqp-path-proof-4-2}, we obtain again~\cref{eq:sqp-path-proof-5} and hence, establish the same estimation of~$\abs{\obj(\iter(t)) - Q(x'(0) t)}$.
-Therefore, $Q$ is indeed a quadratic approximation of~$\obj$ in
+Therefore, $Q$ is a quadratic approximation of~$\obj$ in
 \begin{equation*}
     \mathcal{T}_{\bar{\iter}, \bar{\lm}} = \set{\step \in \R^n : \bar{\lm}^{\T} \nabla h(\bar{\iter}) \step = 0},
 \end{equation*}
 which is linear space that contains~$\mathcal{T}_{\bar{\iter}}$ as a subset.
-Note that the dimension of~$\mathcal{T}_{\bar{\iter}, \bar{\lm}}$ is at least~$n - 1$, while that of~$\mathcal{T}_{\bar{\iter}}$ is~$n - \rank(\nabla h(\bar{\iter}))$.
+Note that the dimension of~$\mathcal{T}_{\bar{\iter}, \bar{\lm}}$ is at least~$n - 1$, while that of~$\mathcal{T}_{\bar{\iter}}$ is~$n - \rank \big( \nabla h(\bar{\iter}) \big)$.
 
 \subsection{Lagrangian and augmented Lagrangian of the \glsfmtshort{sqp} subproblem}
 \label{subsec:lagrangian-augmented-lagrangian}
@@ -548,7 +548,7 @@ Interested readers may refer to the references mentioned above for more details.
 
 \subsection{The Courant merit function}
 
-Perhaps the most classical merit function is the Courant merit function\footnote{\citeauthor{Courant_1943} proposed this merit function when dealing with boundary conditions of equilibrium and vibration problems. See~\cite[Pt.~II, \S~3]{Courant_1943} for details.}~\cite{Courant_1943}, defined by
+Perhaps the most classical merit function is the Courant function\footnote{\citeauthor{Courant_1943} proposed this merit function when dealing with boundary conditions of equilibrium and vibration problems. See~\cite[Pt.~II, \S~3]{Courant_1943} for details.}~\cite{Courant_1943}, defined by
 \begin{equation*}
     \merit_{\gamma}(\iter) \eqdef \obj(\iter) + \gamma \bigg( \sum_{i \in \iub} \posp{\con{i}(\iter)}^2 + \sum_{i \in \ieq} \con{i}(\iter)^2 \bigg), \quad \text{for~$x \in \R^n$ and~$\gamma \ge 0$,}
 \end{equation*}
@@ -590,12 +590,12 @@ The augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973,Rockaf
 where~$\lag$ denotes the Lagrangian function of the problem~\cref{eq:problem-cobyqa-sqp}.
 The augmented Lagrangian merit function is then defined as
 \begin{equation*}
-    \merit_{\gamma}(\iter) = \auglag(\iter, \lm[\mathsf{LS}](\iter)),
+    \merit_{\gamma}(\iter) \eqdef \auglag(\iter, \lm[\mathsf{LS}](\iter)),
 \end{equation*}
 where~$\lm[\mathsf{LS}](\iter)$ denotes the least-norm solution to
 \begin{equation}
     \label{eq:least-squares-lagrange-multipliers}
-    \min_{\lm} \norm[\bigg]{\nabla \obj(\iter) + \sum_{i \in \ieq} \lm_i \nabla \con{i}(x)},
+    \min_{\lm} @@ \norm[\bigg]{\nabla \obj(\iter) + \sum_{i \in \ieq} \lm_i \nabla \con{i}(x)},
 \end{equation}
 where~$\lm = [\lm_i]_{i \in \ieq}^{\T}$.
 % The least-squares Lagrange multipliers attempts to satisfy the \gls{kkt} conditions as much as possible.
@@ -686,7 +686,7 @@ A similar framework for equality-constrained problems can be found in~\cite[\S~2
                             & \quad \step \in \R^n, \nonumber
             \end{algomathalign}
         \end{subequations} \nllabel{alg:trust-region-sqp-step}
-        Pick a penalty parameter~$\gamma^k \ge \max \set{\gamma^{k - 1}, \norm{\lm[k]}}$ providing~$\meritm[k](\step[k]) < \meritm[k](0)$\; \nllabel{alg:trust-region-sqp-penalty}
+        Pick a penalty parameter~$\gamma^k \ge \max @@ \set{\gamma^{k - 1}, \norm{\lm[k]}}$ providing~$\meritm[k](\step[k]) < \meritm[k](0)$\; \nllabel{alg:trust-region-sqp-penalty}
         Evaluate the trust-region ratio
         \begin{algomathdisplay}
             \ratio[k] \gets \frac{\merit[k](\iter[k]) - \merit[k](\iter[k] + \step[k])}{\meritm[k](0) - \meritm[k](\step[k])}
@@ -739,8 +739,8 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
     \KwData{Merit function~$\meritm_{\gamma}$ for~$\gamma \ge 0$, trial step~$\step[k] \in \R^n$, Lagrange multiplier estimation~$\lm[k]$, previous penalty parameter~$\gamma^{k - 1} \ge 0$, and constants~$1 \le \eta_3 \le \eta_4$.}
     \KwResult{Updated penalty parameter~$\gamma^k \ge \gamma^{k - 1}$.}
     Set~$\bar{\gamma} \gets \argmin \set{\gamma \ge 0 : \meritm_{\gamma}(\step[k]) \le \meritm_{\gamma}(0)}$\nomenclature[Oo]{$\argmin$}{Global minimizer operator}\;
-    \eIf{$\gamma^{k - 1} \le \eta_3 \max \set{\bar{\gamma}, \norm{\lm[k]}}$}{
-        Set~$\gamma^k \gets \eta_4 \max \set{\bar{\gamma}, \norm{\lm[k]}}$\;
+    \eIf{$\gamma^{k - 1} \le \eta_3 \max @@ \set{\bar{\gamma}, \norm{\lm[k]}}$}{
+        Set~$\gamma^k \gets \eta_4 \max @@ \set{\bar{\gamma}, \norm{\lm[k]}}$\;
     }{
         Set~$\gamma^k \gets \gamma^{k - 1}$\;
     }
@@ -827,7 +827,7 @@ We now point out that the above-mentioned normal step~$\nstep[k]$ is an approxim
     Let~$\nstep[k]$ be the least-norm solution to~\cref{eq:vardi-original}, and let~$\step[\ast]$ be the least-norm global minimizer of~\cref{eq:byrd-omojokun-original-obj} without any constraint.
     Then~$\nstep[k]$ solves
     \begin{equation*}
-        \min \set[\bigg]{\sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 : \step = t \step[\ast], ~ t \ge 0, ~ \norm{d} \le \zeta \rad[k]},
+        \min @@ \set[\bigg]{\sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 : \step = t \step[\ast], ~ t \ge 0, ~ \norm{d} \le \zeta \rad[k]},
     \end{equation*}
     with~$\zeta = \norm{\nstep[k]} / \rad[k]$.
 \end{proposition}
@@ -914,8 +914,8 @@ Further, we define the tangential step~$\tstep[k]$ as a solution to~\cref{eq:tan
 \begin{subequations}
     \label{eq:byrd-omojokun-feasible-set}
     \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \nabla \con{i}(\iter[k])^{\T} \step \le \max \set{-\con{i}(\iter[k]) - \nabla \con{i}(\iter[k])^{\T} \nstep[k], 0}    && \quad \text{if~$i \in \iub$,}\\
-        & \nabla \con{i}(\iter[k])^{\T} \step = 0                                                                               && \quad \text{if~$i \in \ieq$.}
+        & \nabla \con{i}(\iter[k])^{\T} \step \le \max @@ \set{-\con{i}(\iter[k]) - \nabla \con{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub,\\
+        & \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq.
     \end{empheq}
 \end{subequations}
 Then we take the composite step~$\step[k] = \nstep[k] + \tstep[k]$, which solves
@@ -923,7 +923,7 @@ Then we take the composite step~$\step[k] = \nstep[k] + \tstep[k]$, which solves
     \label{eq:vardi-composite-step}
     \begin{align}
         \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step \label{eq:vardi-composite-step-obj}\\
-        \text{s.t.} & \quad \nabla \con{i}(\iter[k])^{\T} \step \le \max \set{-\con{i}(\iter[k]), \nabla \con{i}(\iter[k])^{\T} \nstep[k]}, ~ i \in \iub, \label{eq:vardi-composite-step-ub}\\
+        \text{s.t.} & \quad \nabla \con{i}(\iter[k])^{\T} \step \le \max @@ \set{-\con{i}(\iter[k]), \nabla \con{i}(\iter[k])^{\T} \nstep[k]}, ~ i \in \iub, \label{eq:vardi-composite-step-ub}\\
                     & \quad \nabla \con{i}(\iter[k])^{\T} \step = \nabla \con{i}(\iter[k])^{\T} \nstep[k], ~ i \in \ieq, \label{eq:vardi-composite-step-eq}\\
                     & \quad \norm{\step} \le \rad[k],\\
                     & \quad \step \in \R^n, \nonumber
@@ -948,10 +948,10 @@ The extension of the Vardi approach we propose is adapted from an idea proposed 
 We replace the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
 \begin{subequations}
     \label{eq:vardi}
-    \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,        && \quad \text{if~$i \in \iub \setminus \act(\iter[k])$,} \label{eq:vardi-ub2}\\
-        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, && \quad \text{if~$i \in \iub \cap \act(\iter[k])$,} \label{eq:vardi-ub1}\\
-        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \ieq$,} \label{eq:vardi-eq}
+    \begin{empheq}[left=\empheqlbrace]{alignat=1}
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub \setminus \act(\iter[k]), \label{eq:vardi-ub2}\\
+        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub \cap \act(\iter[k]), \label{eq:vardi-ub1}\\
+        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:vardi-eq}
     \end{empheq}
 \end{subequations}
 for some~$\alpha \in [0, 1]$, where~$\act(\iter[k])$ designates the active set for the problem~\cref{eq:problem-cobyqa-sqp} at~$\iter[k]$ (see \cref{def:active-set}), so that the trust-region subproblem after the replacement becomes feasible, this subproblem being
@@ -973,14 +973,14 @@ Remark that~\cref{eq:vardi} does not modify a linearized inequality constraint i
 Even more, if~$\iter[k]$ satisfies a constraint (whether inequality or equality), then its linearized counterpart is not modified.
 To be more specific, let~$\mathcal{J}$ contain the indices of the constraints that are satisfied at~$\iter[k]$, i.e.,
 \begin{equation*}
-    \mathcal{J} \eqdef \set{i \in \iub \cup \ieq : \con{i}(\iter[k]) \le 0 ~ \text{if~$i \in \iub$}, ~\con{i}(\iter[k]) = 0 ~ \text{if~$i \in \ieq$}}.
+    \mathcal{J} \eqdef \set{i \in \iub \cup \ieq : \con{i}(\iter[k]) \le 0, ~ i \in \iub ~ \text{and} ~ \con{i}(\iter[k]) = 0, ~ i \in \ieq}.
 \end{equation*}
 Then~\cref{eq:vardi} does not modify the constraints in~$\mathcal{J}$, and replaces the others by
 \begin{subequations}
     \label{eq:vardi-alternative}
-    \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, && \quad \text{if~$i \in \iub \setminus \mathcal{J}$,}\\
-        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \ieq \setminus \mathcal{J}$.}
+    \begin{empheq}[left=\empheqlbrace]{alignat=1}
+        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub \setminus \mathcal{J},\\
+        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq \setminus \mathcal{J}.
     \end{empheq}
 \end{subequations}
 This is because the difference between~$(\iub \cap \act(\iter[k])) \cup \ieq$ and~$(\iub \setminus \mathcal{J}) \cup (\ieq \setminus \mathcal{J})$ are the indices such that~$\con{i}(\iter[k]) = 0$, for which~$\alpha \con{i}(\iter[k]) = \con{i}(\iter[k])$.
@@ -988,10 +988,10 @@ This is because the difference between~$(\iub \cap \act(\iter[k])) \cup \ieq$ an
 We now explain why this method can be understood as a composite-step approach, assuming that the system
 \begin{subequations}
     \label{eq:vardi-normal-step}
-    \begin{empheq}[left=\empheqlbrace]{alignat=2}
-        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0,        && \quad \text{if~$i \in \iub \setminus \act(\iter[k])$,} \label{eq:vardi-normal-step-1}\\
-        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \iub \cap \act(\iter[k])$,}\\
-        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0,   && \quad \text{if~$i \in \ieq$,}
+    \begin{empheq}[left=\empheqlbrace]{alignat=1}
+        & \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub \setminus \act(\iter[k]), \label{eq:vardi-normal-step-1}\\
+        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \iub \cap \act(\iter[k]),\\
+        & \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,
     \end{empheq}
 \end{subequations}
 admits a solution whose norm is at most~$\rad[k]$, which ensures that~\cref{eq:sqp-subproblem-vardi} is feasible.
@@ -1012,17 +1012,17 @@ In this setting,~$\nstep[k] + \tstep[k]$ is a solution to~\cref{eq:vardi-composi
 \begin{proof}
     We only need to show that the constraints~\cref{eq:sqp-subproblem-vardi-eq,eq:sqp-subproblem-vardi-ub1,eq:sqp-subproblem-vardi-ub2} are equivalent to~\cref{eq:vardi-composite-step-ub,eq:vardi-composite-step-eq}, the latter of which can be reformulated as
     \begin{subequations}
-        \begin{empheq}[left=\empheqlbrace]{alignat=2}
-            & \nabla \con{i}(\iter[k])^{\T} \step \le \max \set{-\con{i}(\iter[k]), \nabla \con{i}(\iter[k])^{\T} \nstep[k]}    && \quad \text{if~$i \in \iub \setminus \act(\iter[k])$}, \label{eq:sqp-subproblem-vardi-proof-1}\\
-            & \nabla \con{i}(\iter[k])^{\T} \step \le \max \set{-\con{i}(\iter[k]), \nabla \con{i}(\iter[k])^{\T} \nstep[k]}    && \quad \text{if~$i \in \iub \cap \act(\iter[k])$}, \label{eq:sqp-subproblem-vardi-proof-2}\\
-            & \nabla \con{i}(\iter[k])^{\T} \step = \nabla \con{i}(\iter[k])^{\T} \nstep[k],                              && \quad \text{if~$i \in \ieq$.} \label{eq:sqp-subproblem-vardi-proof-3}
+        \begin{empheq}[left=\empheqlbrace]{alignat=1}
+            & \nabla \con{i}(\iter[k])^{\T} \step \le \max @@ \set{-\con{i}(\iter[k]), \nabla \con{i}(\iter[k])^{\T} \nstep[k]}, ~ i \in \iub \setminus \act(\iter[k]), \label{eq:sqp-subproblem-vardi-proof-1}\\
+            & \nabla \con{i}(\iter[k])^{\T} \step \le \max @@ \set{-\con{i}(\iter[k]), \nabla \con{i}(\iter[k])^{\T} \nstep[k]}, ~ i \in \iub \cap \act(\iter[k]), \label{eq:sqp-subproblem-vardi-proof-2}\\
+            & \nabla \con{i}(\iter[k])^{\T} \step = \nabla \con{i}(\iter[k])^{\T} \nstep[k], ~ i \in \ieq. \label{eq:sqp-subproblem-vardi-proof-3}
         \end{empheq}
     \end{subequations}
     Since~$\nabla \con{i}(\iter[k])^{\T} \nstep[k] = -\alpha \con{i}(\iter[k])$ for~$i \in \ieq$, it is clear that~\cref{eq:sqp-subproblem-vardi-eq} is equivalent to~\cref{eq:sqp-subproblem-vardi-proof-3}.
     Moreover, for~$i \in \iub \cap \act(\iter[k])$, we have~$\con{i}(\iter[k]) \ge 0$ and~$\nabla \con{i}(\iter[k])^{\T} \nstep[k] = -\alpha \con{i}(\iter[k])$, so that~\cref{eq:sqp-subproblem-vardi-ub1} is equivalent to~\cref{eq:sqp-subproblem-vardi-proof-2} because~$\alpha \le 1$.
     Finally, for~$i \in \iub \setminus \act(\iter[k])$, since~$\nstep[k]$ satisfies~\cref{eq:vardi-normal-step-1}, we have
     \begin{equation*}
-        \max \set{-\con{i}(\iter[k]), \nabla \con{i}(\iter[k])^{\T} \nstep[k]} = -\con{i}(\iter[k]),
+        \max @@ \set{-\con{i}(\iter[k]), \nabla \con{i}(\iter[k])^{\T} \nstep[k]} = -\con{i}(\iter[k]),
     \end{equation*}
     so that~\cref{eq:sqp-subproblem-vardi-ub2} is equivalent to~\cref{eq:sqp-subproblem-vardi-proof-1}.
     The proof is complete.

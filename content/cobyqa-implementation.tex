@@ -29,7 +29,7 @@ When presenting the framework of \gls{cobyqa} in \cref{ch:cobyqa-introduction}, 
     \item the initial trust-region radius satisfy
     \begin{equation}
         \label{eq:initial-trust-region-radius-condition}
-        \rad[0] \le \frac{1}{2} \min_{1 \le i \le n} (\xu_i - \xl_i).
+        \rad[0] \le \frac{1}{2} \min_{1 \le i \le n} @@ (\xu_i - \xl_i).
     \end{equation}
 \end{enumerate}
 In the implementation of \gls{cobyqa}, we try to satisfy these conditions as long as possible.
@@ -123,7 +123,7 @@ This would have the ability to be interfaced with several other languages, such 
 However, developing software in Fortran is time-consuming, and hence, this work will be carried out in the future.
 
 The initial version of \gls{cobyqa} was entirely written in pure Python.
-However, its execution time was prohibitively long on problems of dimensions~$50$ and above.
+However, its execution time was prohibitively long on problems of dimensions~$n = 50$ and above.
 Since most of the work was done in the subproblem solvers, the author decided to implement them in Cython~\cite{Behnel_Etal_2011}.
 It is a compiled language that aims at improving the performance of Python code.
 All the functions implemented in the module \texttt{cobyqa.linalg} are implemented in Cython.

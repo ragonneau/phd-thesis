@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/08/08 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/08/09 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifmeeting

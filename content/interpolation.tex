@@ -101,15 +101,15 @@ Throughout this section, we fix a poised interpolation set~$\xpt = \set{y^1, y^2
 We introduce the Lagrange polynomials for the interpolation problem
 \begin{equation}
     \label{eq:interpolation-conditions-quadratic}
-    \objm(y^i) = \obj(y^i), \quad \text{for~$i \in \set{1, 2, \dots, m}$}, \quad \text{with~$\objm \in \qpoly$}.
+    \objm(y^i) = \obj(y^i), \quad \text{for~$i \in \set{1, 2, \dots, m}$ with~$\objm \in \qpoly$}.
 \end{equation}
 
 \begin{definition}[Lagrange polynomials for~\cref{eq:interpolation-conditions-quadratic}]
     \label{def:lagrange-polynomials}
     For each~$i \in \set{1, 2, \dots, m}$, the~$i$th Lagrange polynomial~$\lagp[i]$ for the interpolation problem~\cref{eq:interpolation-conditions-quadratic} is the unique quadratic polynomial that satisfies
-    \begin{empheq}[left={\lagp[i](y^j) = \empheqlbrace}]{alignat*=2}
-        & 1,    && \quad \text{if~$j = i$,}\\
-        & 0,    && \quad \text{if~$j \in \set{1, 2, \dots, m} \setminus \set{i}$.}
+    \begin{empheq}[left={\lagp[i](y^j) = \empheqlbrace}]{alignat*=1}
+        & 1, ~ j = i,\\
+        & 0, ~ j \in \set{1, 2, \dots, m} \setminus \set{i}.
     \end{empheq}
 \end{definition}
 
@@ -145,12 +145,12 @@ A similar bound is established in~\cite[Thm.~2]{Ciarlet_Raviart_1972}.
 For any compact set~$\mathcal{C} \subseteq \R^n$, we then clearly have
 \begin{equation}
     \label{eq:ciarlet-raviard-bound}
-    \max_{\iter \in \mathcal{C}} \abs{\obj(\iter) - \objm(\iter)} \le \frac{m \theta \Lambda}{6} \max_{1 \le i \le m} \max_{\iter \in \mathcal{C}} \norm{x - y^i}^3,
+    \max_{\iter \in \mathcal{C}} @@ \abs{\obj(\iter) - \objm(\iter)} \le \frac{m \theta \Lambda}{6} \max_{1 \le i \le m} \max_{\iter \in \mathcal{C}} @@ \norm{x - y^i}^3,
 \end{equation}
 where~$\Lambda$ is defined by
 \begin{equation}
     \label{eq:lambda-poisedness-convex-hull}
-    \Lambda \eqdef \max_{1 \le i \le m} \max_{\iter \in \mathcal{C}} \abs{\lagp[i](\iter)}.
+    \Lambda \eqdef \max_{1 \le i \le m} \max_{\iter \in \mathcal{C}} @@ \abs{\lagp[i](\iter)}.
 \end{equation}
 In this sense,~$\Lambda$ measures the well-poisedness of the interpolation set~$\xpt$ with respect to the set~$\mathcal{C}$.
 This motivates the following concept of~$\Lambda$-poisedness.
@@ -159,7 +159,7 @@ This motivates the following concept of~$\Lambda$-poisedness.
     \label{def:lambda-poisedness}
     A poised interpolation set~$\xpt \subseteq \R^n$ is said to be~$\Lambda$-poised in a compact set~$\mathcal{C} \subseteq \R^n$, for some~$\Lambda > 0$, if
     \begin{equation*}
-        \Lambda \ge \max_{1 \le i \le m} \max_{\iter \in \mathcal{C}} \abs{\lagp[i](\iter)}.
+        \Lambda \ge \max_{1 \le i \le m} \max_{\iter \in \mathcal{C}} @@ \abs{\lagp[i](\iter)}.
     \end{equation*}
 \end{definition}
 
@@ -321,7 +321,7 @@ We now present the notion of~$\Lambda$-poisedness in the minimum Frobenius norm 
     \label{def:lambda-poisedness-minimum-norm}
     A poised interpolation set~$\xpt \subseteq \R^n$ in the minimum Frobenius norm sense is said to be~$\Lambda$-poised in the minimum Frobenius norm sense in a compact set~$\mathcal{C} \subseteq \R^n$, for some~$\Lambda > 0$, if
     \begin{equation*}
-        \Lambda \ge \max_{1 \le i \le m} \max_{\iter \in \mathcal{C}} \abs{\lagp[i](\iter)}.
+        \Lambda \ge \max_{1 \le i \le m} \max_{\iter \in \mathcal{C}} @@ \abs{\lagp[i](\iter)}.
     \end{equation*}
 \end{definition}
 
@@ -382,7 +382,7 @@ Clearly, the function~$\objm$ solves
         \min        & \quad \norm{\nabla^2 Q - H_{\text{old}}}_{\mathsf{F}}\\
         \text{s.t.} & \quad Q(y^1) = \obj(y^1),\\
                     & \quad \nabla Q(y^i) = \nabla \obj(y^i), ~ i \in \set{1, 2},\\
-                    & \quad Q \in \qpoly,
+                    & \quad Q \in \qpoly.
     \end{align}
 \end{subequations}
 The variational problem~\cref{eq:symmetric-broyden-models} is a derivative-free analog of~\cref{eq:psb-variational-problem}.
@@ -460,7 +460,7 @@ The explicit and implicit parts of~$H^k$ can then be updated as
     \label{eq:hessian-explicit-implicit-update}
     \begin{empheq}[left=\empheqlbrace]{alignat=1}
         & \Gamma^{k + 1} = \Gamma^k + \gamma_{\ell}^k (y^{k, \ell} - \iter[k]) (y^{k, \ell} - \iter[k])^{\T},\\
-        & \gamma_{i}^{k + 1} = \gamma_{i}^k + \lm_i, \quad \text{for~$i \in \set{1, 2, \dots, m} \setminus \set{\ell}$},\\
+        & \gamma_{i}^{k + 1} = \gamma_{i}^k + \lm_i, ~i \in \set{1, 2, \dots, m} \setminus \set{\ell},\\
         & \gamma_{\ell}^{k + 1} = \lm_{\ell}.
     \end{empheq}
 \end{subequations}
@@ -529,7 +529,7 @@ In this sense,~$\mathcal{Z}_{2n + 1}$ is an optimal interpolation set.
 
 According to \cref{def:lambda-poisedness-minimum-norm} and the equation~\cref{eq:ball-initial}, the set~$\mathcal{Z}_m$ is~$\Lambda_p$-poised in~$\ball[p][m]$ in the minimum Frobenius norm sense with
 \begin{equation*}
-    \Lambda_p \eqdef \max_{1 \le i \le m} \max_{\iter \in \ball[p](\delta)} \abs{\lagp[i](\iter)},
+    \Lambda_p \eqdef \max_{1 \le i \le m} \max_{\iter \in \ball[p](\delta)} @@ \abs{\lagp[i](\iter)},
 \end{equation*}
 where~$\lagp[i]$ is the~$i$th minimum Frobenius norm Lagrange polynomial associated with~$\mathcal{Z}_m$ for~$i \in \set{1, 2, \dots, m}$.
 
@@ -587,22 +587,22 @@ The next lemma simplifies the value of~$\Lambda_p$ for further computations.
     For any~$m \in \set{n + 2, n + 3, \dots, 2n + 1}$ and any~$p \in [1, \infty]$, we have
     \begin{equation}
         \label{eq:lambda-poisedness-initial-simple}
-        \Lambda_p = \max_{\iter \in \ball[p](\delta)} \abs{\lagp[1](\iter)}.
+        \Lambda_p = \max_{\iter \in \ball[p](\delta)} @@ \abs{\lagp[1](\iter)}.
     \end{equation}
 \end{lemma}
 
 \begin{proof}
     For each~$i \in \set{2, 3, \dots, n + 1}$, according to~\cref{lem:lagrange-polynomials-initial},~$\lagp[i](\iter)$ depends only on~$x_{i - 1}$ for all~$\iter \in \R^n$, and hence
     \begin{equation*}
-        \max_{\iter \in \ball[p](\delta)} \abs{\lagp[i](\iter)} = \max_{t \in [-\delta, \delta]} \abs{\lagp[i](t e_{i - 1})} = 1.
+        \max_{\iter \in \ball[p](\delta)} @@ \abs{\lagp[i](\iter)} = \max_{t \in [-\delta, \delta]} @@ \abs{\lagp[i](t e_{i - 1})} = 1.
     \end{equation*}
     Similarly, for each~$i \in \set{n + 2, n + 3, \dots, m}$, since~$\lagp[i](\iter)$ depends only on~$x_{i - n - 1}$ for all~$\iter \in \R^n$, we have
     \begin{equation*}
-        \max_{\iter \in \ball[p](\delta)} \abs{\lagp[i](\iter)} = \max_{t \in [-\delta, \delta]} \abs{\lagp[i](t e_{i - n - 1})} = 1.
+        \max_{\iter \in \ball[p](\delta)} @@ \abs{\lagp[i](\iter)} = \max_{t \in [-\delta, \delta]} @@ \abs{\lagp[i](t e_{i - n - 1})} = 1.
     \end{equation*}
     Noting that~$\lagp[1](z^1) = 1$ and~$z^1 \in \ball[p](\delta)$, we thus have
     \begin{equation*}
-        \Lambda_p = \max_{\iter \in \ball[p](\delta)} \abs{\lagp[1](\iter)}.
+        \Lambda_p = \max_{\iter \in \ball[p](\delta)} @@ \abs{\lagp[1](\iter)}.
     \end{equation*}
 \end{proof}
 
@@ -621,7 +621,7 @@ We are now equiped to develop bounds on~$\Lambda_p$ in the general case.
     We will establish the bounds using the formulation of~$\Lambda_p$ in~\cref{lem:lambda-poisedness-initial-simple}.
     For the lower bound, by considering only the points in~$\R^n$ whose leading~$m - n - 1$ components are zeros and whose remaining~$2n + 1 - m$ components are equal, we have
     \begin{equation*}
-        \Lambda_p \ge \max_{t \in \R} \set{1 - \delta^{-1} (2n + 1 - m) t : (2n + 1 - m) \abs{t}^p \le \delta^p} = 1 + (2n + 1 - m)^{\frac{p - 1}{p}}.
+        \Lambda_p \ge \max_{t \in \R} @@ \set{1 - \delta^{-1} (2n + 1 - m) t : (2n + 1 - m) \abs{t}^p \le \delta^p} = 1 + (2n + 1 - m)^{\frac{p - 1}{p}}.
     \end{equation*}
     
     We now prove the upper bound.
@@ -629,7 +629,7 @@ We are now equiped to develop bounds on~$\Lambda_p$ in the general case.
     Therefore, we only need to show that~$\Lambda_{\infty} \le n$.
     Considering both~$\lagp[1]$ and~$-\lagp[1]$, we obtain
     \begin{equation*}
-        \Lambda_{\infty} = \max_{\iter \in \ball[\infty](\delta)} \abs{\lagp[1](\iter)} = \max \set{2n + 2 - m, n - 1} \le n.
+        \Lambda_{\infty} = \max_{\iter \in \ball[\infty](\delta)} @@ \abs{\lagp[1](\iter)} = \max @@ \set{2n + 2 - m, n - 1} \le n.
     \end{equation*}
 \end{proof}
 
@@ -699,15 +699,15 @@ We now calculate the exact value of~$\Lambda_p$ in some special cases.
         \begin{align}
             \lagp[1](\iter) &= 1 - \frac{1}{\delta^2} \sum_{j = 1}^{m - n - 1} x_j^2 - \frac{1}{\delta} \sum_{j = m - n}^n x_j\\
                             &\ge 1 - \frac{1}{\delta^2} \bigg( \delta^2 - \sum_{j = m - n}^n x_j^2 \bigg) - \frac{1}{\delta} \sum_{j = m - n}^n x_j = \sum_{j = m - n}^n \frac{x_j}{\delta} \bigg( 1 - \frac{x_j}{\delta} \bigg)\\
-                            &\ge \min_{y \in \ball[2](1)} \sum_{j = m - n}^n y_j (1 - y_j). \label{eq:lambda-poisedness-initial-2-proof}
+                            &\ge \min_{y \in \ball[2](1)} @@ \sum_{j = m - n}^n y_j (1 - y_j). \label{eq:lambda-poisedness-initial-2-proof}
         \end{align}
     \end{subequations}
     Let~$y^{\ast} \in \ball[2](1)$ be a minimizer in~\cref{eq:lambda-poisedness-initial-2-proof}.
     \Cref{thm:first-order-necessary-conditions} ensures that there exists a Lagrange multiplier~$\lm[\ast] \ge 0$ such that~$1 - 2 y_j^{\ast} + 2 \lm[\ast] y_j^{\ast} = 0$ for all~$j \in \set{m - n, \dots, n}$.
     Therefore, the last~$(2n + 1 - m)$ components of~$y^{\ast}$ are equal, and hence,
     \begin{align*}
-        \lagp[1](\iter) \ge \min_{y \in \ball[2](1)} \sum_{j = m - n}^n y_j (1 - y_j)   &= \min_{t \in \R} \set{(2n + 1 - m) t (1 - t) : (2n + 1 - m) t^2 \le 1}\\
-                                                                                    &= -1 - \sqrt{2n + 1 - m}.
+        \lagp[1](\iter) \ge \min_{y \in \ball[2](1)} @@ \sum_{j = m - n}^n y_j (1 - y_j)    &= \min_{t \in \R} @@ \set{(2n + 1 - m) t (1 - t) : (2n + 1 - m) t^2 \le 1}\\
+                                                                                            &= -1 - \sqrt{2n + 1 - m}.
     \end{align*}
 
     Furthermore,
@@ -716,7 +716,7 @@ We now calculate the exact value of~$\Lambda_p$ in some special cases.
     \end{equation*}
     Therefore,~$\abs{\lagp[1](\iter)} \le 1 + \sqrt{2n + 1 - m}$ and hence, according to~\cref{lem:lambda-poisedness-initial-simple,thm:lambda-poisedness-initial}, we have
     \begin{equation*}
-        \Lambda_2 = \max_{\iter \in \ball[2](\delta)} \abs{\lagp[1](\iter)} = 1 + \sqrt{2n + 1 - m},
+        \Lambda_2 = \max_{\iter \in \ball[2](\delta)} @@ \abs{\lagp[1](\iter)} = 1 + \sqrt{2n + 1 - m},
     \end{equation*}
     which concludes the proof.
 \end{proof}
@@ -728,7 +728,7 @@ Before developing the last special value of~$\Lambda_p$ we introduce the followi
     For any~$p \ge 1$ and~$q \ge 1$, we have
     \begin{subequations}
         \label{eq:max-norm-pq}
-        \begin{empheq}[left={\max\limits_{\iter \in \ball[q](1)} \norm{x}_p = \empheqlbrace}]{alignat=2}
+        \begin{empheq}[left={\max\limits_{\iter \in \ball[q](1)} @@ \norm{x}_p = \empheqlbrace}]{alignat=2}
             & 1,                    && \quad \text{if~$p \ge q$,} \label{eq:max-norm-pq-1}\\
             & n^{\frac{q - p}{pq}}, && \quad \text{otherwise.} \label{eq:max-norm-pq-2}
         \end{empheq}
@@ -753,7 +753,7 @@ Before developing the last special value of~$\Lambda_p$ we introduce the followi
     \label{prop:lambda-poisedness-initial-optimal}
     For any~$p \ge 1$, if~$m = 2n + 1$, then
     \begin{equation*}
-        \Lambda_p = \max \set[\big]{1, n^{\frac{p - 2}{p}} - 1}.
+        \Lambda_p = \max @@ \set[\big]{1, n^{\frac{p - 2}{p}} - 1}.
     \end{equation*}
 \end{proposition}
 
@@ -761,12 +761,12 @@ Before developing the last special value of~$\Lambda_p$ we introduce the followi
     It is clear that
     \begin{equation}
         \label{eq:lambda-poisedness-infty-proof-1}
-        \max_{\iter \in \ball[p](\delta)} \lagp[1](\iter) = \max_{\iter \in \ball[p](\delta)} \bigg( 1 - \frac{\norm{x}_2^2}{\delta^2} \bigg) = 1.
+        \max_{\iter \in \ball[p](\delta)} @@ \lagp[1](\iter) = \max_{\iter \in \ball[p](\delta)} @@ \bigg( 1 - \frac{\norm{x}_2^2}{\delta^2} \bigg) = 1.
     \end{equation}
     Moreover, according to \cref{lem:max-norm-pq}, we have
     \begin{subequations}
         \label{eq:lambda-poisedness-infty-proof-2}
-        \begin{empheq}[left={\max\limits_{\iter \in \ball[p](\delta)} -\lagp[1](\iter) = \max\limits_{\iter \in \ball[p](\delta)} \dfrac{\norm{x}_2^2}{\delta^2} - 1 = \empheqlbrace}]{alignat=2}
+        \begin{empheq}[left={\max\limits_{\iter \in \ball[p](\delta)} -\lagp[1](\iter) @@ = \max\limits_{\iter \in \ball[p](\delta)} @@ \dfrac{\norm{x}_2^2}{\delta^2} - 1 = \empheqlbrace}]{alignat=2}
             & 0,                        && \quad \text{if~$p \le 2$,}\\
             & n^{\frac{p - 2}{p}} - 1,  && \quad \text{otherwise.}
         \end{empheq}

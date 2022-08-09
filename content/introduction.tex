@@ -15,10 +15,6 @@
 \chapter{Introduction}
 \label{ch:introduction}
 
-% \nomenclature[Od]{$\inner{\cdot, \cdot}$}{Inner-product operator (may be subscripted for sake of clarity)}%
-% \nomenclature[Ok]{$\conv$}{Convex hull operator}%
-% \nomenclature[Ol]{$\cond$}{Condition number operator}%
-
 \section{Overview of \glsfmtlong{dfo}}
 \label{sec:overview}
 
@@ -38,11 +34,6 @@ We emphasize that if any derivative information can be evaluated at an affordabl
 Consider, for example, minimizing an objective function defined by a sophisticated simulation whose source code is available.
 One may then attempt to evaluate derivatives using automatic differentiation tools~\cite{Griewank_2003,Griewank_Walther_2008} and apply derivative-based methods.
 
-For \gls{dfo} methods, the leading complexity measure we consider is the number of function evaluations.
-In practice, each function evaluation may require several minutes or even several days to complete~\cite[\S~1.4]{Audet_Hare_2017}.
-For instance, a recent application of \gls{dfo} is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}, for which every objective function evaluation necessitates training a machine learning model (see \cref{subsec:machine-learning}).
-Hence, in \gls{dfo} methods, the expense of numerical linear algebra is less of a concern, although we will maintain it acceptable.
-
 In this introduction, we consider the nonlinearly-constrained problem
 \begin{subequations}
     \label{eq:problem-introduction}
@@ -60,7 +51,7 @@ In this introduction, we consider the nonlinearly-constrained problem
 where the \emph{objective} and \emph{constraint functions}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and where the sets of indices~$\iub$ and~$\ieq$ are finite (perhaps empty) and disjoint.
 The feasible set of this problem is
 \begin{equation*}
-    \fset \eqdef \set{\iter \in \R^n : \text{$\con{i}(\iter) \le 0$ for~$i \in \iub$ and~$\con{i}(\iter) = 0$ for~$i \in \ieq$}}.
+    \fset \eqdef \set{\iter \in \R^n : \text{$\con{i}(\iter) \le 0, ~ i \in \iub$ and~$\con{i}(\iter) = 0, ~ i \in \ieq$}}.
 \end{equation*}
 If~$\obj$ is convex, while~$\con{i}$ is convex for all~$i \in \iub$ and affine for all~$i \in \ieq$, then the problem~\cref{eq:problem-introduction} is \emph{convex}.
 However, this thesis does \emph{not} assume convexity.
@@ -68,6 +59,11 @@ However, this thesis does \emph{not} assume convexity.
 We emphasize that~\cref{eq:problem-introduction-cub,eq:problem-introduction-ceq} may include bound constraints.
 We do not extract them explicitly in this chapter, but they may need to be handled differently from other constraints because they often represent inalienable physical or theoretical restrictions.
 We will later in this thesis introduce a new \gls{dfo} method, namely \gls{cobyqa}, which will consider this (see \cref{ch:cobyqa-introduction}).
+
+For \gls{dfo} methods, the leading complexity measure we consider is the number of function evaluations.
+In practice, each function evaluation may require several minutes or even several days to complete~\cite[\S~1.4]{Audet_Hare_2017}.
+For instance, a recent application of \gls{dfo} is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}, for which every objective function evaluation necessitates training a machine learning model (see \cref{subsec:machine-learning}).
+Hence, in \gls{dfo} methods, the expense of numerical linear algebra is less of a concern, although we will maintain it acceptable.
 
 \section{Examples of applications}
 
@@ -100,12 +96,12 @@ Consider, for instance, the Gaussian elimination with partial pivoting of a matr
     }
 \end{algorithm}
 
-\Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of \P~10 and~$g$ at the end of p.~97) demonstrates that the growth factor of the Gaussian elimination, defined as
+\Citeauthor{Wilkinson_1963}'s backward error analysis (see, e.g., equation~(25.14) of chapter~3 in~\cite{Wilkinson_1963}, where~$t$ is introduced at the beginning of Paragraph~10 and~$g$ at the end of p.~97) demonstrates that the growth factor of the Gaussian elimination, defined as
 \begin{equation}
     \label{eq:gaussian-elimination-growth-factor}
-    \rho_n(A) \eqdef \frac{\max_{0 \le k \le n - 1} \norm{A^{(k)}}_{\max}}{\norm{A}_{\max}},
+    \rho_n(A) \eqdef \frac{1}{\norm{A}_{\max}} \max_{0 \le k \le n - 1} \norm{A^{(k)}}_{\max},
 \end{equation}
-\nomenclature[Of]{$\norm{\cdot}$}{Norm of a vector or a matrix (may be subscripted for sake of clarity)}%
+\nomenclature[Of]{$\norm{\cdot}$}{Norm of a vector or a matrix (may be subscripted for clarity)}%
 determinates the numerical stability of \cref{alg:gaussian-elimination}, where~$\norm{\cdot}_{\max}$ denotes the max norm of a matrix, i.e., the largest absolute value of the matrix's entries.
 More specifically, the~$\ell_{\infty}$-norm of the backward error of the computed solution is bounded from above by a term proportional to~$\rho_n(A)$.
 To study the worst-case scenario, we wish to determine how large~$\rho_n$ can be and hence, to solve
@@ -193,7 +189,7 @@ Binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by
     \label{eq:csvc}
     \begin{align}
         \min        & \quad \frac{1}{2} \norm{\omega}_2^2 + C \norm{\xi}_1\\
-        \text{s.t.} & \quad y_i (\beta + \omega^{\T} \varphi_{\gamma}(\iter_i)) \ge 1 - \xi_i, ~ i \in \set{1, 2, \dots, m},\\
+        \text{s.t.} & \quad y_i \big( \beta + \omega^{\T} \varphi_{\gamma}(\iter_i) \big) \ge 1 - \xi_i, ~ i \in \set{1, 2, \dots, m},\\
                     & \quad \xi \ge 0,\\
                     & \quad (\omega, \beta, \xi) \in \R^{\ell} \times \R \times \R^m,
     \end{align}
@@ -202,7 +198,7 @@ where~$\varphi_{\gamma}$ is a function mapping the data to a higher-dimensional 
 Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$\nomenclature[Se]{$\R$}{Set of real numbers} to the problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$\iter \in \R^n$ according to
 \begin{equation}
     \label{eq:csvc-classifier}
-    \delta(\iter) \eqdef \sgn(\beta^{\ast} + (\omega^{\ast})^{\T} \varphi_{\gamma}(\iter)),
+    \delta(\iter) \eqdef \sgn \big( \beta^{\ast} + (\omega^{\ast})^{\T} \varphi_{\gamma}(\iter) \big),
 \end{equation}
 \nomenclature[On]{$\sgn$}{Sign operator}%
 which maps an observation~$\iter \in \R^n$ to a label in~$\set{\pm 1}$.
@@ -225,8 +221,8 @@ The general~$k$-fold cross-validation to define~$P(C, \gamma)$ is presented in \
     Define~$P(C, \gamma)$ by summarizing the performances in~$\set{p_1, p_2, \dots, p_k}$\;
 \end{algorithm}
 
-A typical example of a model's performance used in the~$k$-fold cross-validation is the model's accuracy, i.e., the percentage of data correctly classified.
-The~\gls{auc}~\cite{Hanley_Mcneil_1982} is another example of performance measures, particularly effective for imbalanced datasets~\cite{Bradley_1997}.
+A typical example of a model's performance used in the~$k$-fold cross-validation is the model's accuracy, i.e., the ratio of data correctly classified.
+The~\gls{auc}~\cite{Hanley_Mcneil_1982} is another example, particularly effective for imbalanced datasets~\cite{Bradley_1997}.
 The hyperparameter tuning problem can be formulated as
 \begin{equation*}
     \begin{aligned}
@@ -248,7 +244,7 @@ This concept is often referred to as derivative-free reinforcement learning.
 
 \Gls{dfo} methods are also widely used in industry and engineering, especially for solving problems that involve heavy simulations.
 Such problems arise from helicopter rotor blade manufacturing~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, computational fluid dynamics~\cite{Duvigneau_Visonneau_2004}, worst-case analysis of analog circuits~\cite{Latorre_Etal_2019}, rapid-cycling synchrotron accelerator modeling~\cite{Eldred_Etal_2021}, nuclear energy engineering~\cite{Kortelainen_Etal_2010,Kortelainen_Etal_2012,Kortelainen_Etal_2014}, reservoir engineering and engine calibration~\cite{Langouet_2011}, and groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, to name but a few.
-In general, industrial and engineering problems that involve sophisticated models, simulations, or experiments, induce \gls{dfo} problems.
+In general, problems that involve sophisticated models, simulations, or experiments, induce \gls{dfo} problems.
 
 A particular application of \gls{dfo} comes from \gls{mdo} in the industry.
 It is a field that uses optimization methods to solve design problems defined by multiple disciplines.
@@ -322,9 +318,9 @@ We introduce hereafter two classical constraint qualifications.
         \item the \gls{mfcq} holds at~$x$ if the gradients~$\nabla \con{i}(\iter)$ are linearly independent for all~$i \in \ieq$ and there exists a vector~$z \in \R^n$ such that
         \begin{subequations}
             \label{eq:mangasarian-fromovitz}
-            \begin{empheq}[left=\empheqlbrace]{alignat=2}
-                & \nabla \con{i}(\iter)^{\T} z < 0, && \quad \text{if~$i \in \act(\iter) \cap \iub$,}\\
-                & \nabla \con{i}(\iter)^{\T} z = 0, && \quad \text{if~$i \in \ieq$.}
+            \begin{empheq}[left=\empheqlbrace]{alignat=1}
+                & \nabla \con{i}(\iter)^{\T} z < 0, ~ i \in \act(\iter) \cap \iub,\\
+                & \nabla \con{i}(\iter)^{\T} z = 0, ~ i \in \ieq.
             \end{empheq}
         \end{subequations}
     \end{itemize}
@@ -351,7 +347,7 @@ where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
 
 \begin{theorem}[First-order necessary conditions~{\cite[Thm.~12.1]{Nocedal_Wright_2006}}]
     \label{thm:first-order-necessary-conditions}
-    Let~$\iter[\ast] \in \fset$ be a local solution to the problem~\cref{eq:problem-introduction}, assume that the functions~$\obj$ and~$\con{i}$ are continuously differentiable in a neighborhood of~$\iter[\ast]$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$\iter[\ast]$.
+    Let~$\iter[\ast] \in \fset$ be a local solution to~\cref{eq:problem-introduction}, assume that the functions~$\obj$ and~$\con{i}$ are continuously differentiable in a neighborhood of~$\iter[\ast]$ for all~$i \in \iub \cup \ieq$, and that the \gls{licq} holds at~$\iter[\ast]$.
     Then there exists a Lagrange multiplier~$\lm[\ast] = [\lm[\ast]_i]_{i \in \iub \cup \ieq}^{\T}$ with~$\lm[\ast]_i \in \R$ for all~$i \in \iub \cup \ieq$ such that
     \begin{subequations}
         \label{eq:kkt-introduction}
@@ -365,7 +361,7 @@ where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
     \end{subequations}
 \end{theorem}
 
-We present \cref{thm:first-order-necessary-conditions} with the \gls{licq} as an example, but a similar conclusion can be established with other constraint qualifications, such as the \gls{mfcq} (see, e.g.,~\cite[P.~339]{Nocedal_Wright_2006}).
+We present \cref{thm:first-order-necessary-conditions} with the \gls{licq} as an example, but a similar conclusion can be established with other constraint qualifications, such as the \gls{mfcq} presented above (see, e.g.,~\cite[p.~339]{Nocedal_Wright_2006}).
 The conditions~\cref{eq:kkt-introduction} are commonly referred to as the \gls{kkt} conditions~\cite{Karush_1939,Kuhn_Tucker_1951}, and the pair~$(\iter[\ast], \lm[\ast])$ in \cref{thm:first-order-necessary-conditions} is referred to as a \emph{\gls{kkt} pair}.
 More specifically, condition~\cref{eq:kkt-introduction-stationarity} is the \emph{stationarity} condition, conditions~\cref{eq:kkt-introduction-primal-feasibility-ub,eq:kkt-introduction-primal-feasibility-eq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-introduction-complementary-slackness} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-introduction-dual-feasibility} as the \emph{dual feasibility} condition.
 A \emph{first-order stationary point} is a point~$\iter \in \R^n$ satisfying the \gls{kkt} conditions~\cref{eq:kkt-introduction}.
@@ -449,9 +445,9 @@ It is known that at a local solution of a smooth unconstrained optimization prob
     \begin{subequations}
         \label{eq:second-order-introduction}
         \begin{empheq}[left=\empheqlbrace]{alignat=2}
-            & \nabla \con{i}(\iter[\ast])^{\T} z = 0,      && \quad \text{if~$i \in \ieq$,}\\
-            & \nabla \con{i}(\iter[\ast])^{\T} z = 0,      && \quad \text{if~$i \in \act(\iter[\ast]) \cap \iub$ and~$\lm[\ast]_i > 0$,}\\
-            & \nabla \con{i}(\iter[\ast])^{\T} z \ge 0,    && \quad \text{if~$i \in \act(\iter[\ast]) \cap \iub$ and~$\lm[\ast]_i = 0$.}
+            & \nabla \con{i}(\iter[\ast])^{\T} z = 0, ~ i \in \ieq,\\
+            & \nabla \con{i}(\iter[\ast])^{\T} z = 0, ~ i \in \act(\iter[\ast]) \cap \iub, ~ \lm[\ast]_i > 0,\\
+            & \nabla \con{i}(\iter[\ast])^{\T} z \ge 0, ~ i \in \act(\iter[\ast]) \cap \iub, ~ \lm[\ast]_i = 0.
         \end{empheq}
     \end{subequations}
     Then~$z^{\T} \nabla_{x, x}^2 \lag(\iter[\ast], \lm[\ast]) z \ge 0$\nomenclature[Oh]{$\nabla^2$}{Hessian operator (elements~$\partial^2 / \partial x_i \partial x_j$, with~$i, j \in \set{1, 2, \dots, n}$)}.
@@ -535,7 +531,7 @@ The authors conjecture that a self-correcting mechanism may be at play and preve
 
 There are many other trust-region \gls{dfo} methods, such as \gls{csv2}~\cite{Billups_Larson_Graf_2013}, which determines its models by regression and not interpolation.
 Examples of solvers that use nonpolynomial models include \gls{orbit}~\cite{Wild_Regis_Shoemaker_2008}, \gls{conorbit}~\cite{Regis_Wild_2017}, and \gls{boosters}~\cite{Oeuvray_Bierlaire_2009}, which use cubic \gls{rbf}.
-There also exist methods for more specific problems, such as \gls{dfls}~\cite{Zhang_Conn_Scheinberg_2010} and \gls{dfols}~\cite{Cartis_Etal_2019}, which aim at solving nonlinear least-squares \gls{dfo} problems.
+There also exist methods for more specific problems, such as \gls{dfls}~\cite{Zhang_Conn_Scheinberg_2010} and \gls{dfols}~\cite{Cartis_Etal_2019}, aiming at solving nonlinear least-squares \gls{dfo} problems.
 
 Randomization is also exploited to improve the performance of trust-region \gls{dfo} methods.
 This idea was first proposed by \citeauthor{Bandeira_Scheinberg_Vicente_2012}~\cite{Bandeira_Scheinberg_Vicente_2012}, who established the global convergence of a trust-region method based on random models.
@@ -862,7 +858,7 @@ For example,~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm of a matrix,
 \section{Organization of the thesis}
 
 The remaining of this thesis is organized as follows.
-\begin{itemize}
+\begin{enumerate}
     \item \Cref{ch:interpolation} presents interpolation models that are useful to \gls{dfo}.
     We will focus on linear and quadratic models, as these are the models employed by the \gls{dfo} methods presented later in this thesis.
     \item \Cref{ch:pdfo} introduces \gls{pdfo}, a package providing MATLAB and Python interfaces for using late Prof.\ M. J. D. Powell's \gls{dfo} solvers.
@@ -874,4 +870,4 @@ The remaining of this thesis is organized as follows.
     It builds the trust-region quadratic models using derivative-free symmetric Broyden update presented in \cref{ch:interpolation}.
     \item \Cref{ch:cobyqa-subproblems} introduces the methods employed by \gls{cobyqa} to solve its different subproblem.
     \item \Cref{ch:cobyqa-implementation} provides some insight on the Python implementation of \gls{cobyqa}, together with some numerical experiments.
-\end{itemize}
+\end{enumerate}

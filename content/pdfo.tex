@@ -65,7 +65,7 @@ Moreover, \gls{pdfo} ensures that the returned solution is not a point where the
 \paragraph{Problem preprocessing}
 
 \gls{pdfo} preprocesses the inputs to simplify the problem and reformulate it to meet the requirements of Powell's solvers.
-For instance, if the problem has linear constraints~$A x = b$, \gls{pdfo} can rewrite it into a problem on the null space of~$A$, eliminating such constraints and reducing the dimension.
+For instance, if the problem has linear constraints~$A \iter = b$, \gls{pdfo} can rewrite it into a problem on the null space of~$A$, eliminating such constraints and reducing the dimension.
 Another example is that the starting point of a linearly-constrained problem is projected to the feasible region because \gls{lincoa} needs a feasible starting point to work properly.
 
 \paragraph{Additional options}
@@ -73,7 +73,7 @@ Another example is that the starting point of a linearly-constrained problem is 
 \gls{pdfo} includes options for the user to control the solvers in some manners that are useful in practice.
 For example, the user can request \gls{pdfo} to scale the problem according to the bounds of the variables before solving it.
 
-\section{Overview of the Powell's \glsentrylong{dfo} methods}
+\section{Overview of Powell's \glsentrylong{dfo} methods}
 \label{sec:powell}
 
 We consider the optimization problem
@@ -151,7 +151,7 @@ Solving the problems~\cref{eq:cobyla-subproblem} sequentially by replacing the t
 The strategy of \gls{cobyla} is to compute this path by updating the active sets of the constraint models.
 However, the trust-region constraint~$\norm{\iter - \iter[k]} \le \rad[k]$ and the region~\cref{eq:cobyla-subproblem-ub} may contradict each others, in which case the trial point is chosen to solve approximately
 \begin{align*}
-    \min        & \quad \max_{i \in \iub} \posp{\conm[k]{i}(\iter)}\\
+    \min        & \quad \max_{i \in \iub} @@ \posp{\conm[k]{i}(\iter)}\\
     \text{s.t.} & \quad \norm{\iter - \iter[k]} \le \rad[k],\\
                 & \quad \iter \in \R^n,
 \end{align*}
@@ -404,7 +404,6 @@ The \gls{auc} score, a real number in~$[0, 1]$, measures the area underneath the
 This curve plots the true positive classification rate with respect to the false positive classification rate at different classification thresholds.
 For details on the~$5$-fold cross-validation of an \gls{auc}, see \cref{subsec:machine-learning}.
 Such an experiment lies in the \gls{dfo} context.
-
 The numerical results for this experiment are provided in \cref{tab:splice,tab:svmguide1,tab:svmguide3,tab:ijcnn1}.
 
 \begin{table}[!ht]
