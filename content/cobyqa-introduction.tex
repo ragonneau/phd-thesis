@@ -46,12 +46,11 @@ We now adapt this framework to derivative-free settings.
 
 Recall that the basic trust-region \gls{sqp} method presented in \cref{alg:trust-region-sqp} models the objective and constraint functions based on their gradients and Hessian matrices.
 Since we do not have access to such information, we use interpolation-based quadratic models of these functions.
-To be specific, we use quadratic models obtained by underdetermined interpolation based on the derivative-free symmetric Broyden update, detailed in \cref{subsec:symmetric-broyden-updates}.
+Specifically, we use quadratic models obtained by underdetermined interpolation based on the derivative-free symmetric Broyden update, detailed in \cref{subsec:symmetric-broyden-updates}.
 
 At the~$k$th iteration, we denote by~$\objm[k]$ the quadratic model of~$\obj$, and by~$\conm[k]{i}$ the quadratic model of~$\con{i}$, for all~$i \in \iub \cup \ieq$.
 These models are built on an interpolation set~$\xpt[k] \subseteq \R^n$, which is maintained by the method and updated along the iterations.
 It changes at most one point of~$\xpt[k]$ at each iteration, and ensures that~$\iter[k] \in \xpt[k]$, where~$\iter[k] \in \R^n$ denotes the~$k$th iterate.
-% Inspired by the performances of the solvers \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa} of Powell, we decide to base our models~$\objm[k]$ and~$\conm[k]{i}$, for~$i \in \iub \cup \ieq$, on the derivative-free symmetric Broyden update (see \cref{subsec:symmetric-broyden-updates}).
 
 The initial models~$\objm[0]$ and~$\conm[0]{i}$, for~$i \in \iub \cup \ieq$, are built on the initial interpolation set~$\xpt[0] \subseteq \R^n$, defined as follows according to \citeauthor{Powell_2009}~\cite{Powell_2009}.
 The user provides a number~$m$, satisfying
@@ -177,9 +176,6 @@ If~$\iter[k]$ turns out to be optimal in~$\xpt[k + 1]$ according to~$\merit[k]$,
 Note however that we cannot naively set~$\iter[k + 1]$ to either~$\iter[k] + \step[k]$ if~$\ratio[k] > 0$, or~$\iter[k]$ otherwise.
 This is because~$\iter[k]$ is a best point in~$\xpt[k]$ according to~$\merit[k - 1]$, but it may not be the best one according to~$\merit[k]$.
 
-% In a practical implementation, the quadratic models on \cref{alg:derivative-free-trust-region-sqp-models} of \cref{alg:derivative-free-trust-region-sqp} are not computed from scratch, because only one point differs~$\xpt[k + 1]$ from~$\xpt[k]$.
-% Details on this update mechanism are given in \cref{subsec:implementation-symmetric-broyden-update}.
-
 \subsection{Solving the trust-region \glsfmtshort{sqp} subproblem}
 \label{subsec:solving-trust-region-subproblem}
 
@@ -241,32 +237,13 @@ In doing so, we would have
     \norm{\step[k]} = \norm{\nstep[k] + \tstep[k]} \le \max_{d \in \R^n} @@ \set[\Big]{\norm{d} + \sqrt{(\rad[k])^2 - \norm{\step}^2} : \norm{d} \le \rad[k]} = \sqrt{2} \rad[k].
 \end{equation*}
 Therefore, to maintain the property~$\norm{\step[k]} \le \rad[k]$, we replace~$\rad[k]$ in the constraints~\cref{eq:cobyqa-normal-tr,eq:cobyqa-tangential-tr} with~$\rad[k] / \sqrt{2}$.
-% Therefore, to maintain the property~$\norm{\step[k]} \le \rad[k]$, we replace the trust-region constraint of the tangential subproblem~\cref{eq:cobyqa-tangential-tr} with
-% \begin{equation}
-%     \label{eq:cobyqa-trust-region-radius}
-%     \norm{\step} \le \sqrt{\frac{(\rad[k])^2}{2} - \norm{\nstep[k]}^2}.
-% \end{equation}
-% Of course, we must ensure that~$\norm{\nstep[k]} \le \rad[k] / \sqrt{2}$, so that the right-hand side in~\cref{eq:cobyqa-trust-region-radius} is well-defined.
-% To do so, we select~$\zeta$ to satisfy~$\zeta \le 1 / \sqrt{2}$.
-% To always provide some elbow room for the tangential step, we restrict the previous condition to~$\zeta < 1 / \sqrt{2}$, and we finally choose for \gls{cobyqa}
-% \begin{equation*}
-%     \zeta = \frac{2 \sqrt{2}}{5}.
-% \end{equation*}
-
-% Theoretically, it is possible to evaluate the composite step directly.
-% However, the methods used to solve the subproblems usually require the trust-region center to be feasible, which is not the case for the composite subproblem.
-% Therefore, we modify the tangential subproblem to make the origin the trust-region center, which is then feasible.
-% Therefore, we build explicitely the tangential step.
-% See Trust-Region Methods, p.~660.
 
 \subsection{Least-squares Lagrange multiplier}
 \label{subsec:least-squares-lagrange-multipliers}
 
 We now introduce the strategy employed by \gls{cobyqa} to estimate the Lagrange multiplier on \cref{alg:derivative-free-trust-region-sqp-multipliers} of \cref{alg:derivative-free-trust-region-sqp}.
 
-% Recall that the \gls{sqp} method can be regarded as an approximate Newton method applied to the \gls{kkt} system.
 Similar to~\cite[\S~15.2, p.~626]{Conn_Gould_Toint_2000} and~\cite[Eq.~(18.22)]{Nocedal_Wright_2006}, we let~$\lm[k + 1]$ be a \emph{least-squares Lagrange multiplier} (see also~\cite[\S~3.3]{Dussault_1995}), i.e., a solution to
-% It is natural to set the estimated Lagrange multiplier~$\lm[k + 1]$ to the one that attempts to satisfy the \gls{kkt} conditions as much as possible using the information available so far.
 \begin{subequations}
     \label{eq:least-squares-lagrange-multipliers-cobyqa}
     \begin{align}
@@ -279,19 +256,6 @@ where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
 Note that for all~$i \in \iub$,~$\conm[k]{i}(\iter[k]) = \con{i}(\iter[k])$, because~$\conm[k]{i}$ interpolates~$\con{i}$ on~$\xpt[k]$ and~$\iter[k] \in \xpt[k]$.
 The conditions~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} correspond to the complementary slackness conditions of the inactive constraints at~$\iter[k]$.
 Even though the complementary slackness conditions at the solution are~$\lm[\ast]_i \con{i}(\iter[\ast]) = 0$ for~$i \in \iub$, it is unreasonable to force~$\lm_i^{k + 1} = 0$ if~$\con{i}(\iter[k]) > 0$ and~$i \in \iub$, because the corresponding constraint is currently active.
-% This problem can be easily simplified as follows.
-% For all indices~$i \in \iub$ such that~$\conm[k]{i}(\iter[k]) \neq 0$, we necessarily have~$\lm[k + 1]_i = 0$.
-% Therefore, the linear constraints~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-slackness} can be removed from the problem by considering only the indices in
-% \begin{equation*}
-%     \ieq \cup \set{i \in \iub : \conm[k]{i}(\iter[k]) \ge 0},
-% \end{equation*}
-% and by setting the remaining components of the least-squares Lagrange multiplier to zero.
-% Another possibility, leading to a slightly different problem, is to consider only the indices in
-% \begin{equation*}
-%     \ieq \cup \set{i \in \iub : \conm[k]{i}(\iter[k + 1]) \le 0},
-% \end{equation*}
-% and to set the remaining components of the least-squares Lagrange multiplier to zero.
-% This is the method employed by \gls{cobyqa}.
 Details on the calculations of the least-squares Lagrange multiplier are provided in \cref{sec:cobyqa-lagrange-multipliers}.
 
 We also mention that the least-squares multiplier can be regarded as an approximation of the multiplier of the \gls{sqp} subproblem, known as the QP multiplier.
@@ -328,8 +292,8 @@ Otherwise, if~$\rad[k] = \radlb[k]$ and the trial step~$\step[k]$ performs very 
 \end{algorithm}
 
 The value of~$\radlb[k]$ can be regarded as an indicator of the resolution of the algorithm.
-If we do not impose~$\rad[k] \ge \radlb[k]$, the trust-region radius~$\rad[k]$ may be reduced to a value that is too small for the current precision of the algorithm, making the interpolation points concentrating too much.
-The value of~$\radlb[k]$ is never increased, and is decreased when the algorithm decides that the work for the current value of~$\radlb[k]$ is finished.
+If we do not impose~$\rad[k] \ge \radlb[k]$, the trust-region radius~$\rad[k]$ may be reduced to a value that is too small for the current precision of the algorithm, making the interpolation points concentrate too much.
+The value of~$\radlb[k]$ is never increased and is decreased when the algorithm decides that the work for the current value of~$\radlb[k]$ is finished.
 This is reflected in practice by
 \begin{enumerate}
     \item the fact that~$\rad[k]$ reaches its lower bound~$\radlb[k]$,
@@ -365,8 +329,8 @@ The algorithm and the parameters are identical to those of \gls{uobyqa}~\cite{Po
     }
 \end{algorithm}
 
-If \cref{alg:reducing-lower-bound-trust-region-radius-stop} of \cref{alg:reducing-lower-bound-trust-region-radius} is reached, then the algorithm has finished the work for the smallest desired resolution and hence, we stop the computations.
-This is in fact the definition of \enquote{convergence} we mentioned in \cref{alg:derivative-free-trust-region-sqp}, which is also the stopping criterion used in the Powell's solvers.
+If \cref{alg:reducing-lower-bound-trust-region-radius-stop} of \cref{alg:reducing-lower-bound-trust-region-radius} is reached, then the algorithm has finished the work for the smallest desired resolution, and hence, we stop the computations.
+This is, in fact, the definition of \enquote{convergence} we mentioned in \cref{alg:derivative-free-trust-region-sqp}, which is also the stopping criterion used in Powell's solvers.
 
 \subsection{Updating the interpolation set}
 
@@ -388,10 +352,6 @@ We then set~$\bar{y}$ to a solution to
 \end{equation}
 where~$\omega(y)$ is a scaling factor, detailed later.
 The term~$\norm{y - \bar{\iter}}$ in~\cref{eq:choice-point-to-remove-trust-region} intends to set~$\bar{y}$ to a point far away from~$\bar{\iter}$, because the interpolation points must be reasonably close in order to achieve a good precision of the models.
-% Further, \gls{dfo} methods usually set~$\bar{y}$ to be a solution to
-% \begin{equation*}
-%     \max_{y \in \xpt[k]} \norm{y - \bar{\iter}}.
-% \end{equation*}
 To explain the scalar factor~$\omega(y)$, recall from \cref{subsec:implementation-symmetric-broyden-update} that the inverse of the coefficient matrix of the interpolation problem is maintained.
 Whenever an interpolation point is replaced with a new one, this inverse will be updated by the formula detailed in~\cite[Eq.~(2.12)]{Powell_2004c}, which has a scalar denominator.
 We set~$\omega(y)$ to this denominator corresponding to the replacement of~$y \in \xpt[k]$ with~$\iter[k] + \step[k]$.
@@ -411,27 +371,19 @@ Theoretically, it is tempting to set~$\bar{y}$ to the point that optimizes the~$
     \label{eq:ball-lambda-poisedness}
     \set{x \in \R^n : \norm{x - \bar{\iter}} \le \radlb[k]}.
 \end{equation}
-This idea has however a major drawback: it is expensive to implement due to the definition of the~$\Lambda$-poisedness.
-Hence, from a computational perspective, we decide not employ this technique in \gls{cobyqa}.
+This idea has, however, a major drawback: it is expensive to implement due to the definition of the~$\Lambda$-poisedness.
+Hence, from a computational perspective, we decide not to employ this technique in \gls{cobyqa}.
 
 \subsection{Geometry of the interpolation set}
 \label{subsec:geometry-improvement}
 
 In this section, we detail the geometry-improving procedure of \gls{cobyqa}, corresponding to \cref{alg:derivative-free-trust-region-sqp-geometry} of \cref{alg:derivative-free-trust-region-sqp}.
 As we mentioned in \cref{ch:interpolation}, the interpolation set has to be reasonably well-poised to ensure the accuracy of the interpolation models.
-% As we mentioned in \cref{ch:interpolation}, the interpolation set~$\xpt[k]$ is adequate only if it is poised, i.e., only if the interpolation problem admits a solution for any function that is interpolated.
-% Moreover, we may wish that~$\xpt[k]$ is~$\Lambda$-poised in
-% \begin{equation*}
-%     \set{\iter \in \R^n : \norm{x - \iter[k]} \le \radlb[k]},
-% \end{equation*}
-% for some reasonably low~$\Lambda$, because the purpose of~$\radlb[k]$ is to maintain adequate distance between the interpolation points.
-% However, \cref{alg:derivative-free-trust-region-sqp} never ensures that such properties hold.
 However, it is known that model-based \gls{dfo} methods tend to lose the poisedness of their interpolation set as the iterations progress.
 To cope with this difficulty, such methods usually include a geometry-improving mechanism.
 This topic is well studied, see for example~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b,Fasano_Morales_Nocedal_2009,Scheinberg_Toint_2010}.
 
 We adopt a geometry-improving strategy designed by \citeauthor{Powell_2009} for \gls{bobyqa}~\cite{Powell_2009}.
-% Some trust-region iterations are replaced with a geometry-improving iteration.
 A point~$\bar{y} \in \xpt[k + 1]$ is chosen to be replaced by another one~$\iter[k + 1] + \rstep[k + 1]$, where the \emph{restoration step}~$\rstep[k + 1] \in \R^n$ is chosen to improve the geometry of~$\xpt[k + 1]$.
 
 First of all, the point~$\bar{y}$ is chosen to be a solution to
@@ -458,12 +410,6 @@ Recall that we need to update the inverse of the coefficient matrix of the inter
 As already mentioned, the updating formula has a scalar denominator.
 This denominator is always lower bounded by~$\lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1])^2$ as shown in~\cite[Eq.~(6.5)]{Powell_2006}.
 Therefore, by selecting the restoration step~$\rstep[k + 1]$ to maximize~$\abs{\lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1])}$, we keep the denominator away from zero, avoiding numerical difficulties.
-% Second of all, denote by~$B$ and~$\widetilde{B}$ the coefficient matrices of the interpolation problems on the original and the modified sets~$\xpt[k + 1]$, respectively.
-% \Citeauthor{Powell_2001}~\cite[\S~2]{Powell_2001} showed that
-% \begin{equation*}
-%     \lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1]) = \frac{\det \widetilde{B}}{\det B}.
-% \end{equation*}
-% This property also encourages us to let the restoration step~$\rstep[k + 1]$ solve~\cref{eq:geometry-subproblem}.
 
 Now that the general framework of the geometry-improving phase is set up, we need to decide when to entertain such a mechanism.
 It is trigerred when
