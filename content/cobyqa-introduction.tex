@@ -15,11 +15,15 @@
 \chapter{\glsfmttext{cobyqa} \textemdash\ a new \glsfmtlong{dfo} method}
 \label{ch:cobyqa-introduction}
 
-\todo[noline]{Say what we are going to do}
+This chapter introduces a new \gls{dfo} method for solving nonlinearly-constrained problems.
+The algorithm, named \gls{cobyqa}, is a derivative-free trust-region \gls{sqp} method designed to tackle nonlinearly-constrained optimization problems that include equality and inequality constraints.
+A particular feature of \gls{cobyqa} is that if it admits bound constraints, all points encountered by \gls{cobyqa} will respect the bounds.
+This is useful because the objective functions of industrial, engineering, and research problems that admit bound constraints are often undefined where the bounds are violated.
+Details on the methods employed by \gls{cobyqa} to solve its various subproblems are provided in \cref{ch:cobyqa-subproblems}, and its Python implementation is presented in \cref{ch:cobyqa-implementation}.
 
 \section{Statement of the problem}
 
-In this chapter, we introduce a new model-based \gls{dfo} method for solving nonlinearly-constrained problems of the form
+The problems we consider in this chapter are of the form
 \begin{subequations}
     \label{eq:problem-cobyqa}
     \begin{align}

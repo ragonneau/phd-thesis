@@ -15,16 +15,20 @@
 \chapter{Development of the \glsfmttext{pdfo} package}
 \label{ch:pdfo}
 
-\todo[noline]{Say what we are going to do (probably moving some of the next section)}
-
-\section{Introduction and motivation}
-
 Between~\citeyear{Powell_1994} and~\citeyear{Powell_2015}, Powell developed five solvers to tackle unconstrained and constrained problems without using derivatives, namely~\gls{cobyla}~\cite{Powell_1994}, \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}~\cite{Powell_2015}.
 These solvers were implemented by Powell, with particular attention paid to their numerical stability and algebraic complexity.
 Renowned for their robustness and efficiency, these solvers are very appealing to practitioners and widely used in applications, including aeronautical engineering~\cite{Gallard_Etal_2018}, astronomy~\cite{Biviano_Etal_2013,Mamon_Biviano_Boue_2013}, computer vision~\cite{Izadinia_Shan_Seitz_2017}, robotics~\cite{Mombaur_Truong_Laumond_2010}, and statistics~\cite{Bates_Etal_2015}.
-
 However, Powell implemented them in Fortran 77, an old-fashion language that damps the enthusiasm of many users to exploit these solvers in their projects.
-There has been considerable demand from both researchers and practitioners for the availability of Powell's solvers in more user-friendly languages such as Python, MATLAB, and Julia.
+
+In this chapter, we present \gls{pdfo}, a MATLAB and Python software we developed to interface Powell's solvers, which has been downloaded more than 30,000 times as of today.
+After briefly introducing the techniques employed by the solvers, we present the core features of \gls{pdfo} and its implementation.
+At the end of the chapter, we present some numerical experiments on Powell's solvers using \gls{pdfo}, showing the advantage of having all five solvers in one package.
+One of these experiments will reveal a peculiar behavior of the solvers, namely that \gls{cobyla} defeats all other methods on noisy unconstrained problems.
+This behavior is unexpected, because \gls{cobyla} is the oldest of these methods and uses the simplest models.
+
+\section{Introduction and motivation}
+
+There has been considerable demand from both researchers and practitioners for the availability of the five Powell's solvers in more user-friendly languages such as Python, MATLAB, and Julia.
 Our aim is to wrap Powell's Fortran code into a package named \gls{pdfo}, which enables users of such languages to call Powell's solvers without any need to deal with the Fortran code.
 For each supported language, \gls{pdfo} provides a simple subroutine that can invoke one of Powell's solvers according to the user's request (if any) or according to the type of the problem to solve.
 The current release (version 1.2) of \gls{pdfo} supports Python and MATLAB, with more languages to be covered in the future.
@@ -210,7 +214,7 @@ However, the trust-region subproblem solver of \gls{bobyqa} always respects the 
 
 \section{Core features of the \glsfmttext{pdfo} package}
 
-Powell implemented all five methods in Fortran in a very robust and efficient manner.
+\index{\glsfmttext{pdfo}|(}Powell implemented all five methods in Fortran in a very robust and efficient manner.
 However, fewer and fewer people are using Fortran in our present-day world, and Fortran has quite old standards.
 The authors developed therefore \gls{pdfo}\footnote{Available at \url{https://www.pdfo.net/}.}, named after \emph{\glsdesc{pdfo}}.
 It is a cross-platform package providing MATLAB and Python interfaces for using all five Powell's \gls{dfo} solvers, available for Linux, macOS, and Windows.
@@ -322,7 +326,7 @@ NaN values detected in the objective or constraint functions are managed using e
 Besides, when interfacing Fortran with MATLAB and Python, rounding errors occured in the problem's variables, leading to failures in extreme cases.
 For example, when using \gls{pdfo}, the user may provided initial and final trust-region radii~$\rad[0]$ and~$\rad[\infty]$ (respectively set to~$1$ and~$10^{-6}$ by default).
 If these values are chosen to be very close, although the condition~$\rad[0] \le \rad[\infty]$ is satisfied in the MATLAB or Python code, the Fortran code may receive perturbed values with~$\rad[0] > \rad[\infty]$, leading to failure exit in the original code.
-Therefore, the conditions required by Powell are ensured in the Fortran code directly.
+Therefore, the conditions required by Powell are ensured in the Fortran code directly.\index{\glsfmttext{pdfo}|)}
 
 \section{Numerical experiments}
 \label{sec:pdfo-experiments}

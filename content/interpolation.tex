@@ -15,14 +15,17 @@
 \chapter{Interpolation models for \glsfmtlong{dfo}}
 \label{ch:interpolation}
 
-\todo[noline]{Say what we are going to do (probably moving some of the next section)}
-
-\section{Introduction and motivation}
-
 As mentioned in \cref{ch:introduction}, model-based \gls{dfo} methods necessitate approximating locally the functions involved in optimization problems by simple functions, referred to as \emph{models} or \emph{surrogates}.
 These models are used to construct subproblems that are, in turn, approximately minimized.
 Examples of such functions commonly used in the literature are polynomials and \glspl{rbf}~\cite{Powell_2004a}.
 In this thesis, we focus on linear and quadratic polynomial models, i.e., on polynomials of degree at most one and two, respectively.
+
+This chapter introduces the basic concepts of polynomial interpolation that we will need to present and establish \gls{dfo} methods.
+In particular, we introduce the Lagrange quadratic polynomials, as these polynomials underlie a notion of well-poisedness referred to as the~$\Lambda$-poisedness, also presented in this chapter.
+At the end of this chapter, we study a particular interpolation set proposed by \citeauthor{Powell_2001}~\cite{Powell_2001}, showing that this set is, in some sense, optimal.
+This set is essential to us, because we will use a variation of it as the initial interpolation set of a new \gls{dfo} method we will present in \cref{ch:cobyqa-introduction}.
+
+\section{Introduction and motivation}
 
 Let~$\lpoly$\nomenclature[Sh]{$\lpoly$}{Space of linear polynomials in~$\R^n$} and~$\qpoly$\nomenclature[Si]{$\qpoly$}{Space of quadratic polynomials in~$\R^n$} denote the spaces of linear and quadratic polynomials on~$\R^n$, respectively.
 In a \gls{dfo} context, models from~$\lpoly$ or~$\qpoly$ are built for a real-valued function~$\obj$ without using derivatives.

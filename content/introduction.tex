@@ -17,9 +17,11 @@
 
 \todo[noline]{Change the line spacing to have 130/150 pages}
 
-\todo[noline]{Say what we are going to do (probably moving some of the next section)}
-
-% In this chapter, we present 
+In this chapter, we present the basic concepts of optimization that we will necessitate later in this thesis.
+In particular, we introduce the notion of \gls{dfo}, which is the cornerstone of the research work presented here.
+We provide several examples of \gls{dfo} problems to support the need for \gls{dfo} solvers in industrial, engineering, and research applications.
+At the end of this introduction, we present two benchmarking tools, referred to as performance and data profiles.
+These tools will be helpful throughout this thesis to compare and assess the performance of \gls{dfo} methods.
 
 \section{Overview of \glsfmtlong{dfo}}
 \label{sec:overview}
@@ -39,6 +41,11 @@ In theoretical analysis of \gls{dfo} methods, it is not uncommon to assume that 
 We emphasize that if any derivative information can be evaluated at an affordable cost or approximated well enough, \gls{dfo} methods are not recommended, as they are very unlikely to outperform methods that use derivatives.
 Consider, for example, minimizing an objective function defined by a sophisticated simulation whose source code is available.
 One may then attempt to evaluate derivatives using automatic differentiation tools~\cite{Griewank_2003,Griewank_Walther_2008} and apply derivative-based methods.
+
+For \gls{dfo} methods, the leading complexity measure we consider is the number of function evaluations.
+In practice, each function evaluation may require several minutes or even several days to complete~\cite[\S~1.4]{Audet_Hare_2017}.
+For instance, a recent application of \gls{dfo} is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}, for which every objective function evaluation necessitates training a machine learning model (see \cref{subsec:machine-learning}).
+Hence, in \gls{dfo} methods, the expense of numerical linear algebra is less of a concern, although we will maintain it acceptable.
 
 In this introduction, we consider the nonlinearly-constrained problem
 \begin{subequations}
@@ -65,11 +72,6 @@ However, this thesis does \emph{not} assume convexity.
 We emphasize that~\cref{eq:problem-introduction-cub,eq:problem-introduction-ceq} may include bound constraints.
 We do not extract them explicitly in this chapter, but they may need to be handled differently from other constraints because they often represent inalienable physical or theoretical restrictions.
 We will later in this thesis introduce a new \gls{dfo} method, namely \gls{cobyqa}, which will consider this (see \cref{ch:cobyqa-introduction}).
-
-For \gls{dfo} methods, the leading complexity measure we consider is the number of function evaluations.
-In practice, each function evaluation may require several minutes or even several days to complete~\cite[\S~1.4]{Audet_Hare_2017}.
-For instance, a recent application of \gls{dfo} is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}, for which every objective function evaluation necessitates training a machine learning model (see \cref{subsec:machine-learning}).
-Hence, in \gls{dfo} methods, the expense of numerical linear algebra is less of a concern, although we will maintain it acceptable.
 
 \section{Examples of applications}
 

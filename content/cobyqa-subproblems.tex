@@ -15,7 +15,12 @@
 \chapter{\glsfmttext{cobyqa} \textemdash\ solving the subproblems}
 \label{ch:cobyqa-subproblems}
 
-In this chapter, we present the methods employed by \gls{cobyqa} to solve its various subproblems, including the tangential subproblem~\cref{eq:cobyqa-tangential}, the normal subproblem~\cref{eq:cobyqa-normal}, the least-squares problem~\cref{eq:least-squares-lagrange-multipliers-cobyqa} for estimating the Lagrange multiplier, and the geometry-improving subproblem~\cref{eq:geometry-subproblem}\todo{Give some highlights, more details}.
+In this chapter, we present the methods employed by \gls{cobyqa} to solve its various subproblems.
+After presenting the classical Steihaug-Toint \gls{tcg} method, we introduce several active-set variations to solve the tangential subproblem~\cref{eq:cobyqa-tangential} and the normal subproblem~\cref{eq:cobyqa-normal} of \gls{cobyqa}.
+We then establish an elementary variation of the \gls{nnls} algorithm~\cite[Alg.~(23.10)]{Lawson_Hanson_1987}, used to solve the least-squares problem~\cref{eq:least-squares-lagrange-multipliers-cobyqa} for estimating the Lagrange multiplier in \gls{cobyqa}.
+Finally, we detail the procedure \gls{cobyqa} employs to solve the geometry-improving subproblem~\cref{eq:geometry-subproblem}.
+\Citeauthor{Powell_2009} originally designed this procedure for \gls{bobyqa}~\cite{Powell_2009}.
+We employ it in \gls{cobyqa} because \gls{bobyqa} is also designed always to respect the bounds.
 
 \section{The \glsfmtlong{tcg} method}
 
