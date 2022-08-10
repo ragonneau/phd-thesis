@@ -15,6 +15,8 @@
 \chapter{\glsfmttext{cobyqa} \textemdash\ a new \glsfmtlong{dfo} method}
 \label{ch:cobyqa-introduction}
 
+\todo[noline]{Say what we are going to do}
+
 \section{Statement of the problem}
 
 In this chapter, we introduce a new model-based \gls{dfo} method for solving nonlinearly-constrained problems of the form
@@ -38,7 +40,7 @@ This chapter presents the framework of the method, while the subproblems and the
 
 \section{The derivative-free trust-region \glsfmtshort{sqp} method}
 
-We presented in \cref{ch:sqp} the basic trust-region \gls{sqp} method.
+\index{\glsfmttext{cobyqa}|(}We presented in \cref{ch:sqp} the basic trust-region \gls{sqp} method.
 We now adapt this framework to derivative-free settings.
 
 \subsection{Interpolation-based quadratic models}
@@ -180,11 +182,11 @@ This is because~$\iter[k]$ is a best point in~$\xpt[k]$ according to~$\merit[k -
 \label{subsec:solving-trust-region-subproblem}
 
 To solve the trust-region \gls{sqp} subproblem~\cref{eq:derivative-free-trust-region-sqp-subproblem}, we employ a Byrd-Omojokun approach.
-It first generates a normal step as an approximate solution to
+It first generates a normal step~$\nstep[k]$ as an approximate solution to
 \begin{subequations}
     \label{eq:cobyqa-normal}
     \begin{align}
-        \min        & \quad \sum_{i \in \iub} \posp{\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step]^2\\
+        \min        & \quad \sum_{i \in \iub} \posp{\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step]^2 \label{eq:cobyqa-normal-obj}\\
         \text{s.t.} & \quad \xl \le \iter[k] + \step \le \xu,\\
                     & \quad \norm{\step} \le \zeta \rad[k], \label{eq:cobyqa-normal-tr}\\
                     & \quad \step \in \R^n, \nonumber
@@ -419,7 +421,7 @@ It is trigerred when
 \end{enumerate}
 More specifically, \gls{cobyqa} modifies the interpolation set~$\xpt[k + 1]$ if
 \begin{equation*}
-    \ratio[k] \le \eta_1 \quad \text{and} \quad \max_{y \in \xpt[k + 1]} @@ \norm{y - \iter[k + 1]} \ge \max @@ \set{\rad[k + 1], 2 \radlb[k + 1]}.
+    \ratio[k] \le \eta_1 \quad \text{and} \quad \max_{y \in \xpt[k + 1]} @@ \norm{y - \iter[k + 1]} > \max @@ \set{\rad[k + 1], 2 \radlb[k + 1]}.
 \end{equation*}
 When this condition holds, \gls{cobyqa} entertains the geometry-improving phase given in \cref{alg:geometry-improving}.
 
@@ -451,51 +453,59 @@ This mechanism has been developed by Powell in his solver \gls{lincoa}, and simi
 \section{Management of bound and linear constraints}
 \label{sec:simple-constraints}
 
-The implementation of \gls{cobyqa} accepts three types of constraints, namely bound constraints, linear constraints, and nonlinear constraints.
-From a theoretical standpoint, problems written in the form
-\begin{align*}
-    \min        & \quad \obj(\iter)\\
-    \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub,\\
-                & \quad \con{i}(\iter) = 0, ~ i \in \ieq,\\
-                & \quad \iter \in \R^n,
-\end{align*}
-may have bound and linear constraints included in the constraints~$\set{\con{i}}_{i \in \iub \cup \ieq}$.
-However, our implementation handles these types of constraints separately, for the following reasons.
+\Gls{cobyqa} accepts three types of constraints, namely bound, linear, and nonlinear constraints.
+They are handled separately, for the following reasons.
+% From a theoretical standpoint, we can formulated a general optimization problem as
+% \begin{align*}
+%     \min        & \quad \obj(\iter)\\
+%     \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub,\\
+%                 & \quad \con{i}(\iter) = 0, ~ i \in \ieq,\\
+%                 & \quad \iter \in \R^n,
+% \end{align*}
+% the bound and linear constraints being included in the constraints~$\set{\con{i}}_{i \in \iub \cup \ieq}$.
+% However, our implementation handles these types of constraints separately, for the following reasons.
 
 % First of all, note that in the general form of nonlinearly-constrained problems~\cref{eq:problem-cobyqa}, we did not include the bound constraints~\cref{eq:problem-cobyqa-bd} in the inequality constraints~\cref{eq:problem-cobyqa-ub}.
 First of all, bound constraints often represent inalienable physical or theoretical restrictions.
-In many applications for which \gls{cobyqa} is designed, the objective function~\cref{eq:problem-cobyqa-obj} is not defined if the bounds~\cref{eq:problem-cobyqa-bd} are violated.
+In many applications for which \gls{cobyqa} is designed, the objective function is not defined if the bound constraints are violated.
 % For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods}) involves bounds that cannot be violated, as the optimization methods that are tuned may not be defined otherwise.
-For an example, see the hyperparameter tuning problem given in \cref{subsec:machine-learning}.
-For this reason, every point that \gls{cobyqa} encounters always respects these bounds, as is also the case for the \gls{bobyqa} method, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
+For example, see the parameter tuning problem given in \cref{subsec:tuning-nonlinear-optimization-methods}.
+For this reason, we implement \gls{cobyqa} so that it visits only points that respect the bounds, as is also the case for the \gls{bobyqa} method, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
 % When establishing the problem~\cref{eq:problem-cobyqa}, we assumed that~$\xl < \xu$.
 % Note that this requirement is weak, as otherwise, the problem~\cref{eq:problem-cobyqa} would be either infeasible, or admit fix variables.
 % Thus, note also that they are very simple constraints.
 % It is, for example, trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-bd}, and easy to project any point onto the bound constraints.
-Therefore, \gls{cobyqa} handles bound constraints separately.
+% Therefore, \gls{cobyqa} handles bound constraints separately.
 % This is another reason why \gls{cobyqa} handles them separately.
 
-The linear constraints are usually much less restrictive.
-In applications, the objective function is often well-defined even at points that are infeasible with respect to the linear constraints.
+The linear constraints are usually less restrictive.
+In applications, the objective function is often well-defined even at points that violate linear constraints.
 Therefore, we do not enforce \gls{cobyqa} to always respect the linear constraints.
-However, when evaluating a model~$\conm[k]{i}$ of a linear constraint~$\con{i}$, we enforce~$\conm[k]{i} \equiv \con{i}$.
-This reduces the computational complexity of evaluating all the models, and it also suppresses all damages that could be generated by computer rounding errors.
+However, when setting up a model~$\conm[k]{i}$ of a linear constraint~$\con{i}$, we take directly~$\conm[k]{i} = \con{i}$ instead of constructing~$\conm[k]{i}$ by interpolation.
+In exact arithmetic, the derivative-free symmetric Broyden update described in \cref{subsec:symmetric-broyden-updates} automatically ensures that~$\conm[k]{i} = \con{i}$ if~$\con{i}$ is linear. 
+However, setting~$\conm[k]{i} = \con{i}$ is obviously better, because it reduces the computational expense and avoid rounding errors of constructing these models.
 
-\section{Merit function and update of the penalty parameters}
+\section{Merit function and update of the penalty parameter}
 
 We now discuss the merit function we use in \gls{cobyqa}.
 Recall that we decided to use the~$\ell_2$-merit function.
-This is because the~$\ell_2$-merit function~$\meritm[k]$ computed on the \gls{sqp} subproblem, given in~\cref{eq:l2-merit-function-model}, satisfy \cref{prop:byrd-omojokun-penalty}.
-In what follows, we denote by~$\meritm_{\gamma}$ the~$\ell_2$ merit function evaluated on the \gls{sqp} subproblem, i.e.,
+This is because the~$\ell_2$-merit function~$\meritm[k]$ computed on the \gls{sqp} subproblem, given in~\cref{eq:l2-merit-function-model}, satisfies \cref{prop:byrd-omojokun-penalty}.
+In this proposition, we denote by~$\meritm_{\gamma}$ the~$\ell_2$-merit function evaluated on the \gls{sqp} subproblem, i.e.,
 \begin{equation*}
     \meritm_{\gamma}(\step) \eqdef \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step + \gamma \Phi(\step), \quad \text{for~$\step \in \R^n$,}
 \end{equation*}
 where~$\Phi$ is defined by~\cref{eq:l2-merit-function-model-penalty} and where~$\gamma$ is the corresponding penalty parameter.
-Note that we did not include the bound constraints in the definition of the merit function, because the points visited by \gls{cobyqa} always satisfy the bound constraints~\cref{eq:problem-cobyqa-bd}.
+The same as~$\meritm[k]$, we do not include the bound constraints in the definition of~$\meritm_{\gamma}$, because the points visited by \gls{cobyqa} always satisfy the bound constraints~\cref{eq:problem-cobyqa-bd}.
 
 \begin{proposition}
     \label{prop:byrd-omojokun-penalty}
-    Given a composite step~$\step[k] = \nstep[k] + \tstep[k]$ generated by the Byrd-Omojokun approach, there exists~$\bar{\gamma} \ge 0$ such that for all~$\gamma \ge \bar{\gamma}$, we have~$\meritm_{\gamma}(\step[k]) \le \meritm_{\gamma}(0)$.
+    Let~$\step[k] = \nstep[k] + \tstep[k]$ be a composite step generated by the Byrd-Omojokun approach.
+    Assume that~$\nstep[k]$ satisfies either~$\Phi(\nstep[k]) < \Phi(0)$ or~$\nstep[k] = 0$, and that~$\tstep[k]$ satisfies
+    \begin{equation}
+        \label{eq:byrd-omojokun-tangential-assumption}
+        \nabla \objm[k](\iter[k])^{\T} \tstep[k] + \frac{1}{2} (\tstep[k])^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \tstep[k]  \le 0.
+    \end{equation}
+    Then there exists~$\bar{\gamma} \ge 0$ such that for all~$\gamma \ge \bar{\gamma}$, we have~$\meritm_{\gamma}(\step[k]) \le \meritm_{\gamma}(0)$.
     Moreover, the least possible such value is
     \begin{empheq}[left={\bar{\gamma} = \empheqlbrace}]{alignat*=2}
         & 0                                                                                                                                                                         && \quad \text{if~$\Phi(\step[k]) = \Phi(0)$,}\\
@@ -504,24 +514,21 @@ Note that we did not include the bound constraints in the definition of the meri
 \end{proposition}
 
 \begin{proof}
-    Since~$\nstep[k]$ solves~\cref{eq:cobyqa-normal}, we have~$\Phi(\nstep[k]) \le \Phi(0)$.
-    Moreover, since~$\tstep[k]$ satisfies~\cref{eq:cobyqa-tangential-ub,eq:cobyqa-tangential-eq}, we have~$\Phi(\nstep[k] + \tstep[k]) \le \Phi(\nstep[k])$ so that~$\Phi(\step[k]) \le \Phi(0)$.
-    If~$\Phi(\step[k]) = \Phi(0)$, then~$\Phi(\nstep[k]) = \Phi(0)$ and hence,~$\nstep[k] = 0$ because~$\nstep[k]$ is the least-norm solution to~\cref{eq:cobyqa-normal}.
-    In such a case, the result is clear, because the tangential step satisfies
-    \begin{equation*}
-        \nabla \objm[k](\iter[k])^{\T} \tstep[k] + \frac{1}{2} (\tstep[k])^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \tstep[k]  \le 0.
-    \end{equation*}
+    % Since~$\nstep[k]$ solves~\cref{eq:cobyqa-normal}, we have~$\Phi(\nstep[k]) \le \Phi(0)$.
+    Since~$\tstep[k]$ satisfies~\cref{eq:cobyqa-tangential-ub,eq:cobyqa-tangential-eq}, we have~$\Phi(\nstep[k] + \tstep[k]) \le \Phi(\nstep[k])$ so that~$\Phi(\step[k]) \le \Phi(0)$.
+    If~$\Phi(\step[k]) = \Phi(0)$, then~$\Phi(\nstep[k]) = \Phi(0)$ and hence,~$\nstep[k] = 0$.
+    In such a case, the result is clear, because of~\cref{eq:byrd-omojokun-tangential-assumption}.
     Otherwise, if~$\Phi(\step[k]) < \Phi(0)$, the result is clear because~$\meritm_{\gamma}$ is linear with respect to~$\gamma$.
 \end{proof}
 
-The strategy of \gls{cobyqa} to increase the penalty parameter is given in \cref{alg:increase-penalty}.
-Note that this strategy is well-defined, because of \cref{prop:byrd-omojokun-penalty}.
-However, since we impose on \cref{alg:derivative-free-trust-region-sqp-penalty} of \cref{alg:derivative-free-trust-region-sqp} that~$\gamma^k \ge \gamma^{k - 1}$, the penalty parameter may become huge, which may lead to computational difficulties.
-Therefore, we modify \cref{alg:derivative-free-trust-region-sqp} to include a mechanism proposed by \citeauthor{Powell_1994} in his solver \gls{cobyla}~\cite{Powell_1994}.
-It consists in reducing~$\gamma^k$ whenever~$\radlb[k]$ is decreased.
-The exact mechanism exmployed by \gls{cobyqa} is given in \cref{alg:reducting-penalty}.
-For simplicity, we assume that~$\ieq = \emptyset$.
+The strategy of \gls{cobyqa} to set the penalty parameter at \cref{alg:derivative-free-trust-region-sqp-penalty} of \cref{alg:derivative-free-trust-region-sqp} is given in \cref{alg:increase-penalty}.
+Note that this strategy imposes~$\gamma^k \ge \gamma^{k - 1}$.
+However, in the implementation of \gls{cobyqa}, we do include a procedure that attempts to reduce~$\gamma^k$, preventing it from becoming large, and avoiding computational difficulties.
+This procedure is not included in \cref{alg:derivative-free-trust-region-sqp} for simplicity, and is trigerred whenever~$\radlb[k]$ is decreased, i.e., immediatly after \cref{alg:reducing-lower-bound-trust-region-radius} is entertained.
+\Cref{alg:reducting-penalty} presents this procedure.
+For simplicity, we assume in this algorithm that~$\ieq = \emptyset$.
 If~$\ieq \neq \emptyset$, \gls{cobyqa} will view each equality constraint as two inequality constraints when invoking \cref{alg:reducting-penalty}.
+This procedure is the same as the one used by \citeauthor{Powell_1994} in his solver \gls{cobyla}~\cite{Powell_1994} for a similar purpose.
 
 \begin{algorithm}
     \caption[Reducing the penalty parameter]{Reducing the penalty parameter\textsuperscript{$\ddagger$}}
@@ -531,31 +538,36 @@ If~$\ieq \neq \emptyset$, \gls{cobyqa} will view each equality constraint as two
     \algorithmfootnote{\textsuperscript{$\ddagger$}We assume that~$\ieq = \emptyset$; otherwise, each equality constraint is viewed as two inequality constraints.}
     \KwData{Current interpolation set~$\xpt[k + 1] \subseteq \R^n$ and current penalty parameter~$\gamma^k \ge 0$.}
     \KwResult{Modified penalty parameter~$\gamma^k \ge 0$.}
-    Set indices of the important constraints
+    Set the indices of the \enquote{important} constraints
     \begin{algomathdisplay}
         \iub^{\ast} \eqdef \set[\big]{i \in \iub : \min_{y \in \xpt[k + 1]} @@ \con{i}(y) < \max_{y \in \xpt[k + 1]} @@ 2 \con{i}(y)}
     \end{algomathdisplay}
-    \eIf{$\mathcal{K} = \emptyset$}{
+    \eIf{$\iub^{\ast} = \emptyset$}{
         Set~$\gamma^k \gets 0$\;
     }{
         Replace~$\gamma^k$ by
-        \begin{algomathdisplay}
+        \begin{algomathdisplaynumbered}
+            \label{eq:reducting-penalty}
             \min @@ \set[\bigg]{\frac{\max_{y \in \xpt[k + 1]} @@ \obj(y) - \min_{y \in \xpt[k + 1]} @@ \obj(y)}{\min_{i \in \iub^{\ast}} @@ \{ \max_{y \in \xpt[k + 1]} @@ \con{i}(y) - \min_{y \in \xpt[k + 1]} @@ \negp{\con{i}(y)} \}}, \gamma^k}
-        \end{algomathdisplay} \label{alg:reducting-penalty-replace}
+        \end{algomathdisplaynumbered}
     }
 \end{algorithm}
 \nomenclature[Ob]{$\negp{\cdot}$}{Negative-part operator}%
 
-The notation~$\negp{\cdot}$ in \cref{alg:reducting-penalty-replace} of \cref{alg:reducting-penalty} takes the negative part of a given number.
-The term in \cref{alg:reducting-penalty-replace} is explained in~\cite[\S~4]{Powell_1994}.
+The notation~$\negp{\cdot}$ in \cref{alg:reducting-penalty} means to take the negative part of a given number.
+This update of~$\gamma^k$ is detailed in~\cite[Eq.~(12) and~(13)]{Powell_1994} and the discussion around.
+The ratio in~\cref{eq:reducting-penalty} can be understood as follows.
 Its numerator corresponds to a typical change in the objective function, while the denominator's term
 \begin{equation*}
     \max_{y \in \xpt[k + 1]} @@ \con{i}(y) - \min_{y \in \xpt[k + 1]} @@ \negp{\con{i}(y)}
 \end{equation*}
 represents a typical change in the~$i$th constraint if~$\min_{y \in \xpt[k + 1]} \con{i}(y) \le 0$, and some distance to feasibility otherwise.
-Of course, this term is very empirical, and other choices could be made.
-This concludes the general description of \gls{cobyqa}.
+See~\cite[\S~4]{Powell_1994} for more discussions about~\cref{eq:reducting-penalty}.\index{\glsfmttext{cobyqa}|)}
+% Of course, this term is very empirical, and other choices could be made.
+% This concludes the general description of \gls{cobyqa}.
 
-% \section{Summary of the method}
+\section{Summary and remarks}
 
-% We present in this section a summary of the method employed by \gls{cobyqa}.
+We present in this section a summary of the method employed by \gls{cobyqa}.
+
+\todo[noline]{Make a conclusion for \cref{ch:cobyqa-introduction}}

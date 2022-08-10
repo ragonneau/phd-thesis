@@ -15,10 +15,16 @@
 \chapter{Introduction}
 \label{ch:introduction}
 
+\todo[noline]{Change the line spacing to have 130/150 pages}
+
+\todo[noline]{Say what we are going to do (probably moving some of the next section)}
+
+% In this chapter, we present 
+
 \section{Overview of \glsfmtlong{dfo}}
 \label{sec:overview}
 
-Optimization is the study of extremal points and values of mathematical functions.
+\index{\glsfmtshort{dfo}|(}Optimization is the study of extremal points and values of mathematical functions.
 It aims at minimizing (or maximizing) a real-valued function~$\obj$\nomenclature[Fa]{$\obj$}{Real-valued objective function defined on~$\R^n$}, referred to as the \emph{objective function}, within a given set of points~$\fset \subseteq \R^n$\nomenclature[Nb]{$\subseteq$}{Set inclusion notation}\nomenclature[Sf]{$\R^n$}{Real coordinate space of dimension~$n$}\nomenclature[Sj]{$\fset$}{Feasible set, included in~$\R^n$}, referred to as the \emph{feasible set}.
 It is well known that essential information for optimization is embraced in the (possibly generalized) derivatives of the functions involved.
 However, in practice, evaluations of such derivatives may be unreliable or prohibitively expensive, if not impossible.
@@ -119,7 +125,7 @@ Note that the optimal value and all local solutions to the problem~\cref{eq:gaus
 \subsection{Tuning nonlinear optimization methods}
 \label{subsec:tuning-nonlinear-optimization-methods}
 
-Another well-known example of \gls{dfo} applications is the parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
+\index{\glsfmtshort{dfo}!model-based!trust-region|(}Another well-known example of \gls{dfo} applications is the parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
 For example, consider \cref{alg:trust-region}, a basic trust-region method for solving the problem~\cref{eq:problem-introduction} when~$\iub = \ieq = \emptyset$\nomenclature[Sa]{$\emptyset$}{Empty set}, where~$\norm{\cdot}$ can be any norm.
 
 \begin{algorithm}
@@ -172,10 +178,11 @@ In other words, we wish to solve the optimization problem
     \end{align}
 \end{subequations}
 Derivatives of~$C$ cannot be evaluated, if they even exist.
+Moreover, observe that the objective function~$C$ is likely to be undefined if the bound constraints are violated.
 Such a problem is then solved using \gls{dfo} methods, such as the \gls{mads} method~\cite{Audet_Orban_2006}.
 \Citeauthor{Audet_Digabel_Tribes_2019} modified the \gls{mads} method to solve the problem~\cref{eq:tuning-algorithms-problem} with a controlled number of significant digits~\cite{Audet_Digabel_Tribes_2019} to determine parameters that practitioners can use.
 Interestingly, \gls{dfo} methods can be self-tuned using the method presented above.
-The \gls{bfo}~\cite{Porcelli_Toint_2017}, a method for bound-constrained problems mixing continuous and discrete variables, is an example of self-tuned \gls{dfo} methods.
+The \gls{bfo}~\cite{Porcelli_Toint_2017}, a method for bound-constrained problems mixing continuous and discrete variables, is an example of self-tuned \gls{dfo} methods.\index{\glsfmtshort{dfo}!model-based!trust-region|)}
 
 \subsection{Hyperparameter tuning in machine learning}
 \label{subsec:machine-learning}
@@ -189,16 +196,16 @@ Binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by
     \label{eq:csvc}
     \begin{align}
         \min        & \quad \frac{1}{2} \norm{\omega}_2^2 + C \norm{\xi}_1\\
-        \text{s.t.} & \quad y_i \big( \beta + \omega^{\T} \varphi_{\gamma}(\iter_i) \big) \ge 1 - \xi_i, ~ i \in \set{1, 2, \dots, m},\\
+        \text{s.t.} & \quad y_i \big( \beta + \omega^{\T} \psi_{\gamma}(\iter_i) \big) \ge 1 - \xi_i, ~ i \in \set{1, 2, \dots, m},\\
                     & \quad \xi \ge 0,\\
                     & \quad (\omega, \beta, \xi) \in \R^{\ell} \times \R \times \R^m,
     \end{align}
 \end{subequations}
-where~$\varphi_{\gamma}$ is a function mapping the data to a higher-dimensional space~$\R^{\ell}$ and~$\gamma > 0$ and~$C > 0$ are parameters.
+where~$\psi_{\gamma}$ is a function mapping the data to a higher-dimensional space~$\R^{\ell}$ and~$\gamma > 0$ and~$C > 0$ are parameters.
 Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times \R \times \R^m$\nomenclature[Se]{$\R$}{Set of real numbers} to the problem~\cref{eq:csvc}, the~$C$-\gls{svc} classifies any data~$\iter \in \R^n$ according to
 \begin{equation}
     \label{eq:csvc-classifier}
-    \delta(\iter) \eqdef \sgn \big( \beta^{\ast} + (\omega^{\ast})^{\T} \varphi_{\gamma}(\iter) \big),
+    \delta(\iter) \eqdef \sgn \big( \beta^{\ast} + (\omega^{\ast})^{\T} \psi_{\gamma}(\iter) \big),
 \end{equation}
 \nomenclature[On]{$\sgn$}{Sign operator}%
 which maps an observation~$\iter \in \R^n$ to a label in~$\set{\pm 1}$.
@@ -252,7 +259,7 @@ The objective and constraint functions of an \gls{mdo} problem can be provided b
 It is the case in aircraft engine engineering~\cite{Gazaix_Etal_2019}, where the design problem of one component is solved while taking into account constraints imposed by other components handled by different departments.
 \Gls{mdo} problems often involve simulations or experiments, and therefore, \gls{dfo} methods are often needed.
 In \cref{ch:pdfo} of this thesis, we will present a piece of software we implemented for solving \gls{dfo} problems based on methods by Powell~\cite{Powell_1994,Powell_2002,Powell_2006,Powell_2009,Powell_2015}.
-It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry\footnote{See \url{https://www.irt-saintexupery.com}.} in France.
+It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry\footnote{See \url{https://www.irt-saintexupery.com}.} in France.\index{\glsfmtshort{dfo}|)}
 
 \section{Optimality conditions for smooth optimization}
 
@@ -467,7 +474,7 @@ However, it is known in smooth unconstrained optimization that a point at which 
 
 \section{Methodology of \glsfmtlong{dfo}}
 
-As summarized in~\cite{Conn_Scheinberg_Vicente_2009b}, two main strategies have been developed for solving \gls{dfo} problems.
+\index{\glsfmtshort{dfo}|(}As summarized in~\cite{Conn_Scheinberg_Vicente_2009b}, two main strategies have been developed for solving \gls{dfo} problems.
 One strategy consists of sampling the objective function around the current iterate and choosing the next iterate among the sampled points based on simple comparisons.
 The \emph{direct-search} methods~\cite{Kolda_Lewis_Torczon_2003} are based on this framework.
 The other strategy builds iteratively models that approximate the problems (e.g., using polynomials) around the current iterate and choose the next iterate according to the approximated problems.
@@ -480,7 +487,7 @@ For more information on these methods, we refer to the review~\cite{Larson_Menic
 
 \subsection{Direct-search methods}
 
-An early example of \gls{dfo} is a method from \citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed in \citeyear{Fermi_Metropolis_1952} a nonlinear least-squares solver on MANIAC, an computer based on the von Neumann architecture.
+\index{\glsfmtshort{dfo}!direct-search|(}An early example of \gls{dfo} is a method from \citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed in \citeyear{Fermi_Metropolis_1952} a nonlinear least-squares solver on MANIAC, an computer based on the von Neumann architecture.
 From a modern viewpoint, this method is a coordinate search method, a particular example of direct-search methods, where the search directions are defined to be the coordinate axes.
 
 Several direct-search methods appeared after that.
@@ -495,13 +502,13 @@ Nowadays, the direct-search paradigm offers an abundance of algorithms~\cite{Kol
 A recent example of direct-search methods is the \gls{bfo}~\cite{Porcelli_Toint_2017,Porcelli_Toint_2022}, which handles integer and categorical variables and can be self-tuned.
 
 \Citeauthor{Gratton_Etal_2015} recently proposed incorporating stochastic strategies in direct-search methods~\cite{Gratton_Etal_2015,Gratton_Etal_2019}.
-This improves both the performance and the worst-case complexity bounds compared with traditional direct-search methods.
+This improves both the performance and the worst-case complexity bounds compared with traditional direct-search methods.\index{\glsfmtshort{dfo}!direct-search|)}
 
 \subsection{Model-based methods}
 \label{subsec:model-based-methods}
 
-Unlike direct-search methods, model-based methods approximate locally the functions involved in the optimization problems by simple functions called \emph{models} or \emph{surrogates}.
-To make model-based methods globally convergent, the models are exploited by a globalization strategy, such as a \emph{line-search} framework~\cite[Ch.~3]{Nocedal_Wright_2006} or a \emph{trust-region} framework~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
+\index{\glsfmtshort{dfo}!model-based|(}Unlike direct-search methods, model-based methods approximate locally the functions involved in the optimization problems by simple functions called \emph{models} or \emph{surrogates}.
+To make model-based methods globally convergent, the models are exploited by a globalization strategy, such as a \emph{line-search}\index{\glsfmtshort{dfo}!model-based!line-search} framework~\cite[Ch.~3]{Nocedal_Wright_2006} or a \emph{trust-region} framework~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
 Most of the existing model-based methods use linear or quadratic approximations~\cite{Powell_1994,Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b}, although other models have also been successfully used, such as \glspl{rbf}~\cite{Oeuvray_2005}.
 
 Model-based methods are highly appealing in practice, as they provide excellent performances in real applications.
@@ -538,7 +545,7 @@ This idea was first proposed by \citeauthor{Bandeira_Scheinberg_Vicente_2012}~\c
 They only require approximating the objective function well enough with a certain probability, and such models can be obtained by interpolation on randomly selected points~\cite{Bandeira_Scheinberg_Vicente_2014}.
 The global convergence rate of this method is established by \citeauthor{Gratton_Etal_2018}~\cite{Gratton_Etal_2018}, using an idea elaborated earlier in~\cite[\S~6]{Gratton_Etal_2015}.
 Similar results are established independently by \citeauthor{Cartis_Scheinberg_2018}~\cite{Cartis_Scheinberg_2018} but for a more general class of methods.
-The work of \citeauthor{Bandeira_Scheinberg_Vicente_2012} has motivated many investigations on methods that use randomized models, such as~\cite{Chen_Menickelly_Scheinberg_2018}.
+The work of \citeauthor{Bandeira_Scheinberg_Vicente_2012} has motivated many investigations on methods that use randomized models, such as~\cite{Chen_Menickelly_Scheinberg_2018}.\index{\glsfmtshort{dfo}!model-based|)}
 
 \subsection{Comments on methods based on finite differences}
 \label{subsec:finite-difference}
@@ -835,7 +842,7 @@ The data profile of a solver does depend weakly on the other solvers, the only d
 On the other hand, performance profiles are relative because the value of~$r_{p, s}$ in~\cref{eq:performance-ratio} compares the expense of~$s$ with that of the most efficient solver on~$p$, which depends on all the other solvers. 
 For example, the data profiles in \cref{fig:data-profile-example-noisy-10} suggest that \gls{cg} outperforms \gls{bfgs} during the corresponding experiment, and the profiles are unlikely to change dramatically if \gls{newuoa} is removed from the comparison.
 In contrast, the comparison between \gls{bfgs} and \gls{cg} is not as conclusive based on the performance profiles in \cref{fig:performance-profile-example-noisy-10} because the profiles may change significantly if \gls{newuoa} is removed from the comparison.
-This phenomenon is studied in~\cite{Gould_Scott_2016}, which presents examples on which comparisons using performance profiles should be made with care.
+This phenomenon is studied in~\cite{Gould_Scott_2016}, which presents examples on which comparisons using performance profiles should be made with care.\index{\glsfmtshort{dfo}|)}
 
 \section{Notations}
 

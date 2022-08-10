@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/08/09 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/08/10 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifmeeting
@@ -138,11 +138,10 @@
 
 % Index processing
 \RequirePackage{imakeidx}
-\RequirePackage[columns=2,totoc]{idxlayout}
 \newcommand{\tb}[1]{#1\kern.15em t}  % indicates a table
 \newcommand{\fb}[1]{#1\kern.15em f}  % indicates a figure
 \newcommand{\nb}[1]{#1\kern.15em n}  % indicates a footnote
-\makeindex
+\makeindex[intoc]
 
 % Nomenclature processing
 \RequirePackage[refpage,nocfg,intoc]{nomencl}
@@ -205,6 +204,7 @@
 }
 % \renewenvironment{algorithm}[1][htbp]{\begin{algocf@algorithm}[#1]\begin{onehalfspace}}{\end{onehalfspace}\end{algocf@algorithm}}
 \renewenvironment{algomathdisplay}{\begin{equation*}}{\@endalgocfline\end{equation*}\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
+\newenvironment{algomathdisplaynumbered}{\begin{equation}}{\@endalgocfline\end{equation}\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
 \newenvironment{algomathalign}[1]{\align #1}{\@endalgocfline\endalign\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
 \newenvironment{algomathalign*}[1]{\start@align\@ne\st@rredtrue\m@ne #1}{\@endalgocfline\endalign\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
 \newenvironment{algoempheq}[2][]{\empheq[#1]{#2}}{\@endalgocfline\endempheq\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}

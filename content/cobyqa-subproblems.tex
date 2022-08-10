@@ -15,11 +15,11 @@
 \chapter{\glsfmttext{cobyqa} \textemdash\ solving the subproblems}
 \label{ch:cobyqa-subproblems}
 
-In this chapter, we present the methods employed by \gls{cobyqa} to solve its various subproblems, including the tangential subproblem~\cref{eq:cobyqa-tangential} (with a modified trust-region radius), the normal subproblem~\cref{eq:cobyqa-normal}, the least-squares problem~\cref{eq:least-squares-lagrange-multipliers-cobyqa} for estimating the Lagrange multiplier, and the geometry-improving subproblem~\cref{eq:geometry-subproblem}.
+In this chapter, we present the methods employed by \gls{cobyqa} to solve its various subproblems, including the tangential subproblem~\cref{eq:cobyqa-tangential}, the normal subproblem~\cref{eq:cobyqa-normal}, the least-squares problem~\cref{eq:least-squares-lagrange-multipliers-cobyqa} for estimating the Lagrange multiplier, and the geometry-improving subproblem~\cref{eq:geometry-subproblem}\todo{Give some highlights, more details}.
 
 \section{The \glsfmtlong{tcg} method}
 
-Trust-region methods often involve the minimization of a quadratic function subject to a trust-region constraint, i.e., a problem of the form
+\index{\glsfmtshort{dfo}!model-based!trust-region|(}Trust-region methods often involve the minimization of a quadratic function subject to a trust-region constraint, i.e., a problem of the form
 \begin{subequations}
     \label{eq:problem-tcg}
     \begin{align}
@@ -456,7 +456,7 @@ Moreover, similarly to \cref{alg:lctcg}, after calculating the search directions
 may be substantial for some~$j$ in the working set.
 In such a case, the method first moves~$(\sstep[k]_{\iter}, \sstep[k]_y)$ towards the boundaries of the active constraints.
 
-The \gls{tcg}-like procedure for convex piecewise quadratic programming we presented is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.cpqp}.
+The \gls{tcg}-like procedure for convex piecewise quadratic programming we presented is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.cpqp}.\index{\glsfmtshort{dfo}!model-based!trust-region|)}
 
 \section{Evaluating the least-squares Lagrange multiplier}
 \label{sec:cobyqa-lagrange-multipliers}
@@ -623,3 +623,7 @@ This mechanism is described in~\cite{Powell_2008} for the unconstrained case, st
 Another method that the author tried to approximately solve~\cref{eq:geometry-simple} is to employ \cref{alg:lctcg} on both~$Q$ and~$-Q$, taking the solution with the largest absolute value.
 However, numerical experiments concurred with the observations of \citeauthor{Powell_2008}~\cite{Powell_2008}, as the performance of \gls{cobyqa} drastically decreased when compared to the method presented in this section.
 This concludes our discussion of the methods employed by \gls{cobyqa} to solve its subproblem.
+
+\section{Summary and remarks}
+
+\todo[noline]{Make a conclusion for \cref{ch:cobyqa-subproblems}}

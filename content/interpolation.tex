@@ -15,6 +15,8 @@
 \chapter{Interpolation models for \glsfmtlong{dfo}}
 \label{ch:interpolation}
 
+\todo[noline]{Say what we are going to do (probably moving some of the next section)}
+
 \section{Introduction and motivation}
 
 As mentioned in \cref{ch:introduction}, model-based \gls{dfo} methods necessitate approximating locally the functions involved in optimization problems by simple functions, referred to as \emph{models} or \emph{surrogates}.
@@ -331,7 +333,7 @@ Moreover, one can show that the set~$\xpt$ is~$\Lambda$-poised if and only if th
 \subsection{Quadratic models based on the symmetric Broyden update}
 \label{subsec:symmetric-broyden-updates}
 
-In this section, we present another functional~$\mathcal{F}$ that can be used in the variational problem~\cref{eq:underdetermined-models}.
+\index{\glsfmtshort{psb}!derivative-free|(}In this section, we present another functional~$\mathcal{F}$ that can be used in the variational problem~\cref{eq:underdetermined-models}.
 It is introduced by \citeauthor{Powell_2004b}~\cite{Powell_2004b}.
 It takes up the freedom bequeathed by the interpolation conditions~\cref{eq:interpolation-conditions-quadratic} by minimizing the difference between the Hessian matrix of the interpolant and a prior estimation~$H_{\text{old}} \in \R^{n \times n}$ of this matrix instead of minimizing the Frobenius norm of the Hessian matrix.
 More specifically, we build a quadratic model~$\objm$ by solving
@@ -361,8 +363,8 @@ If we are given a function~$\objm[\text{old}]$ such that~$H_{\text{old}} = \nabl
 In a \gls{dfo} method, we have~$\objm[\text{old}] = \objm[k - 1]$.
 Therefore, the coefficients of the model obtained by least Frobenius norm updates can be evaluated by solving a linear system similar to~\cref{eq:least-frobenius-kkt-system}.
 
-The minimum Frobenius norm update can be regarded as a derivative-free variation of the symmetric Broyden update in the quasi-Newton method.
-The symmetric Broyden method~\cite{Powell_1970b} approximates the function~$\obj$ at a point~$y^1 \in \R^n$ by a quadratic function
+The minimum Frobenius norm update can be regarded as a derivative-free variation of the \gls{psb} update in the quasi-Newton method.
+The \gls{psb}\index{\glsfmtshort{psb}} method~\cite{Powell_1970b} approximates the function~$\obj$ at a point~$y^1 \in \R^n$ by a quadratic function
 \begin{align*}
     \objm(\iter) = \objm(y^1) + \nabla \objm(y^1)^{\T} (\iter - y^1) + \frac{1}{2} (\iter - y^1)^{\T} \hat{H} (\iter - y^1),
 \end{align*}
@@ -386,7 +388,7 @@ Clearly, the function~$\objm$ solves
     \end{align}
 \end{subequations}
 The variational problem~\cref{eq:symmetric-broyden-models} is a derivative-free analog of~\cref{eq:psb-variational-problem}.
-Therefore, following \citeauthor{Powell_2013}~\cite{Powell_2013}, we will also refer to the minimum Frobenius norm update as the \emph{derivative-free symmetric Broyden update}.
+Therefore, following \citeauthor{Powell_2013}~\cite{Powell_2013}, we will also refer to the minimum Frobenius norm update as the \emph{derivative-free symmetric Broyden update}.\index{\glsfmtshort{psb}!derivative-free|)}
 
 \subsection{Implementation in \glsfmtlong{dfo} methods}
 \label{subsec:implementation-symmetric-broyden-update}
