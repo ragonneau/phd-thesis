@@ -16,16 +16,20 @@
 \label{ch:interpolation}
 
 As mentioned in \cref{ch:introduction}, model-based \gls{dfo} methods necessitate approximating locally the functions involved in optimization problems by simple functions, referred to as \emph{models} or \emph{surrogates}.
-These models are used to construct subproblems that are, in turn, approximately minimized.
-Examples of such functions commonly used in the literature are polynomials and \glspl{rbf}~\cite{Powell_2004a}.
-In this thesis, we focus on linear and quadratic polynomial models, i.e., on polynomials of degree at most one and two, respectively.
+These models are used to construct subproblems that are, in turn, approximately solved.
+Examples of such functions include polynomials and \glspl{rbf}.
+In this thesis, we focus on linear and quadratic polynomial models, i.e., polynomials of degree at most one and two, respectively.
 
 This chapter introduces the basic concepts of polynomial interpolation that we will need to present and establish \gls{dfo} methods.
-In particular, we introduce the Lagrange quadratic polynomials, as these polynomials underlie a notion of well-poisedness referred to as the~$\Lambda$-poisedness, also presented in this chapter.
-At the end of this chapter, we study a particular interpolation set proposed by \citeauthor{Powell_2001}~\cite{Powell_2001}, showing that this set is, in some sense, optimal.
+\Cref{sec:interpolation-introduction} motivates the use of linear and quadratic polynomials in \gls{dfo} methods.
+We then introduce the poisedness of interpolation sets and the Lagrange quadratic polynomials in \cref{sec:multivariate-interpolation}.
+\Cref{sec:poisedness} presents a notion of well-poisedness referred to as the~$\Lambda$-poisedness.
+We then introduce in \cref{sec:underdetermined-interpolation} the methodology of underdetermined quadratic interpolation that will be employed later in this thesis.
+Finally, in \cref{sec:optimal-interpolation-set}, we study a particular interpolation set proposed by \citeauthor{Powell_2006}~\cite{Powell_2006}, showing that this set is, in some sense, optimal.
 This set is essential to us, because we will use a variation of it as the initial interpolation set of a new \gls{dfo} method we will present in \cref{ch:cobyqa-introduction}.
 
 \section{Introduction and motivation}
+\label{sec:interpolation-introduction}
 
 Let~$\lpoly$\nomenclature[Sh]{$\lpoly$}{Space of linear polynomials in~$\R^n$} and~$\qpoly$\nomenclature[Si]{$\qpoly$}{Space of quadratic polynomials in~$\R^n$} denote the spaces of linear and quadratic polynomials on~$\R^n$, respectively.
 In a \gls{dfo} context, models from~$\lpoly$ or~$\qpoly$ are built for a real-valued function~$\obj$ without using derivatives.
@@ -501,7 +505,7 @@ This is because the positive semidefiniteness of~$\Omega$ can be lost due to com
 \label{sec:optimal-interpolation-set}
 
 We study in this section an interpolation set that we will use in \cref{ch:cobyqa-introduction} of this thesis, where we introduce a new model-based \gls{dfo} method.
-This interpolation set is adapted from~\cite{Powell_2001} as follows.
+This interpolation set is adapted from~\cite{Powell_2006} as follows.
 Let~$\delta > 0$ be fixed and for~$j \in \set{1, 2, \dots, 2n + 1}$, let~$z^j \in \R^n$ be
 \begin{subequations}
     \label{eq:initial-interpolation-set}
@@ -790,7 +794,7 @@ In addition,~$m = 2n + 1$ is optimal for~$\mathcal{Z}_m$ in the sense that~$\Lam
 We conjecture that~$\Lambda_p$ is minimized at the value~$m = 2n + 1$ for any~$p \ge 1$, but we do not have any proof of such a statement yet.
 
 Note that the definition of~$\mathcal{Z}_m$ in~\cref{eq:initial-interpolation-set,eq:initial-interpolation-set-def} assumes that~$m \le 2n + 1$.
-\Citeauthor{Powell_2001}~\cite{Powell_2001} proposed an extension of~$\mathcal{Z}_m$ in the case~$m > 2n + 1$, and hence,~$\mathcal{Z}_m$ is defined for any~$m \in \set{1, 2, \dots, (n + 1) (n + 2) / 2}$.
+\Citeauthor{Powell_2006}~\cite{Powell_2006} proposed an extension of~$\mathcal{Z}_m$ in the case~$m > 2n + 1$, and hence,~$\mathcal{Z}_m$ is defined for any~$m \in \set{1, 2, \dots, (n + 1) (n + 2) / 2}$.
 With such an extension, it is interesting to ask whether~$m = 2n + 1$ still minimizes~$\Lambda_p$, which seems to be true according to some numerical experiments.
 We leave this problem open and expect the analysis to be more challenging than what we have done.
 One of the challenges is that \cref{lem:lambda-poisedness-initial-simple} does not hold in the case~$m > 2n + 1$, and hence, the calculations will become more involving.

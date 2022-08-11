@@ -17,11 +17,13 @@
 
 \todo[noline]{Change the line spacing to have 130/150 pages}
 
-In this chapter, we present the basic concepts of optimization that we will necessitate later in this thesis.
-In particular, we introduce the notion of \gls{dfo}, which is the cornerstone of the research work presented here.
-We provide several examples of \gls{dfo} problems to support the need for \gls{dfo} solvers in industrial, engineering, and research applications.
-At the end of this introduction, we present two benchmarking tools, referred to as performance and data profiles.
-These tools will be helpful throughout this thesis to compare and assess the performance of \gls{dfo} methods.
+This thesis will develop model-based \gls{dfo} methods and software.
+In this chapter, we provide an overview of \gls{dfo}, introduce some applications, and present the concepts and tools that we will use throughout this thesis.
+In particular, \cref{sec:overview} includes basic concepts of \gls{dfo} and its motivation.
+\Cref{sec:dfo-examples} provides several examples of \gls{dfo} problems from academic, engineering, and industrial applications.
+\Cref{sec:optimality-conditions} introduces the optimility conditions for smooth nonlinear optimization, which will be used in the development of our algorithms.
+We then summarize existing methodologies for the design of \gls{dfo} algorithms in \cref{sec:methodology-dfo}.
+Finally, \cref{sec:benchmarking-tools} presents two benchmarking tools that will be used to compare and assess the performance of \gls{dfo} solvers.
 
 \section{Overview of \glsfmtlong{dfo}}
 \label{sec:overview}
@@ -74,6 +76,7 @@ We do not extract them explicitly in this chapter, but they may need to be handl
 We will later in this thesis introduce a new \gls{dfo} method, namely \gls{cobyqa}, which will consider this (see \cref{ch:cobyqa-introduction}).
 
 \section{Examples of applications}
+\label{sec:dfo-examples}
 
 \subsection{Automatic error analysis}
 
@@ -249,7 +252,7 @@ Hence, it often consists in finding optimal parameters that maximize a reward.
 However, these reward derivatives often cannot be evaluated, and \gls{dfo} methods can be an approach to solving such problems.
 This concept is often referred to as derivative-free reinforcement learning.
 
-\subsection{Some industrial and engineering applications}
+\subsection{Other industrial and engineering applications}
 
 \Gls{dfo} methods are also widely used in industry and engineering, especially for solving problems that involve heavy simulations.
 Such problems arise from helicopter rotor blade manufacturing~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, computational fluid dynamics~\cite{Duvigneau_Visonneau_2004}, worst-case analysis of analog circuits~\cite{Latorre_Etal_2019}, rapid-cycling synchrotron accelerator modeling~\cite{Eldred_Etal_2021}, nuclear energy engineering~\cite{Kortelainen_Etal_2010,Kortelainen_Etal_2012,Kortelainen_Etal_2014}, reservoir engineering and engine calibration~\cite{Langouet_2011}, and groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, to name but a few.
@@ -264,6 +267,7 @@ In \cref{ch:pdfo} of this thesis, we will present a piece of software we impleme
 It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry\footnote{See \url{https://www.irt-saintexupery.com}.} in France.\index{\glsfmtshort{dfo}|)}
 
 \section{Optimality conditions for smooth optimization}
+\label{sec:optimality-conditions}
 
 We discuss in this section optimality conditions for the problem~\cref{eq:problem-introduction}.
 We do not assume any structure on the objective and constraint functions, except some smoothness.
@@ -475,6 +479,7 @@ However, it is known in smooth unconstrained optimization that a point at which 
 \end{theorem}
 
 \section{Methodology of \glsfmtlong{dfo}}
+\label{sec:methodology-dfo}
 
 \index{\glsfmtshort{dfo}|(}As summarized in~\cite{Conn_Scheinberg_Vicente_2009b}, two main strategies have been developed for solving \gls{dfo} problems.
 One strategy consists of sampling the objective function around the current iterate and choosing the next iterate among the sampled points based on simple comparisons.
@@ -511,7 +516,7 @@ This improves both the performance and the worst-case complexity bounds compared
 
 \index{\glsfmtshort{dfo}!model-based|(}Unlike direct-search methods, model-based methods approximate locally the functions involved in the optimization problems by simple functions called \emph{models} or \emph{surrogates}.
 To make model-based methods globally convergent, the models are exploited by a globalization strategy, such as a \emph{line-search}\index{\glsfmtshort{dfo}!model-based!line-search} framework~\cite[Ch.~3]{Nocedal_Wright_2006} or a \emph{trust-region} framework~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
-Most of the existing model-based methods use linear or quadratic approximations~\cite{Powell_1994,Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b}, although other models have also been successfully used, such as \glspl{rbf}~\cite{Oeuvray_2005}.
+Most of the existing model-based methods use linear or quadratic approximations~\cite{Powell_1994,Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b}, although other models have also been successfully used, such as \glspl{rbf}~\cite{Powell_2004a,Oeuvray_2005}.
 
 Model-based methods are highly appealing in practice, as they provide excellent performances in real applications.
 Compared with direct-search methods, the information contained in the function values is better exploited due to the use of models.

@@ -15,18 +15,21 @@
 \chapter{Development of the \glsfmttext{pdfo} package}
 \label{ch:pdfo}
 
-Between~\citeyear{Powell_1994} and~\citeyear{Powell_2015}, Powell developed five solvers to tackle unconstrained and constrained problems without using derivatives, namely~\gls{cobyla}~\cite{Powell_1994}, \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}~\cite{Powell_2015}.
+Powell designed five model-based \gls{dfo} solvers to tackle unconstrained and constrained problems, namely~\gls{cobyla}~\cite{Powell_1994}, \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}.
 These solvers were implemented by Powell, with particular attention paid to their numerical stability and algebraic complexity.
 Renowned for their robustness and efficiency, these solvers are very appealing to practitioners and widely used in applications, including aeronautical engineering~\cite{Gallard_Etal_2018}, astronomy~\cite{Biviano_Etal_2013,Mamon_Biviano_Boue_2013}, computer vision~\cite{Izadinia_Shan_Seitz_2017}, robotics~\cite{Mombaur_Truong_Laumond_2010}, and statistics~\cite{Bates_Etal_2015}.
 However, Powell implemented them in Fortran 77, an old-fashion language that damps the enthusiasm of many users to exploit these solvers in their projects.
 
-In this chapter, we present \gls{pdfo}, a MATLAB and Python software we developed to interface Powell's solvers, which has been downloaded more than 30,000 times as of today.
-After briefly introducing the techniques employed by the solvers, we present the core features of \gls{pdfo} and its implementation.
-At the end of the chapter, we present some numerical experiments on Powell's solvers using \gls{pdfo}, showing the advantage of having all five solvers in one package.
-One of these experiments will reveal a peculiar behavior of the solvers, namely that \gls{cobyla} defeats all other methods on noisy unconstrained problems.
-This behavior is unexpected, because \gls{cobyla} is the oldest of these methods and uses the simplest models.
+In this chapter, we present \gls{pdfo}, a MATLAB and Python package we developed to interface Powell's solvers, which has been downloaded more than 30,000 times\footnote{See \url{https://www.pdfo.net/}.} as of August 2022.
+\Cref{sec:pdfo-introduction} presents the motivations for the development of \gls{pdfo}.
+We then provide an overview of Powell's five solvers in \cref{sec:powell}.
+\Cref{sec:pdfo-core-features} introduces the core features of \gls{pdfo} and its implementation.
+Finally, we present in \cref{sec:pdfo-experiments} some numerical experiments on Powell's solvers using \gls{pdfo}, showing the advantage of having all five solvers in one package.
+One of these experiments will reveal an interesting behavior of the solvers, namely that \gls{cobyla} performs quite well compared to other solvers on noisy unconstrained problems (see \cref{fig:ppun-50}).
+This behavior is intriguing, because \gls{cobyla} is the oldest of these methods and uses the simplest models.
 
 \section{Introduction and motivation}
+\label{sec:pdfo-introduction}
 
 There has been considerable demand from both researchers and practitioners for the availability of the five Powell's solvers in more user-friendly languages such as Python, MATLAB, and Julia.
 Our aim is to wrap Powell's Fortran code into a package named \gls{pdfo}, which enables users of such languages to call Powell's solvers without any need to deal with the Fortran code.
@@ -174,7 +177,7 @@ To do so, at each iteration, it models the objective function with a quadratic o
 The set~$\xpt[k + 1]$ differs from~$\xpt[k]$ of at most one point.
 During a classical iteration, a trial point, i.e., an approximate solution of the trust-region subproblem~\cref{eq:powell-trust-region} replaces an interpolation of~$\xpt[k]$.
 As we already mentioned, it is essential to maintain some geometrical properties of~$\xpt[k]$ to ensure the existence and uniqueness of the models from a computational viewpoint.
-Hence, \gls{uobyqa} may undertake geometry-improving steps whenever the models seem not to be accurate, led a remarkable result pointed out in~\cite{Powell_2001}.
+Hence, \gls{uobyqa} may undertake geometry-improving steps whenever the models seem not to be accurate, led by a remarkable result pointed out in~\cite{Powell_2001}.
 It states that given a point~$y \in \xpt[k]$ to remove from the interpolation set, its most suitable substitute to build~$\xpt[k + 1]$ solves the subproblem
 \begin{subequations}
     \label{eq:biglag}
@@ -213,6 +216,7 @@ When it comes to solving the trust-region subproblems~\cref{eq:powell-trust-regi
 However, the trust-region subproblem solver of \gls{bobyqa} always respects the bounds, while the solver of \gls{lincoa} may visit points lying outside of the polyhedron of the constraints and may even return points that are infeasible.\index{\glsfmttext{lincoa}|)}\index{\glsfmttext{bobyqa}|)}\index{\glsfmttext{newuoa}|)}
 
 \section{Core features of the \glsfmttext{pdfo} package}
+\label{sec:pdfo-core-features}
 
 \index{\glsfmttext{pdfo}|(}Powell implemented all five methods in Fortran in a very robust and efficient manner.
 However, fewer and fewer people are using Fortran in our present-day world, and Fortran has quite old standards.
@@ -369,12 +373,22 @@ In doing so, one should expect a decrease in the proportion of problems solved w
 
 \begin{figure}[ht]
     \centering
-    \drawperformanceprofiles{{"NEWUOA","BOBYQA","LINCOA","COBYLA"}}{noisy-1-50-2-perf-newuoa-bobyqa-lincoa-cobyla-u.csv}{1}
-    \caption{Performance profiles on noisy problems with~$\tau = 10^{-1}$.}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"NEWUOA","BOBYQA","LINCOA","COBYLA"}}{noisy-1-50-2-perf-newuoa-bobyqa-lincoa-cobyla-u.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"NEWUOA","BOBYQA","LINCOA","COBYLA"}}{noisy-1-50-2-perf-newuoa-bobyqa-lincoa-cobyla-u.csv}{2}
+        \caption{Tolerance~$\tau = 10^{-2}$}
+    \end{subfigure}
+    \caption{Performance profiles on noisy problems}
     \label{fig:ppun-50}
 \end{figure}
 
-We observe, however, a peculiar behavior of \gls{cobyla} in this experiment, as it defeats all other solvers on unconstrained problems even though it is not defined for such kind of problem and uses the simplest models.
+We observe, however, a interesting behavior of \gls{cobyla} in this experiment, as it defeats all other solvers on unconstrained problems even though it is not defined for such kind of problem and uses the simplest models.
 It seems that the linear models of \gls{cobyla} are, in some sense, less sensitive to Gaussian noise, but the authors did not derive a theory for this behavior as of today.
 
 \subsection{An example of hyperparameter tuning problem}

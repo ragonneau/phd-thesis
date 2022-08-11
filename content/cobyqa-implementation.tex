@@ -15,8 +15,14 @@
 \chapter{\glsfmttext{cobyqa} \textemdash\ description of the Python implementation and experiments}
 \label{ch:cobyqa-implementation}
 
-In this chapter, we provide details on the Python implementation of \gls{cobyqa}, made publicly available.
-We also provide some numerical experiments, comparing \gls{cobyqa} with \gls{newuoa}, \gls{bobyqa}, \gls{lincoa}, and \gls{cobyla}\todo{Give more info such as Cython, stability, etc}.
+In this chapter, we provide details on the publicly available Python implementation of \gls{cobyqa}.
+In particular, we present in detail the management of the user's inputs, describe every stopping criterion, and exhibit the mechanisms that improve the stability of the implementation.
+We decided to implement the first version of \gls{cobyqa} in Python for its simplicity and its large amount of users.
+However, Python has the computational flows of an interpreted language, making it slow compared to compiled languages.
+Therefore, we implement the subproblem solvers of \gls{cobyqa} in Cython, a programming language that blends the advantages of both Python and C.
+Cython is a compiled language and is, therefore, much faster than Python alone.
+Finally, we provide some numerical experiments, comparing \gls{cobyqa} with \gls{newuoa}, \gls{bobyqa}, \gls{lincoa}, and \gls{cobyla}.
+These numerical experiments confirm that the method is working on the considered problems, although the implementation necessitates being fine-tuned in the future.
 
 \section{Additional implementation details}
 

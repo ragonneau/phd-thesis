@@ -15,13 +15,19 @@
 \chapter{\glsfmttext{cobyqa} \textemdash\ a new \glsfmtlong{dfo} method}
 \label{ch:cobyqa-introduction}
 
-This chapter introduces a new \gls{dfo} method for solving nonlinearly-constrained problems.
-The algorithm, named \gls{cobyqa}, is a derivative-free trust-region \gls{sqp} method designed to tackle nonlinearly-constrained optimization problems that include equality and inequality constraints.
-A particular feature of \gls{cobyqa} is that if it admits bound constraints, all points encountered by \gls{cobyqa} will respect the bounds.
-This is useful because the objective functions of industrial, engineering, and research problems that admit bound constraints are often undefined where the bounds are violated.
-Details on the methods employed by \gls{cobyqa} to solve its various subproblems are provided in \cref{ch:cobyqa-subproblems}, and its Python implementation is presented in \cref{ch:cobyqa-implementation}.
+This chapter introduces a new \gls{dfo} method, named \gls{cobyqa}.
+It is a derivative-free trust-region \gls{sqp} method designed to tackle nonlinearly-constrained optimization problems that include equality and inequality constraints.
+A particular feature of \gls{cobyqa} is that it visits only points that respect the bound constraints, if any.
+This is useful because the objective functions of applications that admit bound constraints are often undefined when the bounds are violated.
+
+\Cref{sec:cobyqa-statement} first formulates the problem to be tackled by \gls{cobyqa}.
+\Cref{sec:cobyqa-main} then presents the general framework of \gls{cobyqa} and some important components.
+\Cref{sec:simple-constraints} provides further details on the management of the bound and linear constraints.
+Finally, \cref{sec:cobyqa-merit-penalty} exhibits the merit function employed by \gls{cobyqa} and the updates of its penalty parameter.
+Details on the methods used by \gls{cobyqa} to solve its various subproblems will be provided in \cref{ch:cobyqa-subproblems}, and its Python implementation will be presented in \cref{ch:cobyqa-implementation}.
 
 \section{Statement of the problem}
+\label{sec:cobyqa-statement}
 
 The problems we consider in this chapter are of the form
 \begin{subequations}
@@ -43,6 +49,7 @@ The method, named~\gls{cobyqa} after \emph{\glsdesc{cobyqa}}, does not use deriv
 This chapter presents the framework of the method, while the subproblems and the Python implementation will be discussed in \cref{ch:cobyqa-subproblems,ch:cobyqa-implementation}, respectively.
 
 \section{The derivative-free trust-region \glsfmtshort{sqp} method}
+\label{sec:cobyqa-main}
 
 \index{\glsfmttext{cobyqa}|(}We presented in \cref{ch:sqp} the basic trust-region \gls{sqp} method.
 We now adapt this framework to derivative-free settings.
@@ -244,7 +251,7 @@ In doing so, we would have
 \end{equation*}
 Therefore, to maintain the property~$\norm{\step[k]} \le \rad[k]$, we replace~$\rad[k]$ in the constraints~\cref{eq:cobyqa-normal-tr,eq:cobyqa-tangential-tr} with~$\rad[k] / \sqrt{2}$.
 
-\subsection{Least-squares Lagrange multiplier}
+\subsection{Estimating the Lagrange multiplier}
 \label{subsec:least-squares-lagrange-multipliers}
 
 We now introduce the strategy employed by \gls{cobyqa} to estimate the Lagrange multiplier on \cref{alg:derivative-free-trust-region-sqp-multipliers} of \cref{alg:derivative-free-trust-region-sqp}.
@@ -380,7 +387,7 @@ Theoretically, it is tempting to set~$\bar{y}$ to the point that optimizes the~$
 This idea has, however, a major drawback: it is expensive to implement due to the definition of the~$\Lambda$-poisedness.
 Hence, from a computational perspective, we decide not to employ this technique in \gls{cobyqa}.
 
-\subsection{Geometry of the interpolation set}
+\subsection{Improving the geometry of the interpolation set}
 \label{subsec:geometry-improvement}
 
 In this section, we detail the geometry-improving procedure of \gls{cobyqa}, corresponding to \cref{alg:derivative-free-trust-region-sqp-geometry} of \cref{alg:derivative-free-trust-region-sqp}.
@@ -490,6 +497,7 @@ In exact arithmetic, the derivative-free symmetric Broyden update described in \
 However, setting~$\conm[k]{i} = \con{i}$ is obviously better, because it reduces the computational expense and avoid rounding errors of constructing these models.
 
 \section{Merit function and update of the penalty parameter}
+\label{sec:cobyqa-merit-penalty}
 
 We now discuss the merit function we use in \gls{cobyqa}.
 Recall that we decided to use the~$\ell_2$-merit function.
@@ -572,6 +580,18 @@ See~\cite[\S~4]{Powell_1994} for more discussions about~\cref{eq:reducting-penal
 
 \section{Summary and remarks}
 
-We present in this section a summary of the method employed by \gls{cobyqa}.
-
 \todo[noline]{Make a conclusion for \cref{ch:cobyqa-introduction}}
+
+We present in this section a summary of the method employed by \gls{cobyqa}.
+In a nutshell, \gls{cobyqa} is a \gls{dfo} trust-region \gls{sqp} method.
+It builds quadratic models of the objective and constraint functions using the derivative-free symmetric Broyden update and solves its trust-region subproblem with a Byrd-Omojokun approach.
+The estimated Lagrange multiplier that it employs is the least-square Lagrange multiplier, as is often the case in \gls{sqp} methods.
+
+Moreover, the trust-region radius is not handled in a typical trust-region manner.
+Instead, we employ a procedure from Powell that maintains both the trust-region radius and a lower bound on the trust-region radius.
+This lower bound is used as an indicator of the resolution of the algorithm, and prevents the trust-region radius from becoming too low.
+
+Recall that model-based \gls{dfo} methods usually necessitate embedding a geometry-improving phase, as they tend to lose the poisedness of their interpolation set as the iterations progress.
+We employ in \gls{cobyqa} a procedure that maximizes the absolute value of a Lagrange polynomial.
+This procedure has the advantage that it keeps the only denominator of the calculations made by \gls{cobyqa} away from zero, this denominator being in the updating formula of the inverse of the coefficient matrix of the interpolation system.
+Hence, this procedure makes the method numerically more stable.
