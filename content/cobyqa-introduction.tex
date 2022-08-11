@@ -51,7 +51,7 @@ This chapter presents the framework of the method, while the subproblems and the
 \section{The derivative-free trust-region \glsfmtshort{sqp} method}
 \label{sec:cobyqa-main}
 
-\index{\glsfmttext{cobyqa}|(}We presented in \cref{ch:sqp} the basic trust-region \gls{sqp} method.
+\index{COBYQA@\glsfmttext{cobyqa}|(}We presented in \cref{ch:sqp} the basic trust-region \gls{sqp} method.
 We now adapt this framework to derivative-free settings.
 
 \subsection{Interpolation-based quadratic models}
@@ -574,13 +574,11 @@ Its numerator corresponds to a typical change in the objective function, while t
     \max_{y \in \xpt[k + 1]} @@ \con{i}(y) - \min_{y \in \xpt[k + 1]} @@ \negp{\con{i}(y)}
 \end{equation*}
 represents a typical change in the~$i$th constraint if~$\min_{y \in \xpt[k + 1]} \con{i}(y) \le 0$, and some distance to feasibility otherwise.
-See~\cite[\S~4]{Powell_1994} for more discussions about~\cref{eq:reducting-penalty}.\index{\glsfmttext{cobyqa}|)}
+See~\cite[\S~4]{Powell_1994} for more discussions about~\cref{eq:reducting-penalty}.\index{COBYQA@\glsfmttext{cobyqa}|)}
 % Of course, this term is very empirical, and other choices could be made.
 % This concludes the general description of \gls{cobyqa}.
 
 \section{Summary and remarks}
-
-\todo[noline]{Make a conclusion for \cref{ch:cobyqa-introduction}}
 
 We present in this section a summary of the method employed by \gls{cobyqa}.
 In a nutshell, \gls{cobyqa} is a \gls{dfo} trust-region \gls{sqp} method.

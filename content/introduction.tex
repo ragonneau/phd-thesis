@@ -28,7 +28,7 @@ Finally, \cref{sec:benchmarking-tools} presents two benchmarking tools that will
 \section{Overview of \glsfmtlong{dfo}}
 \label{sec:overview}
 
-\index{\glsfmtshort{dfo}|(}Optimization is the study of extremal points and values of mathematical functions.
+\index{DFO@\glsfmtshort{dfo}|(}Optimization is the study of extremal points and values of mathematical functions.
 It aims at minimizing (or maximizing) a real-valued function~$\obj$\nomenclature[Fa]{$\obj$}{Real-valued objective function defined on~$\R^n$}, referred to as the \emph{objective function}, within a given set of points~$\fset \subseteq \R^n$\nomenclature[Nb]{$\subseteq$}{Set inclusion notation}\nomenclature[Sf]{$\R^n$}{Real coordinate space of dimension~$n$}\nomenclature[Sj]{$\fset$}{Feasible set, included in~$\R^n$}, referred to as the \emph{feasible set}.
 It is well known that essential information for optimization is embraced in the (possibly generalized) derivatives of the functions involved.
 However, in practice, evaluations of such derivatives may be unreliable or prohibitively expensive, if not impossible.
@@ -130,7 +130,7 @@ Note that the optimal value and all local solutions to the problem~\cref{eq:gaus
 \subsection{Tuning nonlinear optimization methods}
 \label{subsec:tuning-nonlinear-optimization-methods}
 
-\index{\glsfmtshort{dfo}!model-based!trust-region|(}Another well-known example of \gls{dfo} applications is the parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
+\index{DFO@\glsfmtshort{dfo}!model-based!trust-region|(}Another well-known example of \gls{dfo} applications is the parameter tuning of nonlinear optimization methods~\cite{Audet_Orban_2006}.
 For example, consider \cref{alg:trust-region}, a basic trust-region method for solving the problem~\cref{eq:problem-introduction} when~$\iub = \ieq = \emptyset$\nomenclature[Sa]{$\emptyset$}{Empty set}, where~$\norm{\cdot}$ can be any norm.
 
 \begin{algorithm}
@@ -187,7 +187,7 @@ Moreover, observe that the objective function~$C$ is likely to be undefined if t
 Such a problem is then solved using \gls{dfo} methods, such as the \gls{mads} method~\cite{Audet_Orban_2006}.
 \Citeauthor{Audet_Digabel_Tribes_2019} modified the \gls{mads} method to solve the problem~\cref{eq:tuning-algorithms-problem} with a controlled number of significant digits~\cite{Audet_Digabel_Tribes_2019} to determine parameters that practitioners can use.
 Interestingly, \gls{dfo} methods can be self-tuned using the method presented above.
-The \gls{bfo}~\cite{Porcelli_Toint_2017}, a method for bound-constrained problems mixing continuous and discrete variables, is an example of self-tuned \gls{dfo} methods.\index{\glsfmtshort{dfo}!model-based!trust-region|)}
+The \gls{bfo}~\cite{Porcelli_Toint_2017}, a method for bound-constrained problems mixing continuous and discrete variables, is an example of self-tuned \gls{dfo} methods.\index{DFO@\glsfmtshort{dfo}!model-based!trust-region|)}
 
 \subsection{Hyperparameter tuning in machine learning}
 \label{subsec:machine-learning}
@@ -264,7 +264,7 @@ The objective and constraint functions of an \gls{mdo} problem can be provided b
 It is the case in aircraft engine engineering~\cite{Gazaix_Etal_2019}, where the design problem of one component is solved while taking into account constraints imposed by other components handled by different departments.
 \Gls{mdo} problems often involve simulations or experiments, and therefore, \gls{dfo} methods are often needed.
 In \cref{ch:pdfo} of this thesis, we will present a piece of software we implemented for solving \gls{dfo} problems based on methods by Powell~\cite{Powell_1994,Powell_2002,Powell_2006,Powell_2009,Powell_2015}.
-It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry\footnote{See \url{https://www.irt-saintexupery.com}.} in France.\index{\glsfmtshort{dfo}|)}
+It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo} initiated by a team from IRT Saint Exup{\'{e}}ry\footnote{See \url{https://www.irt-saintexupery.com}.} in France.\index{DFO@\glsfmtshort{dfo}|)}
 
 \section{Optimality conditions for smooth optimization}
 \label{sec:optimality-conditions}
@@ -351,7 +351,7 @@ We also note that dedicated constraint qualifications may exist when the problem
 
 \subsubsection{Statement of the optimality conditions}
 
-Let~$\lag$\nomenclature[Fc]{$\lag$}{Lagrangian function} be the \emph{Lagrangian} of the problem~\cref{eq:problem-introduction}, defined by
+\index{KKT conditions@\glsfmtshort{kkt} conditions|(}Let~$\lag$\nomenclature[Fc]{$\lag$}{Lagrangian function} be the \emph{Lagrangian} of the problem~\cref{eq:problem-introduction}, defined by
 \begin{equation*}
     \lag(\iter, \lm) \eqdef \obj(\iter) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lm_i \con{i}(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lm_i \in \R$ for~$i \in \iub \cup \ieq$},
 \end{equation*}
@@ -378,7 +378,7 @@ We present \cref{thm:first-order-necessary-conditions} with the \gls{licq} as an
 The conditions~\cref{eq:kkt-introduction} are commonly referred to as the \gls{kkt} conditions~\cite{Karush_1939,Kuhn_Tucker_1951}, and the pair~$(\iter[\ast], \lm[\ast])$ in \cref{thm:first-order-necessary-conditions} is referred to as a \emph{\gls{kkt} pair}.
 More specifically, condition~\cref{eq:kkt-introduction-stationarity} is the \emph{stationarity} condition, conditions~\cref{eq:kkt-introduction-primal-feasibility-ub,eq:kkt-introduction-primal-feasibility-eq} as the \emph{primal feasibility} conditions, condition~\cref{eq:kkt-introduction-complementary-slackness} as the \emph{complementary slackness} condition, and condition~\cref{eq:kkt-introduction-dual-feasibility} as the \emph{dual feasibility} condition.
 A \emph{first-order stationary point} is a point~$\iter \in \R^n$ satisfying the \gls{kkt} conditions~\cref{eq:kkt-introduction}.
-Such a point may not be a local solution.
+Such a point may not be a local solution.\index{KKT conditions@\glsfmtshort{kkt} conditions|)}
 
 \subsubsection{An illustration of the first-order optimality conditions}
 
@@ -481,7 +481,7 @@ However, it is known in smooth unconstrained optimization that a point at which 
 \section{Methodology of \glsfmtlong{dfo}}
 \label{sec:methodology-dfo}
 
-\index{\glsfmtshort{dfo}|(}As summarized in~\cite{Conn_Scheinberg_Vicente_2009b}, two main strategies have been developed for solving \gls{dfo} problems.
+\index{DFO@\glsfmtshort{dfo}|(}As summarized in~\cite{Conn_Scheinberg_Vicente_2009b}, two main strategies have been developed for solving \gls{dfo} problems.
 One strategy consists of sampling the objective function around the current iterate and choosing the next iterate among the sampled points based on simple comparisons.
 The \emph{direct-search} methods~\cite{Kolda_Lewis_Torczon_2003} are based on this framework.
 The other strategy builds iteratively models that approximate the problems (e.g., using polynomials) around the current iterate and choose the next iterate according to the approximated problems.
@@ -494,7 +494,7 @@ For more information on these methods, we refer to the review~\cite{Larson_Menic
 
 \subsection{Direct-search methods}
 
-\index{\glsfmtshort{dfo}!direct-search|(}An early example of \gls{dfo} is a method from \citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed in \citeyear{Fermi_Metropolis_1952} a nonlinear least-squares solver on MANIAC, an computer based on the von Neumann architecture.
+\index{DFO@\glsfmtshort{dfo}!direct-search|(}An early example of \gls{dfo} is a method from \citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed in \citeyear{Fermi_Metropolis_1952} a nonlinear least-squares solver on MANIAC, an computer based on the von Neumann architecture.
 From a modern viewpoint, this method is a coordinate search method, a particular example of direct-search methods, where the search directions are defined to be the coordinate axes.
 
 Several direct-search methods appeared after that.
@@ -509,13 +509,13 @@ Nowadays, the direct-search paradigm offers an abundance of algorithms~\cite{Kol
 A recent example of direct-search methods is the \gls{bfo}~\cite{Porcelli_Toint_2017,Porcelli_Toint_2022}, which handles integer and categorical variables and can be self-tuned.
 
 \Citeauthor{Gratton_Etal_2015} recently proposed incorporating stochastic strategies in direct-search methods~\cite{Gratton_Etal_2015,Gratton_Etal_2019}.
-This improves both the performance and the worst-case complexity bounds compared with traditional direct-search methods.\index{\glsfmtshort{dfo}!direct-search|)}
+This improves both the performance and the worst-case complexity bounds compared with traditional direct-search methods.\index{DFO@\glsfmtshort{dfo}!direct-search|)}
 
 \subsection{Model-based methods}
 \label{subsec:model-based-methods}
 
-\index{\glsfmtshort{dfo}!model-based|(}Unlike direct-search methods, model-based methods approximate locally the functions involved in the optimization problems by simple functions called \emph{models} or \emph{surrogates}.
-To make model-based methods globally convergent, the models are exploited by a globalization strategy, such as a \emph{line-search}\index{\glsfmtshort{dfo}!model-based!line-search} framework~\cite[Ch.~3]{Nocedal_Wright_2006} or a \emph{trust-region} framework~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
+\index{DFO@\glsfmtshort{dfo}!model-based|(}Unlike direct-search methods, model-based methods approximate locally the functions involved in the optimization problems by simple functions called \emph{models} or \emph{surrogates}.
+To make model-based methods globally convergent, the models are exploited by a globalization strategy, such as a \emph{line-search}\index{DFO@\glsfmtshort{dfo}!model-based!line-search} framework~\cite[Ch.~3]{Nocedal_Wright_2006} or a \emph{trust-region} framework~\cite{Conn_Gould_Toint_2000,Yuan_2015}.
 Most of the existing model-based methods use linear or quadratic approximations~\cite{Powell_1994,Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b}, although other models have also been successfully used, such as \glspl{rbf}~\cite{Powell_2004a,Oeuvray_2005}.
 
 Model-based methods are highly appealing in practice, as they provide excellent performances in real applications.
@@ -552,7 +552,7 @@ This idea was first proposed by \citeauthor{Bandeira_Scheinberg_Vicente_2012}~\c
 They only require approximating the objective function well enough with a certain probability, and such models can be obtained by interpolation on randomly selected points~\cite{Bandeira_Scheinberg_Vicente_2014}.
 The global convergence rate of this method is established by \citeauthor{Gratton_Etal_2018}~\cite{Gratton_Etal_2018}, using an idea elaborated earlier in~\cite[\S~6]{Gratton_Etal_2015}.
 Similar results are established independently by \citeauthor{Cartis_Scheinberg_2018}~\cite{Cartis_Scheinberg_2018} but for a more general class of methods.
-The work of \citeauthor{Bandeira_Scheinberg_Vicente_2012} has motivated many investigations on methods that use randomized models, such as~\cite{Chen_Menickelly_Scheinberg_2018}.\index{\glsfmtshort{dfo}!model-based|)}
+The work of \citeauthor{Bandeira_Scheinberg_Vicente_2012} has motivated many investigations on methods that use randomized models, such as~\cite{Chen_Menickelly_Scheinberg_2018}.\index{DFO@\glsfmtshort{dfo}!model-based|)}
 
 \subsection{Comments on methods based on finite differences}
 \label{subsec:finite-difference}
@@ -849,7 +849,7 @@ The data profile of a solver does depend weakly on the other solvers, the only d
 On the other hand, performance profiles are relative because the value of~$r_{p, s}$ in~\cref{eq:performance-ratio} compares the expense of~$s$ with that of the most efficient solver on~$p$, which depends on all the other solvers. 
 For example, the data profiles in \cref{fig:data-profile-example-noisy-10} suggest that \gls{cg} outperforms \gls{bfgs} during the corresponding experiment, and the profiles are unlikely to change dramatically if \gls{newuoa} is removed from the comparison.
 In contrast, the comparison between \gls{bfgs} and \gls{cg} is not as conclusive based on the performance profiles in \cref{fig:performance-profile-example-noisy-10} because the profiles may change significantly if \gls{newuoa} is removed from the comparison.
-This phenomenon is studied in~\cite{Gould_Scott_2016}, which presents examples on which comparisons using performance profiles should be made with care.\index{\glsfmtshort{dfo}|)}
+This phenomenon is studied in~\cite{Gould_Scott_2016}, which presents examples on which comparisons using performance profiles should be made with care.\index{DFO@\glsfmtshort{dfo}|)}
 
 \section{Notations}
 
@@ -876,12 +876,15 @@ The remaining of this thesis is organized as follows.
     \item \Cref{ch:interpolation} presents interpolation models that are useful to \gls{dfo}.
     We will focus on linear and quadratic models, as these are the models employed by the \gls{dfo} methods presented later in this thesis.
     \item \Cref{ch:pdfo} introduces \gls{pdfo}, a package providing MATLAB and Python interfaces for using late Prof.\ M. J. D. Powell's \gls{dfo} solvers.
-    \item \Cref{ch:sqp} first presents an overview of the \gls{sqp} method, before providing some perspectives.
-    In particular, we provide an interpretation of the \gls{sqp} subproblem that is new to the best of our knowledge.
-    We also present a general trust-region \gls{sqp} method, discuss different alternatives for solving its subproblem, and show an interesting connection between two of them.
-    \item \Cref{ch:cobyqa-introduction} presents our new model-based \gls{dfo} method \gls{cobyqa}.
+    \item \Cref{ch:sqp} presents an overview of the classical \gls{sqp} method and provides some perspectives.
+    In particular, we elaborate an interpretation of the \gls{sqp} subproblem that is new to the best of our knowledge.
+    We also present a trust-region \gls{sqp} method, discuss various approaches to solving its subproblem, and show an interesting connection between two of them.
+    \item \Cref{ch:cobyqa-introduction} presents a new model-based \gls{dfo} method named \gls{cobyqa}.
     It is a trust-region \gls{sqp} method, designed to tackle nonlinearly-constrained problems that include equality and inequality constraints.
     It builds the trust-region quadratic models using derivative-free symmetric Broyden update presented in \cref{ch:interpolation}.
-    \item \Cref{ch:cobyqa-subproblems} introduces the methods employed by \gls{cobyqa} to solve its different subproblem.
-    \item \Cref{ch:cobyqa-implementation} provides some insight on the Python implementation of \gls{cobyqa}, together with some numerical experiments.
+    \item \Cref{ch:cobyqa-subproblems} introduces in details the methods employed by \gls{cobyqa} to solve its various subproblems.
+    \item \Cref{ch:cobyqa-implementation} provides details on the Python implementation of \gls{cobyqa}.
+    Such an implementation is crucial and very challenging, due to the nature of \gls{dfo}.
+    However, we want to contribute an open-source, robust, and easily-readable package to the community.
+    This chapter also presents some numerical experiments that compare \gls{cobyqa} with \gls{newuoa}, \gls{bobyqa}, \gls{lincoa}, and \gls{cobyla}.
 \end{enumerate}

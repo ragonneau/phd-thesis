@@ -137,7 +137,7 @@ Such simple constraints do not necessitate to be modeled.
 \subsection{The \glsfmttext{cobyla} method}
 \label{subsec:cobyla}
 
-\index{\glsfmttext{cobyla}|(}Powell released the \gls{cobyla} solver in May 1992 and published the corresponding paper~\cite{Powell_1994} in \citedate{Powell_1994}.
+\index{COBYLA@\glsfmttext{cobyla}|(}Powell released the \gls{cobyla} solver in May 1992 and published the corresponding paper~\cite{Powell_1994} in \citedate{Powell_1994}.
 The solver is named after \emph{\glsdesc{cobyla}}.
 It aims to solve the optimization problem~\cref{eq:problem-pdfo} whenever the constraint functions~$\con{i}$, for~$i \in \iub$, are nonlinear functions whose derivatives are unknown.
 In other words, only function values of the constraint functions are accessible.
@@ -166,12 +166,12 @@ However, the trust-region constraint~$\norm{\iter - \iter[k]} \le \rad[k]$ and t
 \end{align*}
 \nomenclature[Oa]{$\posp{\cdot}$}{Positive-part operator}%
 where~$\posp{\cdot}$ takes the positive-part of a given number.
-In doing so, the method attempts to reduce the~$\ell_{\infty}$-violation of the constraint models while ensuring that the trial point lies in the trust region.\index{\glsfmttext{cobyla}|)}
+In doing so, the method attempts to reduce the~$\ell_{\infty}$-violation of the constraint models while ensuring that the trial point lies in the trust region.\index{COBYLA@\glsfmttext{cobyla}|)}
 
 \subsection{The \glsfmttext{uobyqa} method}
 \label{subsec:uobyqa}
 
-\index{\glsfmttext{uobyqa}|(}Later on, in \citedate{Powell_2002}, Powell developed \gls{uobyqa}~\cite{Powell_2002}, named after \emph{\glsdesc{uobyqa}}.
+\index{UOBYQA@\glsfmttext{uobyqa}|(}Later on, in \citedate{Powell_2002}, Powell developed \gls{uobyqa}~\cite{Powell_2002}, named after \emph{\glsdesc{uobyqa}}.
 It aims at solving the nonlinear optimization problem~\cref{eq:problem-pdfo} in the unconstrained case, i.e., when~$\iub = \emptyset$.
 To do so, at each iteration, it models the objective function with a quadratic obtained by fully-determined interpolation on the set~$\xpt[k] \subseteq \R^n$ containing~$N = (n + 1)(n + 2) / 2$ points.
 The set~$\xpt[k + 1]$ differs from~$\xpt[k]$ of at most one point.
@@ -189,12 +189,12 @@ It states that given a point~$y \in \xpt[k]$ to remove from the interpolation se
 \end{subequations}
 where~$\lagp[y] \colon \R^n \to \R$ denotes the Lagrange function associated with~$y$ (see \cref{sec:lagrange-polynomials} for details).
 Since \gls{uobyqa} requires only a rough solution of the geometry-improving subproblem~\cref{eq:biglag}, Powell developed an algorithm that requires only~$\bigo(n^2)$ operations, based on an estimation of~$\abs{\lagp[y](\cdot)}$.
-Once such a point is calculated, the solver continues with a classical trust-region step, and the subproblem~\cref{eq:powell-trust-region} is solved with the Mor{\'{e}}-Sorensen algorithm~\cite{More_Sorensen_1983}, as it controls the accuracy of the solution.\index{\glsfmttext{uobyqa}|)}
+Once such a point is calculated, the solver continues with a classical trust-region step, and the subproblem~\cref{eq:powell-trust-region} is solved with the Mor{\'{e}}-Sorensen algorithm~\cite{More_Sorensen_1983}, as it controls the accuracy of the solution.\index{UOBYQA@\glsfmttext{uobyqa}|)}
 
 \subsection{The \glsfmttext{newuoa}, \glsfmttext{bobyqa}, and \glsfmttext{lincoa} methods}
 \label{subsec:newuoa-bobyqa-lincoa}
 
-\index{\glsfmttext{newuoa}|(}\index{\glsfmttext{bobyqa}|(}\index{\glsfmttext{lincoa}|(}The major flaw of \gls{uobyqa} is the number of required interpolation points, which can become prohibitively huge when~$n$ increases.
+\index{NEWUOA@\glsfmttext{newuoa}|(}\index{BOBYQA@\glsfmttext{bobyqa}|(}\index{LINCOA@\glsfmttext{lincoa}|(}The major flaw of \gls{uobyqa} is the number of required interpolation points, which can become prohibitively huge when~$n$ increases.
 Therefore, Powell designed a mechanism to define quadratic models that require fewer interpolation points~\cite{Powell_2004a}.
 These models, based on the symmetric Broyden update, are presented in \cref{subsec:symmetric-broyden-updates}.
 They only require the number of points in~$\xpt[k]$ to be at least~$n + 2$ and at most~$(n + 1)(n + 2) / 2$.
@@ -213,12 +213,12 @@ This remark suggests that it can be much more efficient to update such a matrix 
 Powell derived an updating formula in~\cite{Powell_2004b} that requires only~$\bigo(N^2)$ operations instead of~$\mathcal{O}(N^3)$ if the computation was made from scratch with no loss of accuracy, where~$N$ denotes the number of interpolation points.
 Details are given in \cref{subsec:implementation-symmetric-broyden-update}.
 When it comes to solving the trust-region subproblems~\cref{eq:powell-trust-region}, \gls{newuoa} employs the Steihaug-Toint \gls{tcg} algorithm~\cite{Steihaug_1983,Toint_1981}, and \gls{bobyqa} and \gls{lincoa} use an active-set variation of it.
-However, the trust-region subproblem solver of \gls{bobyqa} always respects the bounds, while the solver of \gls{lincoa} may visit points lying outside of the polyhedron of the constraints and may even return points that are infeasible.\index{\glsfmttext{lincoa}|)}\index{\glsfmttext{bobyqa}|)}\index{\glsfmttext{newuoa}|)}
+However, the trust-region subproblem solver of \gls{bobyqa} always respects the bounds, while the solver of \gls{lincoa} may visit points lying outside of the polyhedron of the constraints and may even return points that are infeasible.\index{LINCOA@\glsfmttext{lincoa}|)}\index{BOBYQA@\glsfmttext{bobyqa}|)}\index{NEWUOA@\glsfmttext{newuoa}|)}
 
 \section{Core features of the \glsfmttext{pdfo} package}
 \label{sec:pdfo-core-features}
 
-\index{\glsfmttext{pdfo}|(}Powell implemented all five methods in Fortran in a very robust and efficient manner.
+\index{PDFO@\glsfmttext{pdfo}|(}Powell implemented all five methods in Fortran in a very robust and efficient manner.
 However, fewer and fewer people are using Fortran in our present-day world, and Fortran has quite old standards.
 The authors developed therefore \gls{pdfo}\footnote{Available at \url{https://www.pdfo.net/}.}, named after \emph{\glsdesc{pdfo}}.
 It is a cross-platform package providing MATLAB and Python interfaces for using all five Powell's \gls{dfo} solvers, available for Linux, macOS, and Windows.
@@ -330,7 +330,7 @@ NaN values detected in the objective or constraint functions are managed using e
 Besides, when interfacing Fortran with MATLAB and Python, rounding errors occured in the problem's variables, leading to failures in extreme cases.
 For example, when using \gls{pdfo}, the user may provided initial and final trust-region radii~$\rad[0]$ and~$\rad[\infty]$ (respectively set to~$1$ and~$10^{-6}$ by default).
 If these values are chosen to be very close, although the condition~$\rad[0] \le \rad[\infty]$ is satisfied in the MATLAB or Python code, the Fortran code may receive perturbed values with~$\rad[0] > \rad[\infty]$, leading to failure exit in the original code.
-Therefore, the conditions required by Powell are ensured in the Fortran code directly.\index{\glsfmttext{pdfo}|)}
+Therefore, the conditions required by Powell are ensured in the Fortran code directly.\index{PDFO@\glsfmttext{pdfo}|)}
 
 \section{Numerical experiments}
 \label{sec:pdfo-experiments}

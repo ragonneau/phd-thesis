@@ -31,7 +31,7 @@ Finally, \cref{prop:vardi-byrd-omojokun} interprets the Vardi approach as an app
 \section{The method}
 \label{sec:sqp-method}
 
-\index{\glsfmtshort{sqp}|(}Throughout this chapter, we consider a problem of the form
+\index{SQP@\glsfmtshort{sqp}|(}Throughout this chapter, we consider a problem of the form
 \begin{subequations}
     \label{eq:problem-cobyqa-sqp}
     \begin{align}
@@ -530,7 +530,7 @@ As pointed out by~\cite[\S~2.1]{Niu_Yuan_2010}, if~$H^k$ is defined as in~\cref{
 However, in the numerical experiments,~\cite{Niu_Yuan_2010,Wang_Yuan_2014} choose~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
 
 Suppose that an algorithm defines a step~$\step[k]$ based on the minimization of the right-hand side of~\cref{eq:niu-yuan-auglag}.
-Then, \cref{thm:auglag-sqp-3} tells us that the algorithm can be regarded as an \gls{sqp} method that approximately solves the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} by minimizing~$\auglagalt(\step, \lm[k])$, i.e., by applying one single iteration of an augmented Lagrangian method.\index{\glsfmtshort{sqp}|)}
+Then, \cref{thm:auglag-sqp-3} tells us that the algorithm can be regarded as an \gls{sqp} method that approximately solves the \gls{sqp} subproblem~\cref{eq:sqp-subproblem-auglag} by minimizing~$\auglagalt(\step, \lm[k])$, i.e., by applying one single iteration of an augmented Lagrangian method.\index{SQP@\glsfmtshort{sqp}|)}
 
 \section{Merit functions for the \glsfmtshort{sqp} method and the Maratos effect}
 \label{sec:sqp-merit-functions}
@@ -633,13 +633,13 @@ Perhaps the simplest of these steps, similar to~\cite[Eqs.~(21) and~(22)]{Mayne_
 Many other second-order correction steps can also be defined (see, e.g.,~\cite{Colman_Conn_1982a,Colman_Conn_1982b,Fletcher_1982b,Fukushima_1986}).
 
 Another possibility to handle the Maratos effect is properly choosing the merit function.
-For example, \citeauthor{Powell_Yuan_1986}~\cite[\S~4]{Powell_Yuan_1986} showed that the Maratos effect could not occur when using the augmented Lagrangian merit function in a line-search\index{\glsfmtshort{dfo}!model-based!line-search} \gls{sqp} method.
+For example, \citeauthor{Powell_Yuan_1986}~\cite[\S~4]{Powell_Yuan_1986} showed that the Maratos effect could not occur when using the augmented Lagrangian merit function in a line-search\index{DFO@\glsfmtshort{dfo}!model-based!line-search} \gls{sqp} method.
 We refer to~\cite[\S~7]{Schittkowski_Yuan_2011} for other techniques to cope with the Maratos effect.
 
 \section{The trust-region \glsfmtshort{sqp} method}
 \label{sec:sqp-trust-region}
 
-\index{\glsfmtshort{dfo}!model-based!trust-region|(}As we mentioned previously, we need in practice a globalization strategy to make the method globally convergent.
+\index{DFO@\glsfmtshort{dfo}!model-based!trust-region|(}As we mentioned previously, we need in practice a globalization strategy to make the method globally convergent.
 We present in what follows a method that uses the trust-region strategy in a derivative-based context.
 The new method that we will present in \cref{ch:cobyqa-introduction} uses a derivative-free variation of this trust-region \gls{sqp} method.
 
@@ -749,7 +749,7 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
 \subsection{Composite steps for equality constrained optimization}
 \label{subsec:composite-step-equality}
 
-\index{\glsfmtshort{sqp}!composite step|(}The \cref{alg:trust-region-sqp-step} of \cref{alg:trust-region-sqp} hides the following crucial point.
+\index{SQP@\glsfmtshort{sqp}!composite step|(}The \cref{alg:trust-region-sqp-step} of \cref{alg:trust-region-sqp} hides the following crucial point.
 If the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem} is infeasible, what should~$\step[k]$ approximate?
 Since the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} are linear approximations of the constraints~\cref{eq:problem-cobyqa-sqp-ub,eq:problem-cobyqa-sqp-eq}, we cannot guarantee the feasibility of of the subproblem~\cref{eq:trust-region-sqp-subproblem}, even if the original problem is feasible.
 
@@ -784,7 +784,7 @@ It is noteworthy that \citeauthor{Vardi_1985} did not explicitly formulate his m
 
 \subsubsection{Byrd-Omojokun approach}
 
-\index{\glsfmtshort{sqp}!composite step!Byrd-Omojokun|(}Even though the Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989} is not the earliest composite-step method, we first present it because it is the most straightforward implementation of the idea.
+\index{SQP@\glsfmtshort{sqp}!composite step!Byrd-Omojokun|(}Even though the Byrd-Omojokun approach~\cite{Byrd_1987,Omojokun_1989} is not the earliest composite-step method, we first present it because it is the most straightforward implementation of the idea.
 It defines the normal step~$\nstep[k]$ by solving~\cref{eq:byrd-omojokun-original} for some constant~$\zeta \in (0, 1]$\nomenclature[Sd]{$(a, b]$}{Semi-open set~$\set{\iter \in \R : a < \iter \le b}$ with~$a < b$}.
 Further, it defines the tangential step~$\tstep[k]$ as a solution to~\cref{eq:tangential-step-original} with
 \begin{equation}
@@ -792,11 +792,11 @@ Further, it defines the tangential step~$\tstep[k]$ as a solution to~\cref{eq:ta
     \mathcal{V} \eqdef \set{\step \in \R^n : \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq}.
 \end{equation}
 Note that~$\zeta$ should not be set to one; otherwise, the feasible region of~\cref{eq:tangential-step-original} might be a singleton.
-In practice, we can take for example~$\zeta = 0.8$ (see, e.g.,~\cite[Eq.~(18.45)]{Nocedal_Wright_2006}).\index{\glsfmtshort{sqp}!composite step!Byrd-Omojokun|)}
+In practice, we can take for example~$\zeta = 0.8$ (see, e.g.,~\cite[Eq.~(18.45)]{Nocedal_Wright_2006}).\index{SQP@\glsfmtshort{sqp}!composite step!Byrd-Omojokun|)}
 
 \subsubsection{Vardi approach}
 
-\index{\glsfmtshort{sqp}!composite step!Vardi|(}The Vardi approach consists in replacing the constraints~\cref{eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
+\index{SQP@\glsfmtshort{sqp}!composite step!Vardi|(}The Vardi approach consists in replacing the constraints~\cref{eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
 \begin{equation}
     \label{eq:vardi-original}
     \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,
@@ -850,11 +850,11 @@ We now point out that the above-mentioned normal step~$\nstep[k]$ is an approxim
 Note that~$\step[\ast]$ is a Newton step for~\cref{eq:byrd-omojokun-original-obj} at the trust region center.
 Therefore, the normal step~$\nstep[k]$ of the Vardi approach is a truncated Newton step for the normal subproblem~\cref{eq:byrd-omojokun-original} if~$\zeta = \norm{\nstep[k]} / \rad[k]  = \alpha \norm{\step[\ast]} / \rad[k]$.
 This also reveals a relation between the Vardi and the Byrd-Omojokun approaches.
-The Vardi approach with~$\alpha = \zeta \rad[k] / \norm{\step[\ast]}$ can be regarded as an approximation to the Byrd-Omojokun approach because the former solves the normal subproblem~\cref{eq:byrd-omojokun-original} by a truncated Newton step, while the latter intends to solve this subproblem exactly, and the two approaches have no difference in the way they define the tangential step.\index{\glsfmtshort{sqp}!composite step!Vardi|)}
+The Vardi approach with~$\alpha = \zeta \rad[k] / \norm{\step[\ast]}$ can be regarded as an approximation to the Byrd-Omojokun approach because the former solves the normal subproblem~\cref{eq:byrd-omojokun-original} by a truncated Newton step, while the latter intends to solve this subproblem exactly, and the two approaches have no difference in the way they define the tangential step.\index{SQP@\glsfmtshort{sqp}!composite step!Vardi|)}
 
 \subsubsection{\Glsfmtlong{cdt} (\glsfmtshort{cdt}) approach}
 
-\index{\glsfmtshort{sqp}!composite step!\glsfmtshort{cdt}|(}The \gls{cdt} approach~\cite{Celis_1985,Celis_Dennis_Tapia_1985} consists in replacing the constraints~\cref{eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem with
+\index{SQP@\glsfmtshort{sqp}!composite step!\glsfmtshort{cdt}|(}The \gls{cdt} approach~\cite{Celis_1985,Celis_Dennis_Tapia_1985} consists in replacing the constraints~\cref{eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem with
 \begin{equation*}
     \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \le \tau
 \end{equation*}
@@ -884,7 +884,7 @@ Unlike the two former approaches, the tangential step of the \gls{cdt} approach 
 The advantage of the \gls{cdt} approach over the Vardi and the Byrd-Omojokun approaches is that the feasible region of the tangential subproblem is usually wider given a certain normal step.
 Hence, a larger reduction in the objective function is usually obtained.
 However, solving such a subproblem in practice is challenging, because of the constraints~\cref{eq:cdt-composite-step-original-eq,eq:cdt-composite-step-original-tr}.
-The subproblem, commonly known as the \gls{cdt} subproblem, has enjoyed continued research interest since it was proposed (see, e.g.,~\cite{Chen_Yuan_1999,Ai_Zhang_2009,Bomze_Overton_2015,Bienstock_2016,Xu_Xia_Wang_2021}).\index{\glsfmtshort{sqp}!composite step!\glsfmtshort{cdt}|)}
+The subproblem, commonly known as the \gls{cdt} subproblem, has enjoyed continued research interest since it was proposed (see, e.g.,~\cite{Chen_Yuan_1999,Ai_Zhang_2009,Bomze_Overton_2015,Bienstock_2016,Xu_Xia_Wang_2021}).\index{SQP@\glsfmtshort{sqp}!composite step!\glsfmtshort{cdt}|)}
 
 \subsection{Composite steps for general constrained optimization}
 \label{subsec:composite-step-inequality}
@@ -905,7 +905,7 @@ Further, similar to the equality-constrained case, we let the tangential step~$\
 
 \subsubsection{Byrd-Omojokun approach}
 
-\index{\glsfmtshort{sqp}!composite step!Byrd-Omojokun|(}The Byrd-Omojokun approach has been originally introduced in a method that tackles both equality and inequality constraints.
+\index{SQP@\glsfmtshort{sqp}!composite step!Byrd-Omojokun|(}The Byrd-Omojokun approach has been originally introduced in a method that tackles both equality and inequality constraints.
 However, this method employes an active-set strategy, where the inequality constraints considered active are handled as equalities (see~\cite[\S~3.2.6]{Omojokun_1989}).
 In other words, the Byrd-Omojokun approach has been defined from an equality-constrained perspective.
 
@@ -939,11 +939,11 @@ Note that if~$\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k] < 0$, 
 Recall that the motivation of the composite-step approach is to relax the linearized constraints so that the trust-region subproblem becomes feasible.
 It seems, therefore, unnecessary to make a constraint become more restrictive.
 The feasible region of the subproblem~\cref{eq:vardi-composite-step} is usually wider than the one with~\cref{eq:composite-step-restrictive} and hence, a larger reduction in the objective function~\cref{eq:vardi-composite-step-obj} can be expected.
-Note that the subproblem~\cref{eq:vardi-composite-step} is not more difficult to solve than its counterpart with~\cref{eq:composite-step-restrictive}.\index{\glsfmtshort{sqp}!composite step!Byrd-Omojokun|)}
+Note that the subproblem~\cref{eq:vardi-composite-step} is not more difficult to solve than its counterpart with~\cref{eq:composite-step-restrictive}.\index{SQP@\glsfmtshort{sqp}!composite step!Byrd-Omojokun|)}
 
 \subsubsection{Vardi approach}
 
-\index{\glsfmtshort{sqp}!composite step!Vardi|(}The extension of the Vardi approach we propose is adapted from an idea proposed by Powell~\cite[Eqs.~(2.7) and~(2.8)]{Powell_1978a} for a line-search\index{\glsfmtshort{dfo}!model-based!line-search} \gls{sqp} framework, which was published seven years earlier than Vardi's method.
+\index{SQP@\glsfmtshort{sqp}!composite step!Vardi|(}The extension of the Vardi approach we propose is adapted from an idea proposed by Powell~\cite[Eqs.~(2.7) and~(2.8)]{Powell_1978a} for a line-search\index{DFO@\glsfmtshort{dfo}!model-based!line-search} \gls{sqp} framework, which was published seven years earlier than Vardi's method.
 
 We replace the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
 \begin{subequations}
@@ -1026,11 +1026,11 @@ In this setting,~$\nstep[k] + \tstep[k]$ is a solution to~\cref{eq:vardi-composi
     \end{equation*}
     so that~\cref{eq:sqp-subproblem-vardi-ub2} is equivalent to~\cref{eq:sqp-subproblem-vardi-proof-1}.
     The proof is complete.
-\end{proof}\index{\glsfmtshort{sqp}!composite step!Vardi|)}
+\end{proof}\index{SQP@\glsfmtshort{sqp}!composite step!Vardi|)}
 
 \subsubsection{\Glsfmtlong{cdt} (\glsfmtshort{cdt}) approach}
 
-\index{\glsfmtshort{sqp}!composite step!\glsfmtshort{cdt}|(}The extension of the \gls{cdt} approach is very direct and presented already in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
+\index{SQP@\glsfmtshort{sqp}!composite step!\glsfmtshort{cdt}|(}The extension of the \gls{cdt} approach is very direct and presented already in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
 It consists in replacing the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} of the trust-region \gls{sqp} subproblem by
 \begin{equation}
     \label{eq:cdt}
@@ -1038,7 +1038,7 @@ It consists in replacing the constraints~\cref{eq:trust-region-sqp-subproblem-ub
 \end{equation}
 for some~$\tau \ge 0$, so that the trust-region subproblem after replacement becomes feasible.
 The method selects the scalar~$\tau$ in a composite-step fashion as follows.
-It first takes a normal step~$\nstep[k]$ by solving (approximately) the problem~\cref{eq:byrd-omojokun} with~$\zeta = 1$, and then sets~$\tau$ to the left-hand side in~\cref{eq:cdt} with~$\step = \nstep[k]$.\index{\glsfmtshort{sqp}!composite step!\glsfmtshort{cdt}|)}\index{\glsfmtshort{sqp}!composite step|)}
+It first takes a normal step~$\nstep[k]$ by solving (approximately) the problem~\cref{eq:byrd-omojokun} with~$\zeta = 1$, and then sets~$\tau$ to the left-hand side in~\cref{eq:cdt} with~$\step = \nstep[k]$.\index{SQP@\glsfmtshort{sqp}!composite step!\glsfmtshort{cdt}|)}\index{SQP@\glsfmtshort{sqp}!composite step|)}
 
 \subsection{Other methods for handling the trust-region \glsfmtshort{sqp} subproblem}
 
@@ -1071,7 +1071,7 @@ Similar to \gls{slpqp}, it handles the linear constraints using an~$\ell_1$-pena
 With the approximate minimizer of the first stage, it estimates the active set at the solution, imposing the linear independence of the constraints in this set.
 The second stage minimizes the objective function of the \gls{sqp} subproblem subject to the linearized constraints that are in the estimated active set, taking the inequalities as equalities.
 A major difference between~\cite{Fletcher_Maza_1989} and~\cite{Byrd_Etal_2004} is that the former does not include a trust-region constraint in the second stage, while the latter does.
-In~\cite{Fletcher_Maza_1989}, the first-stage step is used as a safeguard that guarantees the global convergence, while~\cite{Byrd_Etal_2004} does not take such a safeguard, and the convergence is guaranteed by the trust-region framework.\index{\glsfmtshort{dfo}!model-based!trust-region|)}
+In~\cite{Fletcher_Maza_1989}, the first-stage step is used as a safeguard that guarantees the global convergence, while~\cite{Byrd_Etal_2004} does not take such a safeguard, and the convergence is guaranteed by the trust-region framework.\index{DFO@\glsfmtshort{dfo}!model-based!trust-region|)}
 
 \section{Software based on the \glsfmtshort{sqp} method}
 \label{sec:existing-sqp-software}

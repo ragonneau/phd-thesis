@@ -1,0 +1,23 @@
+# LaTeX sources
+*.tex       text diff=tex
+*.cls       text diff=tex
+latexmkrc   text eol=lf
+
+# Documents
+*.md        text diff=markdown
+*.pdf       binary
+*.txt       text
+
+# Scripts
+*.sh        text eol=lf
+
+# Serialisation
+*.json      text
+*.yml       text
+
+# Data files
+*.csv       text
+
+# Fonts
+*.otf       binary
+*.ttf       binary

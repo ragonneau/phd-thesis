@@ -15,16 +15,20 @@
 \chapter{\glsfmttext{cobyqa} \textemdash\ description of the Python implementation and experiments}
 \label{ch:cobyqa-implementation}
 
-In this chapter, we provide details on the publicly available Python implementation of \gls{cobyqa}.
-In particular, we present in detail the management of the user's inputs, describe every stopping criterion, and exhibit the mechanisms that improve the stability of the implementation.
-We decided to implement the first version of \gls{cobyqa} in Python for its simplicity and its large amount of users.
-However, Python has the computational flows of an interpreted language, making it slow compared to compiled languages.
-Therefore, we implement the subproblem solvers of \gls{cobyqa} in Cython, a programming language that blends the advantages of both Python and C.
-Cython is a compiled language and is, therefore, much faster than Python alone.
-Finally, we provide some numerical experiments, comparing \gls{cobyqa} with \gls{newuoa}, \gls{bobyqa}, \gls{lincoa}, and \gls{cobyla}.
+In this chapter, we provide details on the publicly available Python implementation of \gls{cobyqa}, which is open-source and easily readable.
+This implementation is a very technical work.
+In particular, we present in detail the management of the user's inputs, describe every stopping criterion, and exhibit a mechanism for returning the best iterate in \cref{sec:implementation-details}.
+\Cref{sec:python-implementation} introduces the Python implementation, provides some examples of use, and present how the \gls{cobyqa} package is distributed.
+Finally, we provide in \cref{sec:cobyqa-experiments} some numerical experiments, comparing in different scenarios \gls{cobyqa} with \gls{newuoa}, \gls{bobyqa}, \gls{lincoa}, and \gls{cobyla}.
 These numerical experiments confirm that the method is working on the considered problems, although the implementation necessitates being fine-tuned in the future.
 
+% We decided to implement the first version of \gls{cobyqa} in Python for its simplicity and its large amount of users.
+% However, Python has the computational flows of an interpreted language, making it slow compared to compiled languages.
+% Therefore, we implement the subproblem solvers of \gls{cobyqa} in Cython, a programming language that blends the advantages of both Python and C.
+% Cython is a compiled language and is, therefore, much faster than Python alone.
+
 \section{Additional implementation details}
+\label{sec:implementation-details}
 
 \subsection{Preprocessing of the arguments}
 
@@ -118,6 +122,7 @@ The user will provide a maximum number~$N$ of iterate to retain, and only the la
 Finally, the procedure described in the previous paragraph will be applied.
 
 \section{Description of the Python implementation}
+\label{sec:python-implementation}
 
 In this section, we provide details on the Python implementation of \gls{cobyqa}, its testing, and its distribution.
 
@@ -139,7 +144,7 @@ Other motivativations for the author to develop the initial version of \gls{coby
 These packages provides array structures, together with basic mathematical operations on them, and basic scientific computing tools.
 In particular, the subproblem solvers call BLAS~\cite{Blackford_Etal_2002} for making matrices and vectors operations, and the implementation of \gls{nnls} relies on the DGELSY subroutine of LAPACK~\cite{Anderson_Etal_1999} to solve its unconstrained linear least-squares subproblem.
 
-\subsection{Using \glsfmttext{cobyqa} in practice}
+\subsection{Examples of usage}
 
 The package \gls{cobyqa} provides a function \texttt{minimize}, which takes as parameters
 \begin{enumerate}
@@ -453,4 +458,21 @@ Future work will include improving the performance that are below our expectatio
 
 \section{Summary and remarks}
 
-\todo[noline]{Make a conclusion for \cref{ch:cobyqa-implementation}}
+In this chapter, we presented the Python implementation of \gls{cobyqa}, and some numerical experiments.
+In particular, we saw that the implementation avoids as much as possible to raise exceptions if the inputs do not satisfies the preconditions.
+The stopping criteria employed by \gls{cobyqa} are usual for a \gls{dfo} method.
+Normally, the computations of \gls{cobyqa} stop whenever the indicator of the resolution of the algorithm reached a final value.
+The implementation of \gls{cobyqa} has been highly challenging, because the nature of \gls{dfo} necessitate highly dedicated pieces of code.
+
+Moreover, we strove to make the user's interface as simple as possible, to make its use easy.
+A complete user's guide for using \gls{cobyqa} is available on the website of the solver\footnote{Available at \url{https://cobyqa.readthedocs.io/}.}.
+We implemented the subproblem solvers in Cython, a programming language that blends the advantages of both Python and C.
+Cython is a compiled language and is, therefore, much faster than Python alone.
+The compilation of \gls{cobyqa} requires several dependencies (depending on the operating system), but compiled distributions are provided to ease the installation.
+
+Finally, the numerical results obtained on \gls{cobyqa} are very encouraging.
+They show that the method is working on most CUTEst problems, although a theoretical analysis of its convergence analysis needs to be done in the future.
+The performance of \gls{cobyqa} is comparable to those of \gls{newuoa} and \gls{bobyqa} on unconstrained and bound-constrained problems, respectively.
+However, the performance of \gls{cobyqa} on linearly- and nonlinearly-constrained problems does not entirely keep up with our expectations.
+This is likely due to the sensitivity of the implementation, which necessitates to be improved.
+This will be corrected in the near future.
