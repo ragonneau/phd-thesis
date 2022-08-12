@@ -580,16 +580,19 @@ See~\cite[\S~4]{Powell_1994} for more discussions about~\cref{eq:reducting-penal
 
 \section{Summary and remarks}
 
-We present in this section a summary of the method employed by \gls{cobyqa}.
+In this chapter, we presented the general framework of our new model-based \gls{dfo} method, named \gls{cobyqa}, and highlighted several important ingredients.
+% A important characteristic of \gls{cobyqa} is that it never attempts to visits points lying outside of bound constraints.
+
 In a nutshell, \gls{cobyqa} is a \gls{dfo} trust-region \gls{sqp} method.
 It builds quadratic models of the objective and constraint functions using the derivative-free symmetric Broyden update and solves its trust-region subproblem with a Byrd-Omojokun approach.
-The estimated Lagrange multiplier that it employs is the least-square Lagrange multiplier, as is often the case in \gls{sqp} methods.
 
+The estimated Lagrange multiplier that it employs is the least-square Lagrange multiplier, as is often the case in \gls{sqp} methods.
 Moreover, the trust-region radius is not handled in a typical trust-region manner.
 Instead, we employ a procedure from Powell that maintains both the trust-region radius and a lower bound on the trust-region radius.
 This lower bound is used as an indicator of the resolution of the algorithm, and prevents the trust-region radius from becoming too low.
-
 Recall that model-based \gls{dfo} methods usually necessitate embedding a geometry-improving phase, as they tend to lose the poisedness of their interpolation set as the iterations progress.
 We employ in \gls{cobyqa} a procedure that maximizes the absolute value of a Lagrange polynomial.
 This procedure has the advantage that it keeps the only denominator of the calculations made by \gls{cobyqa} away from zero, this denominator being in the updating formula of the inverse of the coefficient matrix of the interpolation system.
 Hence, this procedure makes the method numerically more stable.
+
+\todo[noline]{Summarize the simple constraints}

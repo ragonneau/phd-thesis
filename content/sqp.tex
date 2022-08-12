@@ -535,7 +535,7 @@ Then, \cref{thm:auglag-sqp-3} tells us that the algorithm can be regarded as an 
 \section{Merit functions for the \glsfmtshort{sqp} method and the Maratos effect}
 \label{sec:sqp-merit-functions}
 
-In unconstrained optimization, a point~$x \in \R^n$ is normally considered to be better than another point~$y \in \R^n$ if~$\obj(x) < \obj(y)$.
+\index{merit function|(}In unconstrained optimization, a point~$x \in \R^n$ is normally considered to be better than another point~$y \in \R^n$ if~$\obj(x) < \obj(y)$.
 However, this is not true in constrained optimization because the constraints must also be taken into account.
 This is usually done using \emph{merit functions}.
 A merit function assesses the quality of a point by considering both~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$.
@@ -548,7 +548,7 @@ Interested readers may refer to the references mentioned above for more details.
 
 \subsection{The Courant merit function}
 
-Perhaps the most classical merit function is the Courant function\footnote{\citeauthor{Courant_1943} proposed this merit function when dealing with boundary conditions of equilibrium and vibration problems. See~\cite[Pt.~II, \S~3]{Courant_1943} for details.}~\cite{Courant_1943}, defined by
+\index{merit function!Courant|(}Perhaps the most classical merit function is the Courant function\footnote{\citeauthor{Courant_1943} proposed this merit function when dealing with boundary conditions of equilibrium and vibration problems. See~\cite[Pt.~II, \S~3]{Courant_1943} for details.}~\cite{Courant_1943}, defined by
 \begin{equation*}
     \merit_{\gamma}(\iter) \eqdef \obj(\iter) + \gamma \bigg( \sum_{i \in \iub} \posp{\con{i}(\iter)}^2 + \sum_{i \in \ieq} \con{i}(\iter)^2 \bigg), \quad \text{for~$x \in \R^n$ and~$\gamma \ge 0$,}
 \end{equation*}
@@ -556,11 +556,11 @@ Perhaps the most classical merit function is the Courant function\footnote{\cite
 where~$\posp{\cdot}$ takes the positive part of a given number.
 The advantage of such a merit function is that it is differentiable if~$\obj$ and~$\con{i}$, for~$i \in \iub \cup \ieq$, are differentiable.
 However, normally, a global minimizer of~$\merit_{\gamma}$ is not a solution to~\cref{eq:problem-cobyqa-sqp} when~$\gamma$ is finite.
-This phenomenon can be seen on the simple example of minimizing~$\iter$ subject to~$\iter \ge 0$.
+This phenomenon can be seen on the simple example of minimizing~$\iter$ subject to~$\iter \ge 0$.\index{merit function!Courant|)}
 
 \subsection{Nonsmooth merit functions}
 
-Other examples of merit functions are the~$\ell_p$-merit functions, defined by
+\index{merit function!nonsmooth|(}Other examples of merit functions are the~$\ell_p$-merit functions, defined by
 \begin{equation*}
     \merit_{\gamma}(\iter) \eqdef \obj(\iter) + \gamma \bigg( \sum_{i \in \iub} \posp{\con{i}(\iter)}^p + \sum_{i \in \ieq} \abs{\con{i}(\iter)}^p \bigg)^{1/p}, \quad \text{for~$\iter \in \R^n$ and~$\gamma \ge 0$,}
 \end{equation*}
@@ -578,11 +578,11 @@ Interested readers may refer to~\cite{Han_Mangasarian_1979,Mayne_1980,Pillo_Grip
 \end{theorem}
 
 An inconvenience of the~$\ell_p$-merit functions is that, even if~$\obj$ and~$\con{i}$ are differentiable for all~$i \in \iub \cup \ieq$,~$\merit_{\gamma}$ is likely not differentiable at the points~$\iter \in \R^n$ where~$\con{i}(\iter) = 0$ for all~$i \in \iub \cup \ieq$.
-However, smooth merit functions that enjoy exactness do exist, as shown in the next section.
+However, smooth merit functions that enjoy exactness do exist, as shown in the next section.\index{merit function!nonsmooth|)}
 
 \subsection{The augmented Lagrangian merit function}
 
-For simplicity, we assume here that~$\iub = \emptyset$.
+\index{merit function!augmented Lagrangian|(}For simplicity, we assume here that~$\iub = \emptyset$.
 The augmented Lagrangian~\cite{Hestenes_1969,Powell_1969,Rockafellar_1973,Rockafellar_2022} of the problem~\cref{eq:problem-cobyqa-sqp} is then
 \begin{equation*}
     \auglag(\iter, \lm) \eqdef \lag(\iter, \lm) + \frac{\gamma}{2} \sum_{i \in \ieq} \con{i}(\iter)^2, \quad \text{for~$\iter \in \R^n$ and~$\lm = [\lm_i]_{i \in \ieq}^{\T}$,}
@@ -605,7 +605,7 @@ When~$\iub \neq \emptyset$, to achieve the same property, the complamentary slac
 A clear drawback of such a merit function is that it is expensive to evaluate, as one evaluation necessitates solving a linear least-squares problem that involves the gradients of~$\obj$ and~$\con{i}$, with~$i \in \ieq$.
 Nonetheless, this merit function offers several advantages.
 First of all, if~$\obj$ and~$\con{i}$, for~$i \in \ieq$, are differentiable, and if~$\set{\nabla \con{i}(\iter)}_{i \in \ieq}$ are linearly independent for~$\iter \in \R^n$, then~$\lm[\mathsf{LS}]$ is differentiable at~$x$~\cite[Lem.~14.2.1]{Conn_Gould_Toint_2000}, and hence, so is~$\merit_{\gamma}$.
-Moreover, under some mild assumptions, when~$\gamma$ is large enough, the second-order sufficient conditions of~\cref{eq:problem-cobyqa-sqp} and of minimizing~$\merit_{\gamma}$ are equivalent~\cite[Thm.~14.6.1]{Conn_Gould_Toint_2000}.
+Moreover, under some mild assumptions, when~$\gamma$ is large enough, the second-order sufficient conditions of~\cref{eq:problem-cobyqa-sqp} and of minimizing~$\merit_{\gamma}$ are equivalent~\cite[Thm.~14.6.1]{Conn_Gould_Toint_2000}.\index{merit function!augmented Lagrangian|)}\index{merit function|)}
 
 \subsection{Maratos effect and second-order correction}
 

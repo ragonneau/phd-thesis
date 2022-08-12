@@ -688,11 +688,11 @@ Therefore, a larger value of~$d_s$ indicates a better performance of~$s$.
 
 In this section, as an example, we compare three solvers using performance and data profiles.
 These solvers, constituting the set~$\xsv$, are
-\begin{itemize}
+\begin{enumerate}
     \item \gls{newuoa} (see \cref{subsec:newuoa-bobyqa-lincoa}), a model-based \gls{dfo} method; and
     \item \gls{bfgs} and \gls{cg}, two gradient-based solvers provided by SciPy~1.0~\cite{Virtanen_Etal_2020}.
     When no derivatives are provided, they use forward finite-difference to approximate gradients, with the difference parameter~$h = \sqrt{u}$, where~$u$ is the unit roundoff.
-\end{itemize}
+\end{enumerate}
 The set~$\xpb$ contains~$154$ smooth unconstrained CUTEst problems of dimension at most~$50$, and the convergence tolerance in~\cref{eq:convergence-test-profiles} is~$\tau = 10^{-3}$.
 Since these problems are unconstrained, the merit function~$\varphi_p$ of each problem~$p \in \xpb$ is set to be the objective function~$\obj_p$.
 Therefore, the convergence test~\cref{eq:convergence-test-profiles} becomes
@@ -869,22 +869,32 @@ Hence,~$\norm{\cdot}$ denotes the~$\ell_2$-norm, unless otherwise stated.
 If any other norm is needed, its choice is clarified using subscripts.
 For example,~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm of a matrix, and~$\norm{\cdot}_1$ denotes the~$\ell_1$-norm of a vector or the corresponding induced norm of a matrix.
 
+\section{Contributions of the thesis}
+
+\todo[noline]{Summarize the contributions of the thesis}
+
 \section{Organization of the thesis}
 
 The remaining of this thesis is organized as follows.
-\begin{enumerate}
-    \item \Cref{ch:interpolation} presents interpolation models that are useful to \gls{dfo}.
-    We will focus on linear and quadratic models, as these are the models employed by the \gls{dfo} methods presented later in this thesis.
-    \item \Cref{ch:pdfo} introduces \gls{pdfo}, a package providing MATLAB and Python interfaces for using late Prof.\ M. J. D. Powell's \gls{dfo} solvers.
-    \item \Cref{ch:sqp} presents an overview of the classical \gls{sqp} method and provides some perspectives.
-    In particular, we elaborate an interpretation of the \gls{sqp} subproblem that is new to the best of our knowledge.
-    We also present a trust-region \gls{sqp} method, discuss various approaches to solving its subproblem, and show an interesting connection between two of them.
-    \item \Cref{ch:cobyqa-introduction} presents a new model-based \gls{dfo} method named \gls{cobyqa}.
-    It is a trust-region \gls{sqp} method, designed to tackle nonlinearly-constrained problems that include equality and inequality constraints.
-    It builds the trust-region quadratic models using derivative-free symmetric Broyden update presented in \cref{ch:interpolation}.
-    \item \Cref{ch:cobyqa-subproblems} introduces in details the methods employed by \gls{cobyqa} to solve its various subproblems.
-    \item \Cref{ch:cobyqa-implementation} provides details on the Python implementation of \gls{cobyqa}.
-    Such an implementation is crucial and very challenging, due to the nature of \gls{dfo}.
-    However, we want to contribute an open-source, robust, and easily-readable package to the community.
-    This chapter also presents some numerical experiments that compare \gls{cobyqa} with \gls{newuoa}, \gls{bobyqa}, \gls{lincoa}, and \gls{cobyla}.
-\end{enumerate}
+
+\Cref{ch:interpolation} presents interpolation models that are useful to \gls{dfo}.
+We will focus on linear and quadratic models, as these are the models employed by the \gls{dfo} methods presented later in this thesis.
+
+\Cref{ch:pdfo} introduces \gls{pdfo}, a package providing MATLAB and Python interfaces for using late Prof.\ M. J. D. Powell's \gls{dfo} solvers.
+It also provides an overview of Powell's \gls{dfo} solvers.
+
+\Cref{ch:sqp} presents an overview of the \gls{sqp} framework and provides some perspectives.
+In particular, we elaborate an interpretation of the \gls{sqp} subproblem that is new to the best of our knowledge.
+We also present a trust-region \gls{sqp} method, discuss various approaches to solving its subproblem, and show an interesting connection between two of them.
+
+\Cref{ch:cobyqa-introduction} presents a new model-based \gls{dfo} method named \gls{cobyqa}.
+It is a trust-region \gls{sqp} method, designed to tackle nonlinearly-constrained problems that include equality and inequality constraints.
+It builds the trust-region quadratic models using derivative-free symmetric Broyden update presented in \cref{ch:interpolation}.
+
+\Cref{ch:cobyqa-subproblems} introduces in details the methods employed by \gls{cobyqa} to solve its subproblems, including the trust-region subproblem, the multiplier-estimating subproblem, and the geometry-improving subproblem.
+
+\Cref{ch:cobyqa-implementation} provides details on the Python implementation of \gls{cobyqa}, in particular its preprocessing procedure, its stopping criteria, and some algorithmic details.
+It illustrates the usage of the Python package by several examples.
+It finally presents some numerical experiments that compare \gls{cobyqa} with \gls{newuoa}, \gls{bobyqa}, \gls{lincoa}, and \gls{cobyla}.
+
+\Cref{ch:conclusion} summarizes the thesis, and discusses several future research directions.
