@@ -207,9 +207,8 @@ An interpolant~$\objm$ of~$\obj$ is then defined as a solution of
 \begin{subequations}
     \label{eq:underdetermined-models}
     \begin{align}
-        \min        & \quad \mathcal{F}(Q)\\
-        \text{s.t.} & \quad Q(y^i) = \obj(y^i), ~ i \in \set{1, 2, \dots, m}\\
-                    & \quad Q \in \qpoly. \nonumber
+        \min_{Q \in \qpoly} & \quad \mathcal{F}(Q)\\
+        \text{s.t.}         & \quad Q(y^i) = \obj(y^i), ~ i \in \set{1, 2, \dots, m}.
     \end{align}
 \end{subequations}
 Two examples of the functional~$\mathcal{F}$ are given in \cref{subsec:least-frobenius-norm-models,subsec:symmetric-broyden-updates}.
@@ -225,9 +224,8 @@ In this context, a quadratic model~$\objm$ solves
 \begin{subequations}
     \label{eq:least-frobenius-norm-models}
     \begin{align}
-        \min        & \quad \norm{\nabla^2 Q}_{\mathsf{F}}\\
-        \text{s.t.} & \quad Q(y^i) = \obj(y^i), ~ i \in \set{1, 2, \dots, m} \label{eq:least-frobenius-norm-models-eq}\\
-                    & \quad Q \in \qpoly, \nonumber
+        \min_{Q \in \qpoly} & \quad \norm{\nabla^2 Q}_{\mathsf{F}}\\
+        \text{s.t.}         & \quad Q(y^i) = \obj(y^i), ~ i \in \set{1, 2, \dots, m}, \label{eq:least-frobenius-norm-models-eq}
     \end{align}
 \end{subequations}
 where~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm.
@@ -305,10 +303,9 @@ We now present the minimum Frobenius norm Lagrange polynomials for the interpola
     \label{def:lagrange-polynomials-minimum-norm}
     For each~$i \in \set{1, 2, \dots, m}$, the~$i$th minimum Frobenius norm Lagrange polynomial~$\lagp[i]$ for the interpolation problem~\cref{eq:interpolation-conditions-quadratic} is the unique quadratic polynomial that solves
     \begin{align*}
-        \min        & \quad \norm{\nabla^2 Q}_{\mathsf{F}}\\
-        \text{s.t.} & \quad Q(y^i) = 1,\\
-                    & \quad Q(y^j) = 0, ~ j \in \set{1, 2, \dots, m} \setminus \set{i},\\
-                    & \quad Q \in \qpoly.
+        \min_{Q \in \qpoly} & \quad \norm{\nabla^2 Q}_{\mathsf{F}}\\
+        \text{s.t.}         & \quad Q(y^i) = 1,\\
+                            & \quad Q(y^j) = 0, ~ j \in \set{1, 2, \dots, m} \setminus \set{i}.
     \end{align*}
 \end{definition}
 
@@ -347,9 +344,8 @@ More specifically, we build a quadratic model~$\objm$ by solving
 \begin{subequations}
     \label{eq:symmetric-broyden-models}
     \begin{align}
-        \min        & \quad \norm{\nabla^2 Q - H_{\text{old}}}_{\mathsf{F}}\\
-        \text{s.t.} & \quad Q(y^i) = \obj(y^i), ~ i \in \set{1, 2, \dots, m},\\
-                    & \quad Q \in \qpoly.
+        \min_{Q \in \qpoly} & \quad \norm{\nabla^2 Q - H_{\text{old}}}_{\mathsf{F}}\\
+        \text{s.t.}         & \quad Q(y^i) = \obj(y^i), ~ i \in \set{1, 2, \dots, m}.
     \end{align}
 \end{subequations}
 In a \gls{dfo} method, the model~$\objm[k] \in \qpoly$ of~$\obj$ at the~$k$th iteration can be constructed by solving~\cref{eq:symmetric-broyden-models} with~$H_{\text{old}} = \nabla^2 \objm[k - 1]$, and we define~$\objm[-1] \equiv 0$.
@@ -362,9 +358,8 @@ If we are given a function~$\objm[\text{old}]$ such that~$H_{\text{old}} = \nabl
 \begin{subequations}
     \label{eq:symmetric-broyden-models-reformulation}
     \begin{align}
-        \min        & \quad \norm{\nabla^2 Q}_{\mathsf{F}}\\
-        \text{s.t.} & \quad Q(y^i) = \obj(y^i) - \objm[\text{old}](y^i), ~ i \in \set{1, 2, \dots, m},\\
-                    & \quad Q \in \qpoly.
+        \min_{Q \in \qpoly} & \quad \norm{\nabla^2 Q}_{\mathsf{F}}\\
+        \text{s.t.}         & \quad Q(y^i) = \obj(y^i) - \objm[\text{old}](y^i), ~ i \in \set{1, 2, \dots, m}.
     \end{align}
 \end{subequations}
 In a \gls{dfo} method, we have~$\objm[\text{old}] = \objm[k - 1]$.
@@ -377,10 +372,9 @@ The \gls{psb}\index{PSB@\glsfmtshort{psb}} method~\cite{Powell_1970b} approximat
 \end{align*}
 and, as shown in~\cite[Thm.~4.2]{Dennis_Schnabel_1979},~$\hat{H} \in \R^{n \times n}$ is the unique solution to
 \begin{align*}
-    \min        & \quad \norm{H - H_{\text{old}}}_{\mathsf{F}}\\
-    \text{s.t.} & \quad H (y^1 - y^2) = \nabla \objm(y^1) - \nabla \objm(y^2),\\
-                & \quad H^{\T} = H,\\
-                & \quad H \in \R^{n \times n},
+    \min_{H \in \R^{n \times n}}    & \quad \norm{H - H_{\text{old}}}_{\mathsf{F}}\\
+    \text{s.t.}                     & \quad H (y^1 - y^2) = \nabla \objm(y^1) - \nabla \objm(y^2),\\
+                                    & \quad H^{\T} = H,
 \end{align*}
 where~$H_{\text{old}} \in \R^{n \times n}$ is a prior estimation of~$\nabla^2 \obj(y^1)$, and~$y^2 \in \R^n$ is a point that differs from~$y^1$.
 In an optimization context,~$y^1$ and~$y^2$ are respectively the current and the previous iterates of the optimization method.
@@ -388,10 +382,9 @@ Clearly, the function~$\objm$ solves
 \begin{subequations}
     \label{eq:psb-variational-problem}
     \begin{align}
-        \min        & \quad \norm{\nabla^2 Q - H_{\text{old}}}_{\mathsf{F}}\\
-        \text{s.t.} & \quad Q(y^1) = \obj(y^1),\\
-                    & \quad \nabla Q(y^i) = \nabla \obj(y^i), ~ i \in \set{1, 2},\\
-                    & \quad Q \in \qpoly.
+        \min_{Q \in \qpoly} & \quad \norm{\nabla^2 Q - H_{\text{old}}}_{\mathsf{F}}\\
+        \text{s.t.}         & \quad Q(y^1) = \obj(y^1),\\
+                            & \quad \nabla Q(y^i) = \nabla \obj(y^i), ~ i \in \set{1, 2}.
     \end{align}
 \end{subequations}
 The variational problem~\cref{eq:symmetric-broyden-models} is a derivative-free analog of~\cref{eq:psb-variational-problem}.
@@ -715,8 +708,8 @@ We now calculate the exact value of~$\Lambda_p$ in some special cases.
     \Cref{thm:first-order-necessary-conditions} ensures that there exists a Lagrange multiplier~$\lm[\ast] \ge 0$ such that~$1 - 2 y_j^{\ast} + 2 \lm[\ast] y_j^{\ast} = 0$ for all~$j \in \set{m - n, \dots, n}$.
     Therefore, the last~$(2n + 1 - m)$ components of~$y^{\ast}$ are equal, and hence,
     \begin{align*}
-        \lagp[1](\iter) \ge \min_{y \in \ball[2](1)} @@ \sum_{j = m - n}^n y_j (1 - y_j)    &= \min_{t \in \R} @@ \set{(2n + 1 - m) t (1 - t) : (2n + 1 - m) t^2 \le 1}\\
-                                                                                            &= -1 - \sqrt{2n + 1 - m}.
+        \lagp[1](\iter) \ge \min_{y \in \ball[2](1)} @@ \sum_{j = m - n}^n y_j (1 - y_j)    & = \min_{t \in \R} @@ \set{(2n + 1 - m) t (1 - t) : (2n + 1 - m) t^2 \le 1}\\
+                                                                                            & = -1 - \sqrt{2n + 1 - m}.
     \end{align*}
 
     Furthermore,

@@ -35,10 +35,9 @@ Finally, \cref{prop:vardi-byrd-omojokun} interprets the Vardi approach as an app
 \begin{subequations}
     \label{eq:problem-cobyqa-sqp}
     \begin{align}
-        \min        & \quad \obj(\iter) \label{eq:problem-cobyqa-sqp-obj}\\
-        \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-sqp-ub}\\
-                    & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:problem-cobyqa-sqp-eq}\\
-                    & \quad \iter \in \R^n. \nonumber
+        \min_{\iter \in \R^n}   & \quad \obj(\iter) \label{eq:problem-cobyqa-sqp-obj}\\
+        \text{s.t.}             & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-sqp-ub}\\
+                                & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:problem-cobyqa-sqp-eq}
     \end{align}
 \end{subequations}
 
@@ -66,10 +65,9 @@ The classical \gls{sqp} framework is presented in \cref{alg:sqp}.
         \begin{subequations}
             \label{eq:sqp-subproblem}
             \begin{algomathalign}
-                \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} H^k \step \label{eq:sqp-subproblem-obj}\\
-                \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
-                            & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
-                            & \quad \step \in \R^n, \nonumber
+                \min_{\iter \in \R^n}   & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} H^k \step \label{eq:sqp-subproblem-obj}\\
+                \text{s.t.}             & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
+                                        & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq
             \end{algomathalign}
         \end{subequations}
         Update the iterate~$\iter[k + 1] \gets \iter[k] + \step[k]$\;
@@ -99,18 +97,16 @@ However, such a naive idea does not work, as illustrated by the following exampl
 
 We consider
 \begin{align*}
-    \min        & \quad -\iter_1 - \frac{(\iter_2)^2}{4}\\
-    \text{s.t.} & \quad \norm{\iter}^2 - 1 = 0,\\
-                & \quad \iter \in \R^2,
+    \min_{\iter \in \R^2}   & \quad -\iter_1 - \frac{(\iter_2)^2}{4}\\
+    \text{s.t.}             & \quad \norm{\iter}^2 - 1 = 0,
 \end{align*}
 whose solution is~$\iter[\ast] = [1, 0]^{\T}$ with the associated Lagrange multiplier~$\lm[\ast] = 1/2$.
 Suppose that we have an iterate~$\iter[k] = [t, 0]^{\T}$ with~$t \approx 1$, so it is already close to the solution.
 If~$H^k = \nabla^2 \obj(\iter[k])$, then the \gls{sqp} subproblem becomes
 \begin{subequations}
     \begin{align}
-        \min        & \quad -\step_1 - \frac{(\step_2)^2}{4} \label{eq:boggs-tolle-sp-obj}\\
-        \text{s.t.} & \quad \step_1 = \frac{1 - t^2}{2 t}, \label{eq:boggs-tolle-sp-eq}\\
-                    & \quad \step \in \R^2. \nonumber
+        \min_{\step \in \R^2}   & \quad -\step_1 - \frac{(\step_2)^2}{4} \label{eq:boggs-tolle-sp-obj}\\
+        \text{s.t.}             & \quad \step_1 = \frac{1 - t^2}{2 t}. \label{eq:boggs-tolle-sp-eq}
     \end{align}
 \end{subequations}
 This subproblem is unbounded from below, regardless of the value of~$t$.
@@ -120,9 +116,8 @@ If~$t = 1$, we have~$\iter[k] = \iter[\ast]$, but any feasible point~$\step[k]$ 
 Let us now consider the \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ for a dual variable~$\lm[k] \approx \lm[\ast] = 1/2$.
 It is
 \begin{align*}
-    \min        & \quad -\step_1 + \lm[k] (\step_1)^2 + \bigg( \lm[k] - \frac{1}{4} \bigg) (\step_2)^2\\
-    \text{s.t.} & \quad \step_1 = \frac{1 - t^2}{2 t},\\
-                & \quad \step \in \R^2. \nonumber
+    \min_{\step \in \R^2}   & \quad -\step_1 + \lm[k] (\step_1)^2 + \bigg( \lm[k] - \frac{1}{4} \bigg) (\step_2)^2\\
+    \text{s.t.}             & \quad \step_1 = \frac{1 - t^2}{2 t}.
 \end{align*}
 When~$\lm[k] > 1/4$, the solution to this subproblem is
 \begin{equation*}
@@ -213,10 +208,9 @@ where~$\delta_i$, for~$i \in \iub \cup \ieq$, is defined by
 The function~$\delta_i$ is referred to as the departure from linearity\footnote{When~$\con{i}$ is strictly convex,~$\delta_i$ defines the Bregman distance~\cite{Bregman_1967} associated with~$\con{i}$.} for~$\con{i}$ at the point~$\iter[k]$ (see~\cite[\S~2]{Gill_Wong_2011} and~\cite[\S~2.3]{Gill_Murray_Saunders_2005}).
 The \gls{sqp} subproblem~\cref{eq:sqp-subproblem} with~$H^k = \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$ can then be seen as the minimization of the second-order Taylor approximation of~$\widetilde{\lag}$ subject to the linearizations of the constraints~\cref{eq:problem-cobyqa-sqp-ub,eq:problem-cobyqa-sqp-eq} at~$(\iter[k], \lm[k])$, i.e.,
 \begin{align*}
-    \min        & \quad \nabla_x \widetilde{\lag}(\iter[k], \lm[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \widetilde{\lag}(\iter[k], \lm[k]) \step\\
-    \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
-                & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
-                & \quad \step \in \R^n.
+    \min_{\step \in \R^n}   & \quad \nabla_x \widetilde{\lag}(\iter[k], \lm[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \widetilde{\lag}(\iter[k], \lm[k]) \step\\
+    \text{s.t.}             & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
+                            & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq.
 \end{align*}
 
 By expressing its subproblem in this form, we see that the \gls{sqp} method is a special case of \citeauthor{Robinson_1972a}'s method~\cite{Robinson_1972a}, known to have a local R-quadratic convergence rate.
@@ -231,9 +225,8 @@ For this interpretation, we focus on the equality-constrained problem
 \begin{subequations}
     \label{eq:problem-sqp-econ}
     \begin{align}
-        \min        & \quad \obj(\iter)\\
-        \text{s.t.} & \quad h(\iter) = 0,\\
-                    & \quad \iter \in \R^n, \nonumber
+        \min_{\iter \in \R^n}   & \quad \obj(\iter)\\
+        \text{s.t.}             & \quad h(\iter) = 0,
     \end{align}
 \end{subequations}
 with~$h : \R^n \to \R^m$.
@@ -416,9 +409,9 @@ For simplicity, instead of the problem~\cref{eq:problem-cobyqa-sqp}, we consider
 \begin{subequations}
     \label{eq:problem-cobyqa-auglag}
     \begin{align}
-        \min        & \quad \obj(\iter)\\
-        \text{s.t.} & \quad h(\iter) = 0,\\
-                    & \quad \iter \ge 0, ~ \iter \in \R^n, \nonumber
+        \min_{\iter \in \R^n}   & \quad \obj(\iter)\\
+        \text{s.t.}             & \quad h(\iter) = 0,\\
+                                & \quad \iter \ge 0,
     \end{align}
 \end{subequations}
 with~$h : \R^n \to \R^m$.
@@ -433,9 +426,9 @@ Correspondingly, the \gls{sqp} subproblem of the problem~\cref{eq:problem-cobyqa
 \begin{subequations}
     \label{eq:sqp-subproblem-auglag}
     \begin{align}
-        \min        & \quad \obj(\iter[k]) + \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} H^k \step \label{eq:sqp-subproblem-auglag-obj}\\
-        \text{s.t.} & \quad h(\iter[k]) + \nabla h(\iter[k]) \step = 0,\\
-                    & \quad \iter[k] + \step \ge 0, ~ \step \in \R^n,
+        \min_{\step \in \R^n}   & \quad \obj(\iter[k]) + \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} H^k \step \label{eq:sqp-subproblem-auglag-obj}\\
+        \text{s.t.}             & \quad h(\iter[k]) + \nabla h(\iter[k]) \step = 0,\\
+                                & \quad \iter[k] + \step \ge 0,
     \end{align}
 \end{subequations}
 with~$H^k \approx \nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
@@ -679,11 +672,10 @@ A similar framework for equality-constrained problems can be found in~\cite[\S~2
         \begin{subequations}
             \label{eq:trust-region-sqp-subproblem}
             \begin{algomathalign}
-                \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step \label{eq:trust-region-sqp-subproblem-obj}\\
-                \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub, \label{eq:trust-region-sqp-subproblem-ub}\\
-                            & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:trust-region-sqp-subproblem-eq}\\
-                            & \quad \norm{\step} \le \rad[k], \label{eq:trust-region-sqp-subproblem-tr}\\
-                            & \quad \step \in \R^n, \nonumber
+                \min_{\step \in \R^n}   & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step \label{eq:trust-region-sqp-subproblem-obj}\\
+                \text{s.t.}             & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub, \label{eq:trust-region-sqp-subproblem-ub}\\
+                                        & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:trust-region-sqp-subproblem-eq}\\
+                                        & \quad \norm{\step} \le \rad[k], \label{eq:trust-region-sqp-subproblem-tr}\\
             \end{algomathalign}
         \end{subequations} \nllabel{alg:trust-region-sqp-step}
         Pick a penalty parameter~$\gamma^k \ge \max @@ \set{\gamma^{k - 1}, \norm{\lm[k]}}$ providing~$\meritm[k](\step[k]) < \meritm[k](0)$\; \nllabel{alg:trust-region-sqp-penalty}
@@ -761,9 +753,8 @@ More specifically, the normal step~$\nstep[k]$ is an exact or approximate soluti
 \begin{subequations}
     \label{eq:byrd-omojokun-original}
     \begin{align}
-        \min        & \quad \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \label{eq:byrd-omojokun-original-obj}\\
-        \text{s.t.} & \quad \norm{\step} \le \zeta \rad[k],\\
-                    & \quad \step \in \R^n, \nonumber
+        \min_{\step \in \R^n}   & \quad \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \label{eq:byrd-omojokun-original-obj}\\
+        \text{s.t.}             & \quad \norm{\step} \le \zeta \rad[k],
     \end{align}
 \end{subequations}
 for some~$\zeta \in [0, 1]$ (note that~$\zeta$ should be positive unless~$\iter[k]$ is feasible).
@@ -771,9 +762,9 @@ Further, the tangential step~$\tstep[k]$ solves the tangential subproblem
 \begin{subequations}
     \label{eq:tangential-step-original}
     \begin{align}
-        \min        & \quad [\nabla \obj(\iter[k]) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
-        \text{s.t.} & \quad \norm{\nstep[k] + \step} \le \rad[k],\\
-                    & \quad \step \in \mathcal{V} \subseteq \R^n,
+        \min_{\step \in \R^n}   & \quad [\nabla \obj(\iter[k]) + \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
+        \text{s.t.}             & \quad \norm{\nstep[k] + \step} \le \rad[k],\\
+                                & \quad \step \in \mathcal{V},
     \end{align}
 \end{subequations}
 either exactly or approximately, where~$\mathcal{V}$ denotes some set such that for any~$d \in \mathcal{V}$,~$\nstep[k] + \step$ does not violate the linearized constraints more than~$\nstep[k]$ does.
@@ -805,10 +796,9 @@ for some~$\alpha \in [0, 1]$, so that the trust-region subproblem after the repl
 \begin{subequations}
     \label{eq:sqp-subproblem-vardi-original}
     \begin{align}
-        \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
-        \text{s.t.} & \quad \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
-                    & \quad \norm{\step} \le \rad[k],\\
-                    & \quad \step \in \R^n. \nonumber
+        \min_{\step \in \R^n}   & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
+        \text{s.t.}             & \quad \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
+                                & \quad \norm{\step} \le \rad[k].
     \end{align}
 \end{subequations}
 Note that if~$\alpha = 0$, then~\cref{eq:sqp-subproblem-vardi-original} is clearly feasible.
@@ -827,7 +817,7 @@ We now point out that the above-mentioned normal step~$\nstep[k]$ is an approxim
     Let~$\nstep[k]$ be the least-norm solution to~\cref{eq:vardi-original}, and let~$\step[\ast]$ be the least-norm global minimizer of~\cref{eq:byrd-omojokun-original-obj} without any constraint.
     Then~$\nstep[k]$ solves
     \begin{equation*}
-        \min @@ \set[\bigg]{\sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 : \step = t \step[\ast], ~ t \ge 0, ~ \norm{d} \le \zeta \rad[k]},
+        \min_{\step \in \R^n} @@ \set[\bigg]{\sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 : \step = t \step[\ast], ~ t \ge 0, ~ \norm{d} \le \zeta \rad[k]},
     \end{equation*}
     with~$\zeta = \norm{\nstep[k]} / \rad[k]$.
 \end{proposition}
@@ -862,10 +852,9 @@ for some~$\tau \ge 0$, so that the trust-region subproblem after replacement bec
 \begin{subequations}
     \label{eq:cdt-composite-step-original}
     \begin{align}
-        \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
-        \text{s.t.} & \quad \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \le \tau, \label{eq:cdt-composite-step-original-eq}\\
-                    & \quad \norm{\step} \le \rad[k], \label{eq:cdt-composite-step-original-tr}\\
-                    & \quad \step \in \R^n. \nonumber
+        \min_{\step \in \R^n}   & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
+        \text{s.t.}             & \quad \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \le \tau, \label{eq:cdt-composite-step-original-eq}\\
+                                & \quad \norm{\step} \le \rad[k]. \label{eq:cdt-composite-step-original-tr}\\
     \end{align}
 \end{subequations}
 The method selects the scalar~$\tau$ in a composite-step fashion, as follows.
@@ -895,9 +884,8 @@ For the normal step, as formulated in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}, w
 \begin{subequations}
     \label{eq:byrd-omojokun}
     \begin{align}
-        \min        & \quad \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \label{eq:byrd-omojokun-obj}\\
-        \text{s.t.} & \quad \norm{\step} \le \zeta \rad[k],\\
-                    & \quad \step \in \R^n, \nonumber
+        \min_{\step \in \R^n}   & \quad \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \label{eq:byrd-omojokun-obj}\\
+        \text{s.t.}             & \quad \norm{\step} \le \zeta \rad[k],
     \end{align}
 \end{subequations}
 for some~$\zeta \in [0, 1]$, either exactly or approximately.
@@ -922,11 +910,10 @@ Then we take the composite step~$\step[k] = \nstep[k] + \tstep[k]$, which solves
 \begin{subequations}
     \label{eq:vardi-composite-step}
     \begin{align}
-        \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step \label{eq:vardi-composite-step-obj}\\
-        \text{s.t.} & \quad \nabla \con{i}(\iter[k])^{\T} \step \le \max @@ \set{-\con{i}(\iter[k]), \nabla \con{i}(\iter[k])^{\T} \nstep[k]}, ~ i \in \iub, \label{eq:vardi-composite-step-ub}\\
-                    & \quad \nabla \con{i}(\iter[k])^{\T} \step = \nabla \con{i}(\iter[k])^{\T} \nstep[k], ~ i \in \ieq, \label{eq:vardi-composite-step-eq}\\
-                    & \quad \norm{\step} \le \rad[k],\\
-                    & \quad \step \in \R^n, \nonumber
+        \min_{\step \in \R^n}   & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step \label{eq:vardi-composite-step-obj}\\
+        \text{s.t.}             & \quad \nabla \con{i}(\iter[k])^{\T} \step \le \max @@ \set{-\con{i}(\iter[k]), \nabla \con{i}(\iter[k])^{\T} \nstep[k]}, ~ i \in \iub, \label{eq:vardi-composite-step-ub}\\
+                                & \quad \nabla \con{i}(\iter[k])^{\T} \step = \nabla \con{i}(\iter[k])^{\T} \nstep[k], ~ i \in \ieq, \label{eq:vardi-composite-step-eq}\\
+                                & \quad \norm{\step} \le \rad[k],
     \end{align}
 \end{subequations}
 
@@ -958,12 +945,11 @@ for some~$\alpha \in [0, 1]$, where~$\act(\iter[k])$ designates the active set f
 \begin{subequations}
     \label{eq:sqp-subproblem-vardi}
     \begin{align}
-        \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step \label{eq:sqp-subproblem-vardi-obj}\\
-        \text{s.t.} & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub \setminus \act(\iter[k]), \label{eq:sqp-subproblem-vardi-ub2}\\
-                    & \quad \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub \cap \act(\iter[k]), \label{eq:sqp-subproblem-vardi-ub1}\\
-                    & \quad \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:sqp-subproblem-vardi-eq}\\
-                    & \quad \norm{\step} \le \rad[k],\\
-                    & \quad \step \in \R^n. \nonumber
+        \min_{\step \in \R^n}   & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step \label{eq:sqp-subproblem-vardi-obj}\\
+        \text{s.t.}             & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub \setminus \act(\iter[k]), \label{eq:sqp-subproblem-vardi-ub2}\\
+                                & \quad \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub \cap \act(\iter[k]), \label{eq:sqp-subproblem-vardi-ub1}\\
+                                & \quad \alpha \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:sqp-subproblem-vardi-eq}\\
+                                & \quad \norm{\step} \le \rad[k].
     \end{align}
 \end{subequations}
 Note that if~$\alpha = 0$, then~\cref{eq:sqp-subproblem-vardi} is clearly feasible.
@@ -1050,8 +1036,8 @@ Instead of the trust-region \gls{sqp} subproblem~\cref{eq:trust-region-sqp-subpr
 \begin{subequations}
     \label{eq:slpqp}
     \begin{align}
-        \min        & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step + \mu \Phi_p(d)\\
-        \text{s.t.} & \quad \norm{d} \le \rad[k]
+        \min_{\step \in \R^n}   & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step + \mu \Phi_p(\step)\\
+        \text{s.t.}             & \quad \norm{\step} \le \rad[k]
     \end{align}
 \end{subequations}
 for some~$\mu \ge 0$, where~$\Phi_p$ is defined by the~$\ell_p$-constraint violation of the linearized constraints, i.e.,

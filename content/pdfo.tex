@@ -89,9 +89,8 @@ We consider the optimization problem
 \begin{subequations}
     \label{eq:problem-pdfo}
     \begin{align}
-        \min        & \quad \obj(\iter)\\
-        \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub,\\
-                    & \quad \iter \in \R^n, \nonumber
+        \min_{\iter \in \R^n}   & \quad \obj(\iter)\\
+        \text{s.t.}             & \quad \con{i}(\iter) \le 0, ~ i \in \iub,
     \end{align}
 \end{subequations}
 where the objective and constraint functions~$\obj$ and~$\con{i}$, with~$i \in \iub$, are real-valued functions on~$\R^n$, and where the set of indices~$\iub$ is finite (perhaps empty).
@@ -120,10 +119,9 @@ After choosing the trust-region center~$\iter[k]$, with the trust-region model~$
 \begin{subequations}
     \label{eq:powell-trust-region}
     \begin{align}
-        \min        & \quad \objm[k](\iter)\\
-        \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:powell-trust-region-ub}\\
-                    & \quad \norm{\iter - \iter[k]} \le \rad[k],\\
-                    & \quad \iter \in \R^n. \nonumber
+        \min_{\iter \in \R^n}   & \quad \objm[k](\iter)\\
+        \text{s.t.}             & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:powell-trust-region-ub}\\
+                                & \quad \norm{\iter - \iter[k]} \le \rad[k].
     \end{align}
 \end{subequations}
 where~$\rad[k]$ is the trust-region radius.
@@ -149,10 +147,9 @@ Once the linear models~$\conm[k]{i}$ of the constraint functions~$\con{i}$, for~
 \begin{subequations}
     \label{eq:cobyla-subproblem}
     \begin{align}
-        \min        & \quad \objm[k](\iter)\\
-        \text{s.t.} & \quad \conm[k]{i}(\iter) \le 0, ~ i \in \iub, \label{eq:cobyla-subproblem-ub}\\
-                    & \quad \norm{\iter - \iter[k]} \le \rad[k],\\
-                    & \quad \iter \in \R^n, \nonumber
+        \min_{\iter \in \R^n}   & \quad \objm[k](\iter)\\
+        \text{s.t.}             & \quad \conm[k]{i}(\iter) \le 0, ~ i \in \iub, \label{eq:cobyla-subproblem-ub}\\
+                                & \quad \norm{\iter - \iter[k]} \le \rad[k],
     \end{align}
 \end{subequations}
 is handled in the following way.
@@ -182,9 +179,8 @@ It states that given a point~$y \in \xpt[k]$ to remove from the interpolation se
 \begin{subequations}
     \label{eq:biglag}
     \begin{align}
-        \max        & \quad \abs{\lagp[y](x)}\\
-        \text{s.t.} & \quad \norm{x - \iter} \le \rad[k],\\
-                    & \quad x \in \R^n,
+        \max_{x \in \R^n}   & \quad \abs{\lagp[y](x)}\\
+        \text{s.t.}         & \quad \norm{x - \iter} \le \rad[k],
     \end{align}
 \end{subequations}
 where~$\lagp[y] \colon \R^n \to \R$ denotes the Lagrange function associated with~$y$ (see \cref{sec:lagrange-polynomials} for details).
@@ -232,13 +228,12 @@ It takes for input an optimization problem of the form
 \begin{subequations}
     \label{eq:pdfo}
     \begin{align}
-        \min        & \quad \obj(\iter)\\
-        \text{s.t.} & \quad \xl \le \iter \le \xu, \label{eq:pdfo-bds}\\
-                    & \quad A_{\scriptscriptstyle\iub} \iter \le b_{\scriptscriptstyle\iub}, \label{eq:pdfo-lub}\\
-                    & \quad A_{\scriptscriptstyle\ieq} \iter = b_{\scriptscriptstyle\ieq}, \label{eq:pdfo-leq}\\
-                    & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:pdfo-nlub}\\
-                    & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:pdfo-nleq}\\
-                    & \quad \iter \in \R^n, \nonumber
+        \min_{\iter \in \R^n}   & \quad \obj(\iter)\\
+        \text{s.t.}             & \quad \xl \le \iter \le \xu, \label{eq:pdfo-bds}\\
+                                & \quad A_{\scriptscriptstyle\iub} \iter \le b_{\scriptscriptstyle\iub}, \label{eq:pdfo-lub}\\
+                                & \quad A_{\scriptscriptstyle\ieq} \iter = b_{\scriptscriptstyle\ieq}, \label{eq:pdfo-leq}\\
+                                & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:pdfo-nlub}\\
+                                & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:pdfo-nleq}
     \end{align}
 \end{subequations}
 where~$\xl, \xu \in (\R \cup \set{\pm \infty})^n$,~$A_{\scriptscriptstyle\iub}$ and~$A_{\scriptscriptstyle\ieq}$ are real matrices,~$b _{\iub}$ and~$b _{\ieq}$ are real vectors, and~$\con{i}$, for~$i \in \iub \cup \ieq$, is a real-valued function.

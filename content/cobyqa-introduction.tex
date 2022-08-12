@@ -33,11 +33,10 @@ The problems we consider in this chapter are of the form
 \begin{subequations}
     \label{eq:problem-cobyqa}
     \begin{align}
-        \min        & \quad \obj(\iter) \label{eq:problem-cobyqa-obj}\\
-        \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-ub}\\
-                    & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:problem-cobyqa-eq}\\
-                    & \quad \xl \le x \le \xu, \label{eq:problem-cobyqa-bd}\\
-                    & \quad \iter \in \R^n, \nonumber
+        \min_{\iter \in \R^n}   & \quad \obj(\iter) \label{eq:problem-cobyqa-obj}\\
+        \text{s.t.}             & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-cobyqa-ub}\\
+                                & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:problem-cobyqa-eq}\\
+                                & \quad \xl \le x \le \xu, \label{eq:problem-cobyqa-bd}
     \end{align}
 \end{subequations}
 where~$\obj$ and~$\con{i}$ represent the objective and constraint functions, with~$i \in \iub \cup \ieq$ and the sets of indices~$\iub$ and~$\ieq$ being finite and disjoint, but possibly empty.
@@ -154,11 +153,11 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
         \begin{subequations}
             \label{eq:derivative-free-trust-region-sqp-subproblem}
             \begin{algomathalign}
-                \min        & \quad \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
-                \text{s.t.} & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
-                            & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
-                            & \quad \norm{\step} \le \rad[k],\\
-                            & \quad \step \in \R^n, \nonumber
+                \min_{\step \in \R^n}   & \quad \nabla \objm[k](\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
+                \text{s.t.}             & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub,\\
+                                        & \quad \conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
+                                        & \quad \xl \le \iter[k] + \step \le \xu,\\
+                                        & \quad \norm{\step} \le \rad[k]
             \end{algomathalign}
         \end{subequations} \nllabel{alg:derivative-free-trust-region-sqp-subproblem}
         Pick a penalty parameter~$\gamma^k \ge \max @@ \set{\gamma^{k - 1}, \norm{\lm[k]}}$ providing~$\meritm[k](\step[k]) < \meritm[k](0)$ \nllabel{alg:derivative-free-trust-region-sqp-penalty}\;
@@ -197,10 +196,9 @@ It first generates a normal step~$\nstep[k]$ as an approximate solution to
 \begin{subequations}
     \label{eq:cobyqa-normal}
     \begin{align}
-        \min        & \quad \sum_{i \in \iub} \posp{\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step]^2 \label{eq:cobyqa-normal-obj}\\
-        \text{s.t.} & \quad \xl \le \iter[k] + \step \le \xu,\\
-                    & \quad \norm{\step} \le \zeta \rad[k], \label{eq:cobyqa-normal-tr}\\
-                    & \quad \step \in \R^n, \nonumber
+        \min_{\step \in \R^n}   & \quad \sum_{i \in \iub} \posp{\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step]^2 \label{eq:cobyqa-normal-obj}\\
+        \text{s.t.}             & \quad \xl \le \iter[k] + \step \le \xu,\\
+                                & \quad \norm{\step} \le \zeta \rad[k], \label{eq:cobyqa-normal-tr}
     \end{align}
 \end{subequations}
 for some~$\zeta \in (0, 1)$.
@@ -210,12 +208,11 @@ Further, it generates a tangential step~$\tstep[k]$ by solving approximately
 \begin{subequations}
     \label{eq:cobyqa-tangential-original}
     \begin{align}
-        \min        & \quad [\nabla \objm[k](\iter[k]) + \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
-        \text{s.t.} & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max @@ \set{-\conm[k]{i}(\iter[k]) - \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub,\\
-                    & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
-                    & \quad \xl \le \iter[k] + \nstep[k] + \step \le \xu,\\
-                    & \quad \norm{\nstep[k] + \step} \le \rad[k],\\
-                    & \quad \step \in \R^n, \nonumber
+        \min_{\step \in \R^n}   & \quad [\nabla \objm[k](\iter[k]) + \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
+        \text{s.t.}             & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max @@ \set{-\conm[k]{i}(\iter[k]) - \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub,\\
+                                & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
+                                & \quad \xl \le \iter[k] + \nstep[k] + \step \le \xu,\\
+                                & \quad \norm{\nstep[k] + \step} \le \rad[k],
     \end{align}
 \end{subequations}
 and then sets the composite step~$\step[k] = \nstep[k] + \tstep[k]$.
@@ -236,12 +233,11 @@ To meet the second one, following the work of~\cite[Eq.~(2.10)]{Lalee_Nocedal_Pl
 \begin{subequations}
     \label{eq:cobyqa-tangential}
     \begin{align}
-        \min        & \quad [\nabla \objm[k](\iter[k]) + \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
-        \text{s.t.} & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max @@ \set{-\conm[k]{i}(\iter[k]) - \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub, \label{eq:cobyqa-tangential-ub}\\
-                    & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:cobyqa-tangential-eq}\\
-                    & \quad \xl \le \iter[k] + \nstep[k] + \step \le \xu,\\
-                    & \quad \norm{\step} \le \sqrt{(\rad[k])^2 - \norm{\nstep[k]}^2}, \label{eq:cobyqa-tangential-tr}\\
-                    & \quad \step \in \R^n, \nonumber
+        \min_{\step \in \R^n}   & \quad [\nabla \objm[k](\iter[k]) + \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
+        \text{s.t.}             & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max @@ \set{-\conm[k]{i}(\iter[k]) - \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub, \label{eq:cobyqa-tangential-ub}\\
+                                & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:cobyqa-tangential-eq}\\
+                                & \quad \xl \le \iter[k] + \nstep[k] + \step \le \xu,\\
+                                & \quad \norm{\step} \le \sqrt{(\rad[k])^2 - \norm{\nstep[k]}^2}, \label{eq:cobyqa-tangential-tr}
     \end{align}
 \end{subequations}
 the only difference with~\cref{eq:cobyqa-tangential-original} being the trust-region constraint~\cref{eq:cobyqa-tangential-tr}.
@@ -408,10 +404,9 @@ Further, similar to~\cite[Eq.~(6.6)]{Powell_2006}, we let~$\rstep[k + 1] \in \R^
 \begin{subequations}
     \label{eq:geometry-subproblem}
     \begin{align}
-        \max        & \quad \abs{\lagp[\bar{y}](\iter[k + 1] + \step)}\\
-        \text{s.t.} & \quad \xl \le \iter[k + 1] + \step \le \xu,\\
-                    & \quad \norm{\step} \le \bar{\rad},\\
-                    & \quad \step \in \R^n,
+        \max_{\step \in \R^n}   & \quad \abs{\lagp[\bar{y}](\iter[k + 1] + \step)}\\
+        \text{s.t.}             & \quad \xl \le \iter[k + 1] + \step \le \xu,\\
+                                & \quad \norm{\step} \le \bar{\rad},
     \end{align}
 \end{subequations}
 where~$\lagp[\bar{y}]$ denotes the minimum Frobenius norm Lagrange polynomials for~$\xpt[k + 1]$ associated with~$\bar{y}$ (see \cref{def:lagrange-polynomials-minimum-norm}).

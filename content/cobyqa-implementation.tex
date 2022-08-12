@@ -215,13 +215,12 @@ As those afterwards, it is clearly unreasonable to employ a \gls{dfo} method to 
 
 To see how to supply to \gls{cobyqa} bound and linear constraints, consider the Example 16.4 of~\cite{Nocedal_Wright_2006}, defined as
 \begin{align*}
-    \min        & \quad (\iter_1 - 1)^2 + (\iter_2 - 2.5)^2\\
-    \text{s.t.} & \quad -\iter_1 + 2 \iter_2 \le 2,\\
-                & \quad \iter_1 + 2 \iter_2 \le 6,\\
-                & \quad \iter_1 - 2 \iter_2 \le 2,\\
-                & \quad \iter_1 \ge 0,\\
-                & \quad \iter_2 \ge 0,\\
-                & \quad \iter \in \R^2.
+    \min_{\iter \in \R^2}   & \quad (\iter_1 - 1)^2 + (\iter_2 - 2.5)^2\\
+    \text{s.t.}             & \quad -\iter_1 + 2 \iter_2 \le 2,\\
+                            & \quad \iter_1 + 2 \iter_2 \le 6,\\
+                            & \quad \iter_1 - 2 \iter_2 \le 2,\\
+                            & \quad \iter_1 \ge 0,\\
+                            & \quad \iter_2 \ge 0.
 \end{align*}
 \Cref{lst:cobyqa-bound-linear} shows how to solve this problem using \gls{cobyqa}.
 
@@ -245,11 +244,10 @@ To see how to supply to \gls{cobyqa} bound and linear constraints, consider the 
 
 Thus, to see how to supply nonlinear constraints to \gls{cobyqa}, consider the Problem G of~\cite{Powell_1994}, defined as
 \begin{align*}
-    \min        & \quad \iter_3\\
-    \text{s.t.} & \quad -5 \iter_1 + \iter_2 - \iter_3 \le 0,\\
-                & \quad 5 \iter_1 + \iter_2 - \iter_3 \le 0,\\
-                & \quad \iter_1^2 + \iter_2^2 + 4 \iter_2 - \iter_3 \le 0,\\
-                & \quad \iter \in \R^3.
+    \min_{\iter \in \R^3}   & \quad \iter_3\\
+    \text{s.t.}             & \quad -5 \iter_1 + \iter_2 - \iter_3 \le 0,\\
+                            & \quad 5 \iter_1 + \iter_2 - \iter_3 \le 0,\\
+                            & \quad \iter_1^2 + \iter_2^2 + 4 \iter_2 - \iter_3 \le 0.
 \end{align*}
 \Cref{lst:cobyqa-problem-g} shows how to solve such a problem using \gls{cobyqa}, starting from the initial guess~$\iter[0] = [1, 1, 1]^{\T}$.
 

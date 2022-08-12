@@ -53,10 +53,9 @@ In this introduction, we consider the nonlinearly-constrained problem
 \begin{subequations}
     \label{eq:problem-introduction}
     \begin{align}
-        \min        & \quad \obj(\iter)\\
-        \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-introduction-cub}\\
-                    & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:problem-introduction-ceq}\\
-                    & \quad \iter \in \R^n, \nonumber
+        \min_{\iter \in \R^n}   & \quad \obj(\iter)\\
+        \text{s.t.}             & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-introduction-cub}\\
+                                & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:problem-introduction-ceq}\\
     \end{align}
 \end{subequations}
 \nomenclature[Fb]{$\con{i}$}{Real-valued constraint function defined on~$\R^n$, with~$i \in \iub \cup \ieq$}%
@@ -144,9 +143,8 @@ For example, consider \cref{alg:trust-region}, a basic trust-region method for s
         Set the trial step~$\step[k]$ to an approximate solution to
         \begin{algomathdisplay}
             \begin{aligned}
-                \min        & \quad m_k(\step)\\
-                \text{s.t.} & \quad \norm{\step} \le \rad[k],\\
-                            & \quad \step \in \R^n
+                \min_{\step \in \R^n}   & \quad m_k(\step)\\
+                \text{s.t.}             & \quad \norm{\step} \le \rad[k]
             \end{aligned}
         \end{algomathdisplay}
         Evaluate the trust-region ratio
@@ -200,10 +198,9 @@ Binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by
 \begin{subequations}
     \label{eq:csvc}
     \begin{align}
-        \min        & \quad \frac{1}{2} \norm{\omega}_2^2 + C \norm{\xi}_1\\
-        \text{s.t.} & \quad y_i \big( \beta + \omega^{\T} \psi_{\gamma}(\iter_i) \big) \ge 1 - \xi_i, ~ i \in \set{1, 2, \dots, m},\\
-                    & \quad \xi \ge 0,\\
-                    & \quad (\omega, \beta, \xi) \in \R^{\ell} \times \R \times \R^m,
+        \min_{(\omega, \beta, \xi) \in \R^{\ell} \times \R \times \R^m} & \quad \frac{1}{2} \norm{\omega}_2^2 + C \norm{\xi}_1\\
+        \text{s.t.}                                                     & \quad y_i \big( \beta + \omega^{\T} \psi_{\gamma}(\iter_i) \big) \ge 1 - \xi_i, ~ i \in \set{1, 2, \dots, m},\\
+                                                                        & \quad \xi \ge 0,
     \end{align}
 \end{subequations}
 where~$\psi_{\gamma}$ is a function mapping the data to a higher-dimensional space~$\R^{\ell}$ and~$\gamma > 0$ and~$C > 0$ are parameters.
@@ -386,10 +383,9 @@ We do not provide a proof of \cref{thm:first-order-necessary-conditions}, but we
 \begin{subequations}
     \label{eq:kkt-description}
     \begin{align}
-        \min        & \quad \obj(\iter) = x_1 + x_2\\
-        \text{s.t.} & \quad \con{1}(\iter) = x_1^2 + x_2^2 - 2 \le 0, \label{eq:kkt-description-c1}\\
-                    & \quad \con{2}(\iter) = -x_2 \le 0, \label{eq:kkt-description-c2}\\
-                    & \quad \iter \in \R^2, \nonumber
+        \min_{\iter \in \R^2}   & \quad \obj(\iter) = x_1 + x_2\\
+        \text{s.t.}             & \quad \con{1}(\iter) = x_1^2 + x_2^2 - 2 \le 0, \label{eq:kkt-description-c1}\\
+                                & \quad \con{2}(\iter) = -x_2 \le 0, \label{eq:kkt-description-c2}
     \end{align}
 \end{subequations}
 whose solution is~$\iter[\ast] = [-\sqrt{2}, 0]^{\T}$.
