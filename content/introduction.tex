@@ -220,7 +220,7 @@ The general~$k$-fold cross-validation to define~$P(C, \gamma)$ is presented in \
     \label{alg:cross-validation}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{Labeled dataset~$\set{(\iter_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$ and fold number~$k > 0$.}
+    \KwData{Labeled dataset~$\set{(\iter_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$, fold number~$k > 0$, and parameters~$C$ and~$\gamma$.}
     \KwResult{Performance measure~$P(C, \gamma)$.}
     Split the dataset into~$k$ balanced groups\;
     \For{$i = 1, 2, \dots, k$}{

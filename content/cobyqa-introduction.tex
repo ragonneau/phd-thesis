@@ -144,7 +144,7 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
     \DontPrintSemicolon
     \onehalfspacing
     \algorithmfootnote{\textsuperscript{$\dagger$}Recall that superscripts are iteration counters rather than exponents.}
-    \KwData{Initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
+    \KwData{Objective function~$f$, constraint functions~$\set{\con{i}}_{i \in \iub \cup \ieq}$, initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
     Set the penalty parameter~$\gamma^{-1} \gets  0$\;
     Build the initial interpolation set~$\xpt[0] \subseteq \R^n$ described in \cref{subsec:interpolation-based-quadratic-models}\;
     \For{$k = 0, 1, \dots$ until convergence}{
@@ -436,7 +436,7 @@ When this condition holds, \gls{cobyqa} entertains the geometry-improving phase 
     \label{alg:geometry-improving}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{Bounds~$\xl$ and~$\xu$, current interpolation set~$\xpt[k + 1] \subseteq \R^n$, and current best point so far~$\iter[k + 1] \in \xpt[k + 1]$.}
+    \KwData{Bounds~$\xl$ and~$\xu$, current interpolation set~$\xpt[k + 1] \subseteq \R^n$, current lower bound on the trust-region radius~$\radlb[k + 1]$, current trust-region radius~$\rad[k + 1]$, and current best point so far~$\iter[k + 1] \in \xpt[k + 1]$.}
     \KwResult{Updated interpolation set~$\xpt[k + 1]$ and updated iterate~$\iter[k + 1]$.}
     Set~$\bar{y}$ to be a solution to~\cref{eq:choice-point-geometry-improving}\;
     Set the step~$\rstep[k + 1] \in \R^n$ to be an approximate solution to~\cref{eq:geometry-subproblem}\;
@@ -543,7 +543,7 @@ This procedure is the same as the one used by \citeauthor{Powell_1994} in his so
     \DontPrintSemicolon
     \onehalfspacing
     \algorithmfootnote{\textsuperscript{$\ddagger$}We assume that~$\ieq = \emptyset$; otherwise, each equality constraint is viewed as two inequality constraints.}
-    \KwData{Current interpolation set~$\xpt[k + 1] \subseteq \R^n$ and current penalty parameter~$\gamma^k \ge 0$.}
+    \KwData{Objective function~$f$, constraint functions~$\set{\con{i}}_{i \in \iub \cup \ieq}$, current interpolation set~$\xpt[k + 1] \subseteq \R^n$, and current penalty parameter~$\gamma^k \ge 0$.}
     \KwResult{Modified penalty parameter~$\gamma^k \ge 0$.}
     Set the indices of the \enquote{important} constraints
     \begin{algomathdisplay}

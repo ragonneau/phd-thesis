@@ -50,7 +50,7 @@ Briefly speaking, this algorithm entertains conjugate gradients iterations, and 
     \label{alg:tcg}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{Trust-region radius~$\rad > 0$.}
+    \KwData{Quadratic function~$Q$ and trust-region radius~$\rad > 0$.}
     \KwResult{An approximate solution to~\cref{eq:problem-tcg}.}
     Set~$\sstep[0] \gets 0$\;
     Set the search direction~$\pstep[0] \gets -\nabla Q(\sstep[0])$\;
@@ -117,11 +117,11 @@ More specifically, the initial working set is
 Given a vector~$z \in \R^n$, the algorithm uses~$\Pi^k(z) \in \R^n$ to denote the vector whose~$i$th component is~$z_i$ if~$i \notin \mathcal{W}^k$, and zero otherwise.
 
 \begin{algorithm}
-    \caption{Bound-constrained \glsfmtshort{tcg} method~\cite[\S~3]{Powell_2009}}
+    \caption[Bound-constrained \glsfmtshort{tcg} method]{Bound-constrained \glsfmtshort{tcg} method~\cite[\S~3]{Powell_2009}}
     \label{alg:bvtcg}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{Bounds~$\xl$ and~$\xu$, and trust-region radius~$\rad > 0$.}
+    \KwData{Quadratic function~$Q$, bounds~$\xl < \xu$, and trust-region radius~$\rad > 0$.}
     \KwResult{An approximate solution to~\cref{eq:problem-bvtcg}.}
     Set~$\sstep[0] \gets 0$ and~$\mathcal{W}^0$ according to~\cref{eq:bounds-initial-working-set}\;
     Set the search direction~$\pstep[0] \gets -\Pi^0(\nabla Q(\sstep[0]))$\;
@@ -247,13 +247,16 @@ To set such an initial search direction, we denote by~$\Pi^k(z)$ the unique solu
 \end{subequations}
 We then set the search direction~$\pstep[0] = \Pi^0(-\nabla Q(\sstep[0]))$.
 Moreover, if~$e_j^{\T} A \sstep[0] < 0$ for some~$j$, then the point~$\sstep[1]$ will be further from this constraint than the initial guess.
-Therefore, the initial working set~$\mathcal{W}^0$ is chosen to be~$\set{j \in \mathcal{J}(\sstep[0]) : e_j^{\T} A \sstep[0] = 0}$.
+Therefore, the initial working set is chosen to be
+\begin{equation*}
+    \mathcal{W}^0 = \set{j \in \mathcal{J}(\sstep[0]) : e_j^{\T} A \sstep[0] = 0}.
+\end{equation*}
 % (or a subset of it, so that~$\set{e_j^{\T} A : j \in \mathcal{W}^0}$ is a basis of~$\vspan \set{e_j^{\T} A : j \in \mathcal{J}(\sstep[0]), ~ e_j^{\T} A \sstep[0] = 0}$).
 
 The solution to~\cref{eq:tcg-linear-working-set} is calculated using the \citeauthor{Goldfarb_Idnani_1983} method for quadratic programming~\cite{Goldfarb_Idnani_1983}.
 It is an active-set method designed for minimizing positive definite quadratic function subject to linear constraints.
-Using QR factorizations, it builds a linearly independent subset of the active constraints at the solution.
-Therefore, after executing such the \citeauthor{Goldfarb_Idnani_1983} method, we have a solution to~\cref{eq:tcg-linear-working-set} together with a basis of the active set.
+Using QR factorizations, it builds a linearly independent subset of~$\mathcal{W}^0$.
+Therefore, after executing such the \citeauthor{Goldfarb_Idnani_1983} method, we have a solution to~\cref{eq:tcg-linear-working-set} together with a basis of~$\mathcal{W}^0$.
 In fact, denote~$\hat{Q}R$ the QR factorization of the matrix whose columns are the gradients of the active constraints at the solution, and let~$\check{Q}$ be a matrix such that~$[\hat{Q}, \check{Q}]$ is orthogonal.
 It turns out that the solution to~\cref{eq:tcg-linear-working-set} is~$\check{Q} \check{Q}^{\T} v$ (see~\cite[Eq.~(3.7)]{Powell_2015}).
 Therefore, we have in particular~$\Pi^k(-z) = -\Pi^k(z)$.
@@ -264,11 +267,11 @@ We are now equiped to present the linearly-constrained \gls{tcg} method designed
 The complete framework is described in \cref{alg:lctcg}.
 
 \begin{algorithm}
-    \caption{Linearly-constrained \glsfmtshort{tcg} method~\cite[\S~3]{Powell_2015}}
+    \caption[Linearly-constrained \glsfmtshort{tcg} method]{Linearly-constrained \glsfmtshort{tcg} method~\cite[\S~3]{Powell_2015}}
     \label{alg:lctcg}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{Matrices~$A$ and~$C$, right-hand side~$b \ge 0$, trust-region radius~$\rad > 0$, and constant~$\sigma \in (0, 1)$.}
+    \KwData{Quadratic function~$Q$, matrices~$A$ and~$C$, right-hand side~$b \ge 0$, trust-region radius~$\rad > 0$, and constant~$\sigma \in (0, 1)$.}
     \KwResult{An approximate solution to~\cref{eq:problem-lctcg}.}
     Set~$\sstep[0] \gets 0$ and~$\hat{k} \gets 0$\;
     Set the search direction~$\pstep[0] \gets -\Pi^{\hat{k}} \big( \nabla Q(\sstep[0]) \big)$\; \nllabel{alg:lctcg-sd-init}
@@ -316,6 +319,7 @@ The same applies to \cref{alg:lctcg-sd-restart}.
 \subsubsection{Additional stopping criteria}
 
 \Citeauthor{Powell_2015} also proposed two additional stopping criteria, to avoid doing unworthy computations.
+Note that these two stopping critera are also crucial from a theoretical standpoint, because the termination of the method, proven by \citeauthor{Powell_2015}~\cite[\S~5]{Powell_2015}, relies on them.
 First of all, the computations are stopped if~$\nabla Q(\sstep[k])$ is small along the current search direction, namely if
 \begin{equation*}
     \alpha_{\rad}^k \abs[\big]{\nabla Q(\sstep[k])^{\T} \pstep[k]} \le \nu [Q(0) - Q(\sstep[k])],
@@ -424,7 +428,7 @@ The complete framework is described in \cref{alg:cpqp}.
     \label{alg:cpqp}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{Matrices~$A$ and~$C$, vectors~$b$ and~$d$, trust-region radius~$\rad > 0$, and constant~$\sigma \in (0, 1)$.}
+    \KwData{Matrices~$C$,~$E$, and~$F$, vectors~$d$ and~$h$, trust-region radius~$\rad > 0$, and constant~$\sigma \in (0, 1)$.}
     \KwResult{An approximate solution to~\cref{eq:problem-lctcg}.}
     Set~$\sstep[0] \gets 0$,~$v^0 \gets \posp{-b}$,~$g^0 \gets -C^{\T} C d$, and~$\hat{k} \gets 0$\;
     Set the search directions~$\pstep[0]_{\sstep} \gets -\Pi_{\sstep}^{\hat{k}}(g^0, v^0)$ and~$\pstep[0]_v \gets -\Pi_v^{\hat{k}}(g^0, v^0)$\;
@@ -465,7 +469,7 @@ Moreover, similarly to \cref{alg:lctcg}, after calculating the search directions
 may be substantial for some~$j$ in the working set.
 In such a case, the method first moves~$(\sstep[k], v^k)$ towards the boundaries of the active constraints.
 
-The \gls{tcg}-like procedure for convex piecewise quadratic programming we presented is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.cpqp}.
+% The \gls{tcg}-like procedure for convex piecewise quadratic programming we presented is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.cpqp}.
 
 \section{Evaluating the least-squares Lagrange multiplier}
 \label{sec:cobyqa-lagrange-multipliers}
@@ -501,7 +505,7 @@ where~$\hat{A}$ is the matrix whose~$i$th column is that of~$A$ if~$i \notin \ma
     \label{alg:nnls}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{To do.}
+    \KwData{Matrix~$A$, vector~$b$, and number of positive variables~$n_0 \ge 1$.}
     \KwResult{A solution to~\cref{eq:problem-nnls}.}
     Set~$\sstep[0] \gets 0$,~$\mathcal{W}^{-1} \gets \set{1, 2, \dots, n_0}$, and~$k \gets 0$\;
     \While{the \gls{kkt} conditions do not hold at~$\sstep[k]$}{ \nllabel{alg:nnls-kkt}
@@ -529,7 +533,7 @@ A point~$\sstep[k] \in \R^n$ satisfies the \gls{kkt} conditions for~\cref{eq:pro
     \frac{\partial \mu}{\partial \sstep_i} (\sstep[k]) = 0 \quad \text{if~$i > n_0$ or~$\sstep[k]_i > 0$.}
 \end{equation*}
 
-This modification of the \gls{nnls} algorithm is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.nnls}.
+% This modification of the \gls{nnls} algorithm is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.nnls}.
 
 \subsubsection{Convergence of the method}
 
