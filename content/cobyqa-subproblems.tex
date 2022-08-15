@@ -112,7 +112,7 @@ It does not include an active bound if a step along~$-\nabla Q(\sstep[0])$ would
 More specifically, the initial working set is
 \begin{equation}
     \label{eq:bounds-initial-working-set}
-    \mathcal{W}^0 \eqdef \set[\bigg]{i \in \set{1, 2, \dots, n} : \xl_i = \sstep[0]_i ~ \text{and} ~ \frac{\partial Q}{\partial \sstep_i}(\sstep[0]) \ge 0, ~ \text{or} ~ \xu_i = \sstep[0]_i ~ \text{and} ~ \frac{\partial Q}{\partial \sstep_i}(\sstep[0]) \le 0}.
+    \mathcal{W}^0 \eqdef \set[\bigg]{i \in \set{1, \dots, n} : \xl_i = \sstep[0]_i ~ \text{and} ~ \frac{\partial Q}{\partial \sstep_i}(\sstep[0]) \ge 0, ~ \text{or} ~ \xu_i = \sstep[0]_i ~ \text{and} ~ \frac{\partial Q}{\partial \sstep_i}(\sstep[0]) \le 0}.
 \end{equation}
 Given a vector~$z \in \R^n$, the algorithm uses~$\Pi^k(z) \in \R^n$ to denote the vector whose~$i$th component is~$z_i$ if~$i \notin \mathcal{W}^k$, and zero otherwise.
 
@@ -140,7 +140,7 @@ Given a vector~$z \in \R^n$, the algorithm uses~$\Pi^k(z) \in \R^n$ to denote th
         }
         \uElseIf{$\alpha^k = \alpha_B^k$}{
             Add the first bound hit by~$\sstep[k + 1]$ to~$\mathcal{W}^k$ to obtain~$\mathcal{W}^{k + 1}$\;
-            Restart the \gls{tcg} iteration by setting~$\pstep[k + 1] \gets -\Pi^{k + 1}(\nabla Q(\sstep[k + 1]))$\;
+            Restart the \gls{tcg} iterations by setting~$\pstep[k + 1] \gets -\Pi^{k + 1}(\nabla Q(\sstep[k + 1]))$\;
         }
         \Else{
             Set~$\mathcal{W}^{k + 1} \gets \mathcal{W}^k$\;
@@ -169,7 +169,7 @@ where~$\Pi^{\ast}$ corresponds initially to the operator~$\Pi^k$ at the last ite
 Note that a substantial reduction in~$Q$ is unlikely if either~$\Pi^{\ast}(\nabla Q(\sstep[\ast]))$ or the angle between~$\Pi^{\ast}(\sstep[\ast])$ and~$-\Pi^{\ast}(\nabla Q(\sstep[\ast]))$ is tiny.
 Therefore, the method designed by \citeauthor{Powell_2009} attempts to refine~$\sstep[\ast]$ round the trust-region boundary only if
 \begin{equation*}
-    \norm{\Pi^{\ast}(\sstep[\ast])}^2 \norm{\Pi^{\ast}(\nabla Q(\sstep[\ast]))}^2 - [\Pi^{\ast}(\sstep[\ast])^{\T} \Pi^{\ast}(\nabla Q(\sstep[\ast]))]^2 > \xi [Q(0) - Q(\sstep[\ast])]^2,
+    \norm{\Pi^{\ast}(\sstep[\ast])}^2 \norm{\Pi^{\ast}(\nabla Q(\sstep[\ast]))}^2 - [\Pi^{\ast}(\sstep[\ast])^{\T} \Pi^{\ast}(\nabla Q(\sstep[\ast]))]^2 > \xi [Q(\sstep[0]) - Q(\sstep[\ast])]^2,
 \end{equation*}
 for some~$\xi \in (0, 1)$.
 In \gls{cobyqa}, we choose~$\xi = 10^{-4}$.
@@ -201,8 +201,9 @@ Since the working set is only enlarged, this procedure is invoked at most~$n - \
 \subsection{Linearly-constrained case}
 \label{subsec:lctcg}
 
-\index{TCG@\glsfmtshort{tcg}!linearly-constrained|(}We now present the linearly-constrained variation of the \gls{tcg} method designed by \citeauthor{Powell_2015} for his solver \gls{lincoa}~\cite{Powell_2015}.
-The original method is designed for linear inequality constraints only, but is adapted here to include equality constraints.
+\index{TCG@\glsfmtshort{tcg}!linearly-constrained|(}We now present the linearly-constrained variation of the \gls{tcg} method~\cite{Powell_2015} designed by \citeauthor{Powell_2015} for his solver \gls{lincoa}.
+The original method is devised for linear inequality constraints only, but is adapted here to handle linear equality constraints as well.
+
 This method is employed by \gls{cobyqa} when~$\iub \cup \ieq \neq \emptyset$.
 In such a case, the tangential subproblem~\cref{eq:cobyqa-tangential} is of the form
 \begin{subequations}
@@ -216,50 +217,70 @@ In such a case, the tangential subproblem~\cref{eq:cobyqa-tangential} is of the 
 \end{subequations}
 where the objective function~$Q$ is quadratic,~$A \in \R^{m_1 \times n}$,~$C \in \R^{m_2 \times n}$, and~$b \in \R^{m_1}$ with~$b \ge 0$.
 In this form, we include the bound constraints in~\cref{eq:problem-lctcg-ub}.
-Since the method we discuss below is a feasible method, the bounds constraints will be respected.
+Since the method is a feasible method, the bounds will be respected.
 
-The method designed by Powell is an active-set variation of the \gls{tcg} algorithm.
-It maintains a working set and the QR factorization of the matrix whose columns are the gradients of the constraints in this working set.
-As in \cref{alg:bvtcg}, if a new constraint is added to the working set, the procedure is restarted.
-However, we allow constraints to be removed from the working set in this method.
+The method uses an active-set strategy.
+It maintains a working set and the QR factorization of a matrix whose columns form a basis of the space spanned by the gradients of the constraints in this working set.
+As in \cref{alg:bvtcg}, if the working set is modified, then the \gls{tcg} procedure is restarted.
+In contrast to \cref{alg:bvtcg} however, this method allows constraints to be removed from the working set.
 
 \subsubsection{Description of the working set}
 
 The working set is not directly the active set at the current iterate, for the following reason.
 Assume that~$b_j$ is positive and tiny for a certain~$j$, so that the~$j$th constraint is almost active at~$\sstep[0] = 0$.
-If~$j$ does not belong to the initial working set and if we have~$e_j^{\T} A \nabla Q(\sstep[0]) < 0$, then it is likely that the first step~$\sstep[1]$ generated by the \gls{tcg} method has a small norm, as a step along the search direction~$-\nabla Q(\sstep[0])$ quickly exits the feasible set.
-Therefore, we must consider a constraint as active whenever its residual becomes small, even if positive.
+If~$j$ does not belong to the initial working set and if we have~$e_j^{\T} A \nabla Q(\sstep[0]) < 0$, then it is likely that the first step~$\sstep[1]$ generated by the \gls{tcg} method has a small norm, because a tiny step along the search direction~$-\nabla Q(\sstep[0])$ would quickly reach the boundary of the feasible set, leading to a change of the working set.
+Moreover, as observed by \citeauthor{Powell_2015}, small steps that cause changes in the working set are numerically expensive, and hence, should be avoided~\cite[\S~3]{Powell_2015}.
+Therefore, we must consider constraints with small residuals when defining the working set.
+
+The method defines simultaneously the initial search direction and the initial working set.
 More precisely, for any feasible~$\sstep \in \R^n$, we define
 \begin{equation*}
-    \mathcal{J}(\sstep) \eqdef \set[\big]{j \le m_1 : b_j - e_j^{\T} A \sstep \le \sigma \rad \norm{e_j^{\T} A}},
+    \mathcal{J}(\sstep) \eqdef \set[\big]{j \in \set{1, \dots, m_1} : b_j - e_j^{\T} A \sstep \le \sigma \rad \norm{e_j^{\T} A}},
 \end{equation*}
 for some~$\sigma \in (0, 1)$, set to~$\sigma = 0.2$ in \gls{cobyqa}.
-The initial working set is a subset of~$\mathcal{J}(\sstep[0])$.
-Moreover, the initial search direction~$\pstep[0]$ should be close to~$-\nabla Q(\sstep[0])$ and prevent the point~$\sstep[1]$ to be close from~$\sstep[0]$.
-To set such an initial search direction, we denote by~$\Pi^k(z)$ the unique solution to
+The method defines the initial search direction~$\pstep[0]$ as the closest direction from~$-\nabla Q(\sstep[0])$ that do not tighten the proximity of~$\sstep[0]$ to the constraints in~$\mathcal{J}(\sstep[0])$.
+In other words,~$\pstep[0]$ solves
 \begin{subequations}
     \label{eq:tcg-linear-working-set}
     \begin{align}
-        \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep - z}^2\\
+        \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep + \nabla Q(\sstep[k])}^2\\
         \text{s.t.}             & \quad e_j^{\T} A \sstep \le 0, ~ j \in \mathcal{J}(\sstep[k]),\\
-                                & \quad C \sstep = 0.
+                                & \quad C \sstep = 0,
     \end{align}
 \end{subequations}
-We then set the search direction~$\pstep[0] = \Pi^0(-\nabla Q(\sstep[0]))$.
-Moreover, if~$e_j^{\T} A \sstep[0] < 0$ for some~$j$, then the point~$\sstep[1]$ will be further from this constraint than the initial guess.
-Therefore, the initial working set is chosen to be
+with~$k = 0$.
+Moreover, if~$e_j^{\T} A \pstep[0] < 0$ for some~$j \in \mathcal{J}(\sstep[0])$, then the point~$\sstep[1]$ will be further from this constraint than~$\sstep[0]$.
+Hence, the initial working set is chosen to be
+\begin{equation}
+    \label{eq:tcg-linear-working-set-initial}
+    \mathcal{W}^0 = \set{j \in \mathcal{J}(\sstep[0]) : e_j^{\T} A \pstep[0] = 0}.
+\end{equation}
+
+The method then entertains \gls{tcg} iterations in the null space of
 \begin{equation*}
-    \mathcal{W}^0 = \set{j \in \mathcal{J}(\sstep[0]) : e_j^{\T} A \sstep[0] = 0}.
+    \set[\big]{e_j^{\T} A : j \in \mathcal{W}^0} \cup \set[\big]{e_j^{\T} C : 1 \le j \le m_2}.
 \end{equation*}
-% (or a subset of it, so that~$\set{e_j^{\T} A : j \in \mathcal{W}^0}$ is a basis of~$\vspan \set{e_j^{\T} A : j \in \mathcal{J}(\sstep[0]), ~ e_j^{\T} A \sstep[0] = 0}$).
+If a new constraint is hit by at a \gls{tcg} iteration that is not close from the trust region, then the method is restarted, changing the next search direction~$\pstep[k + 1]$ to the unique solution to~\cref{eq:tcg-linear-working-set} after incrementing~$k$.
+Further, the working set is modified to be
+\begin{equation}
+    \label{eq:tcg-linear-working-set-restart}
+    \mathcal{W}^{k + 1} = \set{j \in \mathcal{J}(\sstep[k + 1]) : e_j^{\T} A \pstep[k + 1] = 0}.
+\end{equation}
+We denote for convenience by~$\Pi^k(z) \in \R^n$ the unique solution to
+\begin{align*}
+    \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep - z}^2\\
+    \text{s.t.}             & \quad e_j^{\T} A \sstep = 0, ~ j \in \mathcal{W}^k,\\
+                            & \quad C \sstep = 0,
+\end{align*}
+for~$z \in \R^n$, and we remark that~$\pstep[0] = \Pi^0(-\nabla Q(\sstep[0]))$ and that~$\pstep[k + 1] = \Pi^{k + 1}(-\nabla Q(\sstep[k + 1]))$ when the method is restarted.
 
 The solution to~\cref{eq:tcg-linear-working-set} is calculated using the \citeauthor{Goldfarb_Idnani_1983} method for quadratic programming~\cite{Goldfarb_Idnani_1983}.
 It is an active-set method designed for minimizing positive definite quadratic function subject to linear constraints.
-Using QR factorizations, it builds a linearly independent subset of~$\mathcal{W}^0$.
-Therefore, after executing such the \citeauthor{Goldfarb_Idnani_1983} method, we have a solution to~\cref{eq:tcg-linear-working-set} together with a basis of~$\mathcal{W}^0$.
+Using QR factorizations, it builds a linearly independent subset of the working set.
+Therefore, after executing the \citeauthor{Goldfarb_Idnani_1983} method, we have a solution to~\cref{eq:tcg-linear-working-set} together with a linearly independent subset of the working set.
 In fact, denote~$\hat{Q}R$ the QR factorization of the matrix whose columns are the gradients of the active constraints at the solution, and let~$\check{Q}$ be a matrix such that~$[\hat{Q}, \check{Q}]$ is orthogonal.
 It turns out that the solution to~\cref{eq:tcg-linear-working-set} is~$\check{Q} \check{Q}^{\T} v$ (see~\cite[Eq.~(3.7)]{Powell_2015}).
-Therefore, we have in particular~$\Pi^k(-z) = -\Pi^k(z)$.
+Therefore, we have in particular~$\Pi^k(-z) = -\Pi^k(z)$ for all~$z \in \R^n$.
 
 \subsubsection{Description of the \glsfmtshort{tcg} method}
 
@@ -273,8 +294,9 @@ The complete framework is described in \cref{alg:lctcg}.
     \onehalfspacing
     \KwData{Quadratic function~$Q$, matrices~$A$ and~$C$, right-hand side~$b \ge 0$, trust-region radius~$\rad > 0$, and constant~$\sigma \in (0, 1)$.}
     \KwResult{An approximate solution to~\cref{eq:problem-lctcg}.}
-    Set~$\sstep[0] \gets 0$ and~$\hat{k} \gets 0$\;
-    Set the search direction~$\pstep[0] \gets -\Pi^{\hat{k}} \big( \nabla Q(\sstep[0]) \big)$\; \nllabel{alg:lctcg-sd-init}
+    Set~$\sstep[0] \gets 0$\;
+    Set~$\pstep[0]$ to the solution to~\cref{eq:tcg-linear-working-set} with~$k = 0$\;
+    Set~$\mathcal{W}^0$ as described in~\cref{eq:tcg-linear-working-set-initial}\; \nllabel{alg:lctcg-sd-init}
     \For{$k = 0, 1, \dots$ until~$\norm{\pstep[k]} = 0$}{
         Set
         \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
@@ -289,29 +311,27 @@ The complete framework is described in \cref{alg:lctcg}.
             Break\;
         }
         \uElseIf{$\alpha^k = \alpha_L^k$ and~$\norm{\sstep[k + 1]} \le (1 - \sigma) \rad$}{
-            Update~$\hat{k} \gets k + 1$\;
-            Restart the \gls{tcg} iteration by setting~$\pstep[k + 1] \gets -\Pi^{\hat{k}} \big( \nabla Q(\sstep[k + 1]) \big)$\; \nllabel{alg:lctcg-sd-restart}
+            Set~$\pstep[k + 1]$ to the solution to~\cref{eq:tcg-linear-working-set} after incrementing~$k$\; \nllabel{alg:lctcg-sd-restart}
+            Restart the \gls{tcg} iterations by setting~$\mathcal{W}^{k + 1}$ as described in~\cref{eq:tcg-linear-working-set-restart}\;
         }
         \Else{
+            Set~$\mathcal{W}^{k + 1} \gets \mathcal{W}^k$\;
             Set
             \begin{algomathdisplay}
-                \beta^k \gets \frac{\Pi^{\hat{k}} \big( \nabla Q(\sstep[k + 1]) \big)^{\T} (\nabla^2 Q) \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}
+                \beta^k \gets \frac{\Pi^{k + 1} \big( \nabla Q(\sstep[k + 1]) \big)^{\T} (\nabla^2 Q) \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}
             \end{algomathdisplay}
-            Update~$\pstep[k + 1] \gets -\Pi^{\hat{k}} \big( \nabla Q(\sstep[k]) \big) + \beta^k \pstep[k]$\;
+            Update~$\pstep[k + 1] \gets -\Pi^{k + 1} \big( \nabla Q(\sstep[k]) \big) + \beta^k \pstep[k]$\;
         }
     }
 \end{algorithm}
 
-% It is important to note that the method stops if a new constraint is hit at a point close from the trust-region boundary.
-% Although such a stopping criterion did not exist in \cref{alg:bvtcg}, it is implemented in the linearly-constrained case because constraints may be removed from the active set.
-
 \Citeauthor{Powell_2015}~\cite{Powell_2015} proposed the following modification, which is employed in \gls{cobyqa}.
 After calculating the search direction at \cref{alg:lctcg-sd-init}, we might have
 \begin{equation*}
-    b_j - e_j^{\T} A(\sstep[k] + \pstep[k]) \ge \xi \rad \norm{e_j^{\T} A}
+    b_j - e_j^{\T} A(\sstep[0] + \pstep[0]) \ge \xi \rad \norm{e_j^{\T} A}
 \end{equation*}
 for some~$\xi \in (0, \sigma)$ and some~$j$ in the working set.
-In such a case, the method first moves~$\sstep[k]$ towards the boundaries of the constraints in the working set.
+In such a case, the method first moves~$\sstep[0]$ towards the boundaries of the constraints in the working set.
 This is because the constraints in the working set are presumed active at the solution,
 In \gls{cobyqa}, we choose~$\xi = 10^{-4}$.
 The same applies to \cref{alg:lctcg-sd-restart}.
@@ -322,12 +342,12 @@ The same applies to \cref{alg:lctcg-sd-restart}.
 Note that these two stopping critera are also crucial from a theoretical standpoint, because the termination of the method, proven by \citeauthor{Powell_2015}~\cite[\S~5]{Powell_2015}, relies on them.
 First of all, the computations are stopped if~$\nabla Q(\sstep[k])$ is small along the current search direction, namely if
 \begin{equation*}
-    \alpha_{\rad}^k \abs[\big]{\nabla Q(\sstep[k])^{\T} \pstep[k]} \le \nu [Q(0) - Q(\sstep[k])],
+    \alpha_{\rad}^k \abs[\big]{\nabla Q(\sstep[k])^{\T} \pstep[k]} \le \nu [Q(\sstep[0]) - Q(\sstep[k])],
 \end{equation*}
 for some constant~$\nu > 0$, set to~$\nu = 0.01$ in \gls{cobyqa}.
-Moreover, the computations are also stopped if the reduction provided by the current search direction is tiny compared to the reduction so far, that is if
+Moreover, the computations are also stopped if the reduction provided by updated iterate is tiny compared to the reduction so far, that is if
 \begin{equation*}
-    Q(\sstep[k]) - Q(\sstep[k + 1]) \le \nu [Q(0) - Q(\sstep[k + 1])].
+    Q(\sstep[k]) - Q(\sstep[k + 1]) \le \nu [Q(\sstep[0]) - Q(\sstep[k + 1])].
 \end{equation*}\index{TCG@\glsfmtshort{tcg}!linearly-constrained|)}
 
 % The linearly-constrained \gls{tcg} procedure with these additional stopping criteria is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.lctcg}.
@@ -431,7 +451,7 @@ The complete framework is described in \cref{alg:cpqp}.
     \KwData{Matrices~$C$,~$E$, and~$F$, vectors~$d$ and~$h$, trust-region radius~$\rad > 0$, and constant~$\sigma \in (0, 1)$.}
     \KwResult{An approximate solution to~\cref{eq:problem-lctcg}.}
     Set~$\sstep[0] \gets 0$,~$v^0 \gets \posp{-b}$,~$g^0 \gets -C^{\T} C d$, and~$\hat{k} \gets 0$\;
-    Set the search directions~$\pstep[0]_{\sstep} \gets -\Pi_{\sstep}^{\hat{k}}(g^0, v^0)$ and~$\pstep[0]_v \gets -\Pi_v^{\hat{k}}(g^0, v^0)$\;
+    Set the search directions~$\pstep[0]_{\sstep} \gets -\Pi_{\sstep}^{\hat{k}}(g^0, v^0)$ and~$\pstep[0]_v \gets -\Pi_v^{\hat{k}}(g^0, v^0)$\; \nllabel{alg:cpqp-sd-init}
     \For{$k = 0, 1, \dots$ until~$\norm{\pstep[k]_{\sstep}}^2 + \norm{\pstep[k]_v}^2 = 0$}{
         Set
         \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
@@ -443,12 +463,12 @@ The complete framework is described in \cref{alg:cpqp}.
         Set the steplength~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_L^k}$\;
         Update the iterates~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]_{\sstep}$ and~$v^{k + 1} \gets v^k + \alpha^k \pstep[k]_v$\;
         Update the gradient~$g^{k + 1} \gets g^k + \alpha^k C^{\T} C \pstep[k]_{\sstep}$\;
-        \uIf{$\alpha^k = \alpha_L^k$}{
-            Update~$\hat{k} = k + 1$\;
-            Set~$\pstep[k + 1]_{\sstep} \gets -\Pi_{\sstep}^{\hat{k}}(g^{k + 1}, v^{k + 1})$ and~$\pstep[k + 1]_v \gets -\Pi_v^{\hat{k}}(g^{k + 1}, v^{k + 1})$\;
-        }
-        \uElseIf{$\alpha^k = \alpha_{\rad}^k$}{
+        \uIf{$\alpha^k = \alpha_{\rad}^k$}{
             Break\;
+        }
+        \uElseIf{$\alpha^k = \alpha_L^k$}{
+            Update~$\hat{k} = k + 1$\;
+            Set~$\pstep[k + 1]_{\sstep} \gets -\Pi_{\sstep}^{\hat{k}}(g^{k + 1}, v^{k + 1})$ and~$\pstep[k + 1]_v \gets -\Pi_v^{\hat{k}}(g^{k + 1}, v^{k + 1})$\; \nllabel{alg:cpqp-sd-restart}
         }
         \Else{
             Set
@@ -462,12 +482,28 @@ The complete framework is described in \cref{alg:cpqp}.
 
 Since the operators~$\Pi_{\sstep}^{\hat{k}}$ and~$\Pi_v^{\hat{k}}$ are evaluated using the \citeauthor{Goldfarb_Idnani_1983} method, \cref{alg:cpqp} shares a large part of the implementation with \cref{alg:lctcg}.
 
-Moreover, similarly to \cref{alg:lctcg}, after calculating the search directions at \cref{alg:lctcg-sd-init,alg:lctcg-sd-restart}\todo{The number are not correct}, the error term
+Moreover, similarly to \cref{alg:lctcg}, after calculating the search directions at \cref{alg:cpqp-sd-init,alg:cpqp-sd-restart}, the error term
 \begin{equation*}
     h_j - e_j^{\T} E (\sstep[k] + \pstep[k]_{\sstep}) - e_j^{\T} F (v^k + \pstep[k]_v)
 \end{equation*}
 may be substantial for some~$j$ in the working set.
-In such a case, the method first moves~$(\sstep[k], v^k)$ towards the boundaries of the active constraints.
+In such a case, the method first moves~$(\sstep[k], v^k)$ towards the boundaries of the constraints in the working set.
+
+\subsubsection{Additional stopping criteria}
+
+As in \cref{alg:lctcg}, we also implement the following two stopping criteria.
+First of all, the computations are stopped if the decrease in the objective function is small along the current search direction, namely if
+\begin{equation*}
+    \alpha_{\rad}^k \abs[\big]{(g^k)^{\T} \pstep[k]_{\sstep} + (v^k)^{\T} \pstep[k]_v} \le \nu [Q(\sstep[0], v^0) - Q(\sstep[k], v^k)],
+\end{equation*}
+for some constant~$\nu > 0$, set to~$\nu = 0.01$ in \gls{cobyqa}.
+Moreover, the computations are also stopped if the reduction provided by the current search direction is tiny compared to the reduction so far, that is if
+\begin{equation*}
+    Q(\sstep[k], v^k) - Q(\sstep[k + 1], v^{k + 1}) \le \nu [Q(\sstep[0], v^0) - Q(\sstep[k + 1], v^{k + 1})].
+\end{equation*}
+These two stopping criteria are once again crucial to the termination of the algorithm.
+Indeed, remark that the trust-region constraint appears only as a stopping criteria in \cref{alg:cpqp}.
+Therefore, the termination proof made by \citeauthor{Powell_2009}~\cite[\S~3]{Powell_2009} for \cref{alg:lctcg} also holds for \cref{alg:cpqp}.
 
 % The \gls{tcg}-like procedure for convex piecewise quadratic programming we presented is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.cpqp}.
 
