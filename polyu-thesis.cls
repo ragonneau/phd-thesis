@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/08/10 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/08/16 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifmeeting
@@ -44,6 +44,8 @@
 \RequirePackage{titling}
 \RequirePackage{booktabs}
 \RequirePackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
 \RequirePackage{siunitx}
 \RequirePackage[en-US]{datetime2}
 % \RequirePackage{footnote}

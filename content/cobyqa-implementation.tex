@@ -320,53 +320,81 @@ The compilation is made using GitHub Actions, and relies on the Python package c
 To conclude this chapter, we present some numerical results of \gls{cobyqa}.
 The performance profiles presented in this section have been obtained on the CUTEst library~\cite{Gould_Orban_Toint_2015}.
 See \cref{sec:benchmarking-tools} for the definition of the performance profiles in a \gls{dfo} context.
+The merit function we consider in the following is defined as follows.
+Let~$v_{\infty}(\iter) \in \R$ be the~$\ell_{\infty}$-constraint violation at~$\iter \in \R^n$.
+It is always zero for unconstrained problems.
+The merit function~$\varphi$ employed by the performance profiles is defined by
+\begin{empheq}[left={\varphi(\iter) = \empheqlbrace}]{alignat*=2}
+    & \obj(\iter),                                  && \quad \text{if~$v_{\infty}(\iter) \le 10^{-14}$,}\\
+    & \infty,                                       && \quad \text{if~$v_{\infty}(\iter) \ge 10^{-6}$,}\\
+    & \obj(\iter) + 10^8 \times v_{\infty}(\iter),  && \quad \text{otherwise,}
+\end{empheq}
+for~$\iter \in \R^n.$
 
 \subsection{Comparison on unconstrained problems}
 
-We first compare the performance of \gls{cobyqa} with \gls{newuoa} on unconstrained problems.
-\Cref{fig:cobyqa-newuoa-unconstrained} plots the performance profiles obtained during this experiment.
+We first compare the performance of \gls{cobyqa} with \gls{newuoa} and \gls{uobyqa} on unconstrained problems of dimension at most~$10$.
+\Cref{fig:cobyqa-newuoa-unconstrained} plots the performance profiles obtained during these experiments, with a tolerance~$\tau = 10^{-4}$.
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","NEWUOA"}}{plain-1-10-perf-cobyqa-newuoa-u.csv}{3}
-        \caption{Dimension~$n \le 10$}
+        \drawperformanceprofiles{{"COBYQA","NEWUOA"}}{plain-1-10-perf-cobyqa-newuoa-u.csv}{4}
+        \caption{Comparison with \gls{newuoa}}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","NEWUOA"}}{plain-1-50-perf-cobyqa-newuoa-u.csv}{3}
-        \caption{Dimension~$n \le 50$}
+        \drawperformanceprofiles{{"COBYQA","UOBYQA"}}{plain-1-10-perf-cobyqa-uobyqa-u.csv}{4}
+        \caption{Comparison with \gls{uobyqa}}
     \end{subfigure}
-    \caption{Comparison of \gls{cobyqa} with \gls{newuoa}, with~$\tau = 10^{-3}$}
+    \caption{Comparison of \gls{cobyqa} with \gls{newuoa} and \gls{uobyqa}}
     \label{fig:cobyqa-newuoa-unconstrained}
 \end{figure}
 
-We observe that both software have comparable performance.
-\Gls{cobyqa} solves more problem on small dimensional problems when no limit is imposed on the number of function evaluations.
-However, on problems of dimension at most~$50$, we observe that \gls{newuoa} achieved the least number of function evaluations on more problems than \gls{cobyqa}.
-All in all, these results are expected, because both solvers use very similar algorithms.
+We observe that \gls{cobyqa} and \gls{newuoa} have comparable performance, although \gls{newuoa} achieves the least number of function evaluations on more problems than \gls{cobyqa}.
+Moreover, we observe that \gls{cobyqa} is clearly outperformed by \gls{uobyqa}.
+Details on the results of each solver on each problem are given in \cref{tab:cobyqa-newuoa-uobyqa-10}.
+All in all, these results are expected, because
+\begin{enumerate}
+    \item \gls{newuoa} and \gls{cobyqa} use very similar algorithms, and
+    \item \gls{uobyqa} employs fully-determined interpolation models and the dimension is small.
+\end{enumerate}
+Let us observe that when the dimension increases, \gls{cobyqa} has better performance than \gls{uobyqa}.
+We compare them now on unconstrained problems of dimension at least~$11$ and at most~$50$.
+\Cref{fig:cobyqa-uobyqa-unconstrained} plots the performance profiles obtained during these experiments, with a tolerance~$\tau = 10^{-4}$.
+
+\begin{figure}[ht]
+    \centering
+    \drawperformanceprofiles{{"COBYQA","UOBYQA"}}{plain-11-50-perf-cobyqa-uobyqa-u.csv}{4}
+    \caption{Comparison of \gls{cobyqa} and \gls{uobyqa} on high-dimensional problems}
+    \label{fig:cobyqa-uobyqa-unconstrained}
+\end{figure}
+
+On this experiment, \gls{cobyqa} necessitated the least number of function evaluations to terminate on most test problems, although only a few CUTEst problems match the dimension requirement.
+\Cref{tab:cobyqa-uobyqa-50} provides details on the results of each solver on each problem.
 
 \subsection{Comparison on bound-constrained problems}
 
 We now compare the performance of \gls{cobyqa} with \gls{bobyqa} on bound-constrained problems.
 \Cref{fig:cobyqa-bobyqa-bound-constrained} plots the performance profiles obtained during this experiment.
 
+
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","BOBYQA"}}{plain-1-10-perf-bobyqa-cobyqa-b.csv}{3}
+        \drawperformanceprofiles{{"COBYQA","BOBYQA"}}{plain-1-10-perf-bobyqa-cobyqa-b.csv}{4}
         \caption{Dimension~$n \le 10$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","BOBYQA"}}{plain-1-50-perf-bobyqa-cobyqa-b.csv}{3}
+        \drawperformanceprofiles{{"COBYQA","BOBYQA"}}{plain-1-50-perf-bobyqa-cobyqa-b.csv}{4}
         \caption{Dimension~$n \le 50$}
     \end{subfigure}
-    \caption{Comparison of \gls{cobyqa} with \gls{bobyqa}, with~$\tau = 10^{-3}$}
+    \caption{Comparison of \gls{cobyqa} with \gls{bobyqa}, with~$\tau = 10^{-4}$}
     \label{fig:cobyqa-bobyqa-bound-constrained}
 \end{figure}
 
