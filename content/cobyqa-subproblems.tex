@@ -295,8 +295,8 @@ The complete framework is described in \cref{alg:lctcg}.
     \KwData{Quadratic function~$Q$, matrices~$A$ and~$C$, right-hand side~$b \ge 0$, trust-region radius~$\rad > 0$, and constant~$\sigma \in (0, 1)$.}
     \KwResult{An approximate solution to~\cref{eq:problem-lctcg}.}
     Set~$\sstep[0] \gets 0$\;
-    Set~$\pstep[0]$ to the solution to~\cref{eq:tcg-linear-working-set} with~$k = 0$\;
-    Set~$\mathcal{W}^0$ as described in~\cref{eq:tcg-linear-working-set-initial}\; \nllabel{alg:lctcg-sd-init}
+    Set~$\pstep[0]$ to the solution to~\cref{eq:tcg-linear-working-set} with~$k = 0$\; \nllabel{alg:lctcg-sd-init}
+    Set~$\mathcal{W}^0$ as described in~\cref{eq:tcg-linear-working-set-initial}\;
     \For{$k = 0, 1, \dots$ until~$\norm{\pstep[k]} = 0$}{
         Set
         \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
@@ -378,7 +378,7 @@ However, it can clearly be reformulated by introducing a variable~$v \in \R^{m_1
 \begin{subequations}
     \label{eq:problem-cpqp-reformulated}
     \begin{align}
-        \min_{(\sstep, v) \in \R^n \times \R^{m_1}} & \quad Q(\sstep, v) \eqdef \frac{1}{2} \big[ \norm{v}^2 + \norm{C \sstep - d}^2 \big]\\
+        \min_{(\sstep, v) \in \R^n \times \R^{m_1}} & \quad Q(\sstep, v) \eqdef \frac{1}{2} \big[ \norm{C \sstep - d}^2 + \norm{v}^2 \big]\\
         \text{s.t.}                                 & \quad E \sstep + F v \le h,\\
                                                     & \quad \norm{\sstep} \le \rad,
     \end{align}
@@ -425,18 +425,41 @@ Just as in \cref{subsec:lctcg}, we define
     \mathcal{J}(\sstep, v) \eqdef \set[\Big]{j \le 2n + 2m_1 : h_j - e_j^{\T}(E \sstep + F v) \le \sigma \rad \sqrt{\norm{e_j^{\T} E}^2 + \norm{e_j^{T} F}^2}},
 \end{equation*}
 for some~$\sigma \in (0, 1)$, set to~$\sigma = 0.2$ in \gls{cobyqa}.
-Further, the initial working set is a subset of~$\mathcal{J}(\sstep[0], v^0)$, with~$\sstep[0] = 0$ and~$v^0 = \posp{-b}$.
-To define the initial search directions, let~$(\Pi_{\sstep}^k(x, z), \Pi_v^k(x, z))$ be the unique solution to
+The initial iterates, that must be feasible, are~$\sstep[0] = 0$ and~$v^0 = \posp{-b}$
+Further, we let the initial search directions~$(\pstep[0]_{\sstep}, \pstep[0]_v)$ solve
+\begin{subequations}
+    \label{eq:cpqp-working-set}
+    \begin{align}
+        \min_{(\sstep, v) \in \R^n \times \R^{m_1}} & \quad \frac{1}{2} [ \norm{\sstep + \nabla_{\sstep} Q(\sstep[k], v^k)}^2 + \norm{v + \nabla_v Q(\sstep[k], v^k)}^2 ]\\
+        \text{s.t.}                                 & \quad e_j^{\T} (E \sstep + F v) \le 0, ~ j \in \mathcal{J}(\sstep[k], v^k).
+    \end{align}
+\end{subequations}
+for~$k = 0$.
+The initial working set is then
+\begin{equation}
+    \label{eq:cpqp-working-set-initial}
+    \mathcal{W}^0 = \set{j \in \mathcal{J}(\sstep[0], v^0) : e_j^{\T}(E \pstep[0]_{\sstep} + F \pstep[0]_v) = 0}.
+\end{equation}
+
+As in \cref{alg:lctcg}, when a new constraint is hit by a \gls{tcg} step, then the method is restarted.
+In such a case, the next search directions~$(\pstep[k + 1]_{\sstep}, \pstep[k + 1]_v)$ solve~\cref{eq:cpqp-working-set} after incrementing~$k$, and the working set is modified to be
+\begin{equation}
+    \label{eq:cpqp-working-set-restart}
+    \mathcal{W}^{k + 1} = \set{j \in \mathcal{J}(\sstep[k + 1], v^{k + 1}) : e_j^{\T}(E \pstep[k + 1]_{\sstep} + F \pstep[k + 1]_v) = 0}.
+\end{equation}
+We denote for convenience by~$(\Pi_{\sstep}^k(x, z), \Pi_v^k(x, z))$ be the unique solution to
 \begin{align*}
     \min_{(\sstep, v) \in \R^n \times \R^{m_1}} & \quad \frac{1}{2} [ \norm{\sstep - x}^2 + \norm{v - z}^2 ]\\
-    \text{s.t.}                                 & \quad e_j^{\T} (E \sstep + F y), ~ j \in \mathcal{J}(\sstep[k], v^k) \le 0.
+    \text{s.t.}                                 & \quad e_j^{\T} (E \sstep + F v) = 0, ~ j \in \mathcal{W}^k,
 \end{align*}
-The initial search directions are
+for~$(x, z) \in \R^n \times \R^{m_1}$, and we remark that
 \begin{empheq}[left=\empheqlbrace]{alignat*=1}
-    & \pstep[0]_{\sstep} = -\Pi_{\sstep}^0 \big( \nabla_{\sstep} Q(\sstep[0], v^0), \nabla_v Q(\sstep[0], v^0) \big),\\
-    & \pstep[0]_v = -\Pi_v^0 \big( \nabla_{\sstep} Q(\sstep[0], v^0), \nabla_v Q(\sstep[0], v^0) \big).
+    & \pstep[0]_{\sstep} = \Pi_{\sstep}^0(-\nabla_{\sstep} Q(\sstep[0], v^0), -\nabla_v Q(\sstep[0], v^0)) = -\Pi_{\sstep}^0(\nabla_{\sstep} Q(\sstep[0], v^0), \nabla_v Q(\sstep[0], v^0)),\\
+    & \pstep[0]_v = \Pi_v^0(-\nabla_{\sstep} Q(\sstep[0], v^0), -\nabla_v Q(\sstep[0], v^0)) = -\Pi_v^0(\nabla_{\sstep} Q(\sstep[0], v^0), \nabla_v Q(\sstep[0], v^0)).
 \end{empheq}
-This problem is solved numerically using the \citeauthor{Goldfarb_Idnani_1983} method~\cite{Goldfarb_Idnani_1983}, briefly described in \cref{subsec:lctcg}.
+Similar conclusion can be drawn for~$\pstep[k + 1]_{\sstep}$ and~$\pstep[k + 1]_v$ when the method is restarted.
+
+As for \cref{alg:lctcg}, the problem~\cref{eq:cpqp-working-set} is solved numerically using the \citeauthor{Goldfarb_Idnani_1983} method~\cite{Goldfarb_Idnani_1983}, briefly described in \cref{subsec:lctcg}.
 
 \subsubsection{Description of the \glsfmtshort{tcg}-like method}
 
@@ -449,9 +472,10 @@ The complete framework is described in \cref{alg:cpqp}.
     \DontPrintSemicolon
     \onehalfspacing
     \KwData{Matrices~$C$,~$E$, and~$F$, vectors~$d$ and~$h$, trust-region radius~$\rad > 0$, and constant~$\sigma \in (0, 1)$.}
-    \KwResult{An approximate solution to~\cref{eq:problem-lctcg}.}
-    Set~$\sstep[0] \gets 0$,~$v^0 \gets \posp{-b}$,~$g^0 \gets -C^{\T} C d$, and~$\hat{k} \gets 0$\;
-    Set the search directions~$\pstep[0]_{\sstep} \gets -\Pi_{\sstep}^{\hat{k}}(g^0, v^0)$ and~$\pstep[0]_v \gets -\Pi_v^{\hat{k}}(g^0, v^0)$\; \nllabel{alg:cpqp-sd-init}
+    \KwResult{An approximate solution to~\cref{eq:problem-cpqp}.}
+    Set~$\sstep[0] \gets 0$,~$v^0 \gets \posp{-b}$, and~$g^0 \gets -C^{\T} C d$\;
+    Set~$(\pstep[0]_{\sstep}, \pstep[0]_v)$ to the solution to~\cref{eq:cpqp-working-set} with~$k = 0$\; \nllabel{alg:cpqp-sd-init}
+    Set~$\mathcal{W}^0$ as described in~\cref{eq:cpqp-working-set-initial}\; 
     \For{$k = 0, 1, \dots$ until~$\norm{\pstep[k]_{\sstep}}^2 + \norm{\pstep[k]_v}^2 = 0$}{
         Set
         \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
@@ -467,22 +491,21 @@ The complete framework is described in \cref{alg:cpqp}.
             Break\;
         }
         \uElseIf{$\alpha^k = \alpha_L^k$}{
-            Update~$\hat{k} = k + 1$\;
-            Set~$\pstep[k + 1]_{\sstep} \gets -\Pi_{\sstep}^{\hat{k}}(g^{k + 1}, v^{k + 1})$ and~$\pstep[k + 1]_v \gets -\Pi_v^{\hat{k}}(g^{k + 1}, v^{k + 1})$\; \nllabel{alg:cpqp-sd-restart}
+            Set~$(\pstep[k + 1]_{\sstep}, \pstep[k + 1]_v)$ to the solution to~\cref{eq:cpqp-working-set} after incrementing~$k$\; \nllabel{alg:cpqp-sd-restart}
+            Restart the \gls{tcg} iterations by setting~$\mathcal{W}^{k + 1}$ as described in~\cref{eq:cpqp-working-set-restart}\;
         }
         \Else{
+            Set~$\mathcal{W}^{k + 1} \gets \mathcal{W}^k$\;
             Set
             \begin{algomathdisplay}
-                \beta^k \gets \frac{\Pi_{\sstep}^{\hat{k}}(g^{k + 1}, v^{k + 1})^{\T} C^{\T} C \pstep[k]_{\sstep} + \Pi_v^{\hat{k}}(g^{k + 1}, v^{k + 1})^{\T} \pstep[k]_v}{\norm{C \pstep[k]_{\sstep}}^2 + \norm{\pstep[k]_v}^2}
+                \beta^k \gets \frac{\Pi_{\sstep}^{k + 1}(g^{k + 1}, v^{k + 1})^{\T} C^{\T} C \pstep[k]_{\sstep} + \Pi_v^{k + 1}(g^{k + 1}, v^{k + 1})^{\T} \pstep[k]_v}{\norm{C \pstep[k]_{\sstep}}^2 + \norm{\pstep[k]_v}^2}
             \end{algomathdisplay}
-            Update~$\pstep[k + 1]_{\sstep} \gets -\Pi_{\sstep}^{\hat{k}}(g^k, v^k) + \beta^k \pstep[k]_{\sstep}$ and~$\pstep[k + 1]_v \gets -\Pi_v^{\hat{k}}(g^k, v^k) + \beta^k \pstep[k]_v$\;
+            Update~$\pstep[k + 1]_{\sstep} \gets -\Pi_{\sstep}^{k + 1}(g^k, v^k) + \beta^k \pstep[k]_{\sstep}$ and~$\pstep[k + 1]_v \gets -\Pi_v^{k + 1}(g^k, v^k) + \beta^k \pstep[k]_v$\;
         }
     }
 \end{algorithm}
 
-Since the operators~$\Pi_{\sstep}^{\hat{k}}$ and~$\Pi_v^{\hat{k}}$ are evaluated using the \citeauthor{Goldfarb_Idnani_1983} method, \cref{alg:cpqp} shares a large part of the implementation with \cref{alg:lctcg}.
-
-Moreover, similarly to \cref{alg:lctcg}, after calculating the search directions at \cref{alg:cpqp-sd-init,alg:cpqp-sd-restart}, the error term
+Similarly to \cref{alg:lctcg}, after calculating the search directions at \cref{alg:cpqp-sd-init,alg:cpqp-sd-restart}, the error term
 \begin{equation*}
     h_j - e_j^{\T} E (\sstep[k] + \pstep[k]_{\sstep}) - e_j^{\T} F (v^k + \pstep[k]_v)
 \end{equation*}
@@ -598,7 +621,7 @@ If~$\mathcal{W}^k$ is maximal, that is~$\mathcal{W}^k = \set{1, 2, \dots, n_0}$,
 \paragraph{Termination of the outer loop}
 
 Termination of the outer loop can be directly inferred by showing that the value of~$\mu$ strictly decreases at each outer loop iteration.
-Such a condition ensures that the working set~$\mathcal{W}^k$ at a given outer loop iteration is different from all its previous instances, as each iterate of the outer loop is feasible (see~\cite[Lem.~23.17]{Lawson_Hanson_1987} and the discussion below).
+Such a condition ensures that the working set~$\mathcal{W}^k$ at a given outer loop iteration is different from all its previous instances, as each iterate of the outer loop is feasible\todo{Understand why and explain in the thesis} (see~\cite[Lem.~23.17]{Lawson_Hanson_1987} and the discussion below).
 
 When an outer loop iteration finishes, the value of~$\sstep[k + 1]$ solves
 \begin{align*}
