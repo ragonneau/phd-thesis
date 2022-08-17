@@ -20,7 +20,7 @@ These solvers were implemented by Powell, with particular attention paid to thei
 Renowned for their robustness and efficiency, these solvers are very appealing to practitioners and widely used in applications, including aeronautical engineering~\cite{Gallard_Etal_2018}, astronomy~\cite{Biviano_Etal_2013,Mamon_Biviano_Boue_2013}, computer vision~\cite{Izadinia_Shan_Seitz_2017}, robotics~\cite{Mombaur_Truong_Laumond_2010}, and statistics~\cite{Bates_Etal_2015}.
 However, Powell implemented them in Fortran 77, an old-fashion language that damps the enthusiasm of many users to exploit these solvers in their projects.
 
-In this chapter, we present \gls{pdfo}, a MATLAB and Python package we developed to interface Powell's solvers, which has been downloaded more than 30,000 times\footnote{See \url{https://www.pdfo.net/}.} as of August 2022.
+In this chapter, we present \gls{pdfo}, a MATLAB and Python package we developed to interface Powell's solvers, which has been downloaded more than \num{30000} times\footnote{See \url{https://www.pdfo.net/}.} as of August 2022.
 \Cref{sec:pdfo-introduction} presents the motivations for the development of \gls{pdfo}.
 We then provide an overview of Powell's five solvers in \cref{sec:powell}.
 \Cref{sec:pdfo-core-features} introduces the core features of \gls{pdfo} and its implementation.
@@ -500,4 +500,20 @@ Thus, we can conclude that \gls{pdfo} performed better than the package hyperopt
 
 \section{Summary and remarks}
 
-\todo[noline]{Write the conclusion for \cref{ch:pdfo}}
+\todo[noline,color=OliveGreen!50]{Write the conclusion for \cref{ch:pdfo}}
+
+We presented in this chapter \gls{pdfo}, our Python and MATLAB package for interfacing Powell's \gls{dfo} solvers.
+To the best of our knowledge, it is the only package that provides all five solvers at one place, making numerical experiments on all these solvers in the same time easily possible.
+Moreover, when a user does not specify a particular solver to use, \gls{pdfo} makes a selection according to the problem's type.
+
+We first presented an overview of the five solvers underlying \gls{pdfo}.
+In a nutshell, they are all trust-region \gls{dfo} methods that use either linear or quadratic models.
+We then presented the core features of \gls{pdfo}, including the general structure of the package, the preprocessing of the problems, the automatic selection mechanism, and several bug corrections in the Fortran code.
+The Fortran source code of the solvers is highly complicated.
+Powell focused on lowering the computational cost of the solvers as much as possible and produced a very optimized code but not readily intelligible to human beings.
+Hence, we are currently reimplementing these solvers in modern Fortran, focusing on the ease of understanding for later maintenance.
+
+Finally, we also provided in this chapter some numerical experiments on the Powell's solvers using \gls{pdfo}.
+Although to be expected, one of these experiments demonstrated an intriguing behavior of \gls{cobyla}.
+It turns out that it performs pretty well compared to the other four solvers on unconstrained noisy problems, even though it uses the simplest models.
+We plan to study this phenomenon in the future to understand the exact reasons that cause this phenomenon.

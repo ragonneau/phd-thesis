@@ -377,110 +377,72 @@ On this experiment, \gls{cobyqa} necessitated the least number of function evalu
 
 \subsection{Comparison on bound-constrained problems}
 
-We now compare the performance of \gls{cobyqa} with \gls{bobyqa} on bound-constrained problems.
-\Cref{fig:cobyqa-bobyqa-bound-constrained} plots the performance profiles obtained during this experiment.
-
+We now compare the performance of \gls{cobyqa} with \gls{bobyqa} on bound-constrained problems of dimension at most~$10$.
+\Cref{fig:cobyqa-bobyqa-bound-constrained} plots the performance profiles obtained during this experiment, with a tolerance~$\tau = 10^{-4}$.
 
 \begin{figure}[ht]
     \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \drawperformanceprofiles{{"COBYQA","BOBYQA"}}{plain-1-10-perf-bobyqa-cobyqa-b.csv}{4}
-        \caption{Dimension~$n \le 10$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \drawperformanceprofiles{{"COBYQA","BOBYQA"}}{plain-1-50-perf-bobyqa-cobyqa-b.csv}{4}
-        \caption{Dimension~$n \le 50$}
-    \end{subfigure}
-    \caption{Comparison of \gls{cobyqa} with \gls{bobyqa}, with~$\tau = 10^{-4}$}
+    \drawperformanceprofiles{{"COBYQA","BOBYQA"}}{plain-1-10-perf-bobyqa-cobyqa-b.csv}{4}
+    \caption{Comparison of \gls{cobyqa} with \gls{bobyqa}}
     \label{fig:cobyqa-bobyqa-bound-constrained}
 \end{figure}
 
-In both experiments, \gls{cobyqa} solved more problems using the least number of function evaluations.
-However, when the dimension of the problems is at most~$50$, \gls{bobyqa} solves more problems when an infinite budget of function evaluations is provided.
+In this experiment, \gls{cobyqa} solved more problems using the least number of function evaluations, and finally solves the same number of problems as \gls{bobyqa} when an infinite budget of function evaluations is allowed.
+This is also perfectly expected, because both solvers use similar methods.
+\Cref{tab:cobyqa-bobyqa-10} provides details on the results of each solver on each problem.
 
 \subsection{Comparison on linearly-constrained problems}
 \label{subsec:comparison-cobyqa-lincoa}
 
-We now compare the performance of \gls{cobyqa} with \gls{lincoa} on linearly-constrained problems.
-\Cref{fig:cobyqa-lincoa-linearly-constrained} plots the performance profiles obtained during this experiment.
+We now compare the performance of \gls{cobyqa} with \gls{lincoa} on linearly-constrained problems of dimension at most~$10$.
+\Cref{fig:cobyqa-lincoa-linearly-constrained} plots the performance profiles obtained during this experiment, with~$\tau = 10^{-4}$.
 
 \begin{figure}[ht]
     \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \drawperformanceprofiles{{"COBYQA","LINCOA"}}{plain-1-10-perf-cobyqa-lincoa-nl.csv}{3}
-        \caption{Dimension~$n \le 10$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \drawperformanceprofiles{{"COBYQA","LINCOA"}}{plain-1-50-perf-cobyqa-lincoa-nl.csv}{3}
-        \caption{Dimension~$n \le 50$}
-    \end{subfigure}
-    \caption{Comparison of \gls{cobyqa} with \gls{lincoa}, with~$\tau = 10^{-3}$}
+    \drawperformanceprofiles{{"COBYQA","LINCOA"}}{plain-1-10-perf-cobyqa-lincoa-nl.csv}{4}
+    \caption{Comparison of \gls{cobyqa} with \gls{lincoa}}
     \label{fig:cobyqa-lincoa-linearly-constrained}
 \end{figure}
 
-On these plots, it is clear that the performance of \gls{cobyqa} is worse than that of \gls{lincoa}, although it finally solves the same amount (or more) of problems.
-However, both algorithms use similar techniques.
-After invetigation, the author observed that the implementation of \gls{cobyqa} (as well as those of Powell's solvers) is extremely sensible to the way it is implemented.
+On this plot, it is clear that the performance of \gls{cobyqa} is slightly worse than that of \gls{lincoa}, although it finally solves the same amount of problems.
+\Cref{tab:cobyqa-lincoa-10} provides details on the results of each solver on each problem.
+
+This does not worry us because \gls{lincoa} is known for his performance on linearly-constrained problems.
+After invextigation, the author observed that the implementation of \gls{cobyqa} (as well as those of Powell's solvers) is extremely sensible to the way it is implemented.
 For example, changing the order of the summation in an inner product changed the performance of the algorithm.
 In other words, we need in the future to investigate each section of the source code of \gls{cobyqa}, to try to find the best configuration.
-This hard work has not been done yet, as it is an extremely high time-consuming work.
+This hard work has not been done yet, as it is highly time-consuming.
 This will however be done in the future.
 
 \subsection{Comparison on nonlinearly-constrained problems}
 
-We finally compare the performance of \gls{cobyqa} with \gls{cobyla} on general nonlinearly-constrained problems.
-\Cref{fig:cobyqa-cobyla-nonlinearly-constrained} plots the performance profiles obtained during this experiment.
+We finally compare the performance of \gls{cobyqa} with \gls{cobyla} on general nonlinearly-constrained problems of dimension at most~$10$.
+\Cref{fig:cobyqa-cobyla-nonlinearly-constrained} plots the performance profiles obtained during this experiment, with a tolerance~$\tau = 10^{-4}$.
+\Cref{tab:cobyqa-cobyla-10} provides details on the results of each solver on each problem.
 
 \begin{figure}[ht]
     \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-10-perf-cobyla-cobyqa-qo.csv}{3}
-        \caption{Dimension~$n \le 10$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-qo.csv}{3}
-        \caption{Dimension~$n \le 50$}
-    \end{subfigure}
-    \caption{Comparison of \gls{cobyqa} with \gls{cobyla}, with~$\tau = 10^{-3}$}
+    \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-10-perf-cobyla-cobyqa-qo.csv}{4}
+    \caption{Comparison of \gls{cobyqa} with \gls{cobyla}}
     \label{fig:cobyqa-cobyla-nonlinearly-constrained}
 \end{figure}
 
-Once again, \gls{cobyla} showed slightly better performance than \gls{cobyqa} during these experiments.
-The sensitivity of the implementation explained in \cref{fig:cobyqa-cobyla-nonlinearly-constrained} is likely to be the reason.
-However, the performance are not drastically worse, which indicates that the method seem to work.
-This is important to us, because one of the future work is to develop convergence theory for \gls{cobyqa}.
-In the future, the author will work on the implementation of \gls{cobyqa} to try and make its performance better.
+On this plot, it is clear that \gls{cobyqa} has better performance than \gls{cobyla}, which is perfectly expected.
+More precisely, altough they finally solve approximately the same amount of problems, \gls{cobyqa} necessitates the least number of function evaluations on most of them.
+In average, \gls{cobyla} requires~$2^3 = 8$ times more function evaluations to achieve the same merit value on each problem.
 
-The results are nonetheless very encouraging, as shown on \cref{fig:cobyqa-cobyla-linearly-constrained}, which compares the performances of \gls{cobyqa} with \gls{cobyla} on linearly-constrained problems.
+This result is very encouraging, but we believe that we can achieve an even greater performance of \gls{cobyqa}.
+This is because if we compare for example the performance of \gls{cobyqa} with \gls{cobyla} on bound-constrained problems of dimension at most~$10$, we obtain the performance profiles of plotted on \cref{fig:cobyqa-cobyla-bound-constrained}, with a tolerance~$\tau = 10^{-4}$.
+\Cref{tab:cobyqa-bobyqa-10} also provides details on the results of each solver on each problem.
 
 \begin{figure}[ht]
     \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-10-perf-cobyla-cobyqa-nl.csv}{6}
-        \caption{Dimension~$n \le 10$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-nl.csv}{6}
-        \caption{Dimension~$n \le 50$}
-    \end{subfigure}
-    \caption{Comparison of \gls{cobyqa} with \gls{cobyla}, with~$\tau = 10^{-6}$}
-    \label{fig:cobyqa-cobyla-linearly-constrained}
+    \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-10-perf-cobyla-cobyqa-b.csv}{4}
+    \caption{Comparison of \gls{cobyqa} with \gls{cobyla} on bound-constrained problems}
+    \label{fig:cobyqa-cobyla-bound-constrained}
 \end{figure}
 
-In a word, the numerical experiments show that the framework of \gls{cobyqa} seems to work.
-Future work will include improving the performance that are below our expectations.
+Future work will include improving the performance even more.
 
 \section{Summary and remarks}
 

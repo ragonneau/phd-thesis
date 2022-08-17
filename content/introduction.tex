@@ -15,8 +15,6 @@
 \chapter{Introduction}
 \label{ch:introduction}
 
-\todo[noline]{Change the line spacing to have 130/150 pages}
-
 This thesis will develop model-based \gls{dfo} methods and software.
 In this chapter, we provide an overview of \gls{dfo}, introduce some applications, and present the concepts and tools that we will use throughout this thesis.
 In particular, \cref{sec:overview} includes basic concepts of \gls{dfo} and its motivation.
@@ -867,7 +865,29 @@ For example,~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm of a matrix,
 
 \section{Contributions of the thesis}
 
-\todo[noline]{Summarize the contributions of the thesis}
+\todo[noline,color=OliveGreen!50]{Summarize the contributions of the thesis}
+
+We summarize in this section the contributions of the thesis in chronological order.
+
+First, we study in \cref{ch:interpolation} some theoretical properties of an interpolation set introduced by \citeauthor{Powell_2006}~\cite{Powell_2006}, which underlies the initial interpolation set of \gls{newuoa}.
+It is particularly of interest to us because our new solver \gls{cobyqa} uses a variation of it.
+More specifically, we show that this set is~$\Lambda$-poised in the smallest ball that contains the set for some particular values of~$\Lambda$.
+We show in particular that it is~$1$-poised in all smallest~$\ell_p$-balls that contain the set, for all~$p \in [1, 2]$, for a particular amount of interpolation points.
+
+We then introduce in \cref{ch:pdfo} our MATLAB and Python package \gls{pdfo}.
+The source code of \gls{pdfo} is open-source and distributed on various platforms.
+It counts as of August 2022 more than \num{30000} downloads on all platforms.
+
+\Cref{ch:sqp} highlights a relation between two well-known composite step approaches for trust-region \gls{sqp} methods, namely the Vardi and the Byrd-Omojokun approaches, when the original problem admits only equality constraints.
+Moreover, we propose in this chapter an extension of the Vardi and the Byrd-Omojokun approach to the general case (with inequality constraints), that differs from those given in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
+
+We then present in \cref{ch:cobyqa-introduction} the framework of our new model-based \gls{dfo} method for nonlinearly-constrained optimization, named \gls{cobyqa}.
+To solve the normal subproblem of the new method numerically, we propose in \cref{ch:cobyqa-subproblems} a new method based on~\cite{Powell_2015}.
+
+Finally, we present in \cref{ch:cobyqa-implementation} the Python implementation of \gls{cobyqa}.
+This implementation is open-source and publicly available.
+We note that such an implementation is highly nontrivial due to the nature of \gls{dfo}.
+Indeed, implementing \gls{cobyqa} requires implementing many components (trust-region subproblem solvers, updating of quadratic models, etc) that must be correct independently, but also work when integrating them together.
 
 \section{Organization of the thesis}
 
