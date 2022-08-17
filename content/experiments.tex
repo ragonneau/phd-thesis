@@ -14,7 +14,11 @@
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \chapter{Details on the experiments}
 
+In this appendix, we provide the detailed results returned by each solver on each CUTEst problem that are discussed in \cref{ch:cobyqa-implementation}.
+
 \section{Details for unconstrained problems}
+
+We provide the detailed results obtained on unconstrained problems of dimension at most~$10$ in \cref{tab:cobyqa-newuoa-uobyqa-10}.
 
 \begin{longtable}{ccS[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[group-minimum-digits=4,table-format=5,table-alignment-mode=format,table-number-alignment=center]}
     \caption{Results on unconstrained problems with~$n \le 10$}\label{tab:cobyqa-newuoa-uobyqa-10}\\
@@ -611,6 +615,8 @@
     \bottomrule
 \end{longtable}
 
+We now provide the detailed results obtained on unconstrained problems of dimension at most~$50$ and at least~$11$ in \cref{tab:cobyqa-uobyqa-50}.
+
 \begin{longtable}{ccS[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[group-minimum-digits=4,table-format=6,table-alignment-mode=format,table-number-alignment=center]}
     \caption{Results on unconstrained problems with~$11 \le n \le 50$}\label{tab:cobyqa-uobyqa-50}\\
     \toprule
@@ -667,6 +673,8 @@
 \end{longtable}
 
 \section{Details for bound-constrained problems}
+
+We provide the detailed results obtained on bound-constrained problems of dimension at most~$10$ in \cref{tab:cobyqa-bobyqa-10}.
 
 \begin{longtable}{ccS[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[group-minimum-digits=4,table-format=6,table-alignment-mode=format,table-number-alignment=center]}
     \caption{Results on bound-constrained problems with~$n \le 10$}\label{tab:cobyqa-bobyqa-10}\\
@@ -945,6 +953,8 @@
 
 \section{Details for linearly-constrained problems}
 
+We provide the detailed results obtained on linearly-constrained problems of dimension at most~$10$ in \cref{tab:cobyqa-bobyqa-10}.
+
 \begin{longtable}{ccS[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[group-minimum-digits=4,table-format=6,table-alignment-mode=format,table-number-alignment=center]}
     \caption{Results on linearly-constrained problems with~$n \le 10$}\label{tab:cobyqa-lincoa-10}\\
     \toprule
@@ -1079,6 +1089,8 @@
 \end{longtable}
 
 \section{Details for nonlinearly-constrained problems}
+
+We finally provide the detailed results obtained on nonlinearly-constrained problems of dimension at most~$10$ in \cref{tab:cobyqa-bobyqa-10}.
 
 \begin{longtable}{ccS[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[group-minimum-digits=4,table-format=6,table-alignment-mode=format,table-number-alignment=center]}
     \caption{Results on nonlinearly-constrained problems with~$n \le 10$}\label{tab:cobyqa-cobyla-10}\\
