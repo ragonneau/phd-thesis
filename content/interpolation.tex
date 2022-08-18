@@ -794,32 +794,23 @@ One of the challenges is that \cref{lem:lambda-poisedness-initial-simple} does n
 
 \section{Summary and remarks}
 
-\todo[noline,color=OliveGreen!50]{Write the conclusion for \cref{ch:interpolation}}
+\todo[noline,color=OliveGreen!50]{Change the formulation because we did not do anything. Make it shorter}
 
-In this chapter, we presented concepts of polynomial interpolation that we will apply later in this thesis to model-based \gls{dfo} methods.
+In this chapter, we presented concepts of polynomial interpolation that we will need later in this thesis when discussing model-based \gls{dfo} methods.
 
 We first introduced fully-determined linear and quadratic interpolation.
-We saw that an interpolation set is poised if the determinant of the interpolation system is nonzero.
-We also presented the quadratic Lagrange polynomials on poised interpolation sets.
-These polynomials are particularly useful in a \gls{dfo} context because model-based methods often rely on them to improve the geometry of their interpolation sets.
-This will be the case with \gls{cobyqa}, the new \gls{dfo} method we will introduce in \cref{ch:cobyqa-introduction}.
-We then introduced the concept of~$\Lambda$-poisedness.
-We remarked that an interpolation set is~$\Lambda$-poised if and only if the condition number of the interpolation system is bounded by some term proportional to~$\Lambda$.
-This is useful because it measures to some extent how close the interpolation set is to degeneracy.
-In the meantime, a low condition number of the interpolation system prevents numerical difficulties arising in computations due to computer rounding errors.
+We presented three concepts, namely the poisedness of interpolation sets, the quadratic Lagrange polynomials on poised interpolation sets, and the well-poisedness of interpolation sets.
 
 We then introduced underdetermined quadratic interpolation.
 More specifically, we focused on least Frobenius quadratic models and on least Frobenius updating of quadratic models.
-Modern model-based \gls{dfo} methods usually employ these models because they require only a few interpolation points
-We extended the concepts of poisedness, quadratic Lagrange polynomials, and~$\Lambda$-poisedness to underdetermined interpolation.
-We also discussed how to implement such underdetermined quadratic models in \gls{dfo} methods.
-In particular, we saw that when a method updates one point at a time in the interpolation set, it was possible and advantageous to maintain the inverse of the coefficient matrix of the interpolation problem, because modifying a point in the interpolation sets leads to an at-most rank-$2$ modification of this matrix.
-We will use this mechanism in \gls{cobyqa}.
+Modern model-based \gls{dfo} methods usually employ these models because they require only a few interpolation points.
+We presented the extended concepts of poisedness, quadratic Lagrange polynomials, and well-poisedness to underdetermined interpolation.
+We also presented how \citeauthor{Powell_2004b} proposed to implement such underdetermined quadratic models in \gls{dfo} methods.
+In particular, when a method updates one point at a time in the interpolation set, it is possible and advantageous to maintain the inverse of the coefficient matrix of the interpolation problem, because modifying a point in the interpolation sets leads to an at-most rank-$2$ modification of this matrix.
+We will use this mechanism in our new \gls{dfo} presented in \cref{ch:cobyqa-introduction}, named \gls{cobyqa}.
 
-Finally, we studied in this chapter the~$\Lambda$-poisedness of a particular interpolation set.
+Finally, we studied in this chapter the well-poisedness of a particular interpolation set proposed by \citeauthor{Powell_2006} for quadratic underdetermined interpolation, whose number of points varies between~$n + 2$ and~$2n + 1$.
 We will use a variation of this set as the initial interpolation set in \gls{cobyqa}.
 We showed in particular that under some conditions, the optimal number of interpolation points in this set is~$2n + 1$.
 Powell uses this interpolation set in \gls{newuoa} and encourages users to employ~$2n + 1$ points.
 This default value is then supported by our theory.
-We also believe that the results we presented can be extended to the general case, as we assumed here that the number of interpolation points was at most~$2n + 1$.
-We will study this in the near future.

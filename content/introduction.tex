@@ -845,49 +845,50 @@ For example, the data profiles in \cref{fig:data-profile-example-noisy-10} sugge
 In contrast, the comparison between \gls{bfgs} and \gls{cg} is not as conclusive based on the performance profiles in \cref{fig:performance-profile-example-noisy-10} because the profiles may change significantly if \gls{newuoa} is removed from the comparison.
 This phenomenon is studied in~\cite{Gould_Scott_2016}, which presents examples on which comparisons using performance profiles should be made with care.\index{DFO@\glsfmtshort{dfo}|)}
 
-\section{Notations}
-
-Throughout this thesis, the functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, always denote the objective and constraint functions of an optimization problem.
-The Lagrangian function of this problem is denoted by~$(\iter, \lm) \mapsto \lag(\iter, \lm)$.
-Its first argument~$\iter$ is the decision variable, while its second argument~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$ is the dual variable of the considered problem.
-A quadratic approximation of a function~$u$ is always denoted by~$\hat{u}$, and may be superscripted if this model is used in an iterative process.
-For example, if an optimization method maintains a quadratic approximation of the objective function, the~$k$th model of the objective function is denoted by~$\objm[k]$\nomenclature[Ff]{$\objm$}{Quadratic model of~$\obj$}.
-
-In general, an iteration number is written as a \emph{superscript}.
-When an exponent is used in a formula that may lead to confusion, we will explicitly state the meaning of the notation in the context.
-Moreover, a \emph{subscript} usually signifies a component index of a vector, a matrix, etc.
-An exception to this rule is the notation~$e_i \in \R^n$, which represents the~$i$th standard coordinate vector, i.e., the~$i$th column of the identity matrix in~$\R^{n \times n}$.
-
-We will mainly use the~$\ell_2$-norm in this thesis.
-Hence,~$\norm{\cdot}$ denotes the~$\ell_2$-norm, unless otherwise stated.
-If any other norm is needed, its choice is clarified using subscripts.
-For example,~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm of a matrix, and~$\norm{\cdot}_1$ denotes the~$\ell_1$-norm of a vector or the corresponding induced norm of a matrix.
-
 \section{Contributions of the thesis}
 
-\todo[noline,color=OliveGreen!50]{Summarize the contributions of the thesis}
+\todo[noline,color=OliveGreen!50]{Rewrite it all without stories and make it short}
 
-We summarize in this section the contributions of the thesis in chronological order.
+The main contributions of this thesis are as follows.
 
-First, we study in \cref{ch:interpolation} some theoretical properties of an interpolation set introduced by \citeauthor{Powell_2006}~\cite{Powell_2006}, which underlies the initial interpolation set of \gls{newuoa}.
-It is particularly of interest to us because our new solver \gls{cobyqa} uses a variation of it.
-More specifically, we show that this set is~$\Lambda$-poised in the smallest ball that contains the set for some particular values of~$\Lambda$.
-We show in particular that it is~$1$-poised in all smallest~$\ell_p$-balls that contain the set, for all~$p \in [1, 2]$, for a particular amount of interpolation points.
-
-We then introduce in \cref{ch:pdfo} our MATLAB and Python package \gls{pdfo}.
-The source code of \gls{pdfo} is open-source and distributed on various platforms.
-It counts as of August 2022 more than \num{30000} downloads on all platforms.
-
-\Cref{ch:sqp} highlights a relation between two well-known composite step approaches for trust-region \gls{sqp} methods, namely the Vardi and the Byrd-Omojokun approaches, when the original problem admits only equality constraints.
-Moreover, we propose in this chapter an extension of the Vardi and the Byrd-Omojokun approach to the general case (with inequality constraints), that differs from those given in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
-
-We then present in \cref{ch:cobyqa-introduction} the framework of our new model-based \gls{dfo} method for nonlinearly-constrained optimization, named \gls{cobyqa}.
-To solve the normal subproblem of the new method numerically, we propose in \cref{ch:cobyqa-subproblems} a new method based on~\cite{Powell_2015}.
-
-Finally, we present in \cref{ch:cobyqa-implementation} the Python implementation of \gls{cobyqa}.
-This implementation is open-source and publicly available.
-We note that such an implementation is highly nontrivial due to the nature of \gls{dfo}.
-Indeed, implementing \gls{cobyqa} requires implementing many components (trust-region subproblem solvers, updating of quadratic models, etc) that must be correct independently, but also work when integrating them together.
+\begin{enumerate}
+    \item \emph{An analysis on an interpolation set for underdetermined quadratic interpolation}.
+    We show in \cref{sec:optimal-interpolation-set} that an interpolation set introduced by \citeauthor{Powell_2006}~\cite{Powell_2006} for underdetermined quadratic interpolation is optimal in terms of the~$\Lambda$-poisedness in the smallest ball that contains the set.
+    This analysis justifies the choice of the default interpolation set employed by Powell in \gls{newuoa}~\cite{Powell_2006}.
+    It also provides theoretical guidance for us to choose the initial interpolation set of our new \gls{dfo} solver presented in \cref{ch:cobyqa-introduction}.
+    \item \emph{A cross-platform software package for Powell's \gls{dfo} solvers}.
+    We introduce in \cref{ch:pdfo} our MATLAB and Python package named \gls{pdfo}, which is open-source and distributed on all the major platforms (Windows, macOS, and Linux), available at \url{https://www.pdfo.net/}.
+    It provides user-friendly interfaces for Powell's five model-based \gls{dfo} solvers that are widely used in industrial and engineering applications.
+    Powell originally implemented these solvers in Fortran 77, which is becoming an obstacle for many users.
+    \Gls{pdfo} simplifies the usage of the solvers, and users do not need to deal with Fortran when using \gls{pdfo}.
+    As of August 2022, the package has been downloaded more than \num{30000} times.
+    It has been included as a major optimization engine in GEMSEO (\url{https://gemseo.readthedocs.io/}), an industrial software package for \gls{mdo}.
+    \item \emph{New perspectives on theory and practice of the \glsfmtshort{sqp} method}.
+    \begin{enumerate}
+        \item \Cref{thm:sqp-path} provides a new interpretation of the objective function of the \gls{sqp} subproblem, showing that it is a natural quadratic approximation of the original objective function in the tangent space of a surface.
+        \item We reveal in \cref{prop:vardi-byrd-omojokun} a relation between the Byrd-Omojokun and the Vardi approaches for solving the trust-region \gls{sqp} subproblem in the equality-constrained case, interpreting the former as an approximation of the latter.
+        \item We extend the Byrd-Omojokun and the Vardi approaches to the inequality-constrained case in \cref{subsec:composite-step-inequality}.
+        They differ from the extensions given in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
+        In particular, our Byrd-Omojokun approach is employed in the new solver described in \cref{ch:cobyqa-introduction}, and performs much better than the one in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
+    \end{enumerate}
+    \item \emph{A new model-based \gls{dfo} algorithm and its implementation.}
+    \begin{enumerate}
+        \item We present in \cref{ch:cobyqa-introduction} a new derivative-free trust-region \gls{sqp} algorithm for nonlinearly-constrained optimization, named \gls{cobyqa}.
+        To the best of our knowledge, this is the first trust-region \gls{sqp} algorithm that handles \gls{dfo} problems with equality and inequality constraints.
+        \item We detail in \cref{ch:cobyqa-subproblems} the algorithms for solving the subproblems of \gls{cobyqa} in our implementation.
+        In particular, we propose in \cref{ch:cobyqa-subproblems} a new method for approximately solving convex piecewise quadratic programming problems within a trust region.
+        We use this method to deal with the normal subproblem of \gls{cobyqa}.
+        \item We present in \cref{ch:cobyqa-implementation} the Python implementation of \gls{cobyqa}, which is open-source and publicly available at \url{https://www.cobyqa.com/}\todo{Check it}.
+        % We note that this implementation is highly nontrivial due to the nature of \gls{dfo}.
+        The numerical experiments demonstrate that \gls{cobyqa} is competitive with \gls{newuoa} and \gls{bobyqa} on unconstrained and bound-constrained problems, respectively, while being able to tackle more general problems.
+        On linearly-constrained problems, the current version of \gls{cobyqa} does not perform as well as \gls{lincoa}.
+        However, \gls{cobyqa} has the strength that it always respects the bound constraints, while \gls{lincoa} does not.
+        Such a strength is crucial in many applications, as is requested by engineers from IRT Saint Exup{\'{e}}ry.
+        Most importantly, \gls{cobyqa} provides much better performance than \gls{cobyla} on all types of problems, even though \gls{cobyla} does not always respect the bound constraints (if any).
+        As a general-purpose solver, \gls{cobyqa} is a good successor to \gls{cobyla}.
+        % Indeed, implementing \gls{cobyqa} requires implementing many components (trust-region subproblem solvers, updating of quadratic models, etc) that must be correct independently, but also work together when integrating them.
+    \end{enumerate}
+\end{enumerate}
 
 \section{Organization of the thesis}
 
@@ -914,3 +915,21 @@ It illustrates the usage of the Python package by several examples.
 It finally presents some numerical experiments that compare \gls{cobyqa} with \gls{newuoa}, \gls{bobyqa}, \gls{lincoa}, and \gls{cobyla}.
 
 \Cref{ch:conclusion} summarizes the thesis, and discusses several future research directions.
+
+\section{Notations}
+
+Throughout this thesis, the functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, always denote the objective and constraint functions of an optimization problem.
+The Lagrangian function of this problem is denoted by~$(\iter, \lm) \mapsto \lag(\iter, \lm)$.
+Its first argument~$\iter$ is the decision variable, while its second argument~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$ is the dual variable of the considered problem.
+A quadratic approximation of a function~$u$ is always denoted by~$\hat{u}$, and may be superscripted if this model is used in an iterative process.
+For example, if an optimization method maintains a quadratic approximation of the objective function, the~$k$th model of the objective function is denoted by~$\objm[k]$\nomenclature[Ff]{$\objm$}{Quadratic model of~$\obj$}.
+
+In general, an iteration number is written as a \emph{superscript}.
+When an exponent is used in a formula that may lead to confusion, we will explicitly state the meaning of the notation in the context.
+Moreover, a \emph{subscript} usually signifies a component index of a vector, a matrix, etc.
+An exception to this rule is the notation~$e_i \in \R^n$, which represents the~$i$th standard coordinate vector, i.e., the~$i$th column of the identity matrix in~$\R^{n \times n}$.
+
+We will mainly use the~$\ell_2$-norm in this thesis.
+Hence,~$\norm{\cdot}$ denotes the~$\ell_2$-norm, unless otherwise stated.
+If any other norm is needed, its choice is clarified using subscripts.
+For example,~$\norm{\cdot}_{\mathsf{F}}$ denotes the Frobenius norm of a matrix, and~$\norm{\cdot}_1$ denotes the~$\ell_1$-norm of a vector or the corresponding induced norm of a matrix.

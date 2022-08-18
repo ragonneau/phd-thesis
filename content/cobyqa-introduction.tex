@@ -191,7 +191,7 @@ This is because~$\iter[k]$ is a best point in~$\xpt[k]$ according to~$\merit[k -
 \subsection{Solving the trust-region \glsfmtshort{sqp} subproblem}
 \label{subsec:solving-trust-region-subproblem}
 
-To solve the trust-region \gls{sqp} subproblem~\cref{eq:derivative-free-trust-region-sqp-subproblem}, we employ a Byrd-Omojokun approach.
+To solve the trust-region \gls{sqp} subproblem~\cref{eq:derivative-free-trust-region-sqp-subproblem}, we employ the Byrd-Omojokun approach that we presented in \cref{subsec:composite-step-inequality}.
 It first generates a normal step~$\nstep[k]$ as an approximate solution to
 \begin{subequations}
     \label{eq:cobyqa-normal}
@@ -209,7 +209,7 @@ Further, it generates a tangential step~$\tstep[k]$ by solving approximately
     \label{eq:cobyqa-tangential-original}
     \begin{align}
         \min_{\step \in \R^n}   & \quad [\nabla \objm[k](\iter[k]) + \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \nstep[k]]^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k]) \step\\
-        \text{s.t.}             & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max @@ \set{-\conm[k]{i}(\iter[k]) - \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub,\\
+        \text{s.t.}             & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step \le \max @@ \set{-\conm[k]{i}(\iter[k]) - \nabla \conm[k]{i}(\iter[k])^{\T} \nstep[k], 0}, ~ i \in \iub, \label{eq:cobyqa-tangential-original-ub}\\
                                 & \quad \nabla \conm[k]{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq,\\
                                 & \quad \xl \le \iter[k] + \nstep[k] + \step \le \xu,\\
                                 & \quad \norm{\nstep[k] + \step} \le \rad[k],
@@ -217,6 +217,12 @@ Further, it generates a tangential step~$\tstep[k]$ by solving approximately
 \end{subequations}
 and then sets the composite step~$\step[k] = \nstep[k] + \tstep[k]$.
 Details on the calculations of the tangential and normal steps are provided in \cref{sec:cobyqa-tangential,sec:cobyqa-normal}, respectively.
+
+As mentioned in \cref{subsec:composite-step-inequality}, our Byrd-Omojokun approach is different from the one proposed in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}, which replaces the constraint~\cref{eq:cobyqa-tangential-original-ub} with
+\begin{equation*}
+    \nabla \conm[k]{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub.
+\end{equation*}
+Our approach provides evidently better performance in practice for \gls{cobyqa}, as is demonstrated by the numerical experiments in \cref{subsec:perf-byrd-omojokun}.
 
 If we have~$\iub \cup \ieq = \emptyset$, we then necessarily have~$\nstep[k] = 0$ because our algorithm guarantees that~$\xl \le \iter[k] \le \xu$.
 The tangential subproblem is then identical to the original subproblem~\cref{eq:derivative-free-trust-region-sqp-subproblem}.
@@ -386,13 +392,13 @@ Hence, from a computational perspective, we decide not to employ this technique 
 \subsection{Improving the geometry of the interpolation set}
 \label{subsec:geometry-improvement}
 
-In this section, we detail the geometry-improving procedure of \gls{cobyqa}, corresponding to \cref{alg:derivative-free-trust-region-sqp-geometry} of \cref{alg:derivative-free-trust-region-sqp}.
+In this section, we detail the geometry-improving procedure of \gls{cobyqa}, corresponding to \cref{alg:derivative-free-trust-region-sqp-geometry} of \cref{alg:derivative-free-trust-region-sqp}\todo[color=OliveGreen!50]{Adapt the presentation of the geometry-improving step}.
 As we mentioned in \cref{ch:interpolation}, the interpolation set has to be reasonably well-poised to ensure the accuracy of the interpolation models.
 However, it is known that model-based \gls{dfo} methods tend to lose the poisedness of their interpolation set as the iterations progress.
 To cope with this difficulty, such methods usually include a geometry-improving mechanism.
 This topic is well studied, see for example~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b,Fasano_Morales_Nocedal_2009,Scheinberg_Toint_2010}.
 
-We adopt a geometry-improving strategy designed by \citeauthor{Powell_2009} for \gls{bobyqa}~\cite{Powell_2009}.
+We adapt a geometry-improving strategy designed by \citeauthor{Powell_2009} for \gls{bobyqa}~\cite{Powell_2009}.
 A point~$\bar{y} \in \xpt[k + 1]$ is chosen to be replaced by another one~$\iter[k + 1] + \rstep[k + 1]$, where the \emph{restoration step}~$\rstep[k + 1] \in \R^n$ is chosen to improve the geometry of~$\xpt[k + 1]$.
 
 First of all, the point~$\bar{y}$ is chosen to be a solution to
@@ -400,7 +406,10 @@ First of all, the point~$\bar{y}$ is chosen to be a solution to
     \label{eq:choice-point-geometry-improving}
     \max_{y \in \xpt[k + 1]} \norm{y - \iter[k + 1]}.
 \end{equation}
-Further, similar to~\cite[Eq.~(6.6)]{Powell_2006}, we let~$\rstep[k + 1] \in \R^n$ be an approximate solution to
+Further, similar to~\cite[Eq.~(6.6)]{Powell_2006}, the step~$\rstep[k + 1] \in \R^n$ should approximately maximizes~$\abs{\lagp[\bar{y}](\iter[k + 1] + \step)}$ with~$\norm{\step} \le \bar{\rad}$ for some trust-region radius~$\bar{\rad} > 0$.
+As in \gls{lincoa}, we set~$\bar{\rad} = \max \set{\rad[k + 1] / 10, \radlb[k + 1]}$.
+We compute two such steps.
+The first step is an approximate solution to
 \begin{subequations}
     \label{eq:geometry-subproblem}
     \begin{align}
@@ -410,8 +419,19 @@ Further, similar to~\cite[Eq.~(6.6)]{Powell_2006}, we let~$\rstep[k + 1] \in \R^
     \end{align}
 \end{subequations}
 where~$\lagp[\bar{y}]$ denotes the minimum Frobenius norm Lagrange polynomials for~$\xpt[k + 1]$ associated with~$\bar{y}$ (see \cref{def:lagrange-polynomials-minimum-norm}).
-As in \gls{lincoa}, we set~$\bar{\rad} = \max \set{\rad[k + 1] / 10, \radlb[k + 1]}$.
 We will detail how to solve~\cref{eq:geometry-subproblem} in \cref{sec:cobyqa-geometry-improving}.
+
+The second step is defined as follows.
+Let~$\mathcal{W}$ be some approximation of the active set of the linearized constraints at~$\iter[k + 1]$.
+In \gls{cobyqa}, we choose the working set returned by the method that evaluates the tangential step~\cref{eq:cobyqa-tangential} (see \cref{sec:cobyqa-tangential} for details).
+The second step is a Cauchy step for~$\abs{\lagp[\bar{y}](\iter[k + 1] + \step)}$ in the null space of the gradients of the constraints in~$\mathcal{W}$.
+If necessary, this step is truncated to satisfy~$\norm{\step} \le \bar{\rad}$.
+We then select the second step to be~$\rstep[k + 1]$ if
+\begin{enumerate}
+    \item at least one constraint is active,
+    \item the point~$\iter[k + 1] + \rstep[k + 1]$ is feasible, and
+    \item the absolute value of the denominator of the updating formula is at least a tenth of that for the first step.
+\end{enumerate}
 
 The reason for choosing such an objective function is as follows.
 Recall that we need to update the inverse of the coefficient matrix of the interpolation problem to replace~$\bar{y}$ with~$\iter[k + 1] + \rstep[k + 1]$ in~$\xpt[k + 1]$.
@@ -439,7 +459,7 @@ When this condition holds, \gls{cobyqa} entertains the geometry-improving phase 
     \KwData{Bounds~$\xl$ and~$\xu$, current interpolation set~$\xpt[k + 1] \subseteq \R^n$, current lower bound on the trust-region radius~$\radlb[k + 1]$, current trust-region radius~$\rad[k + 1]$, and current best point so far~$\iter[k + 1] \in \xpt[k + 1]$.}
     \KwResult{Updated interpolation set~$\xpt[k + 1]$ and updated iterate~$\iter[k + 1]$.}
     Set~$\bar{y}$ to be a solution to~\cref{eq:choice-point-geometry-improving}\;
-    Set the step~$\rstep[k + 1] \in \R^n$ to be an approximate solution to~\cref{eq:geometry-subproblem}\;
+    Set the step~$\rstep[k + 1] \in \R^n$\;
     Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k + 1] \setminus \set{\bar{y}}) \cup \set{\iter[k + 1] + \rstep[k + 1]}$\;
     Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$ \label{alg:geometry-improving-iterate}\;
 \end{algorithm}

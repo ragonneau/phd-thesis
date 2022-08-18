@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/08/16 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/08/17 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifmeeting
@@ -46,7 +46,6 @@
 \RequirePackage{tabularx}
 \usepackage{longtable}
 \usepackage{multirow}
-\RequirePackage{siunitx}
 \RequirePackage[en-US]{datetime2}
 % \RequirePackage{footnote}
 % \RequirePackage[bottom]{footmisc}
@@ -137,6 +136,9 @@
 
 % Mathematical expressions
 \input{utils/mathematics}
+
+% Set up SI units
+\RequirePackage{siunitx}
 
 % Index processing
 \RequirePackage{imakeidx}

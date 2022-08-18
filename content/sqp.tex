@@ -28,6 +28,9 @@ This explains in a new way why the \gls{sqp} subproblem should not minimize seco
 \Cref{thm:auglag-sqp-3} shows that the augmented Lagrangian of the \gls{sqp} subproblem is a particular quadratic approximation of the augmented Lagrangian used by Yuan et al.~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 Finally, \cref{prop:vardi-byrd-omojokun} interprets the Vardi approach as an approximation to the Byrd-Omojokun approach.
 
+In addition, we also emphasize our Byrd-Omojokun approach for the trust-region \gls{sqp} subproblem in the presence of inequality constraints.
+This approach is different from the one given in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}, and provides evidently better performance in numerical experiments.
+
 \section{The method}
 \label{sec:sqp-method}
 
@@ -917,7 +920,7 @@ Then we take the composite step~$\step[k] = \nstep[k] + \tstep[k]$, which solves
     \end{align}
 \end{subequations}
 
-This extension of the Byrd-Omojokun approach is slightly different from the one presented in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}, which replaces the constraint~\cref{eq:vardi-composite-step-ub} with
+This extension of the Byrd-Omojokun approach is different from the one presented in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}, which replaces the constraint~\cref{eq:vardi-composite-step-ub} with
 \begin{equation}
     \label{eq:composite-step-restrictive}
     \nabla \con{i}(\iter[k])^{\T} \step \le \nabla \con{i}(\iter[k])^{\T} \nstep[k], ~ i \in \iub.
@@ -926,7 +929,8 @@ Note that if~$\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k] < 0$, 
 Recall that the motivation of the composite-step approach is to relax the linearized constraints so that the trust-region subproblem becomes feasible.
 It seems, therefore, unnecessary to make a constraint become more restrictive.
 The feasible region of the subproblem~\cref{eq:vardi-composite-step} is usually wider than the one with~\cref{eq:composite-step-restrictive} and hence, a larger reduction in the objective function~\cref{eq:vardi-composite-step-obj} can be expected.
-Note that the subproblem~\cref{eq:vardi-composite-step} is not more difficult to solve than its counterpart with~\cref{eq:composite-step-restrictive}.\index{SQP@\glsfmtshort{sqp}!composite step!Byrd-Omojokun|)}
+Note that the subproblem~\cref{eq:vardi-composite-step} is not more difficult to solve than its counterpart with~\cref{eq:composite-step-restrictive}.
+In the numerical experiments in \cref{subsec:perf-byrd-omojokun}, our Byrd-Omojokun approach performs much better than the one from~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.\index{SQP@\glsfmtshort{sqp}!composite step!Byrd-Omojokun|)}
 
 \subsubsection{Vardi approach}
 
@@ -1098,7 +1102,7 @@ This augmented Lagrangian turns out to be indeed the objective function used in 
 
 We then introduced the trust-region \gls{sqp} framework and presented several methods to solve its subproblem.
 Interestingly, we derived in \cref{prop:vardi-byrd-omojokun} a relation between two of  these methods, namely the Byrd-Omojokun and the Vardi approaches, in the equality-constrained case.
-We also discussed how to extend these methods to handle inequality constraints, the extensions of the Byrd-Omojokun and the Vardi approaches being slightly different from those presented in~\cite[\S~15.4]{Conn_Gould_Toint_2000}.
-It is necessary to do numerical experiments to test the performance of our extensions in practice.
+We also discussed how to extend these methods to handle inequality constraints, the extensions of the Byrd-Omojokun and the Vardi approaches being different from those presented in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
 We will later in this thesis use the Byrd-Omojokun approach for our new optimization method presented in \cref{ch:cobyqa-introduction}.
-The other approaches also need to be tested in the future.
+As we will see in \cref{subsec:perf-byrd-omojokun}, our Byrd-Omojokun approach performs clearly better than the one in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000} for our new \gls{dfo} software.
+The Vardi and the \gls{cdt} approaches also need to be tested in the future.
