@@ -847,8 +847,6 @@ This phenomenon is studied in~\cite{Gould_Scott_2016}, which presents examples o
 
 \section{Contributions of the thesis}
 
-\todo[noline,color=OliveGreen!50]{Rewrite it all without stories and make it short}
-
 The main contributions of this thesis are as follows.
 
 \begin{enumerate}
@@ -874,17 +872,20 @@ The main contributions of this thesis are as follows.
     \item \emph{A new model-based \gls{dfo} algorithm and its implementation.}
     \begin{enumerate}
         \item We present in \cref{ch:cobyqa-introduction} a new derivative-free trust-region \gls{sqp} algorithm for nonlinearly-constrained optimization, named \gls{cobyqa}.
-        To the best of our knowledge, this is the first trust-region \gls{sqp} algorithm that handles \gls{dfo} problems with equality and inequality constraints.
+        To the best of our knowledge, this is the first trust-region \gls{sqp} algorithm that can solve \gls{dfo} problems with nonlinear equality and inequality constraints.
         \item We detail in \cref{ch:cobyqa-subproblems} the algorithms for solving the subproblems of \gls{cobyqa} in our implementation.
         In particular, we propose in \cref{ch:cobyqa-subproblems} a new method for approximately solving convex piecewise quadratic programming problems within a trust region.
         We use this method to deal with the normal subproblem of \gls{cobyqa}.
-        \item We present in \cref{ch:cobyqa-implementation} the Python implementation of \gls{cobyqa}, which is open-source and publicly available at \url{https://www.cobyqa.com/}\todo{Check it}.
+        \item We present in \cref{ch:cobyqa-implementation} the Python implementation of \gls{cobyqa}, which is open-source and publicly available at \url{https://www.cobyqa.com/}.
+        \Cref{sec:cobyqa-experiments} details numerical experiments that compare \gls{cobyqa} with Powell's solvers.
         % We note that this implementation is highly nontrivial due to the nature of \gls{dfo}.
-        The numerical experiments demonstrate that \gls{cobyqa} is competitive with \gls{newuoa} and \gls{bobyqa} on unconstrained and bound-constrained problems, respectively, while being able to tackle more general problems.
-        On linearly-constrained problems, the current version of \gls{cobyqa} does not perform as well as \gls{lincoa}.
-        However, \gls{cobyqa} has the strength that it always respects the bound constraints, while \gls{lincoa} does not.
+        \Gls{cobyqa} is competitive with \gls{newuoa} and \gls{bobyqa} on unconstrained and bound-constrained problems, respectively, while being able to tackle more general problems.
+        Compared with \gls{lincoa} and \gls{cobyla}, a strength of \gls{cobyqa} is that it always respects the bound constraints, while \gls{lincoa} and \gls{cobyla} do not.
         Such a strength is crucial in many applications, as is requested by engineers from IRT Saint Exup{\'{e}}ry.
-        Most importantly, \gls{cobyqa} provides much better performance than \gls{cobyla} on all types of problems, even though \gls{cobyla} does not always respect the bound constraints (if any).
+        On linearly-constrained problems, \gls{cobyqa} performs much better than \gls{lincoa} if the problems also contain bound constraints that cannot be violated.
+        % However, the current version of \gls{cobyqa} does not perform as well as \gls{lincoa}.
+        Most importantly, \gls{cobyqa} outperforms \gls{cobyla} on all types of problems, no matter whether bound constraints (if any) can be violated or not.
+        % though \gls{cobyla} does not always respect the bound constraints.
         As a general-purpose solver, \gls{cobyqa} is a good successor to \gls{cobyla}.
         % Indeed, implementing \gls{cobyqa} requires implementing many components (trust-region subproblem solvers, updating of quadratic models, etc) that must be correct independently, but also work together when integrating them.
     \end{enumerate}

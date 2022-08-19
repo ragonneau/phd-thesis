@@ -183,7 +183,7 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
     }
 \end{algorithm}
 
-In the implementation of \cref{alg:derivative-free-trust-region-sqp-iterate},~$\iter[k + 1]$ is always set to a best point in~$\xpt[k + 1]$ according to~$\merit[k]$, in the sense that it minimizes~$\merit[k]$ in~$\xpt[k + 1]$.
+In the implementation of \cref{alg:derivative-free-trust-region-sqp-iterate} in \cref{alg:derivative-free-trust-region-sqp},~$\iter[k + 1]$ is always set to a best point in~$\xpt[k + 1]$ according to~$\merit[k]$, in the sense that it minimizes~$\merit[k]$ in~$\xpt[k + 1]$.
 If~$\iter[k]$ turns out to be optimal in~$\xpt[k + 1]$ according to~$\merit[k]$, then we choose~$\iter[k + 1] = \iter[k]$, even if there are other optimal points.
 Note however that we cannot naively set~$\iter[k + 1]$ to either~$\iter[k] + \step[k]$ if~$\ratio[k] > 0$, or~$\iter[k]$ otherwise.
 This is because~$\iter[k]$ is a best point in~$\xpt[k]$ according to~$\merit[k - 1]$, but it may not be the best one according to~$\merit[k]$.
@@ -464,7 +464,7 @@ When this condition holds, \gls{cobyqa} entertains the geometry-improving phase 
     Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$ \label{alg:geometry-improving-iterate}\;
 \end{algorithm}
 
-There is an exceptional case where we jump from \cref{alg:derivative-free-trust-region-sqp-subproblem} to \cref{alg:derivative-free-trust-region-sqp-geometry}, after setting the values~$\gamma^k = \gamma^{k - 1}$,~$\xpt[k + 1] = \xpt[k]$,~$\iter[k + 1] = \iter[k]$, and~$\lm[k + 1] = \lm[k]$.
+There is an exceptional case where we jump from \cref{alg:derivative-free-trust-region-sqp-subproblem} to \cref{alg:derivative-free-trust-region-sqp-geometry} in \cref{alg:derivative-free-trust-region-sqp}, after setting the values~$\gamma^k = \gamma^{k - 1}$,~$\xpt[k + 1] = \xpt[k]$,~$\iter[k + 1] = \iter[k]$, and~$\lm[k + 1] = \lm[k]$.
 \Cref{alg:derivative-free-trust-region-sqp} omits this case for simplicity, and we detail it now.
 This jump is done if the trust-region trial step~$\step[k]$ generated at \cref{alg:derivative-free-trust-region-sqp-subproblem} of \cref{alg:derivative-free-trust-region-sqp} is small compared to the current trust-region radius, more precisely, if~$\norm{\step[k]} < \rad[k] / 2$.
 In this case, we first reduce~$\rad[k + 1]$ to~$\rad[k + 1] / 2$, setting it further to~$\radlb[k]$ if this reduced value is below~$\theta_2 \radlb[k]$.
