@@ -83,8 +83,8 @@ It is also worth mentioning that the stopping criterion~$\norm{\pstep[k]} = 0$ i
 \end{equation*}
 It is obvious that~$\norm{\pstep[k]} = 0$ implies~$\nabla Q(\sstep[k])^{\T} \pstep[k] \ge 0$.
 For the converse, we assume without loss of generality that~$k \ge 1$.
-Since~$\nabla Q(\sstep[k])^{\T} \pstep[k - 1] = 0$, we can see that~$\nabla Q(\sstep[k])^{\T} \pstep[k] \ge
-0$ implies~$\nabla Q(\sstep[k]) = 0$ due to the definition of~$\pstep[k]$, and hence~$\beta^{k - 1} = 0$ so that~$\pstep[k] = 0$.
+Due to the definition of~$\pstep[k]$ and the fact that~$\nabla Q(\sstep[k])^{\T} \pstep[k - 1] = 0$, we can see that~$\nabla Q(\sstep[k])^{\T} \pstep[k] \ge
+0$ implies~$\nabla Q(\sstep[k]) = 0$, which further leads to~$\beta^{k - 1} = 0$, and hence~$\pstep[k] = 0$.
 
 This algorithm enjoys many good properties.
 In particular, \citeauthor{Yuan_2000}~\cite{Yuan_2000} showed that the \gls{tcg} step provides at least half the reduction provided by the exact solution to~\cref{eq:problem-tcg} if~$\nabla^2 Q$ is positive definite.
@@ -379,7 +379,7 @@ This is because the constraints in the working set are presumed active at the so
 In \gls{cobyqa}, we choose~$\xi = 10^{-4}$.
 The same applies to \cref{alg:lctcg-sd-restart} of \cref{alg:lctcg}.
 
-We solve~\cref{eq:tcg-linear-working-set,eq:tcg-linear-working-set-after} using the Goldfarb-Idnani method for quadratic programming~\cite{Goldfarb_Idnani_1983}.
+Problems~\cref{eq:tcg-linear-working-set,eq:tcg-linear-working-set-after} are solved using the Goldfarb-Idnani method for quadratic programming~\cite{Goldfarb_Idnani_1983}.
 It is an active-set method designed for minimizing positive definite quadratic function subject to linear constraints.
 
 \subsubsection{Additional stopping criteria}
