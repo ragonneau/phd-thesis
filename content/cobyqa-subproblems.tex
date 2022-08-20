@@ -63,7 +63,7 @@ Briefly speaking, this algorithm entertains conjugate gradients iterations, and 
         Set~$\alpha_Q^k \gets \argmin @@ \set{Q(\sstep[k] + \alpha \pstep[k]) : \alpha \ge 0}$\; \nllabel{alg:tcg-alphaq}
         Set~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha
         \pstep[k]} \le \rad}$\nomenclature[Op]{$\argmax$}{Global maximizer operator}\; \nllabel{alg:tcg-alphad}
-        Set the steplength~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k}$\;
+        Set the step size~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k}$\;
         Update the iterate~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
         \eIf{$\alpha^k < \alpha_{\rad}^k$}{
             Set~$\beta^k \gets \norm{\nabla Q(\sstep[k + 1])}^2 / \norm{\nabla Q(\sstep[k])}^2$\;
@@ -180,7 +180,7 @@ Given a vector~$z \in \R^n$, we use~$\Pi^k(z) \in \R^n$ to denote the vector who
         % \end{algoempheq}
         Set~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$ using~\cref{eq:tcg-alphad}\;
         Set~$\alpha_B^k \gets \argmax @@ \set{\alpha \ge 0 : \xl \le \sstep[k] + \alpha \pstep[k] \le \xu}$\; \nllabel{alg:bvtcg-alphab}
-        Set the steplength~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_B^k}$\;
+        Set the step size~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_B^k}$\;
         Update the iterate~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
         % \uIf{$\alpha^k = \alpha_{\rad}^k$}{
         %     Break\;
@@ -350,13 +350,14 @@ The initial working set is chosen to be
 \end{equation}
 It excludes the inequality constraints with~$j \in \mathcal{J}(\sstep[0])$ and~$a_j^{\T} \pstep[0] < 0$, because any step from~$\sstep[0]$ along~$\pstep[0]$ moves further away from these constraints.
 
-After definining~$\pstep[0]$ and~$\mathcal{W}^0$, the method then considers the restriction of~\cref{eq:problem-lctcg} to the orthogonal complement of
+After defining~$\pstep[0]$ and~$\mathcal{W}^0$, the method then considers the restriction of~\cref{eq:problem-lctcg} to the orthogonal complement of
 \begin{equation*}
     \set[\big]{a_j : j \in \mathcal{W}^0} \cup \set[\big]{c_j : 1 \le j \le m_2},
 \end{equation*}
 and entertains CG iterations, using~$\pstep[0]$ as the first search direction.
 Note that~$\pstep[0]$ is the projection of~$-\nabla Q(\sstep[0])$ onto this space (see~\cref{lem:lctcg}).
-When a linear inequality constraint or the trust-region constraint is hit by a CG iterate, the CG step is truncated and the iterations are terminated.
+When a linear inequality constraint or the trust-region constraint is hit by a CG iterate, the CG
+step is truncated and the CG iterations are terminated.
 However, upon this termination, if the current iterate~$\sstep[k + 1]$ is not on the trust-region boundary, then the procedure is restarted, changing the next search direction~$\pstep[k + 1]$ to the unique solution to
 \begin{subequations}
     \label{eq:tcg-linear-working-set-after}
@@ -385,7 +386,6 @@ In the algorithm, we denote by~$\Pi^k$ the projection onto the orthogonal comple
 \begin{equation*}
     \set[\big]{a_j : j \in \mathcal{W}^k} \cup \set[\big]{c_j : 1 \le j \le m_2}.
 \end{equation*}
-% We remark that~$\pstep[0] = \Pi^0(-\nabla Q(\sstep[0]))$ and that~$\pstep[k + 1] = \Pi^{k + 1}(-\nabla Q(\sstep[k + 1]))$ when the method is restarted.
 
 \begin{algorithm}
     \caption[Linearly-constrained \glsfmtshort{tcg} method]{Linearly-constrained \glsfmtshort{tcg} method~\cite[\S~3, \S~5]{Powell_2015}}
@@ -406,7 +406,7 @@ In the algorithm, we denote by~$\Pi^k$ the projection onto the orthogonal comple
         % \end{algoempheq}
         Set~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$ using~\cref{eq:tcg-alphad}\;
         Set~$\alpha_L^k \gets \argmax @@ \set{\alpha \ge 0 : A(\sstep[k] + \alpha \pstep[k]) \le b}$\;
-        Set the steplength~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_L^k}$\;
+        Set the step size~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_L^k}$\;
         Update the iterate~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
         \uIf{$\alpha^k < \min \set{\alpha_{\rad}^k, \alpha_L^k}$}{
             Set~$\mathcal{W}^{k + 1} \gets \mathcal{W}^k$\;
@@ -417,15 +417,24 @@ In the algorithm, we denote by~$\Pi^k$ the projection onto the orthogonal comple
             % \end{algomathdisplay}
             Update~$\pstep[k + 1] \gets -\Pi^{k + 1} \big( \nabla Q(\sstep[k + 1]) \big) + \beta^k \pstep[k]$\; \nllabel{alg:lctcg-tcg-step}
         }
-        \uElseIf{$\alpha^k < \alpha_{\rad}^k$}{
+        \uElseIf{$\alpha^k < \alpha_{\rad}^k$ \nllabel{alg:lctcg-restart}}{
             Set~$\pstep[k + 1]$ to the solution to~\cref{eq:tcg-linear-working-set-after}\; \nllabel{alg:lctcg-sd-restart}
-            Set~$\mathcal{W}^{k + 1}$ as described in~\cref{eq:tcg-linear-working-set-restart}\;
+            Set~$\mathcal{W}^{k + 1}$ as described in~\cref{eq:tcg-linear-working-set-restart}\; \nllabel{alg:lctcg-set-restart}
         }
         \Else{
             Break\;
         }
     }
 \end{algorithm}
+
+\Cref{alg:lctcg} takes almost the same form as~\cref{alg:bvtcg}. The role of~$\alpha_{L}^k$ in \cref{alg:lctcg} is identical to that of~$\alpha_{B}^k$ in~\cref{alg:bvtcg}.
+The only essential difference between the two algorithms is how they update the working set and define the searching direction when the working set is updated.
+
+\Cref{alg:lctcg-restart} of \cref{alg:lctcg} differs from Powell's algorithm described in~\cite[\S~3,\S~5]{Powell_2015}.
+Powell's algorithm replaces~$\alpha^k < \alpha_{\rad}^k$ in \cref{alg:lctcg-restart} with~$\norm{\sstep[k]} \le (1-\sigma)\rad$ (see the end of~\cite[\S~3]{Powell_2015}),
+which is a stronger condition because~$\norm{\sstep[k]} < \rad$ implies~$\alpha^k < \alpha_{\rad}^k$.
+In our numerical experiments with \gls{cobyqa}, the condition~$\alpha^k < \alpha_{\rad}^k$ works slightly better than~$\norm{\sstep[k]} \le (1-\sigma)\rad$.
+
 
 Problems~\cref{eq:tcg-linear-working-set,eq:tcg-linear-working-set-after} are solved using the Goldfarb-Idnani method for quadratic programming~\cite{Goldfarb_Idnani_1983}.
 It is an active-set method designed for minimizing positive definite quadratic function subject to linear constraints.
@@ -439,16 +448,16 @@ Its proof is \emph{trivial}, but we include the proof for completeness.
 
 \begin{lemma}
     \label{lem:lctcg}
-    For~$z \in \R^n$ and~$\mathcal{J} \subseteq \set{1, \dots, m_1}$, let~$\tilde{\pstep}$ be the unique solution to
+    For~$g \in \R^n$ and~$\mathcal{J} \subseteq \set{1, \dots, m_1}$, let~$\tilde{\pstep}$ be the unique solution to
     \begin{subequations}
         \label{eq:lctcg-lemma}
         \begin{align}
-            \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep - z}^2\\
+            \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep - g}^2\\
             \text{s.t.}             & \quad a_j^{\T} \sstep \le 0, ~ j \in \mathcal{J},\\
                                     & \quad C \sstep = 0.
         \end{align}
     \end{subequations}
-    Then~$\tilde{\pstep}$ is the projection of~$z$ onto the orthogonal complement of
+    Then~$\tilde{\pstep}$ is the projection of~$g$ onto the orthogonal complement of
     \begin{equation*}
         \set[\big]{a_j : j \in \mathcal{J}, ~ a_j^{\T} \tilde{\pstep} = 0} \cup \set[\big]{c_j : 1 \le j \le m_2}.
     \end{equation*}
@@ -460,7 +469,7 @@ Its proof is \emph{trivial}, but we include the proof for completeness.
     \begin{subequations}
         \label{eq:lctcg-lemma-proof-1}
         \begin{align}
-            \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep - z}^2\\
+            \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep - g}^2\\
             \text{s.t.}             & \quad a_j^{\T} \sstep = 0, ~ j \in \tilde{\mathcal{J}},\\
             & \quad C \sstep = 0,
         \end{align}
@@ -484,28 +493,37 @@ Its proof is \emph{trivial}, but we include the proof for completeness.
 \end{proposition}
 
 \begin{proof}
-    It is obvious that if~$\norm{\pstep[k]} = 0$, then~\cref{eq:lctcg-prop-stopping} holds.
-    For the converse, assume without loss of generality that~$k \ge 1$.
-    If the \gls{tcg} iterations have just been restarted, we have~$\pstep[k] = -\Pi^k(\nabla Q(\sstep[k]))$ according to \cref{lem:lctcg} and
+    It is obvious that~$\norm{\pstep[k]} = 0$ implies~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$.
+    Suppose that~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$ in \cref{alg:lctcg-stop}
+    of~\cref{alg:lctcg}, and assume without loss of generality that~$k \ge 1$.
+    If \cref{alg:lctcg-stop} is reached from \cref{alg:lctcg-set-restart}, then
+    we have~$\pstep[k] = -\Pi^k(\nabla Q(\sstep[k]))$ according to \cref{lem:lctcg}. Thus
     \begin{equation*}
-        0 \le \nabla Q (\sstep[k])^{\T} \pstep[k] = - \nabla Q (\sstep[k])^{\T} \Pi^k(\nabla Q(\sstep[k])) = -\norm{\Pi^k(\nabla Q(\sstep[k]))}^2,
+        \norm{\pstep[k]}^2 = \norm{\Pi^k(\nabla Q(\sstep[k]))}^2
+        =  Q (\sstep[k])^{\T}  \Pi^k(\nabla Q(\sstep[k]))
+        = - Q (\sstep[k])^{\T}  \pstep[k]
+        \le 0,
     \end{equation*}
-    the last equality resulting from the fact that~$\Pi^k$ is a projection onto a subspace.
-    We then have~$\Pi^k(\nabla Q(\sstep[k])) = 0$ which leads to~$\pstep[k] = 0$.
-    If now~$\pstep[k]$ has been evaluated in \cref{alg:lctcg-tcg-step} of \cref{alg:lctcg}, since~$\nabla Q(\step[k])^{\T} \pstep[k - 1] = 0$, the same conclusion can be drawn.
+    and hence~$\norm{\pstep[k]}  = 0$.
+    If \cref{alg:lctcg-stop} is reached from \cref{alg:lctcg-tcg-step}, then we can
+    establish~~$\norm{\pstep[k]}  = 0$ by an argument similar to the proof of \cref{prop:tcg}.
 \end{proof}
 
-\Citeauthor{Powell_2015} also proposed two additional stopping criteria, to avoid doing unworthy computations.
-Note that these two stopping critera are also crucial from a theoretical standpoint, because the termination of the method, proven by \citeauthor{Powell_2015}~\cite[\S~5]{Powell_2015}, relies on them.
-First of all, the computations are stopped if~$\nabla Q(\sstep[k])$ is small along the current search direction, namely if
+\Citeauthor{Powell_2015} proposed two additional stopping criteria, in order to avoid unworthy computations.
+\Cref{alg:lctcg} omits them for simplicity, and we specify them now.
+First of all, the algorithm is stopped if~$\nabla Q(\sstep[k])$ is small along the current search
+direction, namely if
 \begin{equation*}
-    \alpha_{\rad}^k \abs[\big]{\nabla Q(\sstep[k])^{\T} \pstep[k]} \le \nu [Q(\sstep[0]) - Q(\sstep[k])],
+    \alpha_{\rad}^k \abs[\big]{\nabla Q(\sstep[k])^{\T} \pstep[k]} \le \nu [Q(\sstep[0]) - Q(\sstep[k])]
 \end{equation*}
-for some constant~$\nu > 0$, set to~$\nu = 0.01$ in \gls{cobyqa}.
-Moreover, the computations are also stopped if the reduction provided by updated iterate is tiny compared to the reduction so far, that is if
+for some constant~$\nu > 0$.
+Moreover, the algorithm is also terminated if the reduction in~$Q$ provided by the recent iteration is tiny compared to the reduction so far, that is if
 \begin{equation*}
     Q(\sstep[k]) - Q(\sstep[k + 1]) \le \nu [Q(\sstep[0]) - Q(\sstep[k + 1])].
 \end{equation*}\index{TCG@\glsfmtshort{tcg}!linearly-constrained|)}
+In \gls{cobyqa}, we set~$\nu = 0.01$.
+As demonstrated by~\citeauthor{Powell_2015} in~\cite[\S~5]{Powell_2015}, these two stopping criteria
+guarantee that the algorithm terminates after a finite number of iterations.
 
 % The linearly-constrained \gls{tcg} procedure with these additional stopping criteria is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.lctcg}.
 
@@ -657,7 +675,7 @@ The complete method is described in \cref{alg:cpqp}.
         \end{algoempheq}
         Set~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]_{\sstep}} \le \rad}$\;
         Set~$\alpha_L^k \gets \argmax @@ \set{\alpha \ge 0 : E (\sstep[k] + \alpha \pstep[k]_{\sstep}) + F (v^k + \alpha \pstep[k]_v) \le h}$\;
-        Set the steplength~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_L^k}$\;
+        Set the step size~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_L^k}$\;
         Update the iterates~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]_{\sstep}$ and~$v^{k + 1} \gets v^k + \alpha^k \pstep[k]_v$\;
         Update the gradient~$g^{k + 1} \gets g^k + \alpha^k C^{\T} C \pstep[k]_{\sstep}$\;
         \uIf{$\alpha^k = \alpha_{\rad}^k$}{
@@ -747,7 +765,7 @@ where~$\hat{A}$ is the matrix whose~$i$th column is that of~$A$ if~$i \notin \ma
         \end{algomathdisplay} \nllabel{alg:nnls-remove}
         Set the trial point~$\pstep[k] \gets \Pi(\mathcal{W}^k)$\; \nllabel{alg:nnls-trial-1}
         \While{$\pstep[k]_i \le 0$ for some~$i \notin \mathcal{W}^k$ with~$i \le n_0$}{  \nllabel{alg:nnls-inner}
-            Set the steplength
+            Set the step size
             \begin{algomathdisplay}
                 \alpha^k \gets \min @@ \set[\bigg]{\frac{\sstep[k]_i}{\sstep[k]_i - \pstep[k]_i} : \pstep[k]_i \le 0, ~ i \notin \mathcal{W}^k, ~ i \le n_0}
             \end{algomathdisplay}
