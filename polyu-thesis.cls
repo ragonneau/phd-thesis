@@ -13,11 +13,9 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/08/17 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/08/20 PolyU thesis document class]
 
 % Load book class as basis
-\newif\ifmeeting
-\DeclareOption{meeting}{\meetingtrue}
 \newif\ifinitial
 \DeclareOption{initial}{\initialtrue}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
@@ -274,17 +272,13 @@
 
 % Drafting packages
 \RequirePackage{ifdraft}
-\ifmeeting
-    \RequirePackage[disable]{todonotes}
-\else
-    \RequirePackage[%
-        obeyDraft,%
-        english,%
-        colorinlistoftodos,%
-        color=Apricot,%
-        textsize=scriptsize,%
-    ]{todonotes}
-\fi
+\RequirePackage[%
+    obeyDraft,%
+    english,%
+    colorinlistoftodos,%
+    color=Apricot,%
+    textsize=scriptsize,%
+]{todonotes}
 \renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
 \if@todonotes@disabled
 \else
