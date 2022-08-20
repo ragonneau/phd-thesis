@@ -54,12 +54,13 @@ Briefly speaking, this algorithm entertains conjugate gradients iterations, and 
     \KwResult{An approximate solution to~\cref{eq:problem-tcg}.}
     Set~$\sstep[0] \gets 0$\;
     Set the search direction~$\pstep[0] \gets -\nabla Q(\sstep[0])$\;
-    \For{$k = 0, 1, \dots$ until~$\norm{\pstep[k]} = 0$\label{alg:tcg-stop}}{
-        Set
-        \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
-            & \frac{- \nabla Q(\sstep[k])^{\T} \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}  && \quad \text{if~$(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k] > 0$,}\\
-            & \infty                                                                                && \quad \text{otherwise}
-        \end{algoempheq} \label{alg:tcg-alphaq}
+    \For{$k = 0, 1, \dots$ until~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$}{ \nllabel{alg:tcg-stop}
+        % Set
+        % \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
+        %     & \frac{- \nabla Q(\sstep[k])^{\T} \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}  && \quad \text{if~$(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k] > 0$,}\\
+        %     & \infty                                                                                && \quad \text{otherwise}
+        % \end{algoempheq} \nllabel{alg:tcg-alphaq}
+        Set~$\alpha_Q^k \gets \argmin @@ \set{Q(\sstep[k] + \alpha \pstep[k]) : \alpha \ge 0}$\; \nllabel{alg:tcg-alphaq}
         Set~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$\nomenclature[Op]{$\argmax$}{Global maximizer operator}\;
         Set the steplength~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k}$\;
         Update the iterate~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
@@ -67,24 +68,34 @@ Briefly speaking, this algorithm entertains conjugate gradients iterations, and 
             Set~$\beta^k \gets \norm{\nabla Q(\sstep[k + 1])}^2 / \norm{\nabla Q(\sstep[k])}^2$\;
             Update~$\pstep[k + 1] \gets -\nabla Q(\sstep[k + 1]) + \beta^k \pstep[k]$\;
         }{
-            Break\;
+            Break\; \nllabel{alg:tcg-break}
         }
     }
 \end{algorithm}
 
-Remark that~$\alpha_Q^k$ in \cref{alg:tcg-alphaq} of \cref{alg:tcg} is in fact
-\begin{equation*}
-    \argmin_{\alpha \ge 0} Q(\sstep[k] + \alpha \pstep[k]),
-\end{equation*}
-where we define this~$\argmin$ to~$\infty$ if~$Q$ is concave along~$\set{\sstep[k] + \alpha \pstep[k] : \alpha \ge 0}$.
-It is also worth mentioning that the stopping criterion~$\norm{\pstep[k]} = 0$ in \cref{alg:tcg-stop} of \cref{alg:tcg} is equivalent to
-\begin{equation*}
-    \nabla Q(\sstep[k])^{\T} \pstep[k] \ge 0.
-\end{equation*}
-It is obvious that~$\norm{\pstep[k]} = 0$ implies~$\nabla Q(\sstep[k])^{\T} \pstep[k] \ge 0$.
-For the converse, we assume without loss of generality that~$k \ge 1$.
-Due to the definition of~$\pstep[k]$ and the fact that~$\nabla Q(\sstep[k])^{\T} \pstep[k - 1] = 0$, we can see that~$\nabla Q(\sstep[k])^{\T} \pstep[k] \ge
-0$ implies~$\nabla Q(\sstep[k]) = 0$, which further leads to~$\beta^{k - 1} = 0$, and hence~$\pstep[k] = 0$.
+In practice,~$\alpha_Q^k$ in \cref{alg:tcg-alphaq} of \cref{alg:tcg} is calculated by
+\begin{subequations}
+    \label{eq:tcg-alphaq}
+    \begin{empheq}[left={\alpha_Q^k = \empheqlbrace}]{alignat=2}
+        & \frac{- \nabla Q(\sstep[k])^{\T} \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}, && \quad \text{if~$(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k] > 0$,} \label{eq:tcg-alphaq-1}\\
+        & \infty,                                                                               && \quad \text{otherwise,}
+    \end{empheq}
+\end{subequations}
+which is valid to the stopping criterion in \cref{alg:tcg-stop} of \cref{alg:tcg}.
+As detailed in \cref{prop:tcg}, this stopping criterion is indeed equivalent to~$\norm{\pstep[k]} = 0$, which is usually used when presenting the \gls{tcg} algorithm.
+
+\begin{proposition}
+    \label{prop:tcg}
+    In \cref{alg:tcg-stop} of \cref{alg:tcg}, the stopping criterion~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$ is satisfied if and only if~$\norm{\pstep[k]} = 0$.
+\end{proposition}
+
+\begin{proof}
+    It is obvious that~$\norm{\pstep[k]} = 0$ implies~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$.
+    For the converse, we assume without loss of generality that~$k \ge 1$.
+    When the stopping criterion in \cref{alg:tcg-stop} is tested, we must have~$\alpha^{k - 1} = \alpha_Q^{k - 1}$ and~$\alpha_Q^{k - 1}$ is evaluated by~\cref{eq:tcg-alphaq-1}; otherwise,~$\alpha^{k - 1}$ would equal~$\alpha_{\rad}^{k - 1}$, and the algorithm would have stopped in \cref{alg:tcg-break}.
+    By~\cref{eq:tcg-alphaq-1} and the fact that~$\sstep[k] = \sstep[k - 1] + \alpha_Q^{k - 1} \pstep[k - 1]$, we then have~$\nabla Q(\sstep[k])^{\T} \pstep[k - 1] = 0$.
+    Therefore, due to the definition of~$\pstep[k]$, we see that~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$ implies~$\nabla Q(\sstep[k]) = 0$, which further leads to~$\beta^{k - 1} = 0$, and hence~$\norm{\pstep[k]} = 0$.
+\end{proof}
 
 This algorithm enjoys many good properties.
 In particular, \citeauthor{Yuan_2000}~\cite{Yuan_2000} showed that the \gls{tcg} step provides at least half the reduction provided by the exact solution to~\cref{eq:problem-tcg} if~$\nabla^2 Q$ is positive definite.
@@ -141,12 +152,13 @@ Given a vector~$z \in \R^n$, the algorithm uses~$\Pi^k(z) \in \R^n$ to denote th
     \KwResult{An approximate solution to~\cref{eq:problem-bvtcg}.}
     Set~$\sstep[0] \gets 0$ and~$\mathcal{W}^0$ according to~\cref{eq:bounds-initial-working-set}\;
     Set the search direction~$\pstep[0] \gets -\Pi^0(\nabla Q(\sstep[0]))$\;
-    \For{$k = 0, 1, \dots$ until~$\norm{\pstep[k]} = 0$}{
-        Set
-        \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
-            & \frac{- \nabla Q(\sstep[k])^{\T} \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}  && \quad \text{if~$(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k] > 0$,}\\
-            & \infty                                                                                && \quad \text{otherwise}
-        \end{algoempheq}
+    \For{$k = 0, 1, \dots$ until~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$}{ \nllabel{alg:bvtcg-stop}
+        Set~$\alpha_Q^k \gets \argmin @@ \set{Q(\sstep[k] + \alpha \pstep[k]) : \alpha \ge 0}$ using~\cref{eq:tcg-alphaq}\;
+        % Set
+        % \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
+        %     & \frac{- \nabla Q(\sstep[k])^{\T} \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}  && \quad \text{if~$(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k] > 0$,}\\
+        %     & \infty                                                                                && \quad \text{otherwise}
+        % \end{algoempheq}
         Set~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$\;
         Set~$\alpha_B^k \gets \argmax @@ \set{\alpha \ge 0 : \xl \le \sstep[k] + \alpha \pstep[k] \le \xu}$\; \nllabel{alg:bvtcg-alphab}
         Set the steplength~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_B^k}$\;
@@ -166,7 +178,7 @@ Given a vector~$z \in \R^n$, the algorithm uses~$\Pi^k(z) \in \R^n$ to denote th
         \uIf{$\alpha^k < \min \set {\alpha_{\rad}^k, \alpha_B^k}$}{
             Set~$\mathcal{W}^{k + 1} \gets \mathcal{W}^k$\;
             Set~$\beta^k \gets \norm{\Pi^{k + 1}(\nabla Q(\sstep[k + 1]))}^2 / \norm{\Pi^{k + 1}(\nabla Q(\sstep[k]))}^2$\;
-            Update~$\pstep[k + 1] \gets -\Pi^{k + 1}(\nabla Q(\sstep[k + 1])) + \beta^k \pstep[k]$\;
+            Update~$\pstep[k + 1] \gets -\Pi^{k + 1}(\nabla Q(\sstep[k + 1])) + \beta^k \pstep[k]$\; \nllabel{alg:bvtcg-tcg-step}
         }
         \uElseIf{$\alpha^k < \alpha_{\rad}^k$}{
             Add the first bound hit by~$\sstep[k + 1]$ to~$\mathcal{W}^k$ to obtain~$\mathcal{W}^{k + 1}$\;
@@ -178,7 +190,24 @@ Given a vector~$z \in \R^n$, the algorithm uses~$\Pi^k(z) \in \R^n$ to denote th
     }
 \end{algorithm}
 
-Note that we define~$\alpha_B^k$ in \cref{alg:bvtcg-alphab} of \cref{alg:bvtcg} to be~$\infty$ is all points in~$\set{\sstep[k] + \alpha \pstep[k] : \alpha \ge 0}$ lie between the bounds~$\xl$ and~$\xu$.
+Note that~$\alpha_B^k$ in \cref{alg:bvtcg-alphab} of \cref{alg:bvtcg} is~$\infty$ if all points in~$\set{\sstep[k] + \alpha \pstep[k] : \alpha \ge 0}$ lie between the bounds~$\xl$ and~$\xu$.
+% Moreover, we observe the following, which is useful for a robust implementation.
+Similar to \cref{alg:tcg}, we observe the following for the stopping criterion~$\norm{\pstep[k]} = 0$ in \cref{alg:bvtcg-stop} of \cref{alg:bvtcg}.
+
+\begin{proposition}
+    In \cref{alg:bvtcg}, the stopping criterion~$\norm{\pstep[k]} = 0$ is equivalent to
+    \begin{equation}
+        \label{eq:bvtcg-prop-stopping}
+        \nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0.
+    \end{equation}
+\end{proposition}
+
+\begin{proof}
+    It is obvious that if~$\norm{\pstep[k]} = 0$, then~\cref{eq:bvtcg-prop-stopping} holds.
+    For the converse, assume without loss of generality that~$k \ge 1$.
+    If the \gls{tcg} iterations have just been restarted, due to the definition of~$\pstep[k]$ and~$\Pi^k$, we have~$\Pi^k(\nabla Q(\sstep[k])) = 0$ so that~$\pstep[k] = 0$.
+    If now~$\pstep[k]$ has been evaluated in \cref{alg:bvtcg-tcg-step} of \cref{alg:bvtcg}, since~$\nabla Q(\step[k])^{\T} \pstep[k - 1] = 0$, the same conclusion can be drawn.
+\end{proof}
 
 \Gls{cobyqa} employs an adapted version of \cref{alg:bvtcg} for solving its tangential subproblem~\cref{eq:cobyqa-tangential} if~$\iub \cup \ieq = \emptyset$.
 The adaptation, also proposed by \citeauthor{Powell_2009}~\cite[\S~3]{Powell_2009} and implemented in \gls{bobyqa}, is based on the following observation.
@@ -298,7 +327,7 @@ After definining~$\pstep[0]$ and~$\mathcal{W}^0$, the method then considers the 
 and entertains CG iterations, using~$\pstep[0]$ as the first search direction.
 Note that~$\pstep[0]$ is the projection of~$-\nabla Q(\sstep[0])$ onto this space.
 When a linear inequality constraint or the trust-region constraint is hit by a CG iterate, the CG step is truncated and the iterations are terminated.
-However, upon this termination, if the current iterate~$\sstep[k + 1]$ is far from the trust-region boundary, then the procedure is restarted, changing the next search direction~$\pstep[k + 1]$ to the unique solution to
+However, upon this termination, if the current iterate~$\sstep[k + 1]$ is not on the trust-region boundary, then the procedure is restarted, changing the next search direction~$\pstep[k + 1]$ to the unique solution to
 \begin{subequations}
     \label{eq:tcg-linear-working-set-after}
     \begin{align}
@@ -330,8 +359,7 @@ In the algorithm, we denote by~$\Pi^k$ the projection onto the orthogonal comple
 % We remark that~$\pstep[0] = \Pi^0(-\nabla Q(\sstep[0]))$ and that~$\pstep[k + 1] = \Pi^{k + 1}(-\nabla Q(\sstep[k + 1]))$ when the method is restarted.
 
 \begin{algorithm}
-    \caption[Linearly-constrained \glsfmtshort{tcg} method]{Linearly-constrained \glsfmtshort{tcg}
-    method~\cite[\S~3, \S-5]{Powell_2015}}
+    \caption[Linearly-constrained \glsfmtshort{tcg} method]{Linearly-constrained \glsfmtshort{tcg} method~\cite[\S~3, \S~5]{Powell_2015}}
     \label{alg:lctcg}
     \DontPrintSemicolon
     \onehalfspacing
@@ -340,25 +368,27 @@ In the algorithm, we denote by~$\Pi^k$ the projection onto the orthogonal comple
     Set~$\sstep[0] \gets 0$\;
     Set~$\pstep[0]$ to the solution to~\cref{eq:tcg-linear-working-set}\; \nllabel{alg:lctcg-sd-init}
     Set~$\mathcal{W}^0$ as described in~\cref{eq:tcg-linear-working-set-initial}\;
-    \For{$k = 0, 1, \dots$ until~$\norm{\pstep[k]} = 0$}{
-        Set
-        \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
-            & \frac{- \nabla Q(\sstep[k])^{\T} \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}  && \quad \text{if~$(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k] > 0$,}\\
-            & \infty                                                                                && \quad \text{otherwise}
-        \end{algoempheq}
+    \For{$k = 0, 1, \dots$ until~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$}{ \nllabel{alg:lctcg-stop}
+        Set~$\alpha_Q^k \gets \argmin @@ \set{Q(\sstep[k] + \alpha \pstep[k]) : \alpha \ge 0}$ using~\cref{eq:tcg-alphaq}\;
+        % Set
+        % \begin{algoempheq}[left={\alpha_Q^k \gets \empheqlbrace}]{alignat*=2}
+        %     & \frac{- \nabla Q(\sstep[k])^{\T} \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}  && \quad \text{if~$(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k] > 0$,}\\
+        %     & \infty                                                                                && \quad \text{otherwise}
+        % \end{algoempheq}
         Set~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$\;
         Set~$\alpha_L^k \gets \argmax @@ \set{\alpha \ge 0 : A(\sstep[k] + \alpha \pstep[k]) \le b}$\;
         Set the steplength~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_L^k}$\;
         Update the iterate~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
         \uIf{$\alpha^k < \min \set{\alpha_{\rad}^k, \alpha_L^k}$}{
             Set~$\mathcal{W}^{k + 1} \gets \mathcal{W}^k$\;
-            Set
-            \begin{algomathdisplay}
-                \beta^k \gets \frac{\Pi^{k + 1} \big( \nabla Q(\sstep[k + 1]) \big)^{\T} (\nabla^2 Q) \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}
-            \end{algomathdisplay}
-            Update~$\pstep[k + 1] \gets -\Pi^{k + 1} \big( \nabla Q(\sstep[k + 1]) \big) + \beta^k \pstep[k]$\;
+            Set~$\beta^k \gets \norm{\Pi^{k + 1}(\nabla Q(\sstep[k + 1]))}^2 / \norm{\Pi^{k + 1}(\nabla Q(\sstep[k]))}^2$\;
+            % Set
+            % \begin{algomathdisplay}
+            %     \beta^k \gets \frac{\Pi^{k + 1} \big( \nabla Q(\sstep[k + 1]) \big)^{\T} (\nabla^2 Q) \pstep[k]}{(\pstep[k])^{\T} (\nabla^2 Q) \pstep[k]}
+            % \end{algomathdisplay}
+            Update~$\pstep[k + 1] \gets -\Pi^{k + 1} \big( \nabla Q(\sstep[k + 1]) \big) + \beta^k \pstep[k]$\; \nllabel{alg:lctcg-tcg-step}
         }
-        \uElseIf{$\norm{\sstep[k + 1]} \le (1 - \sigma) \rad$}{
+        \uElseIf{$\alpha^k < \alpha_{\rad}^k$}{
             Set~$\pstep[k + 1]$ to the solution to~\cref{eq:tcg-linear-working-set-after}\; \nllabel{alg:lctcg-sd-restart}
             Restart the \gls{tcg} iterations by setting~$\mathcal{W}^{k + 1}$ as described in~\cref{eq:tcg-linear-working-set-restart}\;
         }
@@ -367,6 +397,72 @@ In the algorithm, we denote by~$\Pi^k$ the projection onto the orthogonal comple
         }
     }
 \end{algorithm}
+
+The following simple observation is taken from~\cite[\S~3]{Powell_2015}.
+The proof is \emph{trivial}, but we include it for completeness.
+
+\begin{lemma}
+    \label{lem:bvtcg}
+    For~$z \in \R^n$ and~$\mathcal{J} \subseteq \set{1, \dots, m_1}$, define~$\tilde{\pstep}$ to be the unique solution to
+    \begin{subequations}
+        \label{eq:lctcg-lemma}
+        \begin{align}
+            \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep - z}^2\\
+            \text{s.t.}             & \quad a_j^{\T} \sstep \le 0, ~ j \in \mathcal{J},\\
+                                    & \quad C \sstep = 0.
+        \end{align}
+    \end{subequations}
+    Then~$\tilde{\pstep}$ is the projection of~$z$ onto the orthogonal complement of
+    \begin{equation*}
+        \set[\big]{a_j : j \in \mathcal{J}, ~ a_j^{\T} \tilde{\pstep} = 0} \cup \set[\big]{c_j : 1 \le j \le m_2}.
+    \end{equation*}
+\end{lemma}
+
+\begin{proof}
+    Define~$\tilde{\mathcal{J}} = \set{j \in \mathcal{J} : a_j^{\T} \tilde{\pstep} = 0}$.
+    Then it suffices to prove that~$\tilde{\pstep}$ solves
+    \begin{subequations}
+        \label{eq:lctcg-lemma-proof-1}
+        \begin{align}
+            \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep - z}^2\\
+            \text{s.t.}             & \quad a_j^{\T} \sstep = 0, ~ j \in \tilde{\mathcal{J}},\\
+                                    & \quad C \sstep = 0.
+        \end{align}
+    \end{subequations}
+    % There exists a neighborhood of~$\tilde{\pstep}$ such that~$\tilde{\pstep}$ is the least value of the objective function in the intersection of this neighborhood with the feasible region.
+    % Moreover, this neighborhood can be small enough to not intersect the boundary of the inactive constraints.
+    % But the intersection of this neighborhood with the feasible set of the first problem is the intersection of this neighborhood with the feasible set of the second one.
+    By the definitions of~$\mathcal{J}$ and~$\tilde{\mathcal{J}}$, there exists a neighborhood~$\mathcal{N}$ of~$\tilde{\pstep}$ such that
+    \begin{equation}
+        \label{eq:lctcg-lemma-proof-2}
+        \mathcal{N} \cap \set{\sstep \in \R^n : a_j^{\T} \sstep = 0, ~ j \in \tilde{\mathcal{J}}, ~ C \sstep = 0} \subseteq \set{\sstep \in \R^n : a_j^{\T} \sstep \le 0, ~ j \in \mathcal{J}, ~ C \sstep = 0}.
+    \end{equation}
+    Since~$\tilde{\pstep}$ is a global solution to~\cref{eq:lctcg-lemma}, we obtain from~\cref{eq:lctcg-lemma-proof-2} that~$\tilde{\pstep}$ is also a local solution to~\cref{eq:lctcg-lemma-proof-1}.
+    This finishes the proof because~\cref{eq:lctcg-lemma-proof-1} is convex.
+\end{proof}
+
+% We observe the following, which is useful for a robust implementation.
+Similar to \cref{alg:tcg,alg:bvtcg}, we observe the following on the stopping criterion~$\norm{\pstep[k]} = 0$ in \cref{alg:lctcg-stop} of \cref{alg:lctcg}.
+
+\begin{proposition}
+    In \cref{alg:lctcg}, the stopping criterion~$\norm{\pstep[k]} = 0$ is equivalent to
+    \begin{equation}
+        \label{eq:lctcg-prop-stopping}
+        \nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0.
+    \end{equation}
+\end{proposition}
+
+\begin{proof}
+    It is obvious that if~$\norm{\pstep[k]} = 0$, then~\cref{eq:lctcg-prop-stopping} holds.
+    For the converse, assume without loss of generality that~$k \ge 1$.
+    If the \gls{tcg} iterations have just been restarted, we have~$\pstep[k] = -\Pi^k(\nabla Q(\sstep[k]))$ according to \cref{lem:bvtcg} and
+    \begin{equation*}
+        0 \le \nabla Q (\sstep[k])^{\T} \pstep[k] = - \nabla Q (\sstep[k])^{\T} \Pi^k(\nabla Q(\sstep[k])) = -\norm{\Pi^k(\nabla Q(\sstep[k]))}^2,
+    \end{equation*}
+    the last equality resulting from the fact that~$\Pi^k$ is a projection onto a subspace.
+    We then have~$\Pi^k(\nabla Q(\sstep[k])) = 0$ which leads to~$\pstep[k] = 0$.
+    If now~$\pstep[k]$ has been evaluated in \cref{alg:lctcg-tcg-step} of \cref{alg:lctcg}, since~$\nabla Q(\step[k])^{\T} \pstep[k - 1] = 0$, the same conclusion can be drawn.
+\end{proof}
 
 \Citeauthor{Powell_2015}~\cite{Powell_2015} proposed the following modification, which is employed in \gls{cobyqa}.
 After calculating the search direction at \cref{alg:lctcg-sd-init} of \cref{alg:lctcg}, we might have
@@ -443,7 +539,7 @@ where
         -I_{m_1}\\
         0\\
         0\\
-        I_{m_1}
+        -I_{m_1}
     \end{bmatrix}, \quad \text{and} \quad
     h \eqdef
     \begin{bmatrix}
