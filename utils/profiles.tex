@@ -44,12 +44,13 @@
         \foreach \i in {0,1,...,\selectlastindex} {%
             \pgfmathparse{\selectsolvers[\i]}%
             \let\selectsolver\pgfmathresult\relax%
+            \StrSubstitute{\selectsolver}{-}{~}[\selectsolverescaped]%
             \addplot table[%
             x=x\selectprofile_\selectsolver,%
             y=y\selectprofile,%
             col sep=comma,%
             ]{\selectcsvread};%
-            \addlegendentryexpanded{\selectsolver}%
+            \addlegendentryexpanded{\selectsolverescaped}%
         }
     \end{axis}
 \end{tikzpicture}

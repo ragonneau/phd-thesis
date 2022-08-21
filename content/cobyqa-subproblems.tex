@@ -233,7 +233,7 @@ Similar to \cref{prop:tcg}, we observe the following for the stopping criterion 
 First, the algorithm is stopped if the move along~$\pstep[k]$ is expected to give a relatively small reduction in~$Q$, namely if
 \begin{equation}
     \label{eq:bvtcg-stop1}
-    \norm[\big]{\Pi^k(\nabla Q(\sstep[k]))}\rad \le \nu [Q(\sstep[0]) - Q(\sstep[k])]
+    \norm[\big]{\Pi^k(\nabla Q(\sstep[k]))} \rad \le \nu [Q(\sstep[0]) - Q(\sstep[k])]
 \end{equation}
 for some constant~$\nu > 0$.
 The second additional stopping criterion is not mentioned in~\cite{Powell_2009} but implemented in
@@ -241,12 +241,10 @@ The second additional stopping criterion is not mentioned in~\cite{Powell_2009} 
 \begin{equation}
     \label{eq:bvtcg-stop2}
     Q(\sstep[k]) - Q(\sstep[k + 1]) \le \nu [Q(\sstep[0]) - Q(\sstep[k + 1])].
-\end{equation}\index{TCG@\glsfmtshort{tcg}!bound-constrained|)}
-\Gls{cobyqa} includes both of the stopping criteria with~$\nu = 0.01$ when implementing~\cref{alg:bvtcg}.
-\todo{Tom: Check whether you have implemented this or not.}
+\end{equation}
+\Gls{cobyqa} includes both of the stopping criteria with~$\nu = 0.01$ when implementing~\cref{alg:bvtcg}.\index{TCG@\glsfmtshort{tcg}!bound-constrained|)}
 
 % The linearly-constrained \gls{tcg} procedure with these additional stopping criteria is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.lctcg}.
-
 
 \subsubsection{Moving round the trust-region boundary}
 
@@ -361,9 +359,7 @@ The initial working set is chosen to be
 \end{equation}
 It excludes the inequality constraints with~$j \in \mathcal{J}(\sstep[0])$ and~$a_j^{\T} \pstep[0] < 0$, because any step from~$\sstep[0]$ along~$\pstep[0]$ moves further away from these constraints.
 
-After defining~$\pstep[0]$ and~$\mathcal{W}^0$, the method then considers the restriction of~\cref{eq:problem-lctcg} to the orthogonal complement
-\footnote{The orthogonal complement of~\cref{eq:cg-space-init} is the null space of the corresponding constraints.}
-of
+After defining~$\pstep[0]$ and~$\mathcal{W}^0$, the method then considers the restriction of~\cref{eq:problem-lctcg} to the orthogonal complement\footnote{The orthogonal complement of~\cref{eq:cg-space-init} is the null space of the corresponding constraints.} of
 \begin{equation}
     \label{eq:cg-space-init}
     \set[\big]{a_j : j \in \mathcal{W}^0} \cup \set[\big]{c_j : 1 \le j \le m_2},
@@ -442,7 +438,7 @@ In the algorithm, we denote by~$\Pi^k$ the projection onto the orthogonal comple
 \end{algorithm}
 
 \Cref{alg:lctcg} takes almost the same form as~\cref{alg:bvtcg}.
-The role of~$\alpha_{L}^k$ in \cref{alg:lctcg} is identical to that of~$\alpha_{B}^k$ in~\cref{alg:bvtcg}.
+The role of~$\alpha_L^k$ in \cref{alg:lctcg} is identical to that of~$\alpha_B^k$ in~\cref{alg:bvtcg}.
 The only essential difference between the two algorithms is how they define the working set and how
 they define the searching direction when the working set is updated.
 
@@ -525,7 +521,8 @@ First of all, the algorithm is stopped if the move along~$\pstep[k]$ is expected
     \label{eq:lctcg-stop1}
     \alpha_{\rad}^k \abs[\big]{\nabla Q(\sstep[k])^{\T} \pstep[k]} \le \nu [Q(\sstep[0]) - Q(\sstep[k])]
 \end{equation}
-for some constant~$\nu > 0$. The condition~\cref{eq:lctcg-stop1} can be regarded as a refined and weakened version of~\cref{eq:bvtcg-stop1}.
+for some constant~$\nu > 0$.
+The condition~\cref{eq:lctcg-stop1} can be regarded as a refined and weakened version of~\cref{eq:bvtcg-stop1}.
 Moreover, the algorithm also tests~\cref{eq:bvtcg-stop2} and stop when this condition holds.
 %, which means that the reduction in~$Q$ provided by the recent iteration is tiny compared to the reduction so far.
 \index{TCG@\glsfmtshort{tcg}!linearly-constrained|)}
