@@ -207,7 +207,7 @@ Given a vector~$z \in \R^n$, we use~$\Pi^k(z) \in \R^n$ to denote the vector who
 
 Note that~$\alpha_B^k$ in \cref{alg:bvtcg-alphab} of \cref{alg:bvtcg} is~$\infty$ if all points in~$\set{\sstep[k] + \alpha \pstep[k] : \alpha \ge 0}$ lie between the bounds~$\xl$ and~$\xu$.
 
-\subsubsection{Stopping criterion}
+\subsubsection{Stopping criteria}
 
 Similar to \cref{prop:tcg}, we observe the following for the stopping criterion in \cref{alg:bvtcg-stop} of \cref{alg:bvtcg}.
 
@@ -226,6 +226,27 @@ Similar to \cref{prop:tcg}, we observe the following for the stopping criterion 
     and hence~$\norm{\pstep[k]} = 0$.
     If \cref{alg:bvtcg-stop} is reached from \cref{alg:bvtcg-tcg-step}, then we can establish~$\norm{\pstep[k]} = 0$ by an argument similar to the proof of \cref{prop:tcg}.
 \end{proof}
+
+\Citeauthor{Powell_2009}~\cite[\S~3]{Powell_2009} proposed two additional stopping criteria for the
+\gls{tcg} algorithm, in order to avoid unworthy computations.
+\Cref{alg:bvtcg} omits them for simplicity, and we specify them now.
+First, the algorithm is stopped if the move along~$\pstep[k]$ is expected to give a relatively small reduction in~$Q$, namely if
+\begin{equation}
+    \label{eq:bvtcg-stop1}
+    \norm[\big]{\Pi^k(\nabla Q(\sstep[k]))}\rad \le \nu [Q(\sstep[0]) - Q(\sstep[k])]
+\end{equation}
+for some constant~$\nu > 0$.
+The second additional stopping criterion is not mentioned in~\cite{Powell_2009} but implemented in
+\gls{bobyqa}, where the algorithm is also terminated if the reduction in~$Q$ provided by the recent iteration is tiny compared to the reduction so far, that is if
+\begin{equation}
+    \label{eq:bvtcg-stop2}
+    Q(\sstep[k]) - Q(\sstep[k + 1]) \le \nu [Q(\sstep[0]) - Q(\sstep[k + 1])].
+\end{equation}\index{TCG@\glsfmtshort{tcg}!bound-constrained|)}
+\Gls{cobyqa} includes both of the stopping criteria with~$\nu = 0.01$ when implementing~\cref{alg:bvtcg}.
+\todo{Tom: Check whether you have implemented this or not.}
+
+% The linearly-constrained \gls{tcg} procedure with these additional stopping criteria is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.lctcg}.
+
 
 \subsubsection{Moving round the trust-region boundary}
 
@@ -438,7 +459,7 @@ It is an active-set method designed for minimizing positive definite quadratic f
 Similar to \cref{prop:tcg,prop:bvtcg}, we will show that the stopping criterion
 in \cref{alg:lctcg-stop} of \cref{alg:lctcg} is also equivalent to~$\norm{\pstep[k]} = 0$.
 To this end, we need the following simple observation taken from~\cite[\S~3]{Powell_2015}.
-Its proof is \emph{trivial}, but we include the proof for completeness.
+Its proof is \emph{trivial}, but we include it for completeness.
 
 \begin{lemma}
     \label{lem:lctcg}
@@ -497,25 +518,28 @@ Its proof is \emph{trivial}, but we include the proof for completeness.
     If \cref{alg:lctcg-stop} is reached from \cref{alg:lctcg-tcg-step}, then we can establish~$\norm{\pstep[k]} = 0$ by an argument similar to the proof of \cref{prop:tcg}.
 \end{proof}
 
-\todo{What about the bound case?}
-\Citeauthor{Powell_2015} proposed two additional stopping criteria, in order to avoid unworthy computations.
+Similar to the bound-constrained case, \Citeauthor{Powell_2015}~\cite[\S~2]{Powell_2015} proposed two additional stopping criteria for the \gls{tcg} algorithm, in order to avoid unworthy computations.
 \Cref{alg:lctcg} omits them for simplicity, and we specify them now.
-First of all, the algorithm is stopped if the move along~$\pstep[k]$ is expected to give a relatively small reduction in~$Q$,
-namely if
-\begin{equation*}
+First of all, the algorithm is stopped if the move along~$\pstep[k]$ is expected to give a relatively small reduction in~$Q$, namely if
+\begin{equation}
+    \label{eq:lctcg-stop1}
     \alpha_{\rad}^k \abs[\big]{\nabla Q(\sstep[k])^{\T} \pstep[k]} \le \nu [Q(\sstep[0]) - Q(\sstep[k])]
-\end{equation*}
-for some constant~$\nu > 0$.
-Moreover, the algorithm is also terminated if the reduction in~$Q$ provided by the recent iteration is tiny compared to the reduction so far, that is if
-\begin{equation*}
-    Q(\sstep[k]) - Q(\sstep[k + 1]) \le \nu [Q(\sstep[0]) - Q(\sstep[k + 1])].
-\end{equation*}\index{TCG@\glsfmtshort{tcg}!linearly-constrained|)}
-In \gls{cobyqa}, we set~$\nu = 0.01$.
-As demonstrated by~\citeauthor{Powell_2015} in~\cite[\S~5]{Powell_2015}, these two stopping criteria guarantee that the algorithm terminates after a finite number of iterations.
+\end{equation}
+for some constant~$\nu > 0$. The condition~\cref{eq:lctcg-stop1} can be regarded as a refined and weakened version of~\cref{eq:bvtcg-stop1}.
+Moreover, the algorithm also tests~\cref{eq:bvtcg-stop2} and stop when this condition holds.
+%, which means that the reduction in~$Q$ provided by the recent iteration is tiny compared to the reduction so far.
+\index{TCG@\glsfmtshort{tcg}!linearly-constrained|)}
+As demonstrated by~\citeauthor{Powell_2015}~\cite[\S~5]{Powell_2015}, these two stopping criteria guarantee that the algorithm terminates after a finite number of iterations.
+\Gls{cobyqa} includes both of the stopping criteria with~$\nu = 0.01$ when implementing~\cref{alg:lctcg}.
 
 % The linearly-constrained \gls{tcg} procedure with these additional stopping criteria is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.lctcg}.
 
 
+\todo{Tom: Your description of the ``modification'' (moving towards boundaries of the active
+constraints) is wrong. Check
+\url{https://github.com/zequipe/pdfo_ref/blob/master/fsrc/lincoa/trustregion.f90}. Is your
+implementation correct? It is important for the performance of LINCOA according to my test. In the
+thesis, however, I suggest we omit this part. I will explain to you why. }
 %\subsubsection{Moving towards the boundaries of the constraints in the working set}
 
 %Now we describe a modification that \citeauthor{Powell_2015} proposed to \cref{alg:lctcg}.
