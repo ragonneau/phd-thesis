@@ -61,8 +61,7 @@ Briefly speaking, this algorithm entertains conjugate gradients iterations, and 
         %     & \infty                                                                                && \quad \text{otherwise}
         % \end{algoempheq} \nllabel{alg:tcg-alphaq}
         Set~$\alpha_Q^k \gets \argmin @@ \set{Q(\sstep[k] + \alpha \pstep[k]) : \alpha \ge 0}$\; \nllabel{alg:tcg-alphaq}
-        Set~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha
-        \pstep[k]} \le \rad}$\nomenclature[Op]{$\argmax$}{Global maximizer operator}\; \nllabel{alg:tcg-alphad}
+        Set~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$\nomenclature[Op]{$\argmax$}{Global maximizer operator}\; \nllabel{alg:tcg-alphad}
         Set the step size~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k}$\;
         Update the iterate~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
         \eIf{$\alpha^k < \alpha_{\rad}^k$}{
@@ -76,13 +75,12 @@ Briefly speaking, this algorithm entertains conjugate gradients iterations, and 
 
 In practice,~$\alpha_{\rad}^k$ in \cref{alg:tcg-alphad} of \cref{alg:tcg} is obtained by solving the quadratic equation
 \begin{equation*}
-\norm{\sstep[k] + \alpha \pstep[k]}^2 = \rad^2,
+    \norm{\sstep[k] + \alpha \pstep[k]}^2 = \rad^2,
 \end{equation*}
 which provides
 \begin{equation}
     \label{eq:tcg-alphad}
-    \alpha_{\rad}^k =\frac{-(\sstep[k])^\T\pstep[k] + \sqrt{[(\sstep[k])^\T\pstep[k]]^2
-    + \norm{\pstep[k]}^2(\rad^2 - \norm{\sstep[k]}^2)}}{\norm{\pstep[k]}^2}.
+    \alpha_{\rad}^k =\frac{\sqrt{\big[ (\sstep[k])^{\T}\pstep[k]]^2 + \norm{\pstep[k]}^2(\rad^2 - \norm{\sstep[k]}^2)} - (\sstep[k])^\T\pstep[k]}{\norm{\pstep[k]}^2}.
 \end{equation}
 For~$\alpha_Q^k$ in \cref{alg:tcg-alphaq}, we have the explicit formula
 \begin{subequations}
@@ -150,12 +148,10 @@ The initial working set is a subset of the active bounds at the starting point~$
 More specifically, the initial working set is
 \begin{equation}
     \label{eq:bounds-initial-working-set}
-    \mathcal{W}^0 \eqdef \set[\bigg]{i \in \set{1, \dots, n} : \xl_i = \sstep[0]_i ~ \text{and}
-    ~ \frac{\partial Q}{\partial \sstep_i}(\sstep[0]) \ge 0, ~ \text{or} ~ \xu_i = \sstep[0]_i
+    \mathcal{W}^0 \eqdef \set[\bigg]{i \in \set{1, \dots, n} : \xl_i = \sstep[0]_i ~ \text{and} ~ \frac{\partial Q}{\partial \sstep_i}(\sstep[0]) \ge 0, ~ \text{or} ~ \xu_i = \sstep[0]_i
 ~ \text{and} ~ \frac{\partial Q}{\partial \sstep_i}(\sstep[0]) \le 0},
 \end{equation}
 which excludes the active bounds such that a step along~$-\nabla Q(\sstep[0])$ would depart from the bounds.
-
 
 \subsubsection{Description of the \glsfmtshort{tcg} method}
 
@@ -217,24 +213,18 @@ Similar to \cref{prop:tcg}, we observe the following for the stopping criterion 
 
 \begin{proposition}
     \label{prop:bvtcg}
-    In \cref{alg:bvtcg-stop} of~\cref{alg:bvtcg},
-    the stopping criterion~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$ is satisfied if and only if~$\norm{\pstep[k]} = 0$.
+    In \cref{alg:bvtcg-stop} of~\cref{alg:bvtcg}, the stopping criterion~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$ is satisfied if and only if~$\norm{\pstep[k]} = 0$.
 \end{proposition}
 
 \begin{proof}
     It is obvious that~$\norm{\pstep[k]} = 0$ implies~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$.
-    Suppose that~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$ in \cref{alg:bvtcg-stop}
-    of~\cref{alg:bvtcg}, and assume without loss of generality that~$k \ge 1$.
+    Suppose that~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$ in \cref{alg:bvtcg-stop} of~\cref{alg:bvtcg}, and assume without loss of generality that~$k \ge 1$.
     If \cref{alg:bvtcg-stop} is reached from \cref{alg:bvtcg-restart}, then
     \begin{equation*}
-        \norm{\pstep[k]}^2 = \norm{\Pi^k(\nabla Q(\sstep[k]))}^2
-        =  Q (\sstep[k])^{\T}  \Pi^k(\nabla Q(\sstep[k]))
-        = - Q (\sstep[k])^{\T}  \pstep[k]
-        \le 0,
+        \norm{\pstep[k]}^2 = \norm{\Pi^k(\nabla Q(\sstep[k]))}^2 =  Q (\sstep[k])^{\T}  \Pi^k(\nabla Q(\sstep[k])) = - Q (\sstep[k])^{\T}  \pstep[k] \le 0,
     \end{equation*}
-    and hence~$\norm{\pstep[k]}  = 0$.
-    If \cref{alg:bvtcg-stop} is reached from \cref{alg:bvtcg-tcg-step}, then we can
-    establish~~$\norm{\pstep[k]}  = 0$ by an argument similar to the proof of \cref{prop:tcg}.
+    and hence~$\norm{\pstep[k]} = 0$.
+    If \cref{alg:bvtcg-stop} is reached from \cref{alg:bvtcg-tcg-step}, then we can establish~$\norm{\pstep[k]} = 0$ by an argument similar to the proof of \cref{prop:tcg}.
 \end{proof}
 
 \subsubsection{Moving round the trust-region boundary}
@@ -358,7 +348,7 @@ of
     \set[\big]{a_j : j \in \mathcal{W}^0} \cup \set[\big]{c_j : 1 \le j \le m_2},
 \end{equation}
 and entertains CG iterations in this space, using~$\pstep[0]$ as the first search direction.
-Note~$\pstep[0]$ is the projection of~$-\nabla Q(\sstep[0])$ onto this space (see~\cref{lem:lctcg}).
+Note that~$\pstep[0]$ is the projection of~$-\nabla Q(\sstep[0])$ onto this space (see~\cref{lem:lctcg}).
 When a linear inequality constraint or the trust-region constraint is hit by a CG iterate, the CG
 step is truncated and the CG iterations are terminated.
 However, upon this termination, if the current iterate~$\sstep[k + 1]$ is not on the trust-region boundary, then the procedure is restarted, changing the next search direction~$\pstep[k + 1]$ to the unique solution to
@@ -420,7 +410,7 @@ In the algorithm, we denote by~$\Pi^k$ the projection onto the orthogonal comple
             % \end{algomathdisplay}
             Update~$\pstep[k + 1] \gets -\Pi^{k + 1} \big( \nabla Q(\sstep[k + 1]) \big) + \beta^k \pstep[k]$\; \nllabel{alg:lctcg-tcg-step}
         }
-        \uElseIf{$\alpha^k < \alpha_{\rad}^k$ \nllabel{alg:lctcg-restart}}{
+        \uElseIf{$\alpha^k < \alpha_{\rad}^k$}{ \nllabel{alg:lctcg-restart}
             Set~$\pstep[k + 1]$ to the solution to~\cref{eq:tcg-linear-working-set-after}\; \nllabel{alg:lctcg-sd-restart}
             Set~$\mathcal{W}^{k + 1}$ as described in~\cref{eq:tcg-linear-working-set-restart}\; \nllabel{alg:lctcg-set-restart}
         }
@@ -430,14 +420,15 @@ In the algorithm, we denote by~$\Pi^k$ the projection onto the orthogonal comple
     }
 \end{algorithm}
 
-\Cref{alg:lctcg} takes almost the same form as~\cref{alg:bvtcg}. The role of~$\alpha_{L}^k$ in \cref{alg:lctcg} is identical to that of~$\alpha_{B}^k$ in~\cref{alg:bvtcg}.
-The only essential difference between the two algorithms is how they define the working set and how they define the searching direction when the working set is updated.
+\Cref{alg:lctcg} takes almost the same form as~\cref{alg:bvtcg}.
+The role of~$\alpha_{L}^k$ in \cref{alg:lctcg} is identical to that of~$\alpha_{B}^k$ in~\cref{alg:bvtcg}.
+The only essential difference between the two algorithms is how they define the working set and how
+they define the searching direction when the working set is updated.
 
 \Cref{alg:lctcg-restart} of \cref{alg:lctcg} differs from Powell's algorithm described in~\cite[\S~3,\S~5]{Powell_2015}.
 Powell's algorithm replaces~$\alpha^k < \alpha_{\rad}^k$ in \cref{alg:lctcg-restart} with~$\norm{\sstep[k]} \le (1-\sigma)\rad$ (see the end of~\cite[\S~3]{Powell_2015}),
 which is a stronger condition because~$\norm{\sstep[k]} < \rad$ implies~$\alpha^k < \alpha_{\rad}^k$.
 In our numerical experiments with \gls{cobyqa}, the condition~$\alpha^k < \alpha_{\rad}^k$ works slightly better than~$\norm{\sstep[k]} \le (1-\sigma)\rad$.
-
 
 Problems~\cref{eq:tcg-linear-working-set,eq:tcg-linear-working-set-after} are solved using the Goldfarb-Idnani method for quadratic programming~\cite{Goldfarb_Idnani_1983}.
 It is an active-set method designed for minimizing positive definite quadratic function subject to linear constraints.
@@ -474,7 +465,7 @@ Its proof is \emph{trivial}, but we include the proof for completeness.
         \begin{align}
             \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep - g}^2\\
             \text{s.t.}             & \quad a_j^{\T} \sstep = 0, ~ j \in \tilde{\mathcal{J}},\\
-            & \quad C \sstep = 0,
+                                    & \quad C \sstep = 0,
         \end{align}
     \end{subequations}
     whose solution is unique.
@@ -491,25 +482,19 @@ Its proof is \emph{trivial}, but we include the proof for completeness.
 
 \begin{proposition}
     \label{prop:lctcg}
-    In \cref{alg:lctcg-stop} of~\cref{alg:lctcg},
-    the stopping criterion~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$ is satisfied if and only if~$\norm{\pstep[k]} = 0$.
+    In \cref{alg:lctcg-stop} of~\cref{alg:lctcg}, the stopping criterion~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$ is satisfied if and only if~$\norm{\pstep[k]} = 0$.
 \end{proposition}
 
 \begin{proof}
     It is obvious that~$\norm{\pstep[k]} = 0$ implies~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$.
-    Suppose that~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$ in \cref{alg:lctcg-stop}
-    of~\cref{alg:lctcg}, and assume without loss of generality that~$k \ge 1$.
-    If \cref{alg:lctcg-stop} is reached from \cref{alg:lctcg-set-restart}, then
-    we have~$\pstep[k] = -\Pi^k(\nabla Q(\sstep[k]))$ according to \cref{lem:lctcg}. Thus
+    Suppose that~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$ in \cref{alg:lctcg-stop} of~\cref{alg:lctcg}, and assume without loss of generality that~$k \ge 1$.
+    If \cref{alg:lctcg-stop} is reached from \cref{alg:lctcg-set-restart}, then we have~$\pstep[k] = -\Pi^k(\nabla Q(\sstep[k]))$ according to \cref{lem:lctcg}.
+    Thus
     \begin{equation*}
-        \norm{\pstep[k]}^2 = \norm{\Pi^k(\nabla Q(\sstep[k]))}^2
-        =  Q (\sstep[k])^{\T}  \Pi^k(\nabla Q(\sstep[k]))
-        = - Q (\sstep[k])^{\T}  \pstep[k]
-        \le 0,
+        \norm{\pstep[k]}^2 = \norm{\Pi^k(\nabla Q(\sstep[k]))}^2 = Q (\sstep[k])^{\T}  \Pi^k(\nabla Q(\sstep[k])) = - Q (\sstep[k])^{\T}  \pstep[k] \le 0,
     \end{equation*}
-    and hence~$\norm{\pstep[k]}  = 0$.
-    If \cref{alg:lctcg-stop} is reached from \cref{alg:lctcg-tcg-step}, then we can
-    establish~~$\norm{\pstep[k]}  = 0$ by an argument similar to the proof of \cref{prop:tcg}.
+    and hence~$\norm{\pstep[k]} = 0$.
+    If \cref{alg:lctcg-stop} is reached from \cref{alg:lctcg-tcg-step}, then we can establish~$\norm{\pstep[k]} = 0$ by an argument similar to the proof of \cref{prop:tcg}.
 \end{proof}
 
 \todo{What about the bound case?}
@@ -526,8 +511,7 @@ Moreover, the algorithm is also terminated if the reduction in~$Q$ provided by t
     Q(\sstep[k]) - Q(\sstep[k + 1]) \le \nu [Q(\sstep[0]) - Q(\sstep[k + 1])].
 \end{equation*}\index{TCG@\glsfmtshort{tcg}!linearly-constrained|)}
 In \gls{cobyqa}, we set~$\nu = 0.01$.
-As demonstrated by~\citeauthor{Powell_2015} in~\cite[\S~5]{Powell_2015}, these two stopping criteria
-guarantee that the algorithm terminates after a finite number of iterations.
+As demonstrated by~\citeauthor{Powell_2015} in~\cite[\S~5]{Powell_2015}, these two stopping criteria guarantee that the algorithm terminates after a finite number of iterations.
 
 % The linearly-constrained \gls{tcg} procedure with these additional stopping criteria is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.lctcg}.
 
@@ -559,7 +543,6 @@ guarantee that the algorithm terminates after a finite number of iterations.
 %%This is because the constraints in the working set are presumed active at the solution,
 %%In \gls{cobyqa}, we choose~$\xi = 10^{-4}$.
 %%The same applies to \cref{alg:lctcg-sd-restart} of \cref{alg:lctcg}.
-
 
 \section{Solving the normal subproblem}
 \label{sec:cobyqa-normal}
@@ -668,8 +651,7 @@ for~$(x, z) \in \R^n \times \R^{m_1}$, and we remark that
 \end{empheq}
 Similar conclusion can be drawn for~$\pstep[k + 1]_{\sstep}$ and~$\pstep[k + 1]_v$ when the method is restarted.
 
-As for \cref{alg:lctcg}, the problem~\cref{eq:cpqp-working-set} is solved numerically using the
-\citeauthor{Goldfarb_Idnani_1983} method~\cite{Goldfarb_Idnani_1983}.
+As for \cref{alg:lctcg}, the problem~\cref{eq:cpqp-working-set} is solved numerically using the \citeauthor{Goldfarb_Idnani_1983} method~\cite{Goldfarb_Idnani_1983}.
 
 \subsubsection{Description of the \glsfmtshort{tcg}-like method}
 
