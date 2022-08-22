@@ -14,1369 +14,238 @@
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \chapter{Details on the experiments}
 
-In this appendix, we provide the detailed results returned by each solver on each CUTEst problem that are discussed in \cref{ch:cobyqa-implementation}.
+In this appendix, we provide lists of the CUTEst problems~\cite{Gould_Orban_Toint_2015} that are used in the experiments of \cref{ch:cobyqa-implementation}.
 
-\section{Details for unconstrained problems}
+\section{Unconstrained problems}
 
-We provide the detailed results obtained on unconstrained problems of dimension at most~$10$ in \cref{tab:cobyqa-newuoa-uobyqa-10}.
+We present in this section the unconstrained problems employed during the numerical experiments.
 
-\begin{longtable}{ccS[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[group-minimum-digits=4,table-format=5,table-alignment-mode=format,table-number-alignment=center]}
-    \caption{Results on unconstrained problems with~$n \le 10$}\label{tab:cobyqa-newuoa-uobyqa-10}\\
+\begin{longtable}{llll}
+    \caption{List of unconstrained problems}\\
     \toprule
-    Problem                     & Solver        & {Objective value}     & {No.\ eval.}\\
-    \midrule
-    \multirow{3}{*}{AKIVA}      & \gls{cobyqa}  & +6.1660e+000          & 77\\*
-                                & \gls{newuoa}  & +6.1660e+000          & 72\\*
-                                & \gls{uobyqa}  & +6.1660e+000          & 72\\
-    \midrule
-    \multirow{3}{*}{ALLINITU}   & \gls{cobyqa}  & +5.7444e+000          & 69\\*
-                                & \gls{newuoa}  & +5.7444e+000          & 70\\*
-                                & \gls{uobyqa}  & +5.7444e+000          & 63\\
-    \midrule
-    \multirow{3}{*}{ARGLINA}    & \gls{cobyqa}  & +3.9000e+002          & 69\\*
-                                & \gls{newuoa}  & +3.9000e+002          & 63\\*
-                                & \gls{uobyqa}  & +3.9000e+002          & 77\\
-    \midrule
-    \multirow{3}{*}{ARGLINB}    & \gls{cobyqa}  & +9.9625e+001          & 191\\*
-                                & \gls{newuoa}  & +9.9625e+001          & 189\\*
-                                & \gls{uobyqa}  & +9.9625e+001          & 76\\
-    \midrule
-    \multirow{3}{*}{ARGLINC}    & \gls{cobyqa}  & +1.0113e+002          & 190\\*
-                                & \gls{newuoa}  & +1.0113e+002          & 201\\*
-                                & \gls{uobyqa}  & +1.0113e+002          & 624\\
-    \midrule
-    \multirow{3}{*}{ARGTRIGLS}  & \gls{cobyqa}  & +1.8295e-012          & 329\\*
-                                & \gls{newuoa}  & +4.9886e-013          & 362\\*
-                                & \gls{uobyqa}  & +2.5332e-013          & 356\\
-    \midrule
-    \multirow{3}{*}{BARD}       & \gls{cobyqa}  & +8.2149e-003          & 154\\*
-                                & \gls{newuoa}  & +8.2149e-003          & 111\\*
-                                & \gls{uobyqa}  & +8.2149e-003          & 84\\
-    \midrule
-    \multirow{3}{*}{BEALE}      & \gls{cobyqa}  & +9.3344e-017          & 74\\*
-                                & \gls{newuoa}  & +2.6407e-018          & 67\\*
-                                & \gls{uobyqa}  & +6.5713e-018          & 41\\
-    \midrule
-    \multirow{3}{*}{BENNETT5LS} & \gls{cobyqa}  & +6.4485e+004          & 7\\*
-                                & \gls{newuoa}  & +1.1197e-003          & 495\\*
-                                & \gls{uobyqa}  & +5.2424e-004          & 5000\\
-    \midrule
-    \multirow{3}{*}{BIGGS6}     & \gls{cobyqa}  & +4.8866e-014          & 4561\\*
-                                & \gls{newuoa}  & +9.0517e-016          & 3636\\*
-                                & \gls{uobyqa}  & +3.7485e-017          & 753\\
-    \midrule
-    \multirow{3}{*}{BOX}        & \gls{cobyqa}  & -1.7257e-001          & 145\\*
-                                & \gls{newuoa}  & -1.7257e-001          & 142\\*
-                                & \gls{uobyqa}  & -1.7257e-001          & 148\\
-    \midrule
-    \multirow{3}{*}{BOX3}       & \gls{cobyqa}  & +5.8469e-019          & 54\\*
-                                & \gls{newuoa}  & +5.8469e-019          & 55\\*
-                                & \gls{uobyqa}  & +5.8469e-019          & 58\\
-    \midrule
-    \multirow{3}{*}{BOXBODLS}   & \gls{cobyqa}  & +1.1680e+003          & 236\\*
-                                & \gls{newuoa}  & +1.1680e+003          & 181\\*
-                                & \gls{uobyqa}  & +1.1680e+003          & 117\\
-    \midrule
-    \multirow{3}{*}{BOXPOWER}   & \gls{cobyqa}  & +2.0686e-009          & 1741\\*
-                                & \gls{newuoa}  & +5.5131e-011          & 187\\*
-                                & \gls{uobyqa}  & +2.9386e-019          & 374\\
-    \midrule
-    \multirow{3}{*}{BRKMCC}     & \gls{cobyqa}  & +1.6904e-001          & 36\\*
-                                & \gls{newuoa}  & +1.6904e-001          & 29\\*
-                                & \gls{uobyqa}  & +1.6904e-001          & 20\\
-    \midrule
-    \multirow{3}{*}{BROWNAL}    & \gls{cobyqa}  & +2.3878e-011          & 1468\\*
-                                & \gls{newuoa}  & +3.4252e-013          & 1611\\*
-                                & \gls{uobyqa}  & +1.6744e-014          & 361\\
-    \midrule
-    \multirow{3}{*}{BROWNBS}    & \gls{cobyqa}  & +1.2980e-001          & 326\\*
-                                & \gls{newuoa}  & +9.5420e-010          & 146\\*
-                                & \gls{uobyqa}  & +1.5238e-025          & 350\\
-    \midrule
-    \multirow{3}{*}{BROWNDEN}   & \gls{cobyqa}  & +8.5822e+004          & 185\\*
-                                & \gls{newuoa}  & +8.5822e+004          & 228\\*
-                                & \gls{uobyqa}  & +8.5822e+004          & 100\\
-    \midrule
-    \multirow{3}{*}{BROYDN3DLS} & \gls{cobyqa}  & +1.7354e-011          & 237\\*
-                                & \gls{newuoa}  & +1.4706e-012          & 206\\*
-                                & \gls{uobyqa}  & +5.8116e-012          & 274\\
-    \midrule
-    \multirow{3}{*}{BROYDNBDLS} & \gls{cobyqa}  & +4.8229e-015          & 2829\\*
-                                & \gls{newuoa}  & +9.6524e-010          & 2780\\*
-                                & \gls{uobyqa}  & +1.2336e-019          & 2116\\
-    \midrule
-    \multirow{3}{*}{BRYBND}     & \gls{cobyqa}  & +4.8229e-015          & 2829\\*
-                                & \gls{newuoa}  & +9.6524e-010          & 2780\\*
-                                & \gls{uobyqa}  & +1.2336e-019          & 2116\\
-    \midrule
-    \multirow{3}{*}{CHNROSNB}   & \gls{cobyqa}  & +8.8213e-011          & 964\\*
-                                & \gls{newuoa}  & +8.4228e-011          & 921\\*
-                                & \gls{uobyqa}  & +5.0082e-015          & 939\\
-    \midrule
-    \multirow{3}{*}{CHNRSNBM}   & \gls{cobyqa}  & +1.9535e-012          & 946\\*
-                                & \gls{newuoa}  & +1.0387e-010          & 1041\\*
-                                & \gls{uobyqa}  & +2.2626e-013          & 1075\\
-    \midrule
-    \multirow{3}{*}{CHWIRUT1LS} & \gls{cobyqa}  & +2.3845e+003          & 231\\*
-                                & \gls{newuoa}  & +2.3845e+003          & 201\\*
-                                & \gls{uobyqa}  & +2.3845e+003          & 152\\
-    \midrule
-    \multirow{3}{*}{CHWIRUT2LS} & \gls{cobyqa}  & +5.1305e+002          & 269\\*
-                                & \gls{newuoa}  & +5.1305e+002          & 192\\*
-                                & \gls{uobyqa}  & +5.1305e+002          & 150\\
-    \midrule
-    \multirow{3}{*}{CLIFF}      & \gls{cobyqa}  & +1.9979e-001          & 84\\*
-                                & \gls{newuoa}  & +1.9979e-001          & 118\\*
-                                & \gls{uobyqa}  & +1.9979e-001          & 100\\
-    \midrule
-    \multirow{3}{*}{COSINE}     & \gls{cobyqa}  & -9.0000e+000          & 163\\*
-                                & \gls{newuoa}  & -9.0000e+000          & 176\\*
-                                & \gls{uobyqa}  & -9.0000e+000          & 592\\
-    \midrule
-    \multirow{3}{*}{CUBE}       & \gls{cobyqa}  & +3.2353e-014          & 202\\*
-                                & \gls{newuoa}  & +9.3965e-016          & 182\\*
-                                & \gls{uobyqa}  & +4.9966e-019          & 111\\
-    \midrule
-    \multirow{3}{*}{DENSCHNA}   & \gls{cobyqa}  & +1.3472e-014          & 45\\*
-                                & \gls{newuoa}  & +2.1478e-020          & 36\\*
-                                & \gls{uobyqa}  & +0.0000e+000          & 22\\
-    \midrule
-    \multirow{3}{*}{DENSCHNB}   & \gls{cobyqa}  & +1.7830e-017          & 37\\*
-                                & \gls{newuoa}  & +1.3496e-016          & 38\\*
-                                & \gls{uobyqa}  & +0.0000e+000          & 20\\
-    \midrule
-    \multirow{3}{*}{DENSCHNC}   & \gls{cobyqa}  & +1.1670e-015          & 77\\*
-                                & \gls{newuoa}  & +1.8336e-001          & 80\\*
-                                & \gls{uobyqa}  & +1.9279e-016          & 39\\
-    \midrule
-    \multirow{3}{*}{DENSCHND}   & \gls{cobyqa}  & +3.2503e-014          & 930\\*
-                                & \gls{newuoa}  & +2.1292e-014          & 657\\*
-                                & \gls{uobyqa}  & +6.6285e-023          & 1150\\
-    \midrule
-    \multirow{3}{*}{DENSCHNE}   & \gls{cobyqa}  & +9.2483e-015          & 85\\*
-                                & \gls{newuoa}  & +2.2100e-015          & 154\\*
-                                & \gls{uobyqa}  & +2.6788e-016          & 118\\
-    \midrule
-    \multirow{3}{*}{DENSCHNF}   & \gls{cobyqa}  & +3.6048e-013          & 43\\*
-                                & \gls{newuoa}  & +2.7098e-015          & 39\\*
-                                & \gls{uobyqa}  & +0.0000e+000          & 21\\
-    \midrule
-    \multirow{3}{*}{DIXON3DQ}   & \gls{cobyqa}  & +1.7915e-013          & 298\\*
-                                & \gls{newuoa}  & +1.1063e-013          & 289\\*
-                                & \gls{uobyqa}  & +7.8763e-030          & 77\\
-    \midrule
-    \multirow{3}{*}{DJTL}       & \gls{cobyqa}  & -7.2283e+003          & 537\\*
-                                & \gls{newuoa}  & -8.9515e+003          & 795\\*
-                                & \gls{uobyqa}  & -8.9515e+003          & 769\\
-    \midrule
-    \multirow{3}{*}{DQDRTIC}    & \gls{cobyqa}  & +1.4970e-023          & 55\\*
-                                & \gls{newuoa}  & +1.7928e-029          & 48\\*
-                                & \gls{uobyqa}  & +5.2025e-024          & 77\\
-    \midrule
-    \multirow{3}{*}{DQRTIC}     & \gls{cobyqa}  & +2.9807e-019          & 876\\*
-                                & \gls{newuoa}  & +5.0870e-022          & 875\\*
-                                & \gls{uobyqa}  & +6.8769e-026          & 1348\\
-    \midrule
-    \multirow{3}{*}{ECKERLE4LS} & \gls{cobyqa}  & +1.4636e-003          & 197\\*
-                                & \gls{newuoa}  & +1.4636e-003          & 246\\*
-                                & \gls{uobyqa}  & +1.4636e-003          & 160\\
-    \midrule
-    \multirow{3}{*}{ENGVAL1}    & \gls{cobyqa}  & +2.2049e-013          & 50\\*
-                                & \gls{newuoa}  & +0.0000e+000          & 45\\*
-                                & \gls{uobyqa}  & +0.0000e+000          & 27\\
-    \midrule
-    \multirow{3}{*}{ENGVAL2}    & \gls{cobyqa}  & +1.5576e-014          & 213\\*
-                                & \gls{newuoa}  & +5.4265e-015          & 226\\*
-                                & \gls{uobyqa}  & +8.8332e-017          & 135\\
-    \midrule
-    \multirow{3}{*}{ENSOLS}     & \gls{cobyqa}  & +7.8854e+002          & 258\\*
-                                & \gls{newuoa}  & +7.8854e+002          & 269\\*
-                                & \gls{uobyqa}  & +7.8854e+002          & 255\\
-    \midrule
-    \multirow{3}{*}{ERRINROS}   & \gls{cobyqa}  & +6.7203e+000          & 5000\\*
-                                & \gls{newuoa}  & +6.7273e+000          & 5000\\*
-                                & \gls{uobyqa}  & +6.6946e+000          & 2906\\
-    \midrule
-    \multirow{3}{*}{ERRINRSM}   & \gls{cobyqa}  & +6.7202e+000          & 5000\\*
-                                & \gls{newuoa}  & +6.7620e+000          & 5000\\*
-                                & \gls{uobyqa}  & +6.2604e+000          & 5000\\
-    \midrule
-    \multirow{3}{*}{EXPFIT}     & \gls{cobyqa}  & +2.4051e-001          & 51\\*
-                                & \gls{newuoa}  & +2.4051e-001          & 59\\*
-                                & \gls{uobyqa}  & +2.4051e-001          & 46\\
-    \midrule
-    \multirow{3}{*}{EXTROSNB}   & \gls{cobyqa}  & +1.1863e-005          & 5000\\*
-                                & \gls{newuoa}  & +2.2102e-005          & 5000\\*
-                                & \gls{uobyqa}  & +1.0832e-005          & 5000\\
-    \midrule
-    \multirow{3}{*}{FBRAIN3LS}  & \gls{cobyqa}  & +2.7188e-001          & 5000\\*
-                                & \gls{newuoa}  & +2.7818e-001          & 5000\\*
-                                & \gls{uobyqa}  & +2.4855e-001          & 5000\\
-    \midrule
-    \multirow{3}{*}{FLETBV3M}   & \gls{cobyqa}  & -2.2173e-003          & 831\\*
-                                & \gls{newuoa}  & -2.2304e-003          & 402\\*
-                                & \gls{uobyqa}  & -2.1045e-003          & 1146\\
-    \midrule
-    \multirow{3}{*}{FLETCBV2}   & \gls{cobyqa}  & -6.1544e-001          & 239\\*
-                                & \gls{newuoa}  & -6.1544e-001          & 213\\*
-                                & \gls{uobyqa}  & -6.1544e-001          & 102\\
-    \midrule
-    \multirow{3}{*}{FLETCBV3}   & \gls{cobyqa}  & -3.2105e-002          & 1590\\*
-                                & \gls{newuoa}  & -3.2199e-002          & 952\\*
-                                & \gls{uobyqa}  & -1.7501e-002          & 5000\\
-    \midrule
-    \multirow{3}{*}{FLETCHBV}   & \gls{cobyqa}  & -2.6039e+006          & 1501\\*
-                                & \gls{newuoa}  & -2.5658e+006          & 1440\\*
-                                & \gls{uobyqa}  & -1.5381e+006          & 5000\\
-    \midrule
-    \multirow{3}{*}{FLETCHCR}   & \gls{cobyqa}  & +2.3163e-012          & 855\\*
-                                & \gls{newuoa}  & +2.4371e-010          & 776\\*
-                                & \gls{uobyqa}  & +3.4002e-014          & 1322\\
-    \midrule
-    \multirow{3}{*}{FREUROTH}   & \gls{cobyqa}  & +1.0141e+003          & 528\\*
-                                & \gls{newuoa}  & +1.0141e+003          & 550\\*
-                                & \gls{uobyqa}  & +1.0141e+003          & 585\\
-    \midrule
-    \multirow{3}{*}{GAUSSIAN}   & \gls{cobyqa}  & +1.1279e-008          & 57\\*
-                                & \gls{newuoa}  & +1.1279e-008          & 50\\*
-                                & \gls{uobyqa}  & +1.1279e-008          & 36\\
-    \midrule
-    \multirow{3}{*}{GBRAINLS}   & \gls{cobyqa}  & +2.8516e+001          & 76\\*
-                                & \gls{newuoa}  & +2.8516e+001          & 66\\*
-                                & \gls{uobyqa}  & +2.8516e+001          & 59\\
-    \midrule
-    \multirow{3}{*}{GENHUMPS}   & \gls{cobyqa}  & +5.2777e-003          & 5000\\*
-                                & \gls{newuoa}  & +1.7773e-001          & 5000\\*
-                                & \gls{uobyqa}  & +9.5016e-001          & 5000\\
-    \midrule
-    \multirow{3}{*}{GENROSE}    & \gls{cobyqa}  & +1.0000e+000          & 933\\*
-                                & \gls{newuoa}  & +1.0000e+000          & 719\\*
-                                & \gls{uobyqa}  & +1.0000e+000          & 852\\
-    \midrule
-    \multirow{3}{*}{GROWTHLS}   & \gls{cobyqa}  & +3.6346e+000          & 2876\\*
-                                & \gls{newuoa}  & +1.0040e+000          & 4739\\*
-                                & \gls{uobyqa}  & +1.0040e+000          & 1388\\
-    \midrule
-    \multirow{3}{*}{GULF}       & \gls{cobyqa}  & +1.3083e-013          & 588\\*
-                                & \gls{newuoa}  & +1.5115e-015          & 990\\*
-                                & \gls{uobyqa}  & +1.7282e-023          & 310\\
-    \midrule
-    \multirow{3}{*}{HAHN1LS}    & \gls{cobyqa}  & +9.3159e+002          & 118\\*
-                                & \gls{newuoa}  & +5.5401e+003          & 92\\*
-                                & \gls{uobyqa}  & +3.4265e+001          & 1966\\
-    \midrule
-    \multirow{3}{*}{HAIRY}      & \gls{cobyqa}  & +2.0000e+001          & 52\\*
-                                & \gls{newuoa}  & +2.0000e+001          & 240\\*
-                                & \gls{uobyqa}  & +2.0000e+001          & 287\\
-    \midrule
-    \multirow{3}{*}{HATFLDD}    & \gls{cobyqa}  & +2.5469e-007          & 238\\*
-                                & \gls{newuoa}  & +6.6151e-008          & 244\\*
-                                & \gls{uobyqa}  & +6.6151e-008          & 138\\
-    \midrule
-    \multirow{3}{*}{HATFLDE}    & \gls{cobyqa}  & +2.7287e-006          & 201\\*
-                                & \gls{newuoa}  & +5.1204e-007          & 237\\*
-                                & \gls{uobyqa}  & +5.1204e-007          & 117\\
-    \midrule
-    \multirow{3}{*}{HATFLDFL}   & \gls{cobyqa}  & +6.2219e-005          & 1430\\*
-                                & \gls{newuoa}  & +6.3073e-005          & 1085\\*
-                                & \gls{uobyqa}  & +6.0221e-005          & 3676\\
-    \midrule
-    \multirow{3}{*}{HEART6LS}   & \gls{cobyqa}  & +3.3998e-001          & 5000\\*
-                                & \gls{newuoa}  & +2.6675e-001          & 5000\\*
-                                & \gls{uobyqa}  & +3.8528e-001          & 5000\\
-    \midrule
-    \multirow{3}{*}{HEART8LS}   & \gls{cobyqa}  & +2.6403e-010          & 2619\\*
-                                & \gls{newuoa}  & +3.6101e-012          & 3329\\*
-                                & \gls{uobyqa}  & +9.7444e-015          & 1896\\
-    \midrule
-    \multirow{3}{*}{HELIX}      & \gls{cobyqa}  & +9.9419e-012          & 119\\*
-                                & \gls{newuoa}  & +1.4003e-013          & 89\\*
-                                & \gls{uobyqa}  & +0.0000e+000          & 55\\
-    \midrule
-    \multirow{3}{*}{HIELOW}     & \gls{cobyqa}  & +9.3057e+002          & 300\\*
-                                & \gls{newuoa}  & +9.3057e+002          & 297\\*
-                                & \gls{uobyqa}  & +9.3057e+002          & 162\\
-    \midrule
-    \multirow{3}{*}{HILBERTA}   & \gls{cobyqa}  & +4.2733e-009          & 5000\\*
-                                & \gls{newuoa}  & +1.2415e-009          & 5000\\*
-                                & \gls{uobyqa}  & -6.3186e+017          & 1168\\
-    \midrule
-    \multirow{3}{*}{HILBERTB}   & \gls{cobyqa}  & +1.1262e-012          & 81\\*
-                                & \gls{newuoa}  & +3.7507e-014          & 70\\*
-                                & \gls{uobyqa}  & +1.2342e-025          & 77\\
-    \midrule
-    \multirow{3}{*}{HIMMELBB}   & \gls{cobyqa}  & +0.0000e+000          & 40\\*
-                                & \gls{newuoa}  & +0.0000e+000          & 42\\*
-                                & \gls{uobyqa}  & +0.0000e+000          & 55\\
-    \midrule
-    \multirow{3}{*}{HIMMELBF}   & \gls{cobyqa}  & +3.1857e+002          & 3433\\*
-                                & \gls{newuoa}  & +3.1857e+002          & 1476\\*
-                                & \gls{uobyqa}  & +3.1857e+002          & 292\\
-    \midrule
-    \multirow{3}{*}{HIMMELBG}   & \gls{cobyqa}  & +2.3892e-015          & 42\\*
-                                & \gls{newuoa}  & +5.9800e-020          & 39\\*
-                                & \gls{uobyqa}  & +9.2211e-015          & 32\\
-    \midrule
-    \multirow{3}{*}{HIMMELBH}   & \gls{cobyqa}  & -1.0000e+000          & 39\\*
-                                & \gls{newuoa}  & -1.0000e+000          & 38\\*
-                                & \gls{uobyqa}  & -1.0000e+000          & 19\\
-    \midrule
-    \multirow{3}{*}{HUMPS}      & \gls{cobyqa}  & +2.7704e-015          & 234\\*
-                                & \gls{newuoa}  & +4.7885e-018          & 215\\*
-                                & \gls{uobyqa}  & +3.0292e-022          & 161\\
-    \midrule
-    \multirow{3}{*}{INDEFM}     & \gls{cobyqa}  & -9.5864e+002          & 1057\\*
-                                & \gls{newuoa}  & -9.4649e+002          & 961\\*
-                                & \gls{uobyqa}  & -1.0012e+003          & 1772\\
-    \midrule
-    \multirow{3}{*}{JENSMP}     & \gls{cobyqa}  & +1.2436e+002          & 121\\*
-                                & \gls{newuoa}  & +1.2436e+002          & 78\\*
-                                & \gls{uobyqa}  & +1.2436e+002          & 76\\
-    \midrule
-    \multirow{3}{*}{KIRBY2LS}   & \gls{cobyqa}  & +1.7229e+003          & 97\\*
-                                & \gls{newuoa}  & +9.7104e+003          & 78\\*
-                                & \gls{uobyqa}  & +3.7220e+001          & 616\\
-    \midrule
-    \multirow{3}{*}{KOWOSB}     & \gls{cobyqa}  & +3.0780e-004          & 323\\*
-                                & \gls{newuoa}  & +3.0780e-004          & 234\\*
-                                & \gls{uobyqa}  & +3.0780e-004          & 151\\
-    \midrule
-    \multirow{3}{*}{LANCZOS1LS} & \gls{cobyqa}  & +4.2906e-006          & 5000\\*
-                                & \gls{newuoa}  & +3.2120e-008          & 5000\\*
-                                & \gls{uobyqa}  & +2.7323e-009          & 5000\\
-    \midrule
-    \multirow{3}{*}{LANCZOS2LS} & \gls{cobyqa}  & +2.4342e-009          & 5000\\*
-                                & \gls{newuoa}  & +7.2782e-008          & 3146\\*
-                                & \gls{uobyqa}  & +7.7601e-010          & 5000\\
-    \midrule
-    \multirow{3}{*}{LANCZOS3LS} & \gls{cobyqa}  & +5.7093e-007          & 5000\\*
-                                & \gls{newuoa}  & +7.6074e-008          & 5000\\*
-                                & \gls{uobyqa}  & +1.9371e-008          & 5000\\
-    \midrule
-    \multirow{3}{*}{LOGHAIRY}   & \gls{cobyqa}  & +1.8232e-001          & 142\\*
-                                & \gls{newuoa}  & +1.8232e-001          & 121\\*
-                                & \gls{uobyqa}  & +1.8232e-001          & 129\\
-    \midrule
-    \multirow{3}{*}{LSC1LS}     & \gls{cobyqa}  & +7.7119e+000          & 418\\*
-                                & \gls{newuoa}  & +7.7119e+000          & 128\\*
-                                & \gls{uobyqa}  & +7.7119e+000          & 143\\
-    \midrule
-    \multirow{3}{*}{LSC2LS}     & \gls{cobyqa}  & +1.3341e+001          & 1336\\*
-                                & \gls{newuoa}  & +1.3359e+001          & 2643\\*
-                                & \gls{uobyqa}  & +1.3335e+001          & 454\\
-    \midrule
-    \multirow{3}{*}{MANCINO}    & \gls{cobyqa}  & +1.9355e-009          & 78\\*
-                                & \gls{newuoa}  & +2.8934e-010          & 67\\*
-                                & \gls{uobyqa}  & +4.8556e-009          & 112\\
-    \midrule
-    \multirow{3}{*}{MARATOSB}   & \gls{cobyqa}  & +4.7888e-002          & 1633\\*
-                                & \gls{newuoa}  & -9.8767e-001          & 5000\\*
-                                & \gls{uobyqa}  & -1.0000e+000          & 2355\\
-    \midrule
-    \multirow{3}{*}{MEXHAT}     & \gls{cobyqa}  & -2.4535e-002          & 56\\*
-                                & \gls{newuoa}  & -2.9646e-002          & 46\\*
-                                & \gls{uobyqa}  & -4.0010e-002          & 282\\
-    \midrule
-    \multirow{3}{*}{MEYER3}     & \gls{cobyqa}  & +2.8303e+006          & 2295\\*
-                                & \gls{newuoa}  & +1.1333e+005          & 486\\*
-                                & \gls{uobyqa}  & +8.7946e+001          & 3819\\
-    \midrule
-    \multirow{3}{*}{MGH09LS}    & \gls{cobyqa}  & +1.1980e-003          & 3962\\*
-                                & \gls{newuoa}  & +1.5247e-003          & 5000\\*
-                                & \gls{uobyqa}  & +3.0751e-004          & 1527\\
-    \midrule
-    \multirow{3}{*}{MGH10LS}    & \gls{cobyqa}  & +1.3669e+009          & 54\\*
-                                & \gls{newuoa}  & +1.3669e+009          & 56\\*
-                                & \gls{uobyqa}  & +1.2023e+009          & 2714\\
-    \midrule
-    \multirow{3}{*}{MISRA1BLS}  & \gls{cobyqa}  & +7.4103e+000          & 39\\*
-                                & \gls{newuoa}  & +7.3790e+000          & 45\\*
-                                & \gls{uobyqa}  & +7.4362e+000          & 67\\
-    \midrule
-    \multirow{3}{*}{MISRA1DLS}  & \gls{cobyqa}  & +1.1395e+000          & 40\\*
-                                & \gls{newuoa}  & +1.1457e+000          & 49\\*
-                                & \gls{uobyqa}  & +1.1662e+000          & 63\\
-    \midrule
-    \multirow{3}{*}{MOREBV}     & \gls{cobyqa}  & +1.3178e-013          & 611\\*
-                                & \gls{newuoa}  & +3.8450e-013          & 594\\*
-                                & \gls{uobyqa}  & +1.0462e-015          & 187\\
-    \midrule
-    \multirow{3}{*}{NONCVXU2}   & \gls{cobyqa}  & +2.3168e+001          & 398\\*
-                                & \gls{newuoa}  & +2.3168e+001          & 366\\*
-                                & \gls{uobyqa}  & +2.3168e+001          & 737\\
-    \midrule
-    \multirow{3}{*}{NONCVXUN}   & \gls{cobyqa}  & +2.3168e+001          & 284\\*
-                                & \gls{newuoa}  & +2.3168e+001          & 314\\*
-                                & \gls{uobyqa}  & +2.3168e+001          & 670\\
-    \midrule
-    \multirow{3}{*}{NONDIA}     & \gls{cobyqa}  & +1.6975e-011          & 280\\*
-                                & \gls{newuoa}  & +2.4593e-011          & 232\\*
-                                & \gls{uobyqa}  & +0.0000e+000          & 639\\
-    \midrule
-    \multirow{3}{*}{OSCIGRAD}   & \gls{cobyqa}  & +1.9021e-004          & 279\\*
-                                & \gls{newuoa}  & +1.1058e-005          & 272\\*
-                                & \gls{uobyqa}  & +2.8418e-006          & 5000\\
-    \midrule
-    \multirow{3}{*}{OSCIPATH}   & \gls{cobyqa}  & +9.9997e-001          & 163\\*
-                                & \gls{newuoa}  & +9.9997e-001          & 188\\*
-                                & \gls{uobyqa}  & +9.9996e-001          & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER1C}   & \gls{cobyqa}  & +6.5065e+002          & 5000\\*
-                                & \gls{newuoa}  & +1.2859e+002          & 5000\\*
-                                & \gls{uobyqa}  & +9.7605e-002          & 159\\
-    \midrule
-    \multirow{3}{*}{PALMER1D}   & \gls{cobyqa}  & +5.1114e+001          & 5000\\*
-                                & \gls{newuoa}  & +8.4571e+000          & 5000\\*
-                                & \gls{uobyqa}  & +6.5267e-001          & 120\\
-    \midrule
-    \multirow{3}{*}{PALMER2C}   & \gls{cobyqa}  & +6.0595e+001          & 5000\\*
-                                & \gls{newuoa}  & +3.6931e+000          & 5000\\*
-                                & \gls{uobyqa}  & +1.4369e-002          & 169\\
-    \midrule
-    \multirow{3}{*}{PALMER3C}   & \gls{cobyqa}  & +3.4441e+000          & 5000\\*
-                                & \gls{newuoa}  & +3.6268e-001          & 5000\\*
-                                & \gls{uobyqa}  & +1.9538e-002          & 153\\
-    \midrule
-    \multirow{3}{*}{PALMER4C}   & \gls{cobyqa}  & +1.2779e+000          & 5000\\*
-                                & \gls{newuoa}  & +2.4976e+000          & 5000\\*
-                                & \gls{uobyqa}  & +5.0311e-002          & 144\\
-    \midrule
-    \multirow{3}{*}{PALMER5C}   & \gls{cobyqa}  & +2.1281e+000          & 99\\*
-                                & \gls{newuoa}  & +2.1281e+000          & 103\\*
-                                & \gls{uobyqa}  & +2.1281e+000          & 40\\
-    \midrule
-    \multirow{3}{*}{PALMER5D}   & \gls{cobyqa}  & +8.7339e+001          & 297\\*
-                                & \gls{newuoa}  & +8.7339e+001          & 227\\*
-                                & \gls{uobyqa}  & +8.7339e+001          & 34\\
-    \midrule
-    \multirow{3}{*}{PALMER6C}   & \gls{cobyqa}  & +1.5792e-001          & 5000\\*
-                                & \gls{newuoa}  & +1.0049e-001          & 5000\\*
-                                & \gls{uobyqa}  & +1.6387e-002          & 157\\
-    \midrule
-    \multirow{3}{*}{PALMER7C}   & \gls{cobyqa}  & +5.2391e+000          & 5000\\*
-                                & \gls{newuoa}  & +4.3920e+000          & 5000\\*
-                                & \gls{uobyqa}  & +6.0199e-001          & 205\\
-    \midrule
-    \multirow{3}{*}{PALMER8C}   & \gls{cobyqa}  & +2.0810e+000          & 5000\\*
-                                & \gls{newuoa}  & +6.2002e-001          & 5000\\*
-                                & \gls{uobyqa}  & +1.5977e-001          & 199\\
-    \midrule
-    \multirow{3}{*}{PENALTY1}   & \gls{cobyqa}  & +7.0877e-005          & 2839\\*
-                                & \gls{newuoa}  & +7.0877e-005          & 2900\\*
-                                & \gls{uobyqa}  & +7.0877e-005          & 2787\\
-    \midrule
-    \multirow{3}{*}{PENALTY2}   & \gls{cobyqa}  & +2.9366e-004          & 5000\\*
-                                & \gls{newuoa}  & +2.9400e-004          & 5000\\*
-                                & \gls{uobyqa}  & +2.9366e-004          & 4779\\
-    \midrule
-    \multirow{3}{*}{POWELLBSLS} & \gls{cobyqa}  & +1.8277e-002          & 36\\*
-                                & \gls{newuoa}  & +1.4958e-002          & 37\\*
-                                & \gls{uobyqa}  & +8.7420e-020          & 623\\
-    \midrule
-    \multirow{3}{*}{POWELLSG}   & \gls{cobyqa}  & +6.6674e-012          & 2746\\*
-                                & \gls{newuoa}  & +5.4261e-010          & 1700\\*
-                                & \gls{uobyqa}  & +5.5276e-027          & 857\\
-    \midrule
-    \multirow{3}{*}{POWER}      & \gls{cobyqa}  & +5.1564e-021          & 1044\\*
-                                & \gls{newuoa}  & +1.1369e-021          & 798\\*
-                                & \gls{uobyqa}  & +1.6719e-024          & 1104\\
-    \midrule
-    \multirow{3}{*}{RAT42LS}    & \gls{cobyqa}  & +8.0565e+000          & 2217\\*
-                                & \gls{newuoa}  & +8.0565e+000          & 1454\\*
-                                & \gls{uobyqa}  & +8.0565e+000          & 284\\
-    \midrule
-    \multirow{3}{*}{ROSENBR}    & \gls{cobyqa}  & +6.9792e-015          & 191\\*
-                                & \gls{newuoa}  & +6.0869e-015          & 168\\*
-                                & \gls{uobyqa}  & +2.5138e-019          & 91\\
-    \midrule
-    \multirow{3}{*}{ROSENBRTU}  & \gls{cobyqa}  & +3.2766e-013          & 134\\*
-                                & \gls{newuoa}  & +1.0605e-013          & 1108\\*
-                                & \gls{uobyqa}  & +4.7899e-015          & 773\\
-    \midrule
-    \multirow{3}{*}{ROSZMAN1LS} & \gls{cobyqa}  & +7.5255e-004          & 3772\\*
-                                & \gls{newuoa}  & +1.5690e-001          & 104\\*
-                                & \gls{uobyqa}  & +4.9485e-004          & 314\\
-    \midrule
-    \multirow{3}{*}{S308}       & \gls{cobyqa}  & +7.7320e-001          & 55\\*
-                                & \gls{newuoa}  & +7.7320e-001          & 54\\*
-                                & \gls{uobyqa}  & +7.7320e-001          & 34\\
-    \midrule
-    \multirow{3}{*}{SBRYBND}    & \gls{cobyqa}  & +9.1226e+001          & 118\\*
-                                & \gls{newuoa}  & +1.0159e+002          & 133\\*
-                                & \gls{uobyqa}  & +1.3010e+001          & 1414\\
-    \midrule
-    \multirow{3}{*}{SCHMVETT}   & \gls{cobyqa}  & -2.4000e+001          & 328\\*
-                                & \gls{newuoa}  & -2.4000e+001          & 334\\*
-                                & \gls{uobyqa}  & -2.4000e+001          & 281\\
-    \midrule
-    \multirow{3}{*}{SCOSINE}    & \gls{cobyqa}  & -6.6407e+000          & 187\\*
-                                & \gls{newuoa}  & -5.2420e+000          & 181\\*
-                                & \gls{uobyqa}  & -7.0562e+000          & 607\\
-    \midrule
-    \multirow{3}{*}{SCURLY10}   & \gls{cobyqa}  & +5.8780e+015          & 5000\\*
-                                & \gls{newuoa}  & +4.3863e+012          & 5000\\*
-                                & \gls{uobyqa}  & +1.5899e+009          & 5000\\
-    \midrule
-    \multirow{3}{*}{SENSORS}    & \gls{cobyqa}  & -2.1094e+001          & 249\\*
-                                & \gls{newuoa}  & -2.1094e+001          & 261\\*
-                                & \gls{uobyqa}  & -2.0250e+001          & 288\\
-    \midrule
-    \multirow{3}{*}{SINEVAL}    & \gls{cobyqa}  & +1.7304e-015          & 277\\*
-                                & \gls{newuoa}  & +9.5778e-020          & 270\\*
-                                & \gls{uobyqa}  & +1.0390e-026          & 210\\
-    \midrule
-    \multirow{3}{*}{SINQUAD}    & \gls{cobyqa}  & -1.5875e+001          & 205\\*
-                                & \gls{newuoa}  & -1.5875e+001          & 195\\*
-                                & \gls{uobyqa}  & -1.5875e+001          & 104\\
-    \midrule
-    \multirow{3}{*}{SISSER}     & \gls{cobyqa}  & +7.2258e-024          & 187\\*
-                                & \gls{newuoa}  & +2.5867e-025          & 78\\*
-                                & \gls{uobyqa}  & +2.8316e-029          & 63\\
-    \midrule
-    \multirow{3}{*}{SNAIL}      & \gls{cobyqa}  & +1.8326e-014          & 304\\*
-                                & \gls{newuoa}  & +9.7261e-018          & 305\\*
-                                & \gls{uobyqa}  & +6.7246e-016          & 302\\
-    \midrule
-    \multirow{3}{*}{SPARSINE}   & \gls{cobyqa}  & +1.6770e-012          & 355\\*
-                                & \gls{newuoa}  & +1.0231e-012          & 367\\*
-                                & \gls{uobyqa}  & +3.2765e-024          & 711\\
-    \midrule
-    \multirow{3}{*}{SPARSQUR}   & \gls{cobyqa}  & +6.3827e-021          & 610\\*
-                                & \gls{newuoa}  & +4.2129e-023          & 993\\*
-                                & \gls{uobyqa}  & +3.7429e-025          & 1102\\
-    \midrule
-    \multirow{3}{*}{SSBRYBND}   & \gls{cobyqa}  & +8.3236e-001          & 5000\\*
-                                & \gls{newuoa}  & +5.7726e-001          & 5000\\*
-                                & \gls{uobyqa}  & +2.0391e-010          & 2589\\
-    \midrule
-    \multirow{3}{*}{SSCOSINE}   & \gls{cobyqa}  & -6.5025e+000          & 1262\\*
-                                & \gls{newuoa}  & -7.5863e+000          & 5000\\*
-                                & \gls{uobyqa}  & -9.0000e+000          & 1703\\
-    \midrule
-    \multirow{3}{*}{SSI}        & \gls{cobyqa}  & +6.1465e-004          & 2863\\*
-                                & \gls{newuoa}  & +2.8357e-004          & 2286\\*
-                                & \gls{uobyqa}  & +4.4656e-007          & 5000\\
-    \midrule
-    \multirow{3}{*}{STRATEC}    & \gls{cobyqa}  & +2.2237e+003          & 5000\\*
-                                & \gls{newuoa}  & +2.2241e+003          & 5000\\*
-                                & \gls{uobyqa}  & +2.2123e+003          & 2464\\
-    \midrule
-    \multirow{3}{*}{STREG}      & \gls{cobyqa}  & +7.5323e+018          & 2578\\*
-                                & \gls{newuoa}  & +9.7429e+019          & 5000\\*
-                                & \gls{uobyqa}  & +3.0618e+019          & 5000\\
-    \midrule
-    \multirow{3}{*}{THURBERLS}  & \gls{cobyqa}  & +1.2202e+005          & 5000\\*
-                                & \gls{newuoa}  & +5.9569e+005          & 5000\\*
-                                & \gls{uobyqa}  & +5.6427e+003          & 2789\\
-    \midrule
-    \multirow{3}{*}{TOINTGSS}   & \gls{cobyqa}  & +1.1250e+001          & 331\\*
-                                & \gls{newuoa}  & +1.1250e+001          & 336\\*
-                                & \gls{uobyqa}  & +1.0000e+001          & 393\\
-    \midrule
-    \multirow{3}{*}{TQUARTIC}   & \gls{cobyqa}  & +9.4643e-013          & 500\\*
-                                & \gls{newuoa}  & +2.2343e-013          & 427\\*
-                                & \gls{uobyqa}  & +3.7923e-014          & 406\\
-    \midrule
-    \multirow{3}{*}{TRIDIA}     & \gls{cobyqa}  & +3.4872e-012          & 263\\*
-                                & \gls{newuoa}  & +1.2501e-012          & 243\\*
-                                & \gls{uobyqa}  & +2.3789e-030          & 77\\
-    \midrule
-    \multirow{3}{*}{VARDIM}     & \gls{cobyqa}  & +2.9299e-012          & 1406\\*
-                                & \gls{newuoa}  & +1.0400e-011          & 1451\\*
-                                & \gls{uobyqa}  & +8.1670e-018          & 1395\\
-    \midrule
-    \multirow{3}{*}{VAREIGVL}   & \gls{cobyqa}  & +3.0187e-013          & 222\\*
-                                & \gls{newuoa}  & +4.8012e-013          & 201\\*
-                                & \gls{uobyqa}  & +8.4933e-026          & 582\\
-    \midrule
-    \multirow{3}{*}{VESUVIALS}  & \gls{cobyqa}  & +2.3121e+003          & 135\\*
-                                & \gls{newuoa}  & +2.3660e+003          & 131\\*
-                                & \gls{uobyqa}  & +1.5004e+003          & 4862\\
-    \midrule
-    \multirow{3}{*}{VESUVIOLS}  & \gls{cobyqa}  & +1.8183e+003          & 145\\*
-                                & \gls{newuoa}  & +1.5721e+003          & 136\\*
-                                & \gls{uobyqa}  & +1.5007e+003          & 1033\\
-    \midrule
-    \multirow{3}{*}{VESUVIOULS} & \gls{cobyqa}  & +8.9359e-001          & 147\\*
-                                & \gls{newuoa}  & +8.1354e-001          & 160\\*
-                                & \gls{uobyqa}  & +7.1966e-001          & 2587\\
-    \midrule
-    \multirow{3}{*}{VIBRBEAM}   & \gls{cobyqa}  & +4.3656e+001          & 160\\*
-                                & \gls{newuoa}  & +9.2713e+001          & 136\\*
-                                & \gls{uobyqa}  & +1.4550e+001          & 2687\\
-    \midrule
-    \multirow{3}{*}{YFITU}      & \gls{cobyqa}  & +1.1722e-011          & 1732\\*
-                                & \gls{newuoa}  & +6.2172e-003          & 2053\\*
-                                & \gls{uobyqa}  & +6.6699e-013          & 572\\
-    \midrule
-    \multirow{3}{*}{ZANGWIL2}   & \gls{cobyqa}  & -1.8200e+001          & 34\\*
-                                & \gls{newuoa}  & -1.8200e+001          & 29\\*
-                                & \gls{uobyqa}  & -1.8200e+001          & 17\\
+    AKIVA       & ALLINITU      & ARGLINA       & ARGLINB\\
+    \midrule
+    ARGLINC     & ARGTRIGLS     & BARD          & BEALE\\
+    \midrule
+    BENNETT5LS  & BIGGS6        & BOX           & BOX3\\
+    \midrule
+    BOXBODLS    & BOXPOWER      & BRKMCC        & BROWNAL\\
+    \midrule
+    BROWNBS     & BROWNDEN      & BROYDN3DLS    & BROYDNBDLS\\
+    \midrule
+    BRYBND      & CHNROSNB      & CHNRSNBM      & CHWIRUT1LS\\
+    \midrule
+    CHWIRUT2LS  & CLIFF         & COSINE        & CUBE\\
+    \midrule
+    DENSCHNA    & DENSCHNB      & DENSCHNC      & DENSCHND\\
+    \midrule
+    DENSCHNE    & DENSCHNF      & DIXON3DQ      & DJTL\\
+    \midrule
+    DQDRTIC     & DQRTIC        & ECKERLE4LS    & EDENSCH\\
+    \midrule
+    ENGVAL1     & ENGVAL2       & ENSOLS        & ERRINROS\\
+    \midrule
+    ERRINRSM    & EXPFIT        & EXTROSNB      & FBRAIN3LS\\
+    \midrule
+    FLETBV3M    & FLETCBV2      & FLETCBV3      & FLETCHBV\\
+    \midrule
+    FLETCHCR    & FREUROTH      & GAUSSIAN      & GBRAINLS\\
+    \midrule
+    GENHUMPS    & GENROSE       & GROWTHLS      & GULF\\
+    \midrule
+    HAHN1LS     & HAIRY         & HATFLDD       & HATFLDE\\
+    \midrule
+    HATFLDFL    & HEART6LS      & HEART8LS      & HELIX\\
+    \midrule
+    HIELOW      & HILBERTA      & HILBERTB      & HIMMELBB\\
+    \midrule
+    HIMMELBF    & HIMMELBG      & HIMMELBH      & HUMPS\\
+    \midrule
+    INDEFM      & JENSMP        & KIRBY2LS      & KOWOSB\\
+    \midrule
+    LANCZOS1LS  & LANCZOS2LS    & LANCZOS3LS    & LIARWHD\\
+    \midrule
+    LOGHAIRY    & LSC1LS        & LSC2LS        & MANCINO\\
+    \midrule
+    MARATOSB    & MEXHAT        & MEYER3        & MGH09LS\\
+    \midrule
+    MGH10LS     & MISRA1BLS     & MISRA1DLS     & MOREBV\\
+    \midrule
+    NCB20B      & NONCVXU2      & NONCVXUN      & NONDIA\\
+    \midrule
+    OSBORNEB    & OSCIGRAD      & OSCIPATH      & PALMER1C\\
+    \midrule
+    PALMER1D    & PALMER2C      & PALMER3C      & PALMER4C\\
+    \midrule
+    PALMER5C    & PALMER5D      & PALMER6C      & PALMER7C\\
+    \midrule
+    PALMER8C    & PARKCH        & PENALTY1      & PENALTY2\\
+    \midrule
+    POWELLBSLS  & POWELLSG      & POWER         & QUARTC\\
+    \midrule
+    RAT42LS     & ROSENBR       & ROSENBRTU     & ROSZMAN1LS\\
+    \midrule
+    S308        & SBRYBND       & SCHMVETT      & SCOSINE\\
+    \midrule
+    SCURLY10    & SENSORS       & SINEVAL       & SINQUAD\\
+    \midrule
+    SISSER      & SNAIL         & SPARSINE      & SPARSQUR\\
+    \midrule
+    SSBRYBND    & SSCOSINE      & SSI           & STRATEC\\
+    \midrule
+    STREG       & THURBERLS     & TOINTGOR      & TOINTGSS\\
+    \midrule
+    TOINTPSP    & TOINTQOR      & TQUARTIC      & TRIDIA\\
+    \midrule
+    VARDIM      & VAREIGVL      & VESUVIALS     & VESUVIOLS\\
+    \midrule
+    VESUVIOULS  & VIBRBEAM      & WATSON        & YFITU\\
+    \midrule
+    ZANGWIL2\\
     \bottomrule
 \end{longtable}
 
-We now provide the detailed results obtained on unconstrained problems of dimension at most~$50$ and at least~$11$ in \cref{tab:cobyqa-uobyqa-50}.
+\section{Bound-constrained problems}
 
-\begin{longtable}{ccS[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[group-minimum-digits=4,table-format=6,table-alignment-mode=format,table-number-alignment=center]}
-    \caption{Results on unconstrained problems with~$11 \le n \le 50$}\label{tab:cobyqa-uobyqa-50}\\
+We present in this section the bound-constrained problems employed during the numerical experiments.
+
+\begin{longtable}{llll}
+    \caption{List of bound-constrained problems}\\
     \toprule
-    Problem                     & Solver        & {Objective value}     & {No.\ eval.}\\
+    3PK         & ALLINIT   & BLEACHNG  & BQP1VAR\\
     \midrule
-    \multirow{2}{*}{CHNROSNB}   & \gls{cobyqa}  & +5.5868e-011          & 3005\\*
-                                & \gls{uobyqa}  & +9.6414e-013          & 6607\\
+    BQPGABIM    & BQPGASIM  & CAMEL6    & CHEBYQAD\\
     \midrule
-    \multirow{2}{*}{CHNRSNBM}   & \gls{cobyqa}  & +2.8289e-010          & 4110\\*
-                                & \gls{uobyqa}  & +8.0773e-014          & 7558\\
+    CVXBQP1     & EG1       & FBRAIN2LS & FBRAINLS\\
     \midrule
-    \multirow{2}{*}{ERRINROS}   & \gls{cobyqa}  & +1.8541e+001          & 15000\\*
-                                & \gls{uobyqa}  & +1.8461e+001          & 14982\\
+    HART6       & HATFLDA   & HATFLDB   & HATFLDC\\
     \midrule
-    \multirow{2}{*}{ERRINRSM}   & \gls{cobyqa}  & +1.8402e+001          & 15000\\*
-                                & \gls{uobyqa}  & +1.7927e+001          & 15000\\
+    HIMMELP1    & HS1       & HS110     & HS2\\
     \midrule
-    \multirow{2}{*}{MANCINO}    & \gls{cobyqa}  & +5.9831e-008          & 342\\*
-                                & \gls{uobyqa}  & +8.1593e-006          & 1011\\
+    HS25        & HS3       & HS38      & HS3MOD\\
     \midrule
-    \multirow{2}{*}{NCB20B}     & \gls{cobyqa}  & +4.3994e+001          & 10635\\*
-                                & \gls{uobyqa}  & +4.3994e+001          & 2935\\
+    HS4         & HS45      & HS5       & LINVERSE\\
     \midrule
-    \multirow{2}{*}{NONDIA}     & \gls{cobyqa}  & +9.0382e-010          & 744\\*
-                                & \gls{uobyqa}  & +0.0000e+000          & 3824\\
+    LOGROS      & MAXLIKA   & MCCORMCK  & MDHOLE\\
     \midrule
-    \multirow{2}{*}{OSBORNEB}   & \gls{cobyqa}  & +4.0138e-002          & 2370\\*
-                                & \gls{uobyqa}  & +4.0138e-002          & 2218\\
+    NCVXBQP1    & NCVXBQP2  & NCVXBQP3  & NONSCOMP\\
     \midrule
-    \multirow{2}{*}{OSCIGRAD}   & \gls{cobyqa}  & +3.0824e-004          & 619\\*
-                                & \gls{uobyqa}  & +3.1645e-015          & 2641\\
+    OSLBQP      & PALMER1   & PALMER1A  & PALMER1B\\
     \midrule
-    \multirow{2}{*}{OSCIPATH}   & \gls{cobyqa}  & +9.9997e-001          & 365\\*
-                                & \gls{uobyqa}  & +9.9997e-001          & 2524\\
+    PALMER1E    & PALMER2   & PALMER2A  & PALMER2B\\
     \midrule
-    \multirow{2}{*}{PARKCH}     & \gls{cobyqa}  & +1.6237e+003          & 10143\\*
-                                & \gls{uobyqa}  & +1.6237e+003          & 3477\\
+    PALMER2E    & PALMER3   & PALMER3A  & PALMER3B\\
     \midrule
-    \multirow{2}{*}{POWELLSG}   & \gls{cobyqa}  & +6.8389e-011          & 15000\\*
-                                & \gls{uobyqa}  & +2.3228e-025          & 5507\\
+    PALMER3E    & PALMER4   & PALMER4A  & PALMER4B\\
     \midrule
-    \multirow{2}{*}{POWER}      & \gls{cobyqa}  & +2.4637e-019          & 4745\\*
-                                & \gls{uobyqa}  & +1.3330e-022          & 13012\\
+    PALMER4E    & PALMER5A  & PALMER5B  & PALMER5E\\
     \midrule
-    \multirow{2}{*}{QUARTC}     & \gls{cobyqa}  & +2.6310e-019          & 3073\\*
-                                & \gls{uobyqa}  & +1.1149e-025          & 10613\\
+    PALMER6A    & PALMER6E  & PALMER7A  & PALMER7E\\
     \midrule
-    \multirow{2}{*}{TRIDIA}     & \gls{cobyqa}  & +6.9621e-011          & 1079\\*
-                                & \gls{uobyqa}  & +9.4260e-028          & 507\\
+    PALMER8A    & PALMER8E  & PENTDI    & PFIT1LS\\
     \midrule
-    \multirow{2}{*}{WATSON}     & \gls{cobyqa}  & +1.9382e-007          & 11957\\*
-                                & \gls{uobyqa}  & +4.7136e-010          & 3834\\
+    PFIT2LS     & PFIT3LS   & PFIT4LS   & PROBPENL\\
+    \midrule
+    PSPDOC      & S368      & SANTALS   & SIM2BQP\\
+    \midrule
+    SIMBQP      & SINEALI   & WEEDS     & YFIT\\
+    \bottomrule
+    \end{longtable}
+
+\section{Linearly-constrained problems}
+
+We present in this section the linearly-constrained problems employed during the numerical experiments.
+Among these problems, we consider only those with at least one bound constraint when making experiments that modify the value of the objective function according to the bounds.
+
+\begin{longtable}{llll}
+    \caption{List of linearly-constrained problems}\\
+    \toprule
+    AVGASA  & AVGASB    & AVION2    & BIGGSC4\\
+    \midrule
+    BT3     & DALLASS   & EQC       & EXPFITA\\
+    \midrule
+    EXPFITB & EXPFITC   & FCCU      & GENHS28\\
+    \midrule
+    HATFLDH & HS105     & HS118     & HS21\\
+    \midrule
+    HS21MOD & HS24      & HS268     & HS28\\
+    \midrule
+    HS35    & HS35I     & HS35MOD   & HS36\\
+    \midrule
+    HS37    & HS41      & HS44      & HS44NEW\\
+    \midrule
+    HS48    & HS49      & HS50      & HS51\\
+    \midrule
+    HS52    & HS53      & HS54      & HS76\\
+    \midrule
+    HS76I   & HS9       & HUBFIT    & LSQFIT\\
+    \midrule
+    ODFITS  & PENTAGON  & QC        & QCNEW\\
+    \midrule
+    S268    & WATER     & ZECEVIC2\\
     \bottomrule
 \end{longtable}
 
-\section{Details for bound-constrained problems}
+\section{Nonlinearly-constrained problems}
 
-We provide the detailed results obtained on bound-constrained problems of dimension at most~$10$ in \cref{tab:cobyqa-bobyqa-10}.
+We present in this section the nonlinearly-constrained problems employed during the numerical experiments.
+Among these problems, we consider only those with at least one bound constraint when making experiments that modify the value of the objective function according to the bounds.
 
-\begin{longtable}{ccS[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[group-minimum-digits=4,table-format=6,table-alignment-mode=format,table-number-alignment=center]}
-    \caption{Results on bound-constrained problems with~$n \le 10$}\label{tab:cobyqa-bobyqa-10}\\
+\begin{longtable}{cccc}
+    \caption{List of nonlinearly-constrained problems}\\
     \toprule
-    Problem                     & Solver        & {Objective value}     & {Constraint violation}    & {No.\ eval.}\\
+    ACOPP14     & ACOPR14   & ALLINITA  & ALLINITC\\
     \midrule
-    \multirow{3}{*}{ALLINIT}    & \gls{bobyqa}  & +1.6706e+001          & +0.0000e+000              & 65\\*
-                                & \gls{cobyla}  & +1.6706e+001          & +0.0000e+000              & 100\\*
-                                & \gls{cobyqa}  & +1.6706e+001          & +0.0000e+000              & 63\\
+    ALSOTAME    & BATCH     & BT1       & BT11\\
     \midrule
-    \multirow{3}{*}{BQP1VAR}    & \gls{bobyqa}  & +0.0000e+000          & +0.0000e+000              & 11\\*
-                                & \gls{cobyla}  & +0.0000e+000          & +0.0000e+000              & 9\\*
-                                & \gls{cobyqa}  & +0.0000e+000          & +0.0000e+000              & 15\\
+    BT12        & BT2       & BT4       & BT5\\
     \midrule
-    \multirow{3}{*}{CAMEL6}     & \gls{bobyqa}  & -1.0316e+000          & +0.0000e+000              & 38\\*
-                                & \gls{cobyla}  & -1.0316e+000          & +0.0000e+000              & 58\\*
-                                & \gls{cobyqa}  & -1.0316e+000          & +0.0000e+000              & 37\\
+    BT6         & BT7       & BT8       & BURKEHAN\\
     \midrule
-    \multirow{3}{*}{CHEBYQAD}   & \gls{bobyqa}  & +4.7727e-003          & +0.0000e+000              & 1179\\*
-                                & \gls{cobyla}  & +4.7733e-003          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +4.7727e-003          & +0.0000e+000              & 722\\
+    DEMBO7      & DIPIGRI   & FLETCHER  & FLT\\
     \midrule
-    \multirow{3}{*}{CVXBQP1}    & \gls{bobyqa}  & +2.4750e+000          & +0.0000e+000              & 40\\*
-                                & \gls{cobyla}  & +2.4750e+000          & +5.5511e-017              & 93\\*
-                                & \gls{cobyqa}  & +2.4750e+000          & +0.0000e+000              & 58\\
+    GILBERT     & HIMMELP2  & HIMMELP3  & HIMMELP4\\
     \midrule
-    \multirow{3}{*}{EG1}        & \gls{bobyqa}  & -1.1328e+000          & +0.0000e+000              & 50\\*
-                                & \gls{cobyla}  & -1.1328e+000          & +0.0000e+000              & 85\\*
-                                & \gls{cobyqa}  & -1.1328e+000          & +0.0000e+000              & 58\\
+    HIMMELP5    & HIMMELP6  & HS100     & HS100LNP\\
     \midrule
-    \multirow{3}{*}{FBRAIN2LS}  & \gls{bobyqa}  & +3.6839e-001          & +0.0000e+000              & 606\\*
-                                & \gls{cobyla}  & +3.8789e-001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +3.6839e-001          & +0.0000e+000              & 671\\
+    HS100MOD    & HS104     & HS108     & HS11\\
     \midrule
-    \multirow{3}{*}{FBRAINLS}   & \gls{bobyqa}  & +4.1660e-001          & +0.0000e+000              & 86\\*
-                                & \gls{cobyla}  & +4.5153e-001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +4.1660e-001          & +0.0000e+000              & 85\\
+    HS111       & HS111LNP  & HS113     & HS114\\
     \midrule
-    \multirow{3}{*}{HART6}      & \gls{bobyqa}  & -3.3229e+000          & +0.0000e+000              & 115\\*
-                                & \gls{cobyla}  & -3.3229e+000          & +0.0000e+000              & 164\\*
-                                & \gls{cobyqa}  & -3.2046e+000          & +0.0000e+000              & 195\\
+    HS117       & HS12      & HS14      & HS15\\
     \midrule
-    \multirow{3}{*}{HATFLDA}    & \gls{bobyqa}  & +1.2756e-012          & +0.0000e+000              & 227\\*
-                                & \gls{cobyla}  & +6.3691e-010          & +0.0000e+000              & 4877\\*
-                                & \gls{cobyqa}  & +1.7500e-014          & +0.0000e+000              & 57\\
+    HS16        & HS17      & HS18      & HS20\\
     \midrule
-    \multirow{3}{*}{HATFLDB}    & \gls{bobyqa}  & +5.5728e-003          & +0.0000e+000              & 251\\*
-                                & \gls{cobyla}  & +5.5728e-003          & +0.0000e+000              & 325\\*
-                                & \gls{cobyqa}  & +5.5728e-003          & +0.0000e+000              & 65\\
+    HS22        & HS23      & HS26      & HS27\\
     \midrule
-    \multirow{3}{*}{HIMMELP1}   & \gls{bobyqa}  & -6.2054e+001          & +0.0000e+000              & 45\\*
-                                & \gls{cobyla}  & -6.2054e+001          & +0.0000e+000              & 121\\*
-                                & \gls{cobyqa}  & -6.2054e+001          & +0.0000e+000              & 56\\
+    HS29        & HS30      & HS31      & HS32\\
     \midrule
-    \multirow{3}{*}{HS1}        & \gls{bobyqa}  & +6.8188e-017          & +0.0000e+000              & 185\\*
-                                & \gls{cobyla}  & +3.9463e-003          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +2.2755e-014          & +0.0000e+000              & 176\\
+    HS33        & HS40      & HS42      & HS43\\
     \midrule
-    \multirow{3}{*}{HS110}      & \gls{bobyqa}  & -4.5778e+001          & +0.0000e+000              & 736\\*
-                                & \gls{cobyla}  & -4.5778e+001          & +0.0000e+000              & 304\\*
-                                & \gls{cobyqa}  & -4.5778e+001          & +0.0000e+000              & 204\\
+    HS46        & HS47      & HS56      & HS57\\
     \midrule
-    \multirow{3}{*}{HS2}        & \gls{bobyqa}  & +4.9412e+000          & +0.0000e+000              & 30\\*
-                                & \gls{cobyla}  & +4.9412e+000          & +0.0000e+000              & 47\\*
-                                & \gls{cobyqa}  & +4.9412e+000          & +0.0000e+000              & 35\\
+    HS59        & HS6       & HS60      & HS61\\
     \midrule
-    \multirow{3}{*}{HS25}       & \gls{bobyqa}  & +1.4405e-013          & +0.0000e+000              & 973\\*
-                                & \gls{cobyla}  & +1.3735e+000          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +3.2008e-016          & +0.0000e+000              & 694\\
+    HS65        & HS68      & HS69      & HS7\\
     \midrule
-    \multirow{3}{*}{HS3}        & \gls{bobyqa}  & +9.4545e-048          & +0.0000e+000              & 28\\*
-                                & \gls{cobyla}  & +8.8470e-019          & +0.0000e+000              & 56\\*
-                                & \gls{cobyqa}  & +3.1554e-035          & +0.0000e+000              & 38\\
+    HS70        & HS71      & HS74      & HS75\\
     \midrule
-    \multirow{3}{*}{HS38}       & \gls{bobyqa}  & +2.9473e-013          & +0.0000e+000              & 642\\*
-                                & \gls{cobyla}  & +7.8719e+000          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.3719e-013          & +0.0000e+000              & 644\\
+    HS77        & HS78      & HS79      & HS80\\
     \midrule
-    \multirow{3}{*}{HS3MOD}     & \gls{bobyqa}  & +7.2577e-046          & +0.0000e+000              & 36\\*
-                                & \gls{cobyla}  & +1.2929e-014          & +0.0000e+000              & 91\\*
-                                & \gls{cobyqa}  & +6.7708e-036          & +0.0000e+000              & 46\\
+    HS81        & HS83      & HS90      & HS91\\
     \midrule
-    \multirow{3}{*}{HS4}        & \gls{bobyqa}  & +2.6667e+000          & +0.0000e+000              & 20\\*
-                                & \gls{cobyla}  & +2.6667e+000          & +0.0000e+000              & 17\\*
-                                & \gls{cobyqa}  & +2.6667e+000          & +0.0000e+000              & 31\\
+    HS93        & HS99      & HS99EXP   & JANNSON3\\
     \midrule
-    \multirow{3}{*}{HS45}       & \gls{bobyqa}  & +1.0000e+000          & +0.0000e+000              & 42\\*
-                                & \gls{cobyla}  & +1.0000e+000          & +0.0000e+000              & 45\\*
-                                & \gls{cobyqa}  & +1.0000e+000          & +0.0000e+000              & 43\\
+    JANNSON4    & LAUNCH    & LEWISPOL  & LOOTSMA\\
     \midrule
-    \multirow{3}{*}{HS5}        & \gls{bobyqa}  & -1.9132e+000          & +0.0000e+000              & 30\\*
-                                & \gls{cobyla}  & -1.9132e+000          & +0.0000e+000              & 47\\*
-                                & \gls{cobyqa}  & -1.9132e+000          & +0.0000e+000              & 35\\
+    MARATOS     & MATRIX2   & MESH      & MISTAKE\\
     \midrule
-    \multirow{3}{*}{LOGROS}     & \gls{bobyqa}  & +0.0000e+000          & +0.0000e+000              & 33\\*
-                                & \gls{cobyla}  & +0.0000e+000          & +0.0000e+000              & 34\\*
-                                & \gls{cobyqa}  & +0.0000e+000          & +0.0000e+000              & 33\\
+    MWRIGHT     & OPTCNTRL  & OPTPRLOC  & ORTHREGB\\
     \midrule
-    \multirow{3}{*}{MAXLIKA}    & \gls{bobyqa}  & +1.1364e+003          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +1.1490e+003          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.1364e+003          & +0.0000e+000              & 5000\\
+    ROBOT       & S316-322  & S365      & S365MOD\\
     \midrule
-    \multirow{3}{*}{MCCORMCK}   & \gls{bobyqa}  & -9.5980e+000          & +0.0000e+000              & 139\\*
-                                & \gls{cobyla}  & -9.5980e+000          & +0.0000e+000              & 308\\*
-                                & \gls{cobyqa}  & -9.5980e+000          & +0.0000e+000              & 134\\
+    SYNTHES1    & SYNTHES2  & SYNTHES3  & TRY-B\\
     \midrule
-    \multirow{3}{*}{MDHOLE}     & \gls{bobyqa}  & +1.7333e-029          & +0.0000e+000              & 338\\*
-                                & \gls{cobyla}  & +5.2856e+000          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & -6.9389e-018          & +0.0000e+000              & 256\\
-    \midrule
-    \multirow{3}{*}{NCVXBQP1}   & \gls{bobyqa}  & -2.2050e+004          & +0.0000e+000              & 58\\*
-                                & \gls{cobyla}  & -2.2050e+004          & +0.0000e+000              & 147\\*
-                                & \gls{cobyqa}  & -2.2050e+004          & +0.0000e+000              & 60\\
-    \midrule
-    \multirow{3}{*}{NCVXBQP2}   & \gls{bobyqa}  & -1.4382e+004          & +0.0000e+000              & 58\\*
-                                & \gls{cobyla}  & -1.4382e+004          & +1.7764e-015              & 127\\*
-                                & \gls{cobyqa}  & -1.4382e+004          & +0.0000e+000              & 61\\
-    \midrule
-    \multirow{3}{*}{NCVXBQP3}   & \gls{bobyqa}  & -1.1958e+004          & +0.0000e+000              & 66\\*
-                                & \gls{cobyla}  & -1.1958e+004          & +1.8041e-016              & 150\\*
-                                & \gls{cobyqa}  & -1.1958e+004          & +0.0000e+000              & 77\\
-    \midrule
-    \multirow{3}{*}{OSLBQP}     & \gls{bobyqa}  & +6.2500e+000          & +0.0000e+000              & 38\\*
-                                & \gls{cobyla}  & +6.2500e+000          & +4.8859e-022              & 180\\*
-                                & \gls{cobyqa}  & +6.2500e+000          & +0.0000e+000              & 46\\
-    \midrule
-    \multirow{3}{*}{PALMER1}    & \gls{bobyqa}  & +1.1755e+004          & +0.0000e+000              & 1129\\*
-                                & \gls{cobyla}  & +1.6993e+004          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.1755e+004          & +0.0000e+000              & 997\\
-    \midrule
-    \multirow{3}{*}{PALMER1A}   & \gls{bobyqa}  & +1.3516e+002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +1.5360e+004          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.0181e+000          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER1B}   & \gls{bobyqa}  & +3.4473e+000          & +0.0000e+000              & 2463\\*
-                                & \gls{cobyla}  & +1.9447e+004          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +3.4473e+000          & +0.0000e+000              & 1441\\
-    \midrule
-    \multirow{3}{*}{PALMER1E}   & \gls{bobyqa}  & +1.5837e-001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +3.4646e+004          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.1123e-001          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER2}    & \gls{bobyqa}  & +3.6511e+003          & +0.0000e+000              & 826\\*
-                                & \gls{cobyla}  & +4.3624e+003          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +3.6511e+003          & +0.0000e+000              & 329\\
-    \midrule
-    \multirow{3}{*}{PALMER2A}   & \gls{bobyqa}  & +1.7284e-002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +2.1212e+002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.9089e-002          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER2B}   & \gls{bobyqa}  & +6.2327e-001          & +0.0000e+000              & 1547\\*
-                                & \gls{cobyla}  & +9.5020e+002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +6.2327e-001          & +0.0000e+000              & 1282\\
-    \midrule
-    \multirow{3}{*}{PALMER2E}   & \gls{bobyqa}  & +2.6946e-002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +7.9661e+002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +2.6787e-002          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER3}    & \gls{bobyqa}  & +2.2660e+003          & +0.0000e+000              & 482\\*
-                                & \gls{cobyla}  & +2.4170e+003          & +0.0000e+000              & 141\\*
-                                & \gls{cobyqa}  & +2.2660e+003          & +0.0000e+000              & 284\\
-    \midrule
-    \multirow{3}{*}{PALMER3A}   & \gls{bobyqa}  & +3.5421e-002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +6.9622e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +2.5368e-002          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER3B}   & \gls{bobyqa}  & +4.2276e+000          & +0.0000e+000              & 1485\\*
-                                & \gls{cobyla}  & +2.2169e+002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +4.2276e+000          & +0.0000e+000              & 1148\\
-    \midrule
-    \multirow{3}{*}{PALMER3E}   & \gls{bobyqa}  & +2.9181e-002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +1.4772e+002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +2.9470e-002          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER4}    & \gls{bobyqa}  & +2.2854e+003          & +0.0000e+000              & 493\\*
-                                & \gls{cobyla}  & +2.4240e+003          & +0.0000e+000              & 270\\*
-                                & \gls{cobyqa}  & +2.2854e+003          & +0.0000e+000              & 230\\
-    \midrule
-    \multirow{3}{*}{PALMER4A}   & \gls{bobyqa}  & +4.0629e-002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +7.7995e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +4.0619e-002          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER4B}   & \gls{bobyqa}  & +6.8351e+000          & +0.0000e+000              & 1460\\*
-                                & \gls{cobyla}  & +1.1234e+002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +6.8351e+000          & +0.0000e+000              & 832\\
-    \midrule
-    \multirow{3}{*}{PALMER4E}   & \gls{bobyqa}  & +6.1658e-002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +1.4679e+002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +6.6290e-002          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER5A}   & \gls{bobyqa}  & +7.0313e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +7.9216e+003          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.0242e+001          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER5B}   & \gls{bobyqa}  & +1.3946e+002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +5.7287e+003          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +4.8807e+001          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER5E}   & \gls{bobyqa}  & +7.8126e-002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +4.3580e-001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +2.1281e+000          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER6A}   & \gls{bobyqa}  & +7.9188e-002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +3.2176e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +7.3979e-002          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER6E}   & \gls{bobyqa}  & +2.5594e-002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +5.7354e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +2.5162e-002          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER7A}   & \gls{bobyqa}  & +1.6937e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +2.9622e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.3328e+001          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER7E}   & \gls{bobyqa}  & +1.0345e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +7.6167e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.0324e+001          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER8A}   & \gls{bobyqa}  & +6.9697e+000          & +0.0000e+000              & 369\\*
-                                & \gls{cobyla}  & +1.1740e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +7.5756e-002          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PALMER8E}   & \gls{bobyqa}  & +2.9327e-002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & +3.4392e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +3.8643e-002          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PFIT1LS}    & \gls{bobyqa}  & +2.7330e-004          & +0.0000e+000              & 525\\*
-                                & \gls{cobyla}  & +3.5436e-001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +2.6442e-004          & +0.0000e+000              & 476\\
-    \midrule
-    \multirow{3}{*}{PFIT2LS}    & \gls{bobyqa}  & +1.2439e-002          & +0.0000e+000              & 839\\*
-                                & \gls{cobyla}  & +7.4689e+000          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.1929e-002          & +0.0000e+000              & 692\\
-    \midrule
-    \multirow{3}{*}{PFIT3LS}    & \gls{bobyqa}  & +8.2275e-002          & +0.0000e+000              & 1293\\*
-                                & \gls{cobyla}  & +2.8229e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +8.1519e-002          & +0.0000e+000              & 970\\
-    \midrule
-    \multirow{3}{*}{PFIT4LS}    & \gls{bobyqa}  & +2.6645e-001          & +0.0000e+000              & 1610\\*
-                                & \gls{cobyla}  & +2.5112e+001          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +2.6291e-001          & +0.0000e+000              & 1354\\
-    \midrule
-    \multirow{3}{*}{PROBPENL}   & \gls{bobyqa}  & -1.0596e+005          & +0.0000e+000              & 3365\\*
-                                & \gls{cobyla}  & +1.1414e-005          & +0.0000e+000              & 229\\*
-                                & \gls{cobyqa}  & +1.2119e-005          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{PSPDOC}     & \gls{bobyqa}  & +2.4142e+000          & +0.0000e+000              & 84\\*
-                                & \gls{cobyla}  & +2.4142e+000          & +0.0000e+000              & 247\\*
-                                & \gls{cobyqa}  & +2.4142e+000          & +0.0000e+000              & 87\\
-    \midrule
-    \multirow{3}{*}{S368}       & \gls{bobyqa}  & -9.3750e-001          & +0.0000e+000              & 117\\*
-                                & \gls{cobyla}  & -1.0000e+000          & +2.2204e-016              & 211\\*
-                                & \gls{cobyqa}  & -4.3750e-001          & +0.0000e+000              & 126\\
-    \midrule
-    \multirow{3}{*}{SIM2BQP}    & \gls{bobyqa}  & +0.0000e+000          & +0.0000e+000              & 13\\*
-                                & \gls{cobyla}  & +0.0000e+000          & +0.0000e+000              & 9\\*
-                                & \gls{cobyqa}  & +0.0000e+000          & +0.0000e+000              & 15\\
-    \midrule
-    \multirow{3}{*}{SIMBQP}     & \gls{bobyqa}  & +0.0000e+000          & +0.0000e+000              & 31\\*
-                                & \gls{cobyla}  & +5.5644e-013          & +0.0000e+000              & 62\\*
-                                & \gls{cobyqa}  & +7.7114e-021          & +0.0000e+000              & 42\\
-    \midrule
-    \multirow{3}{*}{SINEALI}    & \gls{bobyqa}  & -9.0098e+002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyla}  & -8.6642e+002          & +4.4409e-016              & 5000\\*
-                                & \gls{cobyqa}  & -8.6480e+002          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{3}{*}{WEEDS}      & \gls{bobyqa}  & +3.1715e+000          & +0.0000e+000              & 1020\\*
-                                & \gls{cobyla}  & +3.6867e+003          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +2.5876e+000          & +0.0000e+000              & 2856\\
-    \midrule
-    \multirow{3}{*}{YFIT}       & \gls{bobyqa}  & +4.0521e-003          & +0.0000e+000              & 1586\\*
-                                & \gls{cobyla}  & +1.5371e+002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.1722e-011          & +0.0000e+000              & 1732\\
-    \bottomrule
-\end{longtable}
-
-\section{Details for linearly-constrained problems}
-
-We provide the detailed results obtained on linearly-constrained problems of dimension at most~$10$ in \cref{tab:cobyqa-bobyqa-10}.
-
-\begin{longtable}{ccS[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[group-minimum-digits=4,table-format=6,table-alignment-mode=format,table-number-alignment=center]}
-    \caption{Results on linearly-constrained problems with~$n \le 10$}\label{tab:cobyqa-lincoa-10}\\
-    \toprule
-    Problem                     & Solver        & {Objective value}     & {Constraint violation}    & {No.\ eval.}\\
-    \midrule
-    \multirow{2}{*}{AVGASA}     & \gls{cobyqa}  & -4.6319e+000          & +0.0000e+000              & 77\\*
-                                & \gls{lincoa}  & -4.6319e+000          & +8.8818e-016              & 60\\
-    \midrule
-    \multirow{2}{*}{AVGASB}     & \gls{cobyqa}  & -4.4832e+000          & +0.0000e+000              & 73\\*
-                                & \gls{lincoa}  & -4.4832e+000          & +8.8818e-016              & 64\\
-    \midrule
-    \multirow{2}{*}{BIGGSC4}    & \gls{cobyqa}  & -2.4500e+001          & +1.7764e-015              & 48\\*
-                                & \gls{lincoa}  & -2.4500e+001          & +1.7764e-015              & 47\\
-    \midrule
-    \multirow{2}{*}{BT3}        & \gls{cobyqa}  & +4.0930e+000          & +1.6653e-015              & 55\\*
-                                & \gls{lincoa}  & +4.0930e+000          & +3.3307e-016              & 51\\
-    \midrule
-    \multirow{2}{*}{EQC}        & \gls{cobyqa}  & -8.2955e+002          & +0.0000e+000              & 28\\*
-                                & \gls{lincoa}  & -1.0469e+003          & +0.0000e+000              & 169\\
-    \midrule
-    \multirow{2}{*}{EXPFITA}    & \gls{cobyqa}  & +1.1368e-003          & +0.0000e+000              & 1855\\*
-                                & \gls{lincoa}  & +1.1366e-003          & +6.6613e-016              & 537\\
-    \midrule
-    \multirow{2}{*}{EXPFITB}    & \gls{cobyqa}  & +5.0194e-003          & +0.0000e+000              & 2255\\*
-                                & \gls{lincoa}  & +5.0194e-003          & +0.0000e+000              & 563\\
-    \midrule
-    \multirow{2}{*}{EXPFITC}    & \gls{cobyqa}  & +2.3303e-002          & +1.4211e-014              & 1279\\*
-                                & \gls{lincoa}  & +2.3303e-002          & +4.4409e-016              & 463\\
-    \midrule
-    \multirow{2}{*}{GENHS28}    & \gls{cobyqa}  & +9.2717e-001          & +3.5527e-015              & 85\\*
-                                & \gls{lincoa}  & +9.2717e-001          & +1.1102e-015              & 62\\
-    \midrule
-    \multirow{2}{*}{HATFLDH}    & \gls{cobyqa}  & -2.4500e+001          & +0.0000e+000              & 43\\*
-                                & \gls{lincoa}  & -2.4500e+001          & +5.3291e-015              & 40\\
-    \midrule
-    \multirow{2}{*}{HS105}      & \gls{cobyqa}  & +1.0620e+003          & +0.0000e+000              & 1783\\*
-                                & \gls{lincoa}  & +1.0446e+003          & +1.6653e-016              & 2300\\
-    \midrule
-    \multirow{2}{*}{HS21}       & \gls{cobyqa}  & -9.9960e+001          & +0.0000e+000              & 30\\*
-                                & \gls{lincoa}  & -9.9960e+001          & +0.0000e+000              & 30\\
-    \midrule
-    \multirow{2}{*}{HS21MOD}    & \gls{cobyqa}  & -9.5960e+001          & +0.0000e+000              & 41\\*
-                                & \gls{lincoa}  & -9.5960e+001          & +0.0000e+000              & 42\\
-    \midrule
-    \multirow{2}{*}{HS24}       & \gls{cobyqa}  & -1.0000e+000          & +2.2204e-016              & 35\\*
-                                & \gls{lincoa}  & -1.0000e+000          & +1.7764e-015              & 34\\
-    \midrule
-    \multirow{2}{*}{HS268}      & \gls{cobyqa}  & +5.7116e-010          & +0.0000e+000              & 847\\*
-                                & \gls{lincoa}  & +3.0195e-010          & +0.0000e+000              & 1041\\
-    \midrule
-    \multirow{2}{*}{HS28}       & \gls{cobyqa}  & +9.6120e-026          & +8.8818e-016              & 40\\*
-                                & \gls{lincoa}  & +2.6818e-017          & +3.3307e-016              & 53\\
-    \midrule
-    \multirow{2}{*}{HS35}       & \gls{cobyqa}  & +1.1111e-001          & +0.0000e+000              & 55\\*
-                                & \gls{lincoa}  & +1.1111e-001          & +0.0000e+000              & 40\\
-    \midrule
-    \multirow{2}{*}{HS35I}      & \gls{cobyqa}  & +1.1111e-001          & +0.0000e+000              & 55\\*
-                                & \gls{lincoa}  & +1.1111e-001          & +0.0000e+000              & 40\\
-    \midrule
-    \multirow{2}{*}{HS35MOD}    & \gls{cobyqa}  & +2.5000e-001          & +0.0000e+000              & 34\\*
-                                & \gls{lincoa}  & +2.5000e-001          & +0.0000e+000              & 30\\
-    \midrule
-    \multirow{2}{*}{HS36}       & \gls{cobyqa}  & -3.3000e+003          & +0.0000e+000              & 43\\*
-                                & \gls{lincoa}  & -3.3000e+003          & +0.0000e+000              & 41\\
-    \midrule
-    \multirow{2}{*}{HS37}       & \gls{cobyqa}  & -3.4560e+003          & +0.0000e+000              & 58\\*
-                                & \gls{lincoa}  & -3.4560e+003          & +0.0000e+000              & 57\\
-    \midrule
-    \multirow{2}{*}{HS41}       & \gls{cobyqa}  & +1.9259e+000          & +0.0000e+000              & 67\\*
-                                & \gls{lincoa}  & +1.9259e+000          & +4.4409e-016              & 58\\
-    \midrule
-    \multirow{2}{*}{HS44}       & \gls{cobyqa}  & -1.5000e+001          & +0.0000e+000              & 46\\*
-                                & \gls{lincoa}  & -1.5000e+001          & +0.0000e+000              & 47\\
-    \midrule
-    \multirow{2}{*}{HS44NEW}    & \gls{cobyqa}  & -1.5000e+001          & +0.0000e+000              & 46\\*
-                                & \gls{lincoa}  & -1.5000e+001          & +0.0000e+000              & 43\\
-    \midrule
-    \multirow{2}{*}{HS48}       & \gls{cobyqa}  & +1.3022e-014          & +2.6645e-015              & 72\\*
-                                & \gls{lincoa}  & +1.7689e-019          & +1.7764e-015              & 59\\
-    \midrule
-    \multirow{2}{*}{HS49}       & \gls{cobyqa}  & +3.1640e+001          & +1.7764e-015              & 432\\*
-                                & \gls{lincoa}  & +3.1640e+001          & +1.7764e-015              & 710\\
-    \midrule
-    \multirow{2}{*}{HS50}       & \gls{cobyqa}  & +4.3536e-015          & +4.4409e-015              & 85\\*
-                                & \gls{lincoa}  & +4.9304e-032          & +8.8818e-015              & 75\\
-    \midrule
-    \multirow{2}{*}{HS51}       & \gls{cobyqa}  & +1.6372e+001          & +4.8850e-015              & 61\\*
-                                & \gls{lincoa}  & +1.6372e+001          & +2.2204e-016              & 46\\
-    \midrule
-    \multirow{2}{*}{HS52}       & \gls{cobyqa}  & +5.3266e+000          & +3.9413e-015              & 61\\*
-                                & \gls{lincoa}  & +5.3266e+000          & +1.5266e-016              & 42\\
-    \midrule
-    \multirow{2}{*}{HS53}       & \gls{cobyqa}  & +4.0930e+000          & +1.3323e-015              & 63\\*
-                                & \gls{lincoa}  & +4.0930e+000          & +1.3323e-015              & 44\\
-    \midrule
-    \multirow{2}{*}{HS54}       & \gls{cobyqa}  & -7.0732e-012          & +0.0000e+000              & 601\\*
-                                & \gls{lincoa}  & -8.9593e-012          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{2}{*}{HS76}       & \gls{cobyqa}  & -4.6818e+000          & +0.0000e+000              & 56\\*
-                                & \gls{lincoa}  & -4.6818e+000          & +0.0000e+000              & 44\\
-    \midrule
-    \multirow{2}{*}{HS76I}      & \gls{cobyqa}  & -4.6818e+000          & +0.0000e+000              & 56\\*
-                                & \gls{lincoa}  & -4.6818e+000          & +0.0000e+000              & 44\\
-    \midrule
-    \multirow{2}{*}{HS9}        & \gls{cobyqa}  & -5.0000e-001          & +3.5527e-015              & 41\\*
-                                & \gls{lincoa}  & -5.0000e-001          & +1.7764e-015              & 39\\
-    \midrule
-    \multirow{2}{*}{HUBFIT}     & \gls{cobyqa}  & +1.6893e-002          & +1.1102e-016              & 32\\*
-                                & \gls{lincoa}  & +1.6893e-002          & +0.0000e+000              & 32\\
-    \midrule
-    \multirow{2}{*}{LSQFIT}     & \gls{cobyqa}  & +3.3787e-002          & +1.1102e-016              & 32\\*
-                                & \gls{lincoa}  & +3.3787e-002          & +0.0000e+000              & 32\\
-    \midrule
-    \multirow{2}{*}{ODFITS}     & \gls{cobyqa}  & -2.3800e+003          & +5.6843e-014              & 196\\*
-                                & \gls{lincoa}  & -2.3800e+003          & +1.4211e-014              & 150\\
-    \midrule
-    \multirow{2}{*}{PENTAGON}   & \gls{cobyqa}  & +1.4621e-004          & +2.2204e-016              & 113\\*
-                                & \gls{lincoa}  & +1.4621e-004          & +2.2204e-016              & 69\\
-    \midrule
-    \multirow{2}{*}{QC}         & \gls{cobyqa}  & -9.5654e+002          & +5.5511e-017              & 104\\*
-                                & \gls{lincoa}  & -9.3956e+002          & +2.2204e-016              & 131\\
-    \midrule
-    \multirow{2}{*}{QCNEW}      & \gls{cobyqa}  & -8.0652e+002          & +0.0000e+000              & 28\\*
-                                & \gls{lincoa}  & -9.1240e+002          & +0.0000e+000              & 158\\
-    \midrule
-    \multirow{2}{*}{S268}       & \gls{cobyqa}  & +5.7116e-010          & +0.0000e+000              & 847\\*
-                                & \gls{lincoa}  & +3.0195e-010          & +0.0000e+000              & 1041\\
-    \midrule
-    \multirow{2}{*}{ZECEVIC2}   & \gls{cobyqa}  & -4.1250e+000          & +0.0000e+000              & 33\\*
-                                & \gls{lincoa}  & -4.1250e+000          & +0.0000e+000              & 32\\
-    \bottomrule
-\end{longtable}
-
-\section{Details for nonlinearly-constrained problems}
-
-We finally provide the detailed results obtained on nonlinearly-constrained problems of dimension at most~$10$ in \cref{tab:cobyqa-bobyqa-10}.
-
-\begin{longtable}{ccS[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[retain-zero-exponent,table-format=3.4e2,table-alignment-mode=format,table-number-alignment=center]S[group-minimum-digits=4,table-format=6,table-alignment-mode=format,table-number-alignment=center]}
-    \caption{Results on nonlinearly-constrained problems with~$n \le 10$}\label{tab:cobyqa-cobyla-10}\\
-    \toprule
-    Problem                     & Solver        & {Objective value}     & {Constraint violation}    & {No.\ eval.}\\
-    \midrule
-    \multirow{2}{*}{ALLINITA}   & \gls{cobyla}  & +3.0799e+001          & +8.2301e-013              & 131\\*
-                                & \gls{cobyqa}  & +3.0799e+001          & +8.1158e-011              & 44\\
-    \midrule
-    \multirow{2}{*}{ALLINITC}   & \gls{cobyla}  & +3.0501e+001          & +4.4409e-016              & 158\\*
-                                & \gls{cobyqa}  & +3.0497e+001          & +1.8672e-011              & 68\\
-    \midrule
-    \multirow{2}{*}{ALSOTAME}   & \gls{cobyla}  & +8.2085e-002          & +4.1071e-011              & 20\\*
-                                & \gls{cobyqa}  & +8.2085e-002          & +0.0000e+000              & 38\\
-    \midrule
-    \multirow{2}{*}{BT1}        & \gls{cobyla}  & -1.0000e+000          & +1.9964e-012              & 4244\\*
-                                & \gls{cobyqa}  & -1.0000e+000          & +8.5123e-010              & 71\\
-    \midrule
-    \multirow{2}{*}{BT11}       & \gls{cobyla}  & +1.1380e+000          & +2.7334e-013              & 131\\*
-                                & \gls{cobyqa}  & +1.1380e+000          & +1.2867e-012              & 73\\
-    \midrule
-    \multirow{2}{*}{BT12}       & \gls{cobyla}  & +6.1881e+000          & +1.0712e-012              & 295\\*
-                                & \gls{cobyqa}  & +6.1881e+000          & +2.5124e-008              & 63\\
-    \midrule
-    \multirow{2}{*}{BT2}        & \gls{cobyla}  & +3.2568e-002          & +4.1442e-012              & 272\\*
-                                & \gls{cobyqa}  & +3.2568e-002          & +3.6646e-012              & 97\\
-    \midrule
-    \multirow{2}{*}{BT4}        & \gls{cobyla}  & -7.8463e+001          & +8.8818e-016              & 77\\*
-                                & \gls{cobyqa}  & -7.8463e+001          & +4.5608e-013              & 62\\
-    \midrule
-    \multirow{2}{*}{BT5}        & \gls{cobyla}  & +9.5214e+002          & +1.4211e-014              & 75\\*
-                                & \gls{cobyqa}  & +9.5214e+002          & +2.0837e-012              & 50\\
-    \midrule
-    \multirow{2}{*}{BT6}        & \gls{cobyla}  & +2.7704e-001          & +2.8884e-012              & 175\\*
-                                & \gls{cobyqa}  & +2.7704e-001          & +1.1351e-012              & 165\\
-    \midrule
-    \multirow{2}{*}{BT7}        & \gls{cobyla}  & +3.6038e+002          & +7.0455e-013              & 241\\*
-                                & \gls{cobyqa}  & +3.6038e+002          & +2.2338e-013              & 82\\
-    \midrule
-    \multirow{2}{*}{BT8}        & \gls{cobyla}  & +1.0000e+000          & +5.3031e-013              & 137\\*
-                                & \gls{cobyqa}  & +1.0000e+000          & +0.0000e+000              & 39\\
-    \midrule
-    \multirow{2}{*}{BURKEHAN}   & \gls{cobyla}  & +0.0000e+000          & +1.0000e+000              & 34\\*
-                                & \gls{cobyqa}  & +0.0000e+000          & +1.0000e+000              & 19\\
-    \midrule
-    \multirow{2}{*}{DIPIGRI}    & \gls{cobyla}  & +6.8063e+002          & +1.2073e-012              & 390\\*
-                                & \gls{cobyqa}  & +6.8063e+002          & +0.0000e+000              & 121\\
-    \midrule
-    \multirow{2}{*}{FLETCHER}   & \gls{cobyla}  & +1.1657e+001          & +8.8818e-016              & 105\\*
-                                & \gls{cobyqa}  & +1.9525e+001          & +1.2296e-008              & 169\\
-    \midrule
-    \multirow{2}{*}{FLT}        & \gls{cobyla}  & +1.9611e-004          & +5.3972e-015              & 53\\*
-                                & \gls{cobyqa}  & +8.5412e-003          & +5.6355e-016              & 43\\
-    \midrule
-    \multirow{2}{*}{GILBERT}    & \gls{cobyla}  & +3.3452e+000          & +1.1700e-012              & 422\\*
-                                & \gls{cobyqa}  & +3.3452e+000          & +2.5001e-013              & 80\\
-    \midrule
-    \multirow{2}{*}{HIMMELP2}   & \gls{cobyla}  & -6.2054e+001          & +0.0000e+000              & 121\\*
-                                & \gls{cobyqa}  & -6.2054e+001          & +0.0000e+000              & 57\\
-    \midrule
-    \multirow{2}{*}{HIMMELP3}   & \gls{cobyla}  & -5.9013e+001          & +0.0000e+000              & 66\\*
-                                & \gls{cobyqa}  & -5.9013e+001          & +0.0000e+000              & 47\\
-    \midrule
-    \multirow{2}{*}{HIMMELP4}   & \gls{cobyla}  & -5.9013e+001          & +0.0000e+000              & 66\\*
-                                & \gls{cobyqa}  & -5.9013e+001          & +0.0000e+000              & 45\\
-    \midrule
-    \multirow{2}{*}{HIMMELP5}   & \gls{cobyla}  & -5.9013e+001          & +0.0000e+000              & 70\\*
-                                & \gls{cobyqa}  & -5.9013e+001          & +0.0000e+000              & 49\\
-    \midrule
-    \multirow{2}{*}{HIMMELP6}   & \gls{cobyla}  & -5.9013e+001          & +0.0000e+000              & 70\\*
-                                & \gls{cobyqa}  & -5.9013e+001          & +0.0000e+000              & 47\\
-    \midrule
-    \multirow{2}{*}{HS100}      & \gls{cobyla}  & +6.8063e+002          & +0.0000e+000              & 367\\*
-                                & \gls{cobyqa}  & +6.8063e+002          & +0.0000e+000              & 123\\
-    \midrule
-    \multirow{2}{*}{HS100LNP}   & \gls{cobyla}  & +6.8063e+002          & +3.6265e-012              & 337\\*
-                                & \gls{cobyqa}  & +6.8063e+002          & +5.7854e-013              & 118\\
-    \midrule
-    \multirow{2}{*}{HS100MOD}   & \gls{cobyla}  & +6.7868e+002          & +0.0000e+000              & 339\\*
-                                & \gls{cobyqa}  & +6.7868e+002          & +0.0000e+000              & 176\\
-    \midrule
-    \multirow{2}{*}{HS104}      & \gls{cobyla}  & +3.9512e+000          & +3.4417e-015              & 2991\\*
-                                & \gls{cobyqa}  & +3.9512e+000          & +0.0000e+000              & 325\\
-    \midrule
-    \multirow{2}{*}{HS108}      & \gls{cobyla}  & -8.6603e-001          & +1.2204e-013              & 217\\*
-                                & \gls{cobyqa}  & -8.6603e-001          & +2.1683e-013              & 454\\
-    \midrule
-    \multirow{2}{*}{HS11}       & \gls{cobyla}  & -8.4985e+000          & +0.0000e+000              & 73\\*
-                                & \gls{cobyqa}  & -8.4985e+000          & +0.0000e+000              & 39\\
-    \midrule
-    \multirow{2}{*}{HS111}      & \gls{cobyla}  & -4.7761e+001          & +1.9498e-013              & 5000\\*
-                                & \gls{cobyqa}  & -4.7761e+001          & +4.6629e-015              & 1285\\
-    \midrule
-    \multirow{2}{*}{HS111LNP}   & \gls{cobyla}  & -4.7761e+001          & +5.4231e-013              & 5000\\*
-                                & \gls{cobyqa}  & -4.7761e+001          & +4.6629e-015              & 1285\\
-    \midrule
-    \multirow{2}{*}{HS113}      & \gls{cobyla}  & +2.4306e+001          & +3.5527e-015              & 331\\*
-                                & \gls{cobyqa}  & +2.4306e+001          & +4.1088e-010              & 228\\
-    \midrule
-    \multirow{2}{*}{HS114}      & \gls{cobyla}  & -1.5510e+003          & +2.3537e-014              & 1298\\*
-                                & \gls{cobyqa}  & -1.5664e+003          & +3.2154e-007              & 5000\\
-    \midrule
-    \multirow{2}{*}{HS12}       & \gls{cobyla}  & -3.0000e+001          & +0.0000e+000              & 60\\*
-                                & \gls{cobyqa}  & -3.0000e+001          & +1.9540e-014              & 41\\
-    \midrule
-    \multirow{2}{*}{HS14}       & \gls{cobyla}  & +3.7778e-001          & +0.0000e+000              & 23\\*
-                                & \gls{cobyqa}  & +3.7779e-001          & +1.1102e-016              & 31\\
-    \midrule
-    \multirow{2}{*}{HS15}       & \gls{cobyla}  & +3.6038e+002          & +0.0000e+000              & 143\\*
-                                & \gls{cobyqa}  & +3.6038e+002          & +0.0000e+000              & 44\\
-    \midrule
-    \multirow{2}{*}{HS16}       & \gls{cobyla}  & +2.5000e-001          & +0.0000e+000              & 102\\*
-                                & \gls{cobyqa}  & +2.3145e+001          & +0.0000e+000              & 34\\
-    \midrule
-    \multirow{2}{*}{HS17}       & \gls{cobyla}  & +1.0000e+000          & +1.3601e-015              & 29\\*
-                                & \gls{cobyqa}  & +1.0000e+000          & +0.0000e+000              & 55\\
-    \midrule
-    \multirow{2}{*}{HS18}       & \gls{cobyla}  & +5.0000e+000          & +0.0000e+000              & 80\\*
-                                & \gls{cobyqa}  & +5.0000e+000          & +0.0000e+000              & 49\\
-    \midrule
-    \multirow{2}{*}{HS20}       & \gls{cobyla}  & +3.8203e+001          & +0.0000e+000              & 20\\*
-                                & \gls{cobyqa}  & +3.8199e+001          & +0.0000e+000              & 34\\
-    \midrule
-    \multirow{2}{*}{HS22}       & \gls{cobyla}  & +1.0000e+000          & +0.0000e+000              & 18\\*
-                                & \gls{cobyqa}  & +1.0000e+000          & +0.0000e+000              & 31\\
-    \midrule
-    \multirow{2}{*}{HS23}       & \gls{cobyla}  & +2.0000e+000          & +0.0000e+000              & 23\\*
-                                & \gls{cobyqa}  & +2.0000e+000          & +0.0000e+000              & 40\\
-    \midrule
-    \multirow{2}{*}{HS26}       & \gls{cobyla}  & +6.2708e-009          & +6.7502e-014              & 4773\\*
-                                & \gls{cobyqa}  & +3.9625e-021          & +1.1102e-015              & 203\\
-    \midrule
-    \multirow{2}{*}{HS27}       & \gls{cobyla}  & +4.0000e-002          & +1.4417e-012              & 1832\\*
-                                & \gls{cobyqa}  & +4.0000e-002          & +1.5842e-013              & 81\\
-    \midrule
-    \multirow{2}{*}{HS29}       & \gls{cobyla}  & -2.2627e+001          & +0.0000e+000              & 92\\*
-                                & \gls{cobyqa}  & -2.2627e+001          & +0.0000e+000              & 48\\
-    \midrule
-    \multirow{2}{*}{HS30}       & \gls{cobyla}  & +1.0000e+000          & +1.1102e-016              & 91\\*
-                                & \gls{cobyqa}  & +1.0000e+000          & +0.0000e+000              & 58\\
-    \midrule
-    \multirow{2}{*}{HS31}       & \gls{cobyla}  & +6.0000e+000          & +0.0000e+000              & 89\\*
-                                & \gls{cobyqa}  & +6.0000e+000          & +0.0000e+000              & 65\\
-    \midrule
-    \multirow{2}{*}{HS32}       & \gls{cobyla}  & +8.4717e+000          & +5.8655e-001              & 32\\*
-                                & \gls{cobyqa}  & +2.8001e+000          & +1.4642e+000              & 51\\
-    \midrule
-    \multirow{2}{*}{HS33}       & \gls{cobyla}  & -4.5858e+000          & +0.0000e+000              & 31\\*
-                                & \gls{cobyqa}  & -4.0000e+000          & +0.0000e+000              & 37\\
-    \midrule
-    \multirow{2}{*}{HS40}       & \gls{cobyla}  & -2.5000e-001          & +0.0000e+000              & 113\\*
-                                & \gls{cobyqa}  & -2.5000e-001          & +1.2520e-012              & 54\\
-    \midrule
-    \multirow{2}{*}{HS42}       & \gls{cobyla}  & +2.1874e+001          & +0.0000e+000              & 3132\\*
-                                & \gls{cobyqa}  & +2.1858e+001          & +1.5565e-013              & 47\\
-    \midrule
-    \multirow{2}{*}{HS43}       & \gls{cobyla}  & -4.4000e+001          & +0.0000e+000              & 135\\*
-                                & \gls{cobyqa}  & -4.4000e+001          & +0.0000e+000              & 44\\
-    \midrule
-    \multirow{2}{*}{HS46}       & \gls{cobyla}  & +5.1135e-007          & +2.5020e-012              & 5000\\*
-                                & \gls{cobyqa}  & +8.4915e-011          & +6.4556e-014              & 600\\
-    \midrule
-    \multirow{2}{*}{HS47}       & \gls{cobyla}  & +5.2839e-010          & +1.0725e-013              & 2132\\*
-                                & \gls{cobyqa}  & +3.6927e-018          & +1.4710e-013              & 246\\
-    \midrule
-    \multirow{2}{*}{HS56}       & \gls{cobyla}  & -3.4560e+000          & +1.9540e-012              & 459\\*
-                                & \gls{cobyqa}  & -3.4560e+000          & +1.6254e-013              & 98\\
-    \midrule
-    \multirow{2}{*}{HS57}       & \gls{cobyla}  & +3.0646e-002          & +0.0000e+000              & 42\\*
-                                & \gls{cobyqa}  & +2.8460e-002          & +0.0000e+000              & 72\\
-    \midrule
-    \multirow{2}{*}{HS59}       & \gls{cobyla}  & -6.7495e+000          & +0.0000e+000              & 113\\*
-                                & \gls{cobyqa}  & -6.7495e+000          & +0.0000e+000              & 55\\
-    \midrule
-    \multirow{2}{*}{HS6}        & \gls{cobyla}  & +4.7342e-013          & +5.8153e-012              & 54\\*
-                                & \gls{cobyqa}  & +4.0381e-028          & +2.5091e-013              & 37\\
-    \midrule
-    \multirow{2}{*}{HS60}       & \gls{cobyla}  & +3.2568e-002          & +3.7170e-013              & 72\\*
-                                & \gls{cobyqa}  & +3.2568e-002          & +1.6505e-012              & 56\\
-    \midrule
-    \multirow{2}{*}{HS61}       & \gls{cobyla}  & -8.1919e+001          & +1.7764e-015              & 95\\*
-                                & \gls{cobyqa}  & -1.4365e+002          & +1.6446e-011              & 47\\
-    \midrule
-    \multirow{2}{*}{HS65}       & \gls{cobyla}  & +9.5353e-001          & +0.0000e+000              & 92\\*
-                                & \gls{cobyqa}  & +9.5353e-001          & +0.0000e+000              & 53\\
-    \midrule
-    \multirow{2}{*}{HS68}       & \gls{cobyla}  & -9.2042e-001          & +4.4409e-015              & 3398\\*
-                                & \gls{cobyqa}  & -9.2043e-001          & +1.2560e-016              & 1379\\
-    \midrule
-    \multirow{2}{*}{HS69}       & \gls{cobyla}  & -9.5603e+002          & +5.9598e-011              & 5000\\*
-                                & \gls{cobyqa}  & -9.5671e+002          & +2.0900e-014              & 1251\\
-    \midrule
-    \multirow{2}{*}{HS7}        & \gls{cobyla}  & -1.7321e+000          & +2.4425e-014              & 74\\*
-                                & \gls{cobyqa}  & -1.7321e+000          & +4.6838e-012              & 38\\
-    \midrule
-    \multirow{2}{*}{HS70}       & \gls{cobyla}  & +2.6909e-001          & +0.0000e+000              & 81\\*
-                                & \gls{cobyqa}  & +2.6909e-001          & +0.0000e+000              & 104\\
-    \midrule
-    \multirow{2}{*}{HS71}       & \gls{cobyla}  & +1.7014e+001          & +3.0553e-013              & 92\\*
-                                & \gls{cobyqa}  & +1.7014e+001          & +6.4823e-010              & 87\\
-    \midrule
-    \multirow{2}{*}{HS74}       & \gls{cobyla}  & +2.3462e+003          & +2.5397e+002              & 5000\\*
-                                & \gls{cobyqa}  & +5.1265e+003          & +1.1369e-013              & 365\\
-    \midrule
-    \multirow{2}{*}{HS75}       & \gls{cobyla}  & +2.3462e+003          & +2.5397e+002              & 5000\\*
-                                & \gls{cobyqa}  & +5.1266e+003          & +3.3403e-002              & 414\\
-    \midrule
-    \multirow{2}{*}{HS77}       & \gls{cobyla}  & +2.4151e-001          & +1.3318e-012              & 151\\*
-                                & \gls{cobyqa}  & +2.4151e-001          & +9.5923e-014              & 174\\
-    \midrule
-    \multirow{2}{*}{HS78}       & \gls{cobyla}  & -2.9197e+000          & +2.8422e-014              & 142\\*
-                                & \gls{cobyqa}  & -2.9197e+000          & +1.0837e-011              & 67\\
-    \midrule
-    \multirow{2}{*}{HS79}       & \gls{cobyla}  & +7.8777e-002          & +9.6168e-013              & 126\\*
-                                & \gls{cobyqa}  & +7.8777e-002          & +3.1304e-012              & 71\\
-    \midrule
-    \multirow{2}{*}{HS80}       & \gls{cobyla}  & +5.3950e-002          & +4.6012e-012              & 145\\*
-                                & \gls{cobyqa}  & +5.3950e-002          & +6.1462e-013              & 72\\
-    \midrule
-    \multirow{2}{*}{HS81}       & \gls{cobyla}  & +5.3950e-002          & +6.0796e-013              & 196\\*
-                                & \gls{cobyqa}  & +5.3950e-002          & +3.3751e-013              & 153\\
-    \midrule
-    \multirow{2}{*}{HS83}       & \gls{cobyla}  & -3.0666e+004          & +1.8385e-013              & 80\\*
-                                & \gls{cobyqa}  & -3.0666e+004          & +7.8604e-014              & 56\\
-    \midrule
-    \multirow{2}{*}{HS90}       & \gls{cobyla}  & +1.3628e+000          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.3626e+000          & +7.4043e-008              & 1469\\
-    \midrule
-    \multirow{2}{*}{HS91}       & \gls{cobyla}  & +1.3627e+000          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.3626e+000          & +6.9911e-008              & 1442\\
-    \midrule
-    \multirow{2}{*}{HS93}       & \gls{cobyla}  & +1.3508e+002          & +0.0000e+000              & 5000\\*
-                                & \gls{cobyqa}  & +1.3508e+002          & +0.0000e+000              & 674\\
-    \midrule
-    \multirow{2}{*}{HS99}       & \gls{cobyla}  & -8.3108e+008          & +9.4442e-009              & 1770\\*
-                                & \gls{cobyqa}  & -8.3108e+008          & +3.0777e-008              & 333\\
-    \midrule
-    \multirow{2}{*}{JANNSON3}   & \gls{cobyla}  & +8.9612e+000          & +0.0000e+000              & 151\\*
-                                & \gls{cobyqa}  & +8.9612e+000          & +2.2204e-016              & 57\\
-    \midrule
-    \multirow{2}{*}{JANNSON4}   & \gls{cobyla}  & +1.0609e+000          & +0.0000e+000              & 69\\*
-                                & \gls{cobyqa}  & +1.0609e+000          & +0.0000e+000              & 74\\
-    \midrule
-    \multirow{2}{*}{LEWISPOL}   & \gls{cobyla}  & +1.5356e+000          & +2.6510e-005              & 80\\*
-                                & \gls{cobyqa}  & +2.7785e+000          & +2.1660e-005              & 46\\
-    \midrule
-    \multirow{2}{*}{LOOTSMA}    & \gls{cobyla}  & +1.4142e+000          & +1.5974e-019              & 33\\*
-                                & \gls{cobyqa}  & +8.0000e+000          & +0.0000e+000              & 2972\\
-    \midrule
-    \multirow{2}{*}{MARATOS}    & \gls{cobyla}  & -1.0000e+000          & +1.1299e-016              & 60\\*
-                                & \gls{cobyqa}  & -1.0000e+000          & +8.5786e-010              & 40\\
-    \midrule
-    \multirow{2}{*}{MATRIX2}    & \gls{cobyla}  & +1.4735e-011          & +6.6895e-014              & 140\\*
-                                & \gls{cobyqa}  & +1.2109e-008          & +0.0000e+000              & 101\\
-    \midrule
-    \multirow{2}{*}{MISTAKE}    & \gls{cobyla}  & -1.0000e+000          & +0.0000e+000              & 258\\*
-                                & \gls{cobyqa}  & -9.9987e-001          & +0.0000e+000              & 216\\
-    \midrule
-    \multirow{2}{*}{MWRIGHT}    & \gls{cobyla}  & +2.4979e+001          & +8.0758e-013              & 134\\*
-                                & \gls{cobyqa}  & +2.4979e+001          & +1.0347e-013              & 78\\
-    \midrule
-    \multirow{2}{*}{S316-322}   & \gls{cobyla}  & +3.3431e+002          & +5.5511e-017              & 102\\*
-                                & \gls{cobyqa}  & +3.3431e+002          & +3.3307e-015              & 42\\
-    \midrule
-    \multirow{2}{*}{S365}       & \gls{cobyla}  & -1.8680e-021          & +7.8743e-010              & 128\\*
-                                & \gls{cobyqa}  & +0.0000e+000          & +2.8986e-010              & 203\\
-    \midrule
-    \multirow{2}{*}{S365MOD}    & \gls{cobyla}  & +3.0103e-002          & +3.2650e-001              & 268\\*
-                                & \gls{cobyqa}  & +2.5000e-001          & +1.0899e+000              & 153\\
-    \midrule
-    \multirow{2}{*}{SYNTHES1}   & \gls{cobyla}  & +7.5928e-001          & +7.9230e-025              & 132\\*
-                                & \gls{cobyqa}  & +9.1368e+000          & +0.0000e+000              & 5000\\
-    \midrule
-    \multirow{2}{*}{TRY-B}      & \gls{cobyla}  & +4.8257e-013          & +2.9091e-012              & 63\\*
-                                & \gls{cobyqa}  & +7.3081e-029          & +1.4310e-007              & 48\\
-    \midrule
-    \multirow{2}{*}{TWOBARS}    & \gls{cobyla}  & +1.5087e+000          & +0.0000e+000              & 65\\*
-                                & \gls{cobyqa}  & +1.5087e+000          & +0.0000e+000              & 43\\
-    \midrule
-    \multirow{2}{*}{ZECEVIC3}   & \gls{cobyla}  & +9.7309e+001          & +0.0000e+000              & 53\\*
-                                & \gls{cobyqa}  & +9.7309e+001          & +0.0000e+000              & 40\\
-    \midrule
-    \multirow{2}{*}{ZECEVIC4}   & \gls{cobyla}  & +7.5575e+000          & +0.0000e+000              & 61\\*
-                                & \gls{cobyqa}  & +7.5575e+000          & +0.0000e+000              & 40\\
-    \midrule
-    \multirow{2}{*}{ZY2}        & \gls{cobyla}  & +2.0000e+000          & +0.0000e+000              & 29\\*
-                                & \gls{cobyqa}  & +2.0000e+000          & +0.0000e+000              & 38\\
+    TWOBARS     & ZECEVIC3  & ZECEVIC4  & ZY2\\
     \bottomrule
 \end{longtable}

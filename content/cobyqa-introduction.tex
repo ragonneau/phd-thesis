@@ -148,7 +148,7 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
     Set the penalty parameter~$\gamma^{-1} \gets  0$\;
     Build the initial interpolation set~$\xpt[0] \subseteq \R^n$ described in \cref{subsec:interpolation-based-quadratic-models}\;
     \For{$k = 0, 1, \dots$ until convergence}{
-        Update~$\objm[k]$ and~$\conm[k]{i}$ for~$i \in \iub \cup \ieq$ as mentioned in \cref{subsec:interpolation-based-quadratic-models}\;
+        Update~$\objm[k]$ and~$\conm[k]{i}$ for~$i \in \iub \cup \ieq$ as mentioned in \cref{subsec:interpolation-based-quadratic-models} \nllabel{alg:derivative-free-trust-region-sqp-models}\;
         Set the trial step~$\step[k] \in \R^n$ to an approximate solution to
         \begin{subequations}
             \label{eq:derivative-free-trust-region-sqp-subproblem}
@@ -279,7 +279,7 @@ See~\cite[pp.~538--539]{Nocedal_Wright_2006} for more details.
 \subsection{Managing the trust-region radius}
 \label{subsec:managing-trust-region-radius}
 
-Inspired by the performance of \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa} (see \cref{subsec:uobyqa,subsec:newuoa-bobyqa-lincoa}), we employ their trust-region radius management strategy in \gls{cobyqa}, in place of \cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}.
+Inspired by \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa} briefly described in \cref{subsec:uobyqa,subsec:newuoa-bobyqa-lincoa}, we employ their trust-region radius management strategy in \gls{cobyqa}, in place of \cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}.
 It consists in maintaining both the trust-region radius~$\rad[k]$ and a lower bound~$\radlb[k]$ of it.
 
 The update of~$\rad[k]$ is given in \cref{alg:update-trust-region-radius}, which is typical for trust-region methods, except that the lower bound~$\radlb[k]$ is imposed.
@@ -392,24 +392,29 @@ Hence, from a computational perspective, we decide not to employ this technique 
 \subsection{Improving the geometry of the interpolation set}
 \label{subsec:geometry-improvement}
 
-In this section, we detail the geometry-improving procedure of \gls{cobyqa}, corresponding to \cref{alg:derivative-free-trust-region-sqp-geometry} of \cref{alg:derivative-free-trust-region-sqp}\todo[color=OliveGreen!50]{Adapt the presentation of the geometry-improving step}.
+In this section, we detail the geometry-improving procedure of \gls{cobyqa}, corresponding to \cref{alg:derivative-free-trust-region-sqp-geometry} of \cref{alg:derivative-free-trust-region-sqp}.
 As we mentioned in \cref{ch:interpolation}, the interpolation set has to be reasonably well-poised to ensure the accuracy of the interpolation models.
 However, it is known that model-based \gls{dfo} methods tend to lose the poisedness of their interpolation set as the iterations progress.
 To cope with this difficulty, such methods usually include a geometry-improving mechanism.
 This topic is well studied, see for example~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b,Fasano_Morales_Nocedal_2009,Scheinberg_Toint_2010}.
 
-We adapt a geometry-improving strategy designed by \citeauthor{Powell_2009} for \gls{bobyqa}~\cite{Powell_2009}.
-A point~$\bar{y} \in \xpt[k + 1]$ is chosen to be replaced by another one~$\iter[k + 1] + \rstep[k + 1]$, where the \emph{restoration step}~$\rstep[k + 1] \in \R^n$ is chosen to improve the geometry of~$\xpt[k + 1]$.
+We adapt the geometry-improving strategies designed by \citeauthor{Powell_2009} for \gls{bobyqa}~\cite{Powell_2009} and \gls{lincoa}.
+Briefly speaking, a point~$\bar{y} \in \xpt[k + 1]$ is chosen to be replaced with another one~$\iter[k + 1] + \rstep[k + 1]$, where~$\rstep[k + 1] \in \R^n$ is a \emph{model step} to improve the geometry of~$\xpt[k + 1]$.
 
 First of all, the point~$\bar{y}$ is chosen to be a solution to
 \begin{equation}
     \label{eq:choice-point-geometry-improving}
     \max_{y \in \xpt[k + 1]} \norm{y - \iter[k + 1]}.
 \end{equation}
-Further, similar to~\cite[Eq.~(6.6)]{Powell_2006}, the step~$\rstep[k + 1] \in \R^n$ should approximately maximizes~$\abs{\lagp[\bar{y}](\iter[k + 1] + \step)}$ with~$\norm{\step} \le \bar{\rad}$ for some trust-region radius~$\bar{\rad} > 0$.
-As in \gls{lincoa}, we set~$\bar{\rad} = \max \set{\rad[k + 1] / 10, \radlb[k + 1]}$.
-We compute two such steps.
-The first step is an approximate solution to
+Further, similar to~\cite[Eq.~(6.6)]{Powell_2006}, the step~$\rstep[k + 1] \in \R^n$ should provide a large value of~$\abs{\lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1])}$, where~$\lagp[\bar{y}]$ denotes the minimum Frobenius norm Lagrange polynomials for~$\xpt[k + 1]$ associated with~$\bar{y}$ (see \cref{def:lagrange-polynomials-minimum-norm}).
+The reason for taking such a step is as follows.
+Recall that we need to update the inverse of the coefficient matrix of the interpolation problem to replace~$\bar{y}$ with~$\iter[k + 1] + \rstep[k + 1]$ in~$\xpt[k + 1]$.
+As already mentioned, the updating formula has a scalar denominator.
+This denominator is always lower bounded by~$\lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1])^2$ as shown in~\cite[Eq.~(6.5)]{Powell_2006}.
+Therefore, by selecting a model step~$\rstep[k + 1]$ that provides a large value of~$\abs{\lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1])}$, we keep the denominator away from zero, avoiding numerical difficulties.
+In \gls{cobyqa}, the model step~$\rstep[k + 1]$ is selected from two alternatives~$\rstep[k + 1]_B$ and~$\rstep[k + 1]_L$, detailed below.
+
+The first step~$\rstep[k + 1]_B$, adopted from \gls{bobyqa}, is an approximate solution to
 \begin{subequations}
     \label{eq:geometry-subproblem}
     \begin{align}
@@ -418,26 +423,23 @@ The first step is an approximate solution to
                                 & \quad \norm{\step} \le \bar{\rad},
     \end{align}
 \end{subequations}
-where~$\lagp[\bar{y}]$ denotes the minimum Frobenius norm Lagrange polynomials for~$\xpt[k + 1]$ associated with~$\bar{y}$ (see \cref{def:lagrange-polynomials-minimum-norm}).
-We will detail how to solve~\cref{eq:geometry-subproblem} in \cref{sec:cobyqa-geometry-improving}.
+where, as in \gls{lincoa}, we set~$\bar{\rad} = \max \set{\rad[k + 1] / 10, \radlb[k + 1]}$.
+Note that the linearized constraints are not taken into account in this subproblem.
+We will detail how to solve the subproblem~\cref{eq:geometry-subproblem} in \cref{sec:cobyqa-geometry-improving}.
 
-The second step is defined as follows.
+The second step~$\rstep[k + 1]_L$, adopted from \gls{lincoa}, is defined as follows.
 Let~$\mathcal{W}$ be some approximation of the active set of the linearized constraints at~$\iter[k + 1]$.
-In \gls{cobyqa}, we choose the working set returned by the method that evaluates the tangential step~\cref{eq:cobyqa-tangential} (see \cref{sec:cobyqa-tangential} for details).
-The second step is a Cauchy step for~$\abs{\lagp[\bar{y}](\iter[k + 1] + \step)}$ in the null space of the gradients of the constraints in~$\mathcal{W}$.
-If necessary, this step is truncated to satisfy~$\norm{\step} \le \bar{\rad}$.
-We then select the second step to be~$\rstep[k + 1]$ if
-\begin{enumerate}
-    \item at least one constraint is active,
-    \item the point~$\iter[k + 1] + \rstep[k + 1]$ is feasible, and
-    \item the absolute value of the denominator of the updating formula is at least a tenth of that for the first step.
-\end{enumerate}
+In \gls{cobyqa}, we set~$\mathcal{W}$ to be the working set returned by the active-set method that evaluates the tangential step~\cref{eq:cobyqa-tangential} (see \cref{sec:cobyqa-tangential} for details).
+Then~$\rstep[k + 1]_L$ is a Cauchy step for~$\abs{\lagp[\bar{y}](\iter[k + 1] + \step)}$ in the null space of the linearized constraints in~$\mathcal{W}$ subject to~$\norm{\step} \le \bar{\rad}$.
 
-The reason for choosing such an objective function is as follows.
-Recall that we need to update the inverse of the coefficient matrix of the interpolation problem to replace~$\bar{y}$ with~$\iter[k + 1] + \rstep[k + 1]$ in~$\xpt[k + 1]$.
-As already mentioned, the updating formula has a scalar denominator.
-This denominator is always lower bounded by~$\lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1])^2$ as shown in~\cite[Eq.~(6.5)]{Powell_2006}.
-Therefore, by selecting the restoration step~$\rstep[k + 1]$ to maximize~$\abs{\lagp[\bar{y}](\iter[k + 1] + \rstep[k + 1])}$, we keep the denominator away from zero, avoiding numerical difficulties.
+The selection between~$\rstep[k + 1]_B$ and~$\rstep[k + 1]_L$ is done as follows.
+We set~$\rstep[k + 1]$ to~$\rstep[k + 1]_L$ if
+\begin{enumerate}
+    \item the point~$\iter[k + 1] + \rstep[k + 1]_L$ is feasible with respect to the linearized constraints and the bounds, and
+    \item the denominator of the updating formula corresponding to~$\rstep[k + 1]_L$ is at least a tenth of the one corresponding to~$\rstep[k + 1]_B$ in absolute value.
+\end{enumerate}
+Otherwise, we set~$\rstep[k + 1]$ to~$\rstep[k + 1]_B$.
+When checking the feasibility of~$\iter[k + 1] + \rstep[k + 1]_L$, we allow small infeasibility of the linearized constraints, to include a tolerance for contributions from computer rounding errors.
 
 Now that the general framework of the geometry-improving phase is set up, we need to decide when to entertain such a mechanism.
 It is trigerred when
@@ -459,7 +461,7 @@ When this condition holds, \gls{cobyqa} entertains the geometry-improving phase 
     \KwData{Bounds~$\xl$ and~$\xu$, current interpolation set~$\xpt[k + 1] \subseteq \R^n$, current lower bound on the trust-region radius~$\radlb[k + 1]$, current trust-region radius~$\rad[k + 1]$, and current best point so far~$\iter[k + 1] \in \xpt[k + 1]$.}
     \KwResult{Updated interpolation set~$\xpt[k + 1]$ and updated iterate~$\iter[k + 1]$.}
     Set~$\bar{y}$ to be a solution to~\cref{eq:choice-point-geometry-improving}\;
-    Set the step~$\rstep[k + 1] \in \R^n$\;
+    Compute the model step~$\rstep[k + 1] \in \R^n$\;
     Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k + 1] \setminus \set{\bar{y}}) \cup \set{\iter[k + 1] + \rstep[k + 1]}$\;
     Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$ \label{alg:geometry-improving-iterate}\;
 \end{algorithm}
@@ -475,6 +477,18 @@ We then invoke \cref{alg:geometry-improving} if
 However, if~$\norm{\step[k]} < \rad[k] / 2$ has happened at five consective iterations, or~$\norm{\step[k]} < \rad[k] / 10$ at three consecutive iterations, then the geometry-improving phase is not invoked.
 Instead, we decrease~$\radlb[k]$ by invoking \cref{alg:reducing-lower-bound-trust-region-radius}, and continue with the next trust-region iteration.
 This mechanism has been developed by Powell in his solver \gls{lincoa}, and similar strategies exist in \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, and \gls{bobyqa}~\cite{Powell_2009}.
+
+We also employ the following mechanism from \gls{newuoa}, which aims at improving the performance of the quadratic models.
+We denote for convenience~$\objmalt[k]$ the least Frobeninus norm model of~$\obj$ on~$\xpt[k]$.
+When evaluating the models at \cref{alg:derivative-free-trust-region-sqp-models} of \cref{alg:derivative-free-trust-region-sqp}, if at three consecute iterations we have
+\begin{equation*}
+    \rad[k - 1] = \radlb[k - 1], \quad \ratio[k - 1] \le \eta_5, \quad \text{and} \quad \norm{\nabla \objm[k](\iter[k])} \ge \nu \norm{\nabla \objmalt[k](\iter[k])},
+\end{equation*}
+with~$\eta_5 \in (0, 1)$ and~$\nu \ge 0$, then~$\objm[k]$ is replaced with~$\objmalt[k]$, and the models of the nonlinear constraints are also replaced with their least Frobeninus norm counterparts.
+We choose in \gls{cobyqa}~$\eta_5 = 0.01$ and~$\nu = 10$.
+Since \gls{cobyqa} maintains the inverse of the coefficient matrix of the interpolation problem, the least Frobenius norm models are easy to evaluate.
+See~\cref{subsec:implementation-symmetric-broyden-update} for details.
+As will be demonstrated in \cref{subsec:alternative-models}, this procedure improves the performance of \gls{cobyqa}.
 
 \section{Management of bound and linear constraints}
 \label{sec:simple-constraints}

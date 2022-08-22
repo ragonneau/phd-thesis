@@ -346,7 +346,7 @@ The method defines the initial search direction~$\pstep[0]$ as the solution to
 \begin{subequations}
     \label{eq:tcg-linear-working-set}
     \begin{align}
-        \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep + \nabla Q(\sstep[0])}^2\\
+        \min_{\sstep \in \R^n}  & \quad \norm{\sstep + \nabla Q(\sstep[0])}\\
         \text{s.t.}             & \quad a_j^{\T} \sstep \le 0, ~ j \in \mathcal{J}(\sstep[0]),\\
                                 & \quad C \sstep = 0.
     \end{align}
@@ -372,7 +372,7 @@ However, upon this termination, if the current iterate~$\sstep[k + 1]$ is not on
 \begin{subequations}
     \label{eq:tcg-linear-working-set-after}
     \begin{align}
-        \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep + \nabla Q(\sstep[k + 1])}^2\\
+        \min_{\sstep \in \R^n}  & \quad \norm{\sstep + \nabla Q(\sstep[k + 1])}\\
         \text{s.t.}             & \quad a_j^{\T} \sstep \le 0, ~ j \in \mathcal{J}(\sstep[k + 1]),\\
                                 & \quad C \sstep = 0.
     \end{align}
@@ -415,7 +415,7 @@ In the algorithm, we denote by~$\Pi^k$ the projection onto the orthogonal comple
         %     & \infty                                                                                && \quad \text{otherwise}
         % \end{algoempheq}
         Set~$\alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]} \le \rad}$ using~\cref{eq:tcg-alphad} \nllabel{alg:lctcg-alpharad}\;
-        Set~$\alpha_L^k \gets \argmax @@ \set{\alpha \ge 0 : A(\sstep[k] + \alpha \pstep[k]) \le b}$\;
+        Set~$\alpha_L^k \gets \argmax @@ \set{\alpha \ge 0 : A(\sstep[k] + \alpha \pstep[k]) \le b}$ \nllabel{alg:lctcg-alphal}\;
         Set the step size~$\alpha^k \gets \min @@ \set{\alpha_Q^k, \alpha_{\rad}^k, \alpha_L^k}$\;
         Update the iterate~$\sstep[k + 1] \gets \sstep[k] + \alpha^k \pstep[k]$\;
         \uIf{$\alpha^k < \min \set{\alpha_{\rad}^k, \alpha_L^k}$}{
@@ -463,7 +463,7 @@ Its proof is \emph{trivial}, but we include it for completeness.
     \begin{subequations}
         \label{eq:lctcg-lemma}
         \begin{align}
-            \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep - g}^2\\
+            \min_{\sstep \in \R^n}  & \quad \norm{\sstep - g}\\
             \text{s.t.}             & \quad a_j^{\T} \sstep \le 0, ~ j \in \mathcal{J},\\
                                     & \quad C \sstep = 0.
         \end{align}
@@ -480,7 +480,7 @@ Its proof is \emph{trivial}, but we include it for completeness.
     \begin{subequations}
         \label{eq:lctcg-lemma-proof-1}
         \begin{align}
-            \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \norm{\sstep - g}^2\\
+            \min_{\sstep \in \R^n}  & \quad \norm{\sstep - g}\\
             \text{s.t.}             & \quad a_j^{\T} \sstep = 0, ~ j \in \tilde{\mathcal{J}},\\
                                     & \quad C \sstep = 0,
         \end{align}
@@ -567,81 +567,101 @@ As demonstrated by~\citeauthor{Powell_2015}~\cite[\S~5]{Powell_2015}, these two 
 \label{sec:cobyqa-normal}
 
 In this section, we present the method employed by \gls{cobyqa} to approximately solve its normal subproblem~\cref{eq:cobyqa-normal}.
-Unlike for the tangential subproblem, the objective function of the normal subproblem is not a quadratic.
-It is rather piecewise quadratic.
-More specifically, it is of the form
+Unlike for the tangential subproblem, the objective function of the normal subproblem is not quadratic, but piecewise quadratic.
+More specifically, problem~\cref{eq:cobyqa-normal} is of the form
 \begin{subequations}
     \label{eq:problem-cpqp}
     \begin{align}
-        \min_{\sstep \in \R^n}  & \quad \frac{1}{2} \big[ \norm{\posp{A \sstep - b}}^2 + \norm{C \sstep - d}^2 \big]\\
-        \text{s.t.}             & \quad \xl \le \sstep \le \xu,\\
-                                & \quad \norm{\sstep} \le \rad,
+        \min_{z \in \R^n}   & \quad \norm{\posp{\hat{A} z - \hat{b}}}^2 + \norm{\check{A} z - \check{b}}^2\\
+        \text{s.t.}         & \quad \xl \le z \le \xu,\\
+                            & \quad \norm{z} \le \rad,
     \end{align}
 \end{subequations}
-where~$A \in \R^{m_1 \times n}$,~$C \in \R^{m_2 \times n}$,~$b \in \R^{m_1}$,~$d \in \R^{m_2}$, and the lower bound~$\xl \in (\R \cup \set{-\infty})^n$ and the upper bound~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl \le 0$,~$\xu \ge 0$, and~$\xl < \xu$.
+where~$\hat{A} \in \R^{m_1 \times n}$,~$\check{A} \in \R^{m_2 \times n}$,~$\hat{b} \in \R^{m_1}$,~$\check{b} \in \R^{m_2}$,~$\xl \in (\R \cup \set{-\infty})^n$, and~$\xu \in (\R \cup \set{\infty})^n$.
+We assume that the bounds~$\xl$ and~$\xu$ satisfy~$\xl \le 0$,~$\xu \ge 0$, and~$\xl < \xu$.
 Note that these bounds are not the same as in~\cref{eq:problem-cobyqa}.
-In~\cref{eq:problem-cpqp},~$\posp{\cdot}$ takes the positive part of a number, and~$\norm{\cdot}$ denotes the~$\ell_2$-norm.
+In~\cref{eq:problem-cpqp},~$\posp{\cdot}$ takes the positive part of a number.
 
 \subsubsection{Reformulation of the problem}
 
-The main difficulty in solving~\cref{eq:problem-cpqp}, even approximately, is the piecewise quadratic term~$\norm{\posp{A \sstep - b}}^2$ in its objective function.
-However, it can clearly be reformulated by introducing a variable~$v \in \R^{m_1}$ as
+The main difficulty in solving~\cref{eq:problem-cpqp}, even approximately, is the piecewise quadratic term~$\norm{\posp{\hat{A} z - \hat{b}}}^2$ in its objective function.
+To handle this term, we introduce a new variable~$v \in \R^{m_1}$ and reformulate~\cref{eq:problem-cpqp} as
+\begin{align*}
+    \min_{(z, v) \in \R^n \times \R^{m_1}}  & \quad \norm{\check{A} z - \check{b}}^2 + \norm{v}^2\\
+    \text{s.t.}                             & \quad \hat{A} z - v \le \hat{b},\\
+                                            & \quad v \ge 0,\\
+                                            & \quad \xl \le z \le \xu,\\
+                                            & \quad \norm{z} \le \rad.
+\end{align*}
+This problem takes the form
 \begin{subequations}
     \label{eq:problem-cpqp-reformulated}
     \begin{align}
-        \min_{(\sstep, v) \in \R^n \times \R^{m_1}} & \quad Q(\sstep, v) \eqdef \frac{1}{2} \big[ \norm{C \sstep - d}^2 + \norm{v}^2 \big]\\
-        \text{s.t.}                                 & \quad E \sstep + F v \le h,\\
-                                                    & \quad \norm{\sstep} \le \rad,
+        \min_{\sstep \in \R^{n + m_1}}  & \quad Q(\sstep)\\
+        \text{s.t.}                     & \quad A \sstep \le b,\\
+                                        & \quad \norm{\sstep}_{D} \le \rad, \label{eq:problem-cpqp-reformulated-tr}
     \end{align}
 \end{subequations}
-where
+with~$s$ being the vector that concatenates~$z$ and~$v$, and
 \begin{equation*}
-    E \eqdef
+    Q(\sstep) \eqdef - 2 \begin{bmatrix} \check{b}^{\T} \check{A} & 0 \end{bmatrix} s + s^{\T} \begin{bmatrix} \check{A}^{\T} \check{A} & 0\\ 0 & I_{m_1} \end{bmatrix} s, \quad 
+    A \eqdef
     \begin{bmatrix}
-        A\\
-        I_n\\
-        -I_n\\
-        0
-    \end{bmatrix}, \quad
-    F \eqdef
-    \begin{bmatrix}
-        -I_{m_1}\\
-        0\\
-        0\\
-        -I_{m_1}
+        \hat{A} & -I_{m_1}\\
+        0       & -I_{m_1}\\
+        I_n     & 0\\
+        -I_n    & 0
     \end{bmatrix}, \quad \text{and} \quad
-    h \eqdef
+    b \eqdef
     \begin{bmatrix}
-        b\\
+        \hat{b}\\
+        0\\
         \xu\\
-        -\xl\\
-        0
+        -\xl
     \end{bmatrix}.
 \end{equation*}
-When compared to the original problem~\cref{eq:problem-cpqp}, the advantage of the reformulated problem~\cref{eq:problem-cpqp-reformulated} is that its objective function is quadratic, although
-\begin{enumerate}
-    \item the dimension of the reformulated problem is higher, and
-    \item linear inequality constraints appear in the reformulated problem.
-\end{enumerate}
-
-We observe nonetheless that problem~\cref{eq:problem-cpqp-reformulated} is almost of the right form to be solved approximately by \cref{alg:lctcg}.
-Only the trust-region constraint differs, and is not applied to all variables of the reformulated problem.
-From a geometrical point of view, the feasible set engendered by the only nonlinear constraint is a ball for the problems tackled by \cref{alg:lctcg}, while it is a cylinder in~\cref{eq:problem-cpqp-reformulated}.
-To solve problem~\cref{eq:problem-cpqp-reformulated}, and hence~\cref{eq:problem-cpqp}, we design below a variation of \cref{alg:lctcg}.
-
-\subsubsection{Description of the \glsfmtshort{tcg}-like method}
-
-To solve problem~\cref{eq:problem-cpqp-reformulated}, and hence~\cref{eq:problem-cpqp}, we employ an algorithm identical to \cref{alg:lctcg}, except that \cref{alg:lctcg-alpharad} is replaced with
+In~\cref{eq:problem-cpqp-reformulated},~$\norm{\cdot}_D$ denotes the seminorm defined by
 \begin{equation*}
-    \alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]}_{\Psi} \le \rad},
+    \norm{\sstep}_D \eqdef \sqrt{\sstep^{\T} D \sstep},
 \end{equation*}
-where~$\norm{\cdot}_{\Psi}$ denotes the seminorm define by
+with~$D$ being the diagonal matrix whose first~$n$ diagonal elements are one, and the remaining~$m_1$ components are zero.
+
+Compared with the original problem~\cref{eq:problem-cpqp}, problem~\cref{eq:problem-cpqp-reformulated} increases the dimension of the problem, and introduce additional linear inequality constraints.
+However, it has the advantage that its objective function is quadratic.
+In addition, this reformulation enables us to apply a \gls{tcg} method, as specified below.
+% From a geometrical point of view, the feasible set engendered by the only nonlinear constraint is a ball for the problems tackled by \cref{alg:lctcg}, while it is a cylinder in~\cref{eq:problem-cpqp-reformulated}.
+% To solve problem~\cref{eq:problem-cpqp-reformulated}, and hence~\cref{eq:problem-cpqp}, we design below a variation of \cref{alg:lctcg}.
+
+\subsubsection{Description of the \glsfmtshort{tcg} method}
+
+We observe that problem~\cref{eq:problem-cpqp-reformulated} takes almost the same form as~\cref{eq:problem-lctcg} with~$C = 0$, the only difference being that the trust-region constraint~\cref{eq:problem-cpqp-reformulated-tr} is defined using the seminorm~$\norm{\cdot}_D$ instead of the~$\ell_2$-norm.
+Based on this observation, we propose to approximately solve~\cref{eq:problem-cpqp-reformulated} using~\cref{alg:cpqp}, which is a straightforward adaptation of \cref{alg:lctcg} that replaces~$\norm{\cdot}$ with~$\norm{\cdot}_D$ in the trust region.
+
+\begin{algorithm}
+    \caption{\Glsfmtshort{tcg} method for solving~\cref{eq:problem-cpqp-reformulated}}
+    \label{alg:cpqp}
+    \DontPrintSemicolon
+    \onehalfspacing
+    \KwData{Quadratic function~$Q$, matrices~$A$ and~$D$, right-hand side~$b$, trust-region radius~$\rad > 0$, and constant~$\sigma \in (0, 1)$.}
+    \KwResult{An approximate solution to~\cref{eq:problem-cpqp-reformulated}.}
+    \nonl Identical to \cref{alg:lctcg} with~$C = 0$, except that the initial guess~$\sstep[0]$ is not~$0$ but a feasible point, and the formula in \cref{alg:lctcg-alpharad} is replaced with
+    \begin{algomathdisplay}
+        \alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]}_D \le \rad}
+    \end{algomathdisplay}
+\end{algorithm}
+
+Note that \cref{alg:cpqp} requires the initial guess to be feasible; otherwise,~$\alpha_{\rad}^0$ or~$\alpha_L^0$ may not exist (see \cref{alg:lctcg-alpharad,alg:lctcg-alphal} of \cref{alg:lctcg}).
+In practice, we take
 \begin{equation*}
-    \norm{\sstep}_{\Psi} \eqdef \sqrt{\sstep^{\T} \Psi \sstep},
+    \sstep[0] =
+    \begin{bmatrix}
+        0\\
+        \posp{-\hat{b}}
+    \end{bmatrix}.
 \end{equation*}
-with~$\Psi$ being the diagonal matrix whose first~$n$ diagonal elements are one, and the remaining~$m_1$ components are zero.
-In other words, the \enquote{trust-region constraint} is applied only to the first~$n$ components of the variable.
-The termination properties of the method are ensured, because the term~$\alpha_{\rad}^k$ only plays a role in a termination criterion that is not involved in the proof of termination.
+
+% It is important to remark that in \cref{alg:lctcg}, if~$\alpha^k = \alpha_{\rad}^k$, then the algorithm stops.
+% Otherwise, we necessarily have~$\alpha^k > \alpha_{\rad}^k$.
 
 % \subsubsection{Description of the working set}
 
@@ -760,8 +780,9 @@ The termination properties of the method are ensured, because the term~$\alpha_{
 
 We present in this section the method employed by \gls{cobyqa} to solve the least-squares problem~\cref{eq:least-squares-lagrange-multipliers-cobyqa}.
 It is adapted from the \gls{nnls} algorithm~\cite[Alg.~23.10]{Lawson_Hanson_1987} as follows.
-The update mechanism of the estimated Lagrange multipliers in \gls{cobyqa} is based on constrained least-squares problems, where some variables must remain nonnegative in order to satisfy some complementary slackness conditions.
-The problem it solves are of the form
+% The update mechanism of the estimated Lagrange multipliers in \gls{cobyqa} is based on constrained least-squares problems, where some variables must remain nonnegative in order to satisfy some complementary slackness conditions.
+
+Problem~\cref{eq:least-squares-lagrange-multipliers-cobyqa} takes the form
 \begin{subequations}
     \label{eq:problem-nnls}
     \begin{align}
@@ -769,36 +790,37 @@ The problem it solves are of the form
         \text{s.t.}             & \quad \sstep_i \ge 0, ~ i = 1, 2, \dots, n_0,
     \end{align}
 \end{subequations}
-where~$A \in \R^{m \times n}$,~$b \in \R^m$,~$n_0$ is a nonnegative integer with~$n_0 \le n$, and~$\norm{\cdot}$ denotes the Euclidean norm.
+where~$A \in \R^{m \times n}$,~$b \in \R^m$, and~$n_0$ is a nonnegative integer with~$n_0 \le n$.
 We observe that if~$n_0 = 0$, then~\cref{eq:problem-nnls} is a simple unconstrained least-squares problem, which can be solved using traditional methods.
+Our major concern in this section is the case~$n_0 \ge 1$.
 
 \subsubsection{Description of the method}
 
-In order to solve problem~\cref{eq:problem-nnls} when~$n_0 \ge 1$, we construct an active-set method based on~\cite[Alg.~23.10]{Lawson_Hanson_1987}, referred to as \gls{nnls}.
+In order to solve problem~\cref{eq:problem-nnls} when~$n_0 \ge 1$, we construct an active-set method based on~\cite[Alg.~23.10]{Lawson_Hanson_1987}, that maintains a working set of the nonnegativity constraints.
+%, referred to as \gls{nnls}.
 It is a particular case of the \gls{bvls} algorithm~\cite{Stark_Parker_1995}.
-The framework of the method is described in \cref{alg:nnls}.
-It uses the notation~$\Pi(\mathcal{W})$, define as follows.
-Given a working set~$\mathcal{W}$, we let~$\Pi(\mathcal{W})$ be the least-norm solution to
+The method is described in \cref{alg:nnls}.
+% It uses the notation~$\varrho(\mathcal{W})$, defined as follows.
+Given a working set~$\mathcal{W} \subseteq \set{1, 2, \dots, n_0}$, the algorithm uses~$\varrho(\mathcal{W})$ to denote the least-norm solution to
 \begin{equation*}
-    \min_{\sstep \in \R^n} \frac{1}{2} \norm{\hat{A} \sstep - b}^2
+    \min_{\sstep \in \R^n} \frac{1}{2} \norm{A_{\scriptscriptstyle \mathcal{W}} \sstep - b}^2
 \end{equation*}
-where~$\hat{A}$ is the matrix whose~$i$th column is that of~$A$ if~$i \notin \mathcal{W}$, and zero otherwise.
-
+where~$A_{\scriptscriptstyle \mathcal{W}}$ is the matrix whose~$i$th column is that of~$A$ if~$i \notin \mathcal{W}$, and zero otherwise.
 
 \begin{algorithm}
     \caption{\Glsdesc{nnls} method}
     \label{alg:nnls}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{Matrix~$A$, vector~$b$, and number of positive variables~$n_0 \ge 1$.}
+    \KwData{Matrix~$A$, vector~$b$, and integer~$n_0 \ge 1$.}
     \KwResult{A solution to~\cref{eq:problem-nnls}.}
     Set~$\sstep[0] \gets 0$,~$\mathcal{W}^{-1} \gets \set{1, 2, \dots, n_0}$, and~$k \gets 0$\;
     \While{the \gls{kkt} conditions do not hold at~$\sstep[k]$}{ \nllabel{alg:nnls-kkt}
-        Build~$\mathcal{W}^k$ by removing from~$\mathcal{W}^{k - 1}$ an index yielding
+        Build~$\mathcal{W}^k$ by removing from~$\mathcal{W}^{k - 1}$ the smallest~$i$ that solves
         \begin{algomathdisplay}
             \min_{i \in \mathcal{W}^k} @@ \frac{\partial \mu}{\partial \sstep_i}(\sstep[k])
         \end{algomathdisplay} \nllabel{alg:nnls-remove}
-        Set the trial point~$\pstep[k] \gets \Pi(\mathcal{W}^k)$\; \nllabel{alg:nnls-trial-1}
+        Set the trial point~$\pstep[k] \gets \varrho(\mathcal{W}^k)$\; \nllabel{alg:nnls-trial-1}
         \While{$\pstep[k]_i \le 0$ for some~$i \notin \mathcal{W}^k$ with~$i \le n_0$}{  \nllabel{alg:nnls-inner}
             Set the step size
             \begin{algomathdisplay}
@@ -806,7 +828,7 @@ where~$\hat{A}$ is the matrix whose~$i$th column is that of~$A$ if~$i \notin \ma
             \end{algomathdisplay}
             Update~$\sstep[k + 1] \gets \sstep[k] + \alpha^k (\pstep[k] - \sstep[k])$ and increment~$k$\;
             Expand the working set~$\mathcal{W}^k \gets \mathcal{W}^{k - 1} \cup \set{i \le n_0 : \sstep[k]_i = 0}$\;
-            Set the trial point~$\pstep[k] \gets \Pi(\mathcal{W}^k)$\; \nllabel{alg:nnls-trial-2}
+            Set the trial point~$\pstep[k] \gets \varrho(\mathcal{W}^k)$\; \nllabel{alg:nnls-trial-2}
         }
         Update~$\sstep[k + 1] \gets \pstep[k]$ and increment~$k$\;
     }
@@ -817,55 +839,43 @@ A point~$\sstep[k] \in \R^n$ satisfies the \gls{kkt} conditions for~\cref{eq:pro
 \begin{equation*}
     \frac{\partial \mu}{\partial \sstep_i} (\sstep[k]) = 0 \quad \text{if~$i > n_0$ or~$\sstep[k]_i > 0$.}
 \end{equation*}
+% When the algorithm terminates, an exact solution to~\cref{eq:problem-nnls} is obtained.
+For more discussion on this algorithm, see~\cite[\S~23.3]{Lawson_Hanson_1987} and~\cite{Stark_Parker_1995}.
 
 % This modification of the \gls{nnls} algorithm is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.nnls}.
 
-\subsubsection{Convergence of the method}
+% \subsubsection{Convergence of the method}
 
-We sketch below the convergence properties of \cref{alg:nnls}.
-Since the termination criteria of the outer loop are the \gls{kkt} conditions for problem~\cref{eq:problem-nnls}, the termination of the algorithm implies its convergence because the problem is convex and the constraints are linear.
-% The termination proof of the algorithm necessitates the following result, whose proof is established in~\cite[Lem.~23.17]{Lawson_Hanson_1987}.
+% We sketch below the convergence properties of \cref{alg:nnls}.
+% Since the termination criteria of the outer loop are the \gls{kkt} conditions for problem~\cref{eq:problem-nnls}, the termination of the algorithm implies its convergence because the problem is convex and the constraints are linear.
 
-% \begin{lemma}
-%     \label{lem:nnls}
-%     Assume that the matrix~$A \in \R^{m \times n}$ is full column rank and that the vector~$b \in \R^m$ satisfies~$b^{\T} A e_i = 0$ for all~$i \in \set{1, 2, \dots, n} \setminus \set{j}$ and~$b^{\T} A e_j > 0$ for some~$j \in \set{1, 2, \dots, n}$.
-%     Then the least-squares solution~$\sstep[\ast]$ to~$A \sstep - b$ satisfies~$\sstep[\ast]_j > 0$.
-% \end{lemma}
+% \paragraph{Termination of the inner loop}
 
-% Assume that the \gls{kkt} conditions for problem~\cref{eq:problem-nnls} do not hold at the origin.
-% At the first iteration, the algorithm selects the index ($j$, say) of the most negative component of~$\nabla \rho(\sstep[0]) = -A^{\T} b$ and remove it from the working set.
-% According to \cref{lem:nnls}, the solution to the least-squares problem at \cref{alg:nnls-trial-1} satisfies~$\pstep[0]_j > 0$.
-% It is then easy to see that at each iteration, the solutions to the least-squares problem at \cref{alg:nnls-trial-1,alg:nnls-trial-2} satisfy~$\pstep[k]_j > 0$, where~$j$ is the index selected at \cref{alg:nnls-remove}.
-% Such a solution is then modified by the inner loop to ensure that~$\sstep[k]_i \ge 0$ for all~$i \in \set{1, 2, \dots, n_0}$.
-% To do so, it will select the closest point to~$\pstep[k]$ on the line joining~$\sstep[k]$ to~$\pstep[k]$ that is feasible.
+% At each inner loop iteration, the size of the working set~$\mathcal{W}^k$ is enlarged.
+% If~$\mathcal{W}^k$ is maximal, that is~$\mathcal{W}^k = \set{1, 2, \dots, n_0}$, then the condition at \cref{alg:nnls-inner} of \cref{alg:nnls} is always false, and the loop terminates.
 
-\paragraph{Termination of the inner loop}
+% \paragraph{Termination of the outer loop}
 
-At each inner loop iteration, the size of the working set~$\mathcal{W}^k$ is enlarged.
-If~$\mathcal{W}^k$ is maximal, that is~$\mathcal{W}^k = \set{1, 2, \dots, n_0}$, then the condition at \cref{alg:nnls-inner} of \cref{alg:nnls} is always false, and the loop terminates.
+% Termination of the outer loop can be directly inferred by showing that the value of~$\mu$ strictly decreases at each outer loop iteration.
+% Such a condition ensures that the working set~$\mathcal{W}^k$ at a given outer loop iteration is different from all its previous instances, as each iterate of the outer loop is feasible\todo{Understand why and explain in the thesis} (see~\cite[Lem.~23.17]{Lawson_Hanson_1987} and the discussion below).
 
-\paragraph{Termination of the outer loop}
-
-Termination of the outer loop can be directly inferred by showing that the value of~$\mu$ strictly decreases at each outer loop iteration.
-Such a condition ensures that the working set~$\mathcal{W}^k$ at a given outer loop iteration is different from all its previous instances, as each iterate of the outer loop is feasible\todo{Understand why and explain in the thesis} (see~\cite[Lem.~23.17]{Lawson_Hanson_1987} and the discussion below).
-
-When an outer loop iteration finishes, the value of~$\sstep[k + 1]$ solves
-\begin{align*}
-    \min_{\sstep \in \R^n}  & \quad \mu(\sstep)\\
-    \text{s.t.}             & \quad \sstep_i \ge 0, ~ i \in \set{1, 2, \dots, n_0},\\
-                            & \quad \sstep_i = 0, ~ i \in \mathcal{W}^k,
-\end{align*}
-If the \gls{kkt} conditions for problem~\cref{eq:problem-nnls} hold at~$\sstep[k + 1]$, then termination occurs.
-Otherwise, after incrementing~$k$, the index yielding the least value of~$\nabla \mu(\sstep[k])$ is removed from the working set~$\mathcal{W}^k$, and the tentative solution vector~$\pstep[k]$ clearly provides~$\mu(\pstep[k]) < \mu(\sstep[k])$.
-The result is then proven if no inner loop is entertained (that is, if condition at \cref{alg:nnls-inner} of \cref{alg:nnls} does not hold).
-Otherwise, at the end of each inner loop, we have
-\begin{align*}
-    \norm{A \sstep[k + 1] - b}  & = \norm[\big]{A (\sstep[k] + \alpha^k (\pstep[k] - \sstep[k])) - b}\\
-                                & = \norm[\big]{(1 - \alpha^k) (A \sstep[k] - b) + \alpha^k (A \pstep[k] - b)}\\
-                                & < \norm{A \sstep[k] - b},
-\end{align*}
-since~$\alpha^k \in (0, 1)$.
-The termination of the outer loop is then proven, as well as the convergence of the method.
+% When an outer loop iteration finishes, the value of~$\sstep[k + 1]$ solves
+% \begin{align*}
+%     \min_{\sstep \in \R^n}  & \quad \mu(\sstep)\\
+%     \text{s.t.}             & \quad \sstep_i \ge 0, ~ i \in \set{1, 2, \dots, n_0},\\
+%                             & \quad \sstep_i = 0, ~ i \in \mathcal{W}^k,
+% \end{align*}
+% If the \gls{kkt} conditions for problem~\cref{eq:problem-nnls} hold at~$\sstep[k + 1]$, then termination occurs.
+% Otherwise, after incrementing~$k$, the index yielding the least value of~$\nabla \mu(\sstep[k])$ is removed from the working set~$\mathcal{W}^k$, and the tentative solution vector~$\pstep[k]$ clearly provides~$\mu(\pstep[k]) < \mu(\sstep[k])$.
+% The result is then proven if no inner loop is entertained (that is, if condition at \cref{alg:nnls-inner} of \cref{alg:nnls} does not hold).
+% Otherwise, at the end of each inner loop, we have
+% \begin{align*}
+%     \norm{A \sstep[k + 1] - b}  & = \norm[\big]{A (\sstep[k] + \alpha^k (\pstep[k] - \sstep[k])) - b}\\
+%                                 & = \norm[\big]{(1 - \alpha^k) (A \sstep[k] - b) + \alpha^k (A \pstep[k] - b)}\\
+%                                 & < \norm{A \sstep[k] - b},
+% \end{align*}
+% since~$\alpha^k \in (0, 1)$.
+% The termination of the outer loop is then proven, as well as the convergence of the method.
 
 % \begin{itemize}
 %     \item How is it related to the original \gls{nnls} by considering the positive and negative parts?
@@ -874,61 +884,68 @@ The termination of the outer loop is then proven, as well as the convergence of 
 \section{Solving the geometry-improving subproblem}
 \label{sec:cobyqa-geometry-improving}
 
-We now details the way \gls{cobyqa} approximately solves the geometry-improving subproblem~\cref{eq:geometry-subproblem}.
+We now detail how \gls{cobyqa} approximately solves the geometry-improving subproblem~\cref{eq:geometry-subproblem}.
 Such a subproblem is of the form
 \begin{subequations}
     \label{eq:geometry-simple}
     \begin{align}
-        \min_{\sstep \in \R^n}  & \quad \abs{Q(\sstep)}\\
+        \max_{\sstep \in \R^n}  & \quad \abs{Q(\sstep)}\\
         \text{s.t.}             & \quad \xl \le \sstep \le \xu,\\
                                 & \quad \norm{\sstep} \le \rad,
     \end{align}
 \end{subequations}
-where~$Q$ a is quadratic function, the lower bounds~$\xl \in (\R \cup \set{-\infty})^n$, and the upper bounds~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl \le 0$,~$\xu \ge 0$, and~$\xl < \xu$.
+where~$Q$ a is quadratic function, the bounds~$\xl \in (\R \cup \set{-\infty})^n$ and~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl \le 0$,~$\xu \ge 0$, and~$\xl < \xu$.
 Note that these bounds are not the same as in~\cref{eq:problem-cobyqa}.
 
-The method employed by \gls{cobyqa} is that of \gls{bobyqa}~\cite{Powell_2009}.
-It computes two alternative approximations, and select the one that provides the largest value of the denominator of the updating formula in absolute value (see~\cref{subsec:geometry-improvement}).
+The method employed by \gls{cobyqa} is adopted from \gls{bobyqa}~\cite{Powell_2009}.
+It computes two alternative approximations, and select the one that provides the larger absolute value of the denominator of the updating formula (see~\cref{subsec:geometry-improvement}).
 
-The first alternative is a truncated Cauchy-like step.
-More specifically, the method evaluate two Cauchy-like steps, one for the minimization of~$Q(\sstep)$, one for the minimization of~$-Q(\sstep)$, and selects the one that provides the largest value of~$\abs{Q(\sstep)}$.
-The Cauchy-like step for the first calculation is evaluated as follows, the second one being similar.
-Let~$\sstep[c]$ be a solution to
-\begin{align*}
-    \min_{\sstep \in \R^n}  & \quad Q(0) + \nabla Q(0)^{\T} \sstep\\
-    \text{s.t.}             & \quad \xl \le \sstep \le \xu,\\
-                            & \quad \norm{\sstep} \le \rad,
-\end{align*}
-The considered Cauchy-like step is then set to a multiple of~$\sstep[c]$ that minimizes~$Q$.
+The first alternative is a constrained Cauchy step.
+More specifically, the method evaluates two steps, one for the minimization of~$Q(\sstep)$, one for the minimization of~$-Q(\sstep)$, and selects the one that provides the largest value of~$\abs{Q(\sstep)}$.
+For the minimization of~$Q$, we first define a direction~$\sstep[c]$ by solving
+\begin{subequations}
+    \label{eq:cobyqa-geometry-cauchy}
+    \begin{align}
+        \min_{\sstep \in \R^n}  & \quad Q(0) + \nabla Q(0)^{\T} \sstep\\
+        \text{s.t.}             & \quad \xl \le \sstep \le \xu,\\
+                                & \quad \norm{\sstep} \le \rad.
+    \end{align}
+\end{subequations}
+The considered step is then obtained by minimizing~$Q$ along~$\sstep[c]$ subject to the bounds and the trust-region constraint.
+For the minimization of~$-Q$, we define the direction by solving an analog of~\cref{eq:cobyqa-geometry-cauchy}, with~$Q$ changed to~$-Q$, and then obtain the step by minimizing~$-Q$ along this direction subject to the constraints.
 
 The second alternative is as follows.
-Assume that the current interpolation set is~$\xpt$, and that~$0 \in \xpt$ is the best point so far (otherwise, shift the calculations).
-The method minimizes~$\abs{Q(\sstep)}$ along the lines that join~$0$ to the other interpolation points.
+Let~$\xpt$ be the current interpolation set.
+Without any loss of generality, assume that~$0 \in \xpt$ is the best point so far.
+The method minimizes~$\abs{Q(\sstep)}$ along the straight lines through~$0$ and the other interpolation points.
 In other words, it computes
 \begin{align*}
-    \min_{\sstep \in \R^n}  & \quad \abs{Q(\sstep)}\\
+    \max_{\sstep \in \R^n}  & \quad \abs{Q(\sstep)}\\
     \text{s.t.}             & \quad \xl \le \sstep \le \xu,\\
                             & \quad \norm{\sstep} \le \rad,\\
-                            & \quad \sstep \in \set{\alpha y : \alpha \in (0, 1), ~ y \in \xpt}.
+                            & \quad \sstep \in \set{\alpha y : \alpha \in \R, ~ y \in \xpt}.
 \end{align*}
-This subproblem can easily be reformulated as~$\card(\xpt) - 1$ minimizations in the variable~$\alpha \in (0, 1)$, with can be directly computed.
-This mechanism is described in~\cite{Powell_2008} for the unconstrained case, stating that adding this new constraint not only simplifies the computations, but also reduces the number of function evaluations in several experiments.
+This subproblem can be reformulated as~$\card(\xpt) - 1$ maximization problems in the variable~$\alpha$, which can be directly solved.
+% This mechanism is described in~\cite{Powell_2008} for the unconstrained case, stating that adding this new constraint not only simplifies the computations, but also reduces the number of function evaluations in several experiments.
 
-Another method that the author tried to approximately solve~\cref{eq:geometry-simple} is to employ \cref{alg:lctcg} on both~$Q$ and~$-Q$, taking the solution with the largest absolute value.
-However, numerical experiments concurred with the observations of \citeauthor{Powell_2008}~\cite{Powell_2008}, as the performance of \gls{cobyqa} drastically decreased when compared to the method presented in this section.
-This concludes our discussion of the methods employed by \gls{cobyqa} to solve its subproblem.
+Another method that the author tried to approximately solve~\cref{eq:geometry-simple} is to employ \cref{alg:lctcg} on both~$Q$ and~$-Q$, taking the solution that provides the larger absolute value of~$Q$.
+However, in our numerical experiments on \gls{cobyqa}, this strategy performs much worse than the one explained above.
+This concurs with the observations of \citeauthor{Powell_2008}~\cite{Powell_2008} made on \gls{bobyqa}.
+Therefore, we decide not to use this strategy in the implementation of \gls{cobyqa}.
+% This concludes our discussion of the methods employed by \gls{cobyqa} to solve its subproblem.
 
 \section{Summary and remarks}
 
 We presented in this chapter the detailed methods employed by \gls{cobyqa} to solve its various subproblems.
-To solve the tangential subproblem~\cref{eq:cobyqa-tangential} and the normal subproblem~\cref{eq:cobyqa-normal}, we employ active-set variations of the Steihaug-Toint \gls{tcg} algorithm.
-In particular, the tangential subproblem~\cref{eq:cobyqa-tangential} is either solved using the subproblem solver of \gls{bobyqa}~\cite{Powell_2009} or that of \gls{lincoa}~\cite{Powell_2015}, depending on whether it admits linear constraints or not.
-Moreover, we established an elementary modification of the linearly-constrained \gls{tcg} method for solving approximately the normal subproblem.
 
-We then established a method for solving the least-squares problem~\cref{eq:least-squares-lagrange-multipliers-cobyqa} for evaluating the least-squares Lagrange multiplier.
-This solver is a straightforward modification of the \gls{nnls} algorithm~\cite[Alg.~23.10]{Lawson_Hanson_1987} for nonnegative least-squares problems.
-The solution returned by this algorithm is exact, and the convergence of the method has been shown.
+To solve the tangential subproblem~\cref{eq:cobyqa-tangential} and the normal subproblem~\cref{eq:cobyqa-normal}, we apply active-set variations of the Steihaug-Toint \gls{tcg} algorithm.
+In particular, the tangential subproblem~\cref{eq:cobyqa-tangential} is either solved using the subproblem solver of \gls{bobyqa}~\cite{Powell_2009} or a that of \gls{lincoa}~\cite{Powell_2015} with a slight modification, depending on whether it admits linear constraints or not.
+Moreover, we adapted the subproblem solver of \gls{lincoa} to approximately solve a reformulation of the normal subproblem.
+
+We then presented a method for solving the least-squares problem~\cref{eq:least-squares-lagrange-multipliers-cobyqa} that defines the least-squares Lagrange multiplier.
+This solver is a straightforward adaptation of the \gls{nnls} algorithm~\cite[Alg.~23.10]{Lawson_Hanson_1987} for nonnegative least-squares problems.
+% The solution returned by this algorithm is exact.
 
 Finally, we introduced the method employed by \gls{cobyqa} for solving the geometry-improving subproblem~\cref{eq:geometry-subproblem}.
-This method is the one designed by \citeauthor{Powell_2009} for solving the geometry-improving subproblem of \gls{bobyqa}~\cite{Powell_2009}.
-Two approximate solutions are calculated, the best of which (according to some criterion) being returned.
+This method is adopted from \gls{bobyqa}~\cite{Powell_2009}.
+Two approximate solutions are calculated, the better one (according to some criterion) being returned.
