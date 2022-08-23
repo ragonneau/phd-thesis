@@ -619,7 +619,6 @@ It uses an~$\ell_2$-merit function to assess the quality of each trial step.
 Being updated along the iterations, this lower bound is used as an indicator of the current resolution of the algorithm, and prevents the trust-region radius from becoming too small compared to the resolution.
 \Gls{cobyqa} never increases this lower bound, and decreases it if the algorithm decides that the work for the current resolution is finished.
 This strategy is adopted from Powell's \gls{dfo} solvers.
-% The optimization method terminates if it reaches a given final value.
 
 Recall that model-based \gls{dfo} methods usually entertain a geometry-improving procedure, because they tend to lose the poisedness of their interpolation set as the iterations progress.
 The geometry improvement of \gls{cobyqa} excludes from the interpolation set the furthest point from the current iterate, and includes a point that maximizes the Lagrange polynomial associated with the excluded point.
@@ -627,7 +626,13 @@ This is adopted from~\cite{Powell_2006,Powell_2009}.
 The objective of this procedure is to improve the conditioning of the interpolation system.
 As a consequence, the geometry improvement also makes the interpolation problem numerically more stable.
 
-Finally, an important characteristic of \gls{cobyqa} is that it never attempts to visits points lying outside of the bounds.
+An important characteristic of \gls{cobyqa} is that it never attempts to visits points lying outside of the bounds.
 All interpolation points and trial points always respect the bounds.
 This is motivated by the fact that the objective functions of applications for which \gls{cobyqa} is designed are often undefined when the bound constraints are violated.
-% In particular, since geometry-improving points are included in the interpolation set, the method ensures that they also respect the bounds.
+
+Finally, we remark that there another derivate-free trust-region \gls{sqp} method, named \gls{sqpdfo}~\cite{Troltzsch_2016,Gratton_Toint_Troltzsch_2011,Troltzsch_Ilic_Siggel_2021}.
+This method reformulates the nonlinear inequality constraints using slack variables, and tackles the bound constraints using the active-set approach.
+Therefore, it is not scalable to a large number of nonlinear inequality constraints.
+In \gls{cobyqa}, we do not reformulate the inequality constraints using slack variables and hence, we do not increase the dimension of the feasible set.
+Moreover, \gls{sqpdfo} allows the bound constraints to be slightly infeasible, while \gls{cobyqa} always ensures that the points its visits lie within the bounds.
+Hence, our work does not overlap with \gls{sqpdfo}.
