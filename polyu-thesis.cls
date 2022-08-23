@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/08/22 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/08/23 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifinitial
@@ -137,6 +137,9 @@
 
 % Set up SI units
 \RequirePackage{siunitx}
+\sisetup{%
+    group-separator={,},%
+}
 
 % Index processing
 \RequirePackage{imakeidx}

@@ -317,51 +317,258 @@ The compilation is made using GitHub Actions, and relies on the Python package c
 \section{Some numerical experiments}
 \label{sec:cobyqa-experiments}
 
-To conclude this chapter, we present some numerical results of \gls{cobyqa}.
-The performance profiles presented in this section have been obtained on the CUTEst library~\cite{Gould_Orban_Toint_2015}.
-See \cref{sec:benchmarking-tools} for the definition of the performance profiles in a \gls{dfo} context.
+To conclude this chapter, we present several numerical results for \gls{cobyqa}.
+The performance and data profiles presented in this section have been obtained on the CUTEst library~\cite{Gould_Orban_Toint_2015}.
+The experiments select all the available problems with a dimension at most \num{50} and a number of constraints at most \num[group-minimum-digits=4]{1000}.
+See \cref{sec:benchmarking-tools} for the definition of the performance and data profiles in a \gls{dfo} context.
 The merit function we consider in the following is defined as follows.
-Let~$v_{\infty}(\iter) \in \R$ be the~$\ell_{\infty}$-constraint violation at~$\iter \in \R^n$.
-It is always zero for unconstrained problems.
-The merit function~$\varphi$ employed by the performance profiles is defined by
+Let~$v_{\infty}(\iter) \in \R$ be the~$\ell_{\infty}$-constraint violation at~$\iter \in \R^n$, and define the merit function~$\varphi$ employed by the performance profiles by
 \begin{empheq}[left={\varphi(\iter) = \empheqlbrace}]{alignat*=2}
-    & \obj(\iter),                                  && \quad \text{if~$v_{\infty}(\iter) \le 10^{-10}$,}\\
-    & \infty,                                       && \quad \text{if~$v_{\infty}(\iter) \ge 10^{-5}$,}\\
-    & \obj(\iter) + 10^5 \times v_{\infty}(\iter),  && \quad \text{otherwise,}
+    & \obj(\iter),                              && \quad \text{if~$v_{\infty}(\iter) \le \nu_1$,}\\
+    & \infty,                                   && \quad \text{if~$v_{\infty}(\iter) \ge \nu_2$,}\\
+    & \obj(\iter) + \gamma v_{\infty}(\iter),   && \quad \text{otherwise,}
 \end{empheq}
-for~$\iter \in \R^n.$
+for~$\iter \in \R^n$.
+We choose in the experiments~$\nu_1 = 10^{-10}$,~$\nu_2 = 10^{-5}$, and~$\gamma = 10^5$.
+Note that~$v_{\infty}$ is always zero for unconstrained problems.
 
-\subsection{Performance of the new Byrd-Omojokun approach}
-\label{subsec:perf-byrd-omojokun}
+\subsection{Performance of the \glsfmtshort{sqp} framework}
+
+We observe in what follows the effects of the \gls{sqp} framework employed by \gls{cobyqa}.
+We then compare the \gls{cobyqa} with a modification that replaces the term~$\nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k])$ in its trust-region \gls{sqp} subproblem~\cref{eq:derivative-free-trust-region-sqp-subproblem} with~$\nabla^2 \objm[k](\iter[k])$.
+Although it is known that the resulting algorithm is invalid, making the comparison between the two methods is interesting because it reveals the importance of the strategy.
+
+Therefore, we make the following numerical experiments.
+We consider the nonlinearly-constrained problems of the CUTEst library~\cite{Gould_Orban_Toint_2015} whose dimensions are at most \num{50} with at most \num[group-minimum-digits=4]{1000} constraints.
+\Cref{sec:list-nonlinearly-constrained-problems} provides a detailed list of these problems.
+We then plot the performance and data profiles for the two methods in \cref{fig:perf-wrong-hessian,fig:data-wrong-hessian}, respectively.
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYQA-2"}}{plain-1-50-perf-cobyqa-byrd-omojokun-nlqo.csv}{1}
+        \drawperformanceprofiles{{"COBYQA","Erroneous-COBYQA"}}{plain-1-50-perf-cobyqa-wrong-hessian-qo.csv}{1}
         \caption{Tolerance~$\tau = 10^{-1}$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYQA-2"}}{plain-1-50-perf-cobyqa-byrd-omojokun-nlqo.csv}{3}
+        \drawperformanceprofiles{{"COBYQA","Erroneous-COBYQA"}}{plain-1-50-perf-cobyqa-wrong-hessian-qo.csv}{3}
         \caption{Tolerance~$\tau = 10^{-3}$}
     \end{subfigure}
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYQA-2"}}{plain-1-50-perf-cobyqa-byrd-omojokun-nlqo.csv}{5}
+        \drawperformanceprofiles{{"COBYQA","Erroneous-COBYQA"}}{plain-1-50-perf-cobyqa-wrong-hessian-qo.csv}{5}
         \caption{Tolerance~$\tau = 10^{-5}$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYQA-2"}}{plain-1-50-perf-cobyqa-byrd-omojokun-nlqo.csv}{7}
+        \drawperformanceprofiles{{"COBYQA","Erroneous-COBYQA"}}{plain-1-50-perf-cobyqa-wrong-hessian-qo.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Comparison of two Byrd-Omojokun approaches}
+    \caption{Performance profiles for the \gls{sqp} framework}
+    \label{fig:perf-wrong-hessian}
 \end{figure}
 
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","Erroneous-COBYQA"}}{plain-1-50-data-cobyqa-wrong-hessian-qo.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","Erroneous-COBYQA"}}{plain-1-50-data-cobyqa-wrong-hessian-qo.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","Erroneous-COBYQA"}}{plain-1-50-data-cobyqa-wrong-hessian-qo.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","Erroneous-COBYQA"}}{plain-1-50-data-cobyqa-wrong-hessian-qo.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Data profiles for the \gls{sqp} framework}
+    \label{fig:data-wrong-hessian}
+\end{figure}
+
+We observe that \gls{cobyqa} performs much better than the modification for all tolerances considered.
+It solves more problems, and uses less function evaluations than the modified algorithms on most of the problems.
+Note that this observation is perfectly excepted.
+We presented an example in \cref{subsec:sqp-simple-example} on which the modified \gls{sqp} framework does not work, while the true framework does.
+Moreover, all the interpretations we presented in \cref{subsec:sqp-interpretation} indicate that it is necessary to employ~$\nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k])$ in the second-order term of the objective function of the \gls{sqp} subproblem.
+
+We can also observe on these plots that the estimated Lagrange multipliers we chose for \gls{cobyqa} are effective.
+In the future, we may also attempt different strategy to estimate the Lagrange multipliers.
+
+\subsection{Performance of the new Byrd-Omojokun approach}
+\label{subsec:perf-byrd-omojokun}
+
+We now compare the performance of \gls{cobyqa} with another modification.
+More specifically, we replace our Byrd-Omojokun approach with the traditional Byrd-Omojokun approach, presented in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
+The objective of this experiment is to show that our approach provides a much greater performance for \gls{cobyqa}.
+
+We make the following numerical experiments.
+We consider the linearly- and nonlinearly-constrained problems of the CUTEst library~\cite{Gould_Orban_Toint_2015} whose dimensions are at most \num{50} with at most \num[group-minimum-digits=4]{1000} constraints.
+\Cref{sec:list-linearly-constrained-problems,sec:list-nonlinearly-constrained-problems} provide detailed lists of these problems.
+We plot the performance and data profiles for the two methods in \cref{fig:perf-byrd-omojokun,fig:data-byrd-omojokun}, respectively.
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","Modified-COBYQA"}}{plain-1-50-perf-cobyqa-byrd-omojokun-nlqo.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","Modified-COBYQA"}}{plain-1-50-perf-cobyqa-byrd-omojokun-nlqo.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","Modified-COBYQA"}}{plain-1-50-perf-cobyqa-byrd-omojokun-nlqo.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","Modified-COBYQA"}}{plain-1-50-perf-cobyqa-byrd-omojokun-nlqo.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Performance profiles for the Byrd-Omojokun approaches}
+    \label{fig:perf-byrd-omojokun}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","Modified-COBYQA"}}{plain-1-50-data-cobyqa-byrd-omojokun-nlqo.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","Modified-COBYQA"}}{plain-1-50-data-cobyqa-byrd-omojokun-nlqo.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","Modified-COBYQA"}}{plain-1-50-data-cobyqa-byrd-omojokun-nlqo.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","Modified-COBYQA"}}{plain-1-50-data-cobyqa-byrd-omojokun-nlqo.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Data profiles for the Byrd-Omojokun approaches}
+    \label{fig:data-byrd-omojokun}
+\end{figure}
+
+The results are inequivocal; our Byrd-Omojokun approach unquestionably overcomes the traditional Byrd-Omojokun approach in \gls{cobyqa}, for all displayed tolerances.
+This can be explain by the fact that our Byrd-Omojokun approach provides a larger feasible region to the tangential steps, without worsening their feasibility.
+Hence, a larger reduction in the objective function is usually obtained at each iteration.
+It is interesting to observe that the difference is even greater than in the previous experiment.
+
+\subsection{Performance of the quadratic models}
+\label{subsec:alternative-models}
+
+We now compare the performance of \gls{cobyqa} with two modifications.
+Recall that \gls{cobyqa} employs quadratic models based on the derivative-free symmetric Broyden update (see \cref{subsec:symmetric-broyden-updates}).
+Morever, recall that it includes a strategy to replace these models with the minimum Frobenius norm models if the method considers that the current models are inefficient (this replacement being exceptional).
+The two modifications of \gls{cobyqa} we make are as follows.
+The first one, referred to as \gls{cobyqa}~PSB, uses only the models based on the derivative-free symmetric Broyden update, without any replacement.
+The second one, referred to as \gls{cobyqa}~MNH, uses only minimum Frobenius norm models.
+
+We make the following numerical experiments.
+We consider all the problems of the CUTEst library~\cite{Gould_Orban_Toint_2015} whose dimensions are at most \num{50} with at most \num[group-minimum-digits=4]{1000} constraints.
+\Cref{sec:list-unconstrained-problems,sec:list-bound-constrained-problems,sec:list-linearly-constrained-problems,sec:list-nonlinearly-constrained-problems} provide detailed lists of these problems.
+We plot the performance and data profiles for the three methods in \cref{fig:perf-models,fig:data-models}, respectively.
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYQA-PSB","COBYQA-MNH"}}{plain-1-50-perf-cobyqa-models-ubnlqo.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYQA-PSB","COBYQA-MNH"}}{plain-1-50-perf-cobyqa-models-ubnlqo.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYQA-PSB","COBYQA-MNH"}}{plain-1-50-perf-cobyqa-models-ubnlqo.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYQA-PSB","COBYQA-MNH"}}{plain-1-50-perf-cobyqa-models-ubnlqo.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Performance profiles for the different models}
+    \label{fig:perf-models}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYQA-PSB","COBYQA-MNH"}}{plain-1-50-data-cobyqa-models-ubnlqo.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYQA-PSB","COBYQA-MNH"}}{plain-1-50-data-cobyqa-models-ubnlqo.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYQA-PSB","COBYQA-MNH"}}{plain-1-50-data-cobyqa-models-ubnlqo.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYQA-PSB","COBYQA-MNH"}}{plain-1-50-data-cobyqa-models-ubnlqo.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Data profiles for the different models}
+    \label{fig:data-models}
+\end{figure}
+
+We can draw the same conclusions for all considered tolerances, namely that \gls{cobyqa} performs better than \gls{cobyqa}~PSB, which itself performs better than \gls{cobyqa}~MNH.
+More precisely, we can observe that \gls{cobyqa} always outperforms the two modifications for each precision at each iteration.
+These results comfort us in the choice of the quadratic models.
+
+Powell proposed a sophisticated mechanism to replace the quadratic models obtained by the derivative-free symmetric Broyden update of \gls{lincoa} with the minimum Frobenius norm ones.
+We plan in the future to always try this mechanism, as it may provide even better performance for \gls{cobyqa}.
+
 \subsection{Comparison on unconstrained problems}
+
+In the remaining of this chapter, we compare the performance of \gls{cobyqa} with the Powell's \gls{dfo} methods that are available through \gls{pdfo}.
+In all the comparisons, we include both \gls{cobyqa} and \gls{cobyla}, because both are capable of handling all types of problems, and because \gls{cobyqa} is expected to be a successor of \gls{cobyla}.
+
+In this section, we first compare the performances of \gls{cobyqa}, \gls{newuoa}, and \gls{cobyla} on unconstrained problems.
+We make the following numerical experiments.
+We consider all the unconstrained problems of the CUTEst library~\cite{Gould_Orban_Toint_2015} whose dimensions are at most \num{50}.
+\Cref{sec:list-unconstrained-problems} provides a detailed list of these problems.
+We plot the performance and data profiles for the three methods in \cref{fig:perf-unconstrained-problems,fig:data-unconstrained-problems}, respectively.
 
 \begin{figure}[ht]
     \centering
@@ -387,52 +594,61 @@ for~$\iter \in \R^n.$
         \drawperformanceprofiles{{"COBYQA","NEWUOA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-newuoa-u.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Comparisons on unconstrained problems}
+    \caption{Performance profiles on unconstrained problems}
+    \label{fig:perf-unconstrained-problems}
 \end{figure}
 
-% We first compare the performance of \gls{cobyqa} with \gls{newuoa} and \gls{uobyqa} on unconstrained problems of dimension at most~$10$.
-% \Cref{fig:cobyqa-newuoa-unconstrained} plots the performance profiles obtained during these experiments, with a tolerance~$\tau = 10^{-4}$.
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","NEWUOA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-newuoa-u.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","NEWUOA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-newuoa-u.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","NEWUOA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-newuoa-u.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","NEWUOA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-newuoa-u.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Data profiles on unconstrained problems}
+    \label{fig:data-unconstrained-problems}
+\end{figure}
 
-% \begin{figure}[ht]
-%     \centering
-%     \begin{subfigure}[b]{0.49\textwidth}
-%         \centering
-%         \drawperformanceprofiles{{"COBYQA","NEWUOA"}}{plain-1-10-perf-cobyqa-newuoa-u.csv}{4}
-%         \caption{Comparison with \gls{newuoa}}
-%     \end{subfigure}
-%     \hfill
-%     \begin{subfigure}[b]{0.49\textwidth}
-%         \centering
-%         \drawperformanceprofiles{{"COBYQA","UOBYQA"}}{plain-1-10-perf-cobyqa-uobyqa-u.csv}{4}
-%         \caption{Comparison with \gls{uobyqa}}
-%     \end{subfigure}
-%     \caption{Comparison of \gls{cobyqa} with \gls{newuoa} and \gls{uobyqa}}
-%     \label{fig:cobyqa-newuoa-unconstrained}
-% \end{figure}
+We first observe that \gls{cobyqa} outperforms \gls{cobyla} in general.
+For the highest tolerance (i.e.,~$\tau = 10^{-1}$), it necessitates the smallest number of function evaluations to converge on most of the problems.
+Specifically, it needed the smallest number of functions evaluations to converge on \SI{45}{\percent} of the problems, while the percentage for \gls{cobyqa} is \SI{25}{\percent}.
+Moreover, without any restriction on the number of function evaluations, they both converge for more than \SI{90}{\percent} of the problems.
+This behavior is perfectly expected, because \gls{cobyla} necessitates the least amount of function evaluations to build the initial models.
+As expected, this performance drops drastically when the precision decreases.
 
-% We observe that \gls{cobyqa} and \gls{newuoa} have comparable performance, although \gls{newuoa} achieves the least number of function evaluations on more problems than \gls{cobyqa}.
-% Moreover, we observe that \gls{cobyqa} is clearly outperformed by \gls{uobyqa}.
-% Details on the results of each solver on each problem are given in \cref{tab:cobyqa-newuoa-uobyqa-10}.
-% All in all, these results are expected, because
-% \begin{enumerate}
-%     \item \gls{newuoa} and \gls{cobyqa} use very similar algorithms, and
-%     \item \gls{uobyqa} employs fully-determined interpolation models and the dimension is small.
-% \end{enumerate}
-% Let us observe that when the dimension increases, \gls{cobyqa} has better performance than \gls{uobyqa}.
-% We compare them now on unconstrained problems of dimension at least~$11$ and at most~$50$.
-% \Cref{fig:cobyqa-uobyqa-unconstrained} plots the performance profiles obtained during these experiments, with a tolerance~$\tau = 10^{-4}$.
-
-% \begin{figure}[ht]
-%     \centering
-%     \drawperformanceprofiles{{"COBYQA","UOBYQA"}}{plain-11-50-perf-cobyqa-uobyqa-u.csv}{4}
-%     \caption{Comparison of \gls{cobyqa} and \gls{uobyqa} on high-dimensional problems}
-%     \label{fig:cobyqa-uobyqa-unconstrained}
-% \end{figure}
-
-% On this experiment, \gls{cobyqa} necessitated the least number of function evaluations to terminate on most test problems, although only a few CUTEst problems match the dimension requirement.
-% \Cref{tab:cobyqa-uobyqa-50} provides details on the results of each solver on each problem.
+We also observe that \gls{cobyqa} and \gls{newuoa} have comparable performance for high and moderate tolerance.
+For the lowest tolerance, \gls{cobyqa} is slightly outperformed by \gls{newuoa}, although the difference is not severe.
+More specifically, for the tolerance~$\tau \ge 10^{-5}$ presented here, the difference observed between \gls{cobyqa} and \gls{newuoa} is insignificant, and we can conclude that both methods performed the same.
+When~$\tau = 10^{-7}$, \gls{newuoa} converged faster than \gls{cobyqa} on \SI{55}{\percent} of the problems, while the percentage for \gls{cobyqa} is \SI{40}{\percent}.
+\Gls{newuoa} finally solved \SI{88}{\percent} of the problems, while the percentage for \gls{cobyqa} is \SI{80}{\percent}.
+In short, we can conclude that \gls{cobyqa} does not perform significantly worse than \gls{newuoa}.
+This behavior is expected because both methods share very similar algorithms.
+The difference between both method is likely to come from minor difference in the algorithms, in their implementations, and from computer rounding errors.
 
 \subsection{Comparison on bound-constrained problems}
+
+We now compare the performance of \gls{cobyqa} with \gls{bobyqa} and \gls{cobyla} on bound-constrained problems.
+We make the following numerical experiments.
+We consider all the bound-constrained problems of the CUTEst library~\cite{Gould_Orban_Toint_2015} whose dimensions are at most \num{50} and whose solutions are not fixed by the bounds.
+\Cref{sec:list-bound-constrained-problems} provides a detailed list of these problems.
+We plot the performance and data profiles for the three methods in \cref{fig:perf-bound-constrained-problems,fig:data-bound-constrained-problems}, respectively.
 
 \begin{figure}[ht]
     \centering
@@ -458,25 +674,55 @@ for~$\iter \in \R^n.$
         \drawperformanceprofiles{{"COBYQA","BOBYQA","COBYLA"}}{plain-1-50-perf-bobyqa-cobyla-cobyqa-b.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Comparisons on bound-constrained problems}
+    \caption{Performance profiles on bound-constrained problems}
+    \label{fig:perf-bound-constrained-problems}
 \end{figure}
 
-% We now compare the performance of \gls{cobyqa} with \gls{bobyqa} on bound-constrained problems of dimension at most~$10$.
-% \Cref{fig:cobyqa-bobyqa-bound-constrained} plots the performance profiles obtained during this experiment, with a tolerance~$\tau = 10^{-4}$.
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","BOBYQA","COBYLA"}}{plain-1-50-data-bobyqa-cobyla-cobyqa-b.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","BOBYQA","COBYLA"}}{plain-1-50-data-bobyqa-cobyla-cobyqa-b.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","BOBYQA","COBYLA"}}{plain-1-50-data-bobyqa-cobyla-cobyqa-b.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","BOBYQA","COBYLA"}}{plain-1-50-data-bobyqa-cobyla-cobyqa-b.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Data profiles on bound-constrained problems}
+    \label{fig:data-bound-constrained-problems}
+\end{figure}
 
-% \begin{figure}[ht]
-%     \centering
-%     \drawperformanceprofiles{{"COBYQA","BOBYQA"}}{plain-1-10-perf-bobyqa-cobyqa-b.csv}{4}
-%     \caption{Comparison of \gls{cobyqa} with \gls{bobyqa}}
-%     \label{fig:cobyqa-bobyqa-bound-constrained}
-% \end{figure}
+The comparison of \gls{cobyqa} with \gls{cobyla} is exactly the same than the one in the unconstrained case.
+In other words, \gls{cobyqa} always outperforms \gls{cobyla}, except that for the highest tolerance, \gls{cobyla} converges faster on more problems than \gls{cobyqa}, the percentages being \SI{45}{\percent} and \SI{30}{\percent}.
 
-% In this experiment, \gls{cobyqa} solved more problems using the least number of function evaluations, and finally solves the same number of problems as \gls{bobyqa} when an infinite budget of function evaluations is allowed.
-% This is also perfectly expected, because both solvers use similar methods.
-% \Cref{tab:cobyqa-bobyqa-10} provides details on the results of each solver on each problem.
+Moreover, the comparison of \gls{cobyqa} with \gls{bobyqa} on bound-constrained problems is similar to the one between \gls{cobyqa} and \gls{newuoa} on unconstrained problems.
+More specifically, they are very similar performance for high and moderate tolerance, and \gls{bobyqa} is slightly better when the tolerance is low.
+However, for the tolerance~$\tau \le 10^{-3}$, \gls{cobyqa} always converges faster on more problems than \gls{bobyqa}, the difference being between \SI{10}{\percent} and \SI{20}{\percent}.
+All in all, we can conclude that \gls{cobyqa} and \gls{bobyqa} share very similar performance.
+This is also perfectly expected, because both solvers use similar methods.
 
 \subsection{Comparison on linearly-constrained problems}
 \label{subsec:comparison-cobyqa-lincoa}
+
+We now compare the performance of \gls{cobyqa} with \gls{lincoa} and \gls{cobyla} on linearly-constrained problems.
+We make the following numerical experiments.
+We consider all the linearly-constrained problems of the CUTEst library~\cite{Gould_Orban_Toint_2015} whose dimensions are at most \num{50} with at most \num[group-minimum-digits=4]{1000} constraints.
+\Cref{sec:list-linearly-constrained-problems} provides a detailed list of these problems.
+We plot the performance and data profiles for the three methods in \cref{fig:perf-linearly-constrained-problems,fig:data-linearly-constrained-problems}, respectively.
 
 \begin{figure}[ht]
     \centering
@@ -502,8 +748,55 @@ for~$\iter \in \R^n.$
         \drawperformanceprofiles{{"COBYQA","LINCOA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-lincoa-nl.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Comparisons on linearly-constrained problems}
+    \caption{Performance profiles on linearly-constrained problems}
+    \label{fig:perf-linearly-constrained-problems}
 \end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","LINCOA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-lincoa-nl.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","LINCOA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-lincoa-nl.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","LINCOA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-lincoa-nl.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","LINCOA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-lincoa-nl.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Data profiles on linearly-constrained problems}
+    \label{fig:data-linearly-constrained-problems}
+\end{figure}
+
+Once again, in this experiment, \gls{cobyqa} outperforms \gls{cobyla}, particularly with low precision.
+For high tolerances, \gls{cobyla} again necessitates the smallest number of function evaluations to converge on most of the problems.
+
+However, \gls{cobyqa} is always outperformed by \gls{lincoa} to some degree.
+More precisely, for the highest tolerance, the performance are very comparable, but lower tolerances, \gls{lincoa} converges faster than \gls{cobyqa} on \SI{60}{\percent} of the problems, the percentage for \gls{cobyqa} being around \SI{20}{\percent}.
+Finally, when \gls{lincoa} converges on more than \SI{90}{\percent} of the problems, \gls{cobyqa} converges on \SI{85}{\percent}.
+The difference between the two solvers is however not alarming.
+It is likely that some strategy that \gls{lincoa} employs, such as that for replacing the models with the minimum Frobenius norm ones, performs better on linearly-constrained problems.
+Moreover, after investigation, the author observed that the implementations of all the solvers are extremely sensible to the way it is coded.
+For example, changing the order of the summation in an inner product may change the performance of an algorithm.
+We will study this phenomenon carefully in the future.
+
+We now consider another experiments, showing the advantages of \gls{cobyqa} over \gls{lincoa} and \gls{cobyla} is applications for which \gls{cobyqa} is designed.
+We consider all the linearly-constrained problems of the CUTEst library~\cite{Gould_Orban_Toint_2015} whose dimensions are at most \num{50} with at most \num[group-minimum-digits=4]{1000} constraints, which admit at least one bound constraint.
+Further, we set the objective function of the problem to~$\infty$ at the points at which the bound constraints are not satisfied.
+This experiment reflects more closely the behavior faced by the optimization in engineering and industrial applications.
+We plot the performance and data profiles for the three methods in \cref{fig:perf-linearly-constrained-problems-bounds,fig:data-linearly-constrained-problems-bounds}, respectively.
 
 \begin{figure}[ht]
     \centering
@@ -529,30 +822,49 @@ for~$\iter \in \R^n.$
         \drawperformanceprofiles{{"COBYQA","LINCOA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-lincoa-nl-bounds.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Comparisons on linearly-constrained problems with inviolable bounds}
+    \caption{Performance profiles on linearly-constrained problems with bounds}
+    \label{fig:perf-linearly-constrained-problems-bounds}
 \end{figure}
 
-% We now compare the performance of \gls{cobyqa} with \gls{lincoa} on linearly-constrained problems of dimension at most~$10$.
-% \Cref{fig:cobyqa-lincoa-linearly-constrained} plots the performance profiles obtained during this experiment, with~$\tau = 10^{-4}$.
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","LINCOA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-lincoa-nl-bounds.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","LINCOA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-lincoa-nl-bounds.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","LINCOA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-lincoa-nl-bounds.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","LINCOA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-lincoa-nl-bounds.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Data profiles on linearly-constrained problems with bounds}
+    \label{fig:data-linearly-constrained-problems-bounds}
+\end{figure}
 
-% \begin{figure}[ht]
-%     \centering
-%     \drawperformanceprofiles{{"COBYQA","LINCOA"}}{plain-1-10-perf-cobyqa-lincoa-nl.csv}{4}
-%     \caption{Comparison of \gls{cobyqa} with \gls{lincoa}}
-%     \label{fig:cobyqa-lincoa-linearly-constrained}
-% \end{figure}
-
-% On this plot, it is clear that the performance of \gls{cobyqa} is slightly worse than that of \gls{lincoa}, although it finally solves the same amount of problems.
-% \Cref{tab:cobyqa-lincoa-10} provides details on the results of each solver on each problem.
-
-% This does not worry us because \gls{lincoa} is known for his performance on linearly-constrained problems.
-% After invextigation, the author observed that the implementation of \gls{cobyqa} (as well as those of Powell's solvers) is extremely sensible to the way it is implemented.
-% For example, changing the order of the summation in an inner product changed the performance of the algorithm.
-% In other words, we need in the future to investigate each section of the source code of \gls{cobyqa}, to try to find the best configuration.
-% This hard work has not been done yet, as it is highly time-consuming.
-% This will however be done in the future.
+On this experiment, \gls{cobyqa} overwhelmingly outperforms \gls{lincoa} and \gls{cobyqa}, particularly for low tolerances.
+\gls{cobyqa} finally solves more problems, and uses the least amount of function evaluations on most of them.
+This is important, because \gls{cobyqa} is designed to tackle problems for which the bound constraints cannot be violated.
 
 \subsection{Comparison on nonlinearly-constrained problems}
+
+Finally, we compare \gls{cobyqa} with \gls{cobyla} on nonlinearly-constrained problems.
+We make the following numerical experiments.
+We consider all the nonlinearly-constrained problems of the CUTEst library~\cite{Gould_Orban_Toint_2015} whose dimensions are at most \num{50} with at most \num[group-minimum-digits=4]{1000} constraints.
+\Cref{sec:list-nonlinearly-constrained-problems} provides a detailed list of these problems.
+We plot the performance and data profiles for the two methods in \cref{fig:perf-nonlinearly-constrained-problems,fig:data-nonlinearly-constrained-problems}, respectively.
 
 \begin{figure}[ht]
     \centering
@@ -578,62 +890,45 @@ for~$\iter \in \R^n.$
         \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-qo.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Comparisons on nonlinearly-constrained problems}
+    \caption{Performance profiles on nonlinearly-constrained problems}
+    \label{fig:perf-nonlinearly-constrained-problems}
 \end{figure}
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-qo-bounds.csv}{1}
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-qo.csv}{1}
         \caption{Tolerance~$\tau = 10^{-1}$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-qo-bounds.csv}{3}
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-qo.csv}{3}
         \caption{Tolerance~$\tau = 10^{-3}$}
     \end{subfigure}
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-qo-bounds.csv}{5}
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-qo.csv}{5}
         \caption{Tolerance~$\tau = 10^{-5}$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-qo-bounds.csv}{7}
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-qo.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Comparisons on nonlinearly-constrained problems with inviolable bounds}
+    \caption{Data profiles on nonlinearly-constrained problems}
+    \label{fig:data-nonlinearly-constrained-problems}
 \end{figure}
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-bnlqo-bounds.csv}{1}
-        \caption{Tolerance~$\tau = 10^{-1}$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-bnlqo-bounds.csv}{3}
-        \caption{Tolerance~$\tau = 10^{-3}$}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-bnlqo-bounds.csv}{5}
-        \caption{Tolerance~$\tau = 10^{-5}$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-bnlqo-bounds.csv}{7}
-        \caption{Tolerance~$\tau = 10^{-7}$}
-    \end{subfigure}
-    \caption{Comparisons on nonlinearly-constrained problems with inviolable bounds}
-\end{figure}
+We observe that \gls{cobyqa} provides better performance than \gls{cobyla} for all considered tolerances.
+More specifically, \gls{cobyqa} converges faster than \gls{cobyla} on \SI{60}{\percent} of the problems, the percentage being between \SI{30}{\percent} and \SI{40}{\percent} for \gls{cobyla}, depending on the tolerance.
+Finally, they both solve the same amount of problem, namely aroung \SI{80}{\percent}.
+To achieve the same performance than \gls{cobyqa}, \gls{cobyla} needs in average~$2^3 = 8$ times more function evaluations than \gls{cobyqa}.
+This is very satisfactory, since \gls{cobyqa} is designed as a successor of \gls{cobyla}.
+
+To observe the general performance of \gls{cobyqa} over \gls{cobyla}, we plot in \cref{fig:perf-all-problems,fig:data-all-problems} the performance and data profiles on all the CUTEst problems of dimension at most \num{50}.
 
 \begin{figure}[ht]
     \centering
@@ -659,111 +954,185 @@ for~$\iter \in \R^n.$
         \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-ubnlqo.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Comparisons on all problems}
+    \caption{Performance profiles on all problems}
+    \label{fig:perf-all-problems}
 \end{figure}
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYQA-2"}}{plain-1-50-perf-cobyqa-wrong-hessian-qo.csv}{1}
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-ubnlqo.csv}{1}
         \caption{Tolerance~$\tau = 10^{-1}$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYQA-2"}}{plain-1-50-perf-cobyqa-wrong-hessian-qo.csv}{3}
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-ubnlqo.csv}{3}
         \caption{Tolerance~$\tau = 10^{-3}$}
     \end{subfigure}
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYQA-2"}}{plain-1-50-perf-cobyqa-wrong-hessian-qo.csv}{5}
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-ubnlqo.csv}{5}
         \caption{Tolerance~$\tau = 10^{-5}$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYQA-2"}}{plain-1-50-perf-cobyqa-wrong-hessian-qo.csv}{7}
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-ubnlqo.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Comparisons with the wrong Hessian matrices}
+    \caption{Data profiles on all problems}
+    \label{fig:data-all-problems}
 \end{figure}
 
-\subsection{Alternative models}
-\label{subsec:alternative-models}
+The results are unequivocal; \gls{cobyqa} outperforms \gls{cobyla} with a significant margin.
+This is explain by the fact that \gls{cobyla} uses linear models of the objective and constraint functions, while \gls{cobyqa} employs quadratic models.
+These results are hence not surprising.
+
+We also compare the performance of \gls{cobyqa} with \gls{cobyla} on the nonlinearly-constrained problems that admit at least one bound constraint, setting the objective functions of the problems to be~$\infty$ at the points where the bounds are violated.
+The performance and data profiles are provided in \cref{fig:perf-nonlinearly-constrained-problems-bounds,fig:data-nonlinearly-constrained-problems-bounds}, respectively.
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYQA-no","COBYQA-always"}}{plain-1-50-perf-cobyqa-models-ubnlqo.csv}{1}
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-qo-bounds.csv}{1}
         \caption{Tolerance~$\tau = 10^{-1}$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYQA-no","COBYQA-always"}}{plain-1-50-perf-cobyqa-models-ubnlqo.csv}{3}
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-qo-bounds.csv}{3}
         \caption{Tolerance~$\tau = 10^{-3}$}
     \end{subfigure}
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYQA-no","COBYQA-always"}}{plain-1-50-perf-cobyqa-models-ubnlqo.csv}{5}
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-qo-bounds.csv}{5}
         \caption{Tolerance~$\tau = 10^{-5}$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"COBYQA","COBYQA-no","COBYQA-always"}}{plain-1-50-perf-cobyqa-models-ubnlqo.csv}{7}
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-qo-bounds.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Comparisons of the models}
+    \caption{Performance profiles on nonlinearly-constrained problems with bounds}
+    \label{fig:perf-nonlinearly-constrained-problems-bounds}
 \end{figure}
 
-% We finally compare the performance of \gls{cobyqa} with \gls{cobyla} on general nonlinearly-constrained problems of dimension at most~$10$.
-% \Cref{fig:cobyqa-cobyla-nonlinearly-constrained} plots the performance profiles obtained during this experiment, with a tolerance~$\tau = 10^{-4}$.
-% \Cref{tab:cobyqa-cobyla-10} provides details on the results of each solver on each problem.
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-qo-bounds.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-qo-bounds.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-qo-bounds.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-qo-bounds.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Data profiles on nonlinearly-constrained problems with bounds}
+    \label{fig:data-nonlinearly-constrained-problems-bounds}
+\end{figure}
 
-% \begin{figure}[ht]
-%     \centering
-%     \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-10-perf-cobyla-cobyqa-qo.csv}{4}
-%     \caption{Comparison of \gls{cobyqa} with \gls{cobyla}}
-%     \label{fig:cobyqa-cobyla-nonlinearly-constrained}
-% \end{figure}
+The results are similar to the ones in \cref{fig:perf-nonlinearly-constrained-problems,fig:data-nonlinearly-constrained-problems}, altough the performance of \gls{cobyqa} compared to that of \gls{cobyla} increases even more.
+This is also perfectly expected, because \gls{cobyla} is not designed to always satisfy the bound constraints.
 
-% On this plot, it is clear that \gls{cobyqa} has better performance than \gls{cobyla}, which is perfectly expected.
-% More precisely, altough they finally solve approximately the same amount of problems, \gls{cobyqa} necessitates the least number of function evaluations on most of them.
-% In average, \gls{cobyla} requires~$2^3 = 8$ times more function evaluations to achieve the same merit value on each problem.
+To conclude this section, we make the numerical experiment that reflects the most the reality for which \gls{cobyqa} is designed.
+We compare \gls{cobyqa} with \gls{cobyla} on all the problems that admit at least one bound constraint, setting their objective functions to~$\infty$ outside of the bounds.
+The performance and data profiles are provided in \cref{fig:perf-all-problems-bounds,fig:data-all-problems-bounds}, respectively.
 
-% This result is very encouraging, but we believe that we can achieve an even greater performance of \gls{cobyqa}.
-% This is because if we compare for example the performance of \gls{cobyqa} with \gls{cobyla} on bound-constrained problems of dimension at most~$10$, we obtain the performance profiles of plotted on \cref{fig:cobyqa-cobyla-bound-constrained}, with a tolerance~$\tau = 10^{-4}$.
-% \Cref{tab:cobyqa-bobyqa-10} also provides details on the results of each solver on each problem.
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-bnlqo-bounds.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-bnlqo-bounds.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-bnlqo-bounds.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-bnlqo-bounds.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Performance profiles on all problems with bounds}
+    \label{fig:perf-all-problems-bounds}
+\end{figure}
 
-% \begin{figure}[ht]
-%     \centering
-%     \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-10-perf-cobyla-cobyqa-b.csv}{4}
-%     \caption{Comparison of \gls{cobyqa} with \gls{cobyla} on bound-constrained problems}
-%     \label{fig:cobyqa-cobyla-bound-constrained}
-% \end{figure}
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-bnlqo-bounds.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-bnlqo-bounds.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-bnlqo-bounds.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-bnlqo-bounds.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Data profiles on all problems with bounds}
+    \label{fig:data-all-problems-bounds}
+\end{figure}
 
-% Future work will include improving the performance even more.
+All in all, the performance of \gls{cobyqa} are compellingly better than that of \gls{cobyla}, particularly for moderate and high tolerances.
+Therefore, \gls{cobyqa} is a great successor for \gls{cobyla}.
 
 \section{Summary and remarks}
 
-In this chapter, we presented the Python implementation of \gls{cobyqa}, and some numerical experiments.
-In particular, we saw that the implementation avoids as much as possible to raise exceptions if the inputs do not satisfies the preconditions.
+In this chapter, we presented the Python implementation of \gls{cobyqa}, and several numerical experiments.
+In particular, we saw that the implementation avoids as much as possible to raise exceptions if the inputs do not satisfies the preconditions of the framework described in \cref{ch:cobyqa-introduction}.
 The stopping criteria employed by \gls{cobyqa} are usual for a \gls{dfo} method.
 Normally, the computations of \gls{cobyqa} stop whenever the indicator of the resolution of the algorithm reached a final value.
 The implementation of \gls{cobyqa} has been highly challenging, because the nature of \gls{dfo} necessitate highly dedicated pieces of code.
 
 Moreover, we strove to make the user's interface as simple as possible, to make its use easy.
-A complete user's guide for using \gls{cobyqa} is available on the website of the solver\footnote{Available at \url{https://cobyqa.readthedocs.io/}.}.
+A complete user's guide for using \gls{cobyqa} is available on the website of the solver\footnote{Available at \url{https://www.cobyqa.com/}.}.
 We implemented the subproblem solvers in Cython, a programming language that blends the advantages of both Python and C.
 Cython is a compiled language and is, therefore, much faster than Python alone.
 The compilation of \gls{cobyqa} requires several dependencies (depending on the operating system), but compiled distributions are provided to ease the installation.
 
 Finally, the numerical results obtained on \gls{cobyqa} are very encouraging.
 They show that the method is working on most CUTEst problems, although a theoretical analysis of its convergence analysis needs to be done in the future.
-The performance of \gls{cobyqa} is comparable to those of \gls{newuoa} and \gls{bobyqa} on unconstrained and bound-constrained problems, respectively.
-However, the performance of \gls{cobyqa} on linearly- and nonlinearly-constrained problems does not entirely keep up with our expectations.
-This is likely due to the sensitivity of the implementation, which necessitates to be improved.
-This will be corrected in the near future.
+The performance of \gls{cobyqa} is comparable to those of \gls{newuoa} and \gls{bobyqa} on unconstrained and bound-constrained problems, respectively, while it is able to tackle more general problems.
+Moreover, compared to \gls{lincoa} and \gls{cobyla}, a strength of \gls{cobyqa} is that is always respect bound constraints.
+On linearly-constrained problems, \gls{cobyqa} outperforms \gls{lincoa} on problems that contain inviolable bound constraints.
+Most importantly, \gls{cobyqa} has much better performance than \gls{cobyla} on all types of problems, no matter whether bound constraints (if any) can be violated or not.
+Ultimately, \gls{cobyqa} is a great successor of \gls{cobyla}.

@@ -12,13 +12,16 @@
 % This work has the LPPL maintenance status `maintained'.
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
-\chapter{Details on the experiments}
+\chapter{List of testing problems}
 
-In this appendix, we provide lists of the CUTEst problems~\cite{Gould_Orban_Toint_2015} that are used in the experiments of \cref{ch:cobyqa-implementation}.
+In this appendix, we provide exhaustive lists of the CUTEst problems that are employed in our experiments.
+We employed PyCUTEst\footnote{See \url{https://jfowkes.github.io/pycutest/}.} to load the CUTEst problems in Python, and we select all the available problems with a dimension at most \num{50} and a number of constraints at most \num[group-minimum-digits=4]{1000}.
+Some experiments select only subsets of the provided lists.
+More specifically, some experiments require the problems to admit bound constraints.
+In such a case, we select all the listed problems that admit at least one bound constraint.
 
 \section{Unconstrained problems}
-
-We present in this section the unconstrained problems employed during the numerical experiments.
+\label{sec:list-unconstrained-problems}
 
 \begin{longtable}{llll}
     \caption{List of unconstrained problems}\\
@@ -106,8 +109,7 @@ We present in this section the unconstrained problems employed during the numeri
 \end{longtable}
 
 \section{Bound-constrained problems}
-
-We present in this section the bound-constrained problems employed during the numerical experiments.
+\label{sec:list-bound-constrained-problems}
 
 \begin{longtable}{llll}
     \caption{List of bound-constrained problems}\\
@@ -153,9 +155,7 @@ We present in this section the bound-constrained problems employed during the nu
     \end{longtable}
 
 \section{Linearly-constrained problems}
-
-We present in this section the linearly-constrained problems employed during the numerical experiments.
-Among these problems, we consider only those with at least one bound constraint when making experiments that modify the value of the objective function according to the bounds.
+\label{sec:list-linearly-constrained-problems}
 
 \begin{longtable}{llll}
     \caption{List of linearly-constrained problems}\\
@@ -187,9 +187,7 @@ Among these problems, we consider only those with at least one bound constraint 
 \end{longtable}
 
 \section{Nonlinearly-constrained problems}
-
-We present in this section the nonlinearly-constrained problems employed during the numerical experiments.
-Among these problems, we consider only those with at least one bound constraint when making experiments that modify the value of the objective function according to the bounds.
+\label{sec:list-nonlinearly-constrained-problems}
 
 \begin{longtable}{cccc}
     \caption{List of nonlinearly-constrained problems}\\

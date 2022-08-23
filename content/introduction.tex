@@ -757,15 +757,15 @@ Note that~$\alpha$ is displayed in~$\log_2$-scale.
 
 We can make the following observations on the noise-free experiment in \cref{fig:performance-profile-example-noiseless}.
 \begin{enumerate}
-    \item \Gls{bfgs} solves more than~$90\%$ of the problems, while the two other solvers solve slightly fewer problems.
+    \item \Gls{bfgs} solves more than \SI{90}{\percent} of the problems, while the two other solvers solve slightly fewer problems.
     According to~\cite[\S~2]{More_Wild_2009}, \gls{bfgs} is said more reliable than the other two solvers on the test problems in~$\xpb$, but the margin is narrow.
-    \item \Gls{newuoa} uses the least number of function evaluations on about~$50\%$ of the problems, while the percentages for \gls{bfgs} and \gls{cg} are about~$30\%$ and~$25\%$ respectively.
+    \item \Gls{newuoa} uses the least number of function evaluations on about \SI{50}{\percent} of the problems, while the percentages for \gls{bfgs} and \gls{cg} are about \SI{30}{\percent} and \SI{25}{\percent} respectively.
 \end{enumerate}
 
 We observe the following for the noisy experiments according to~\cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}.
 \begin{enumerate}
-    \item \Gls{newuoa} solves always more than~$70\%$ of the problems while the two other solvers solve significantly less problems.
-    \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses the least number of function evaluations on more than~$55\%$ of the problems, while the percentages for \gls{bfgs} and \gls{cg} are about~$20\%$ and~$15\%$ respectively.
+    \item \Gls{newuoa} solves always more than \SI{70}{\percent} of the problems while the two other solvers solve significantly less problems.
+    \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses the least number of function evaluations on more than \SI{55}{\percent} of the problems, while the percentages for \gls{bfgs} and \gls{cg} are about \SI{20}{\percent} and \SI{15}{\percent} respectively.
     For~$\sigma \in \set{10^{-8}, 10^{-6}}$, \gls{newuoa} is the most efficient on almost all the problems that it can solve, while the other two solvers fail on most of the problems in~$\xpb$.
 \end{enumerate}
 
@@ -822,14 +822,14 @@ A higher curve indicates a better performance.
 
 We can make the following observations on the noise-free experiment on \cref{fig:data-profile-example-noiseless}.
 \begin{enumerate}
-    \item \Gls{bfgs} solves more than~$90\%$ of the problems while the two other solvers solve slightly less problems.
+    \item \Gls{bfgs} solves more than \SI{90}{\percent} of the problems while the two other solvers solve slightly less problems.
     It agrees with what is indicated by \cref{fig:performance-profile-example-noiseless}, as it should be the case according to theory.
     \item \Gls{bfgs} uses less than~$300 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \xpb$ that it can solve, while \gls{newuoa} and \gls{cg} use about~$400 (n_p + 1)$.
 \end{enumerate}
 
 We observe the following for the noisy experiments according to~\cref{fig:data-profile-example-noisy-10,fig:data-profile-example-noisy-8,fig:data-profile-example-noisy-6}.
 \begin{enumerate}
-    \item \Gls{newuoa} solves always more than~$70\%$ of the problems while the two other solvers solve significantly fewer problems.
+    \item \Gls{newuoa} solves always more than \SI{70}{\percent} of the problems while the two other solvers solve significantly fewer problems.
     It agrees with what is indicated by \cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}, as it should be the case.
     \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses less than~$200 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \xpb$ that it can solve, while \gls{bfgs} and \gls{cg} use less than~$100 (n_p + 1)$, altough they solve much fewer problems.
     For~$\sigma \in \set{10^{-8}, 10^{-6}}$, \gls{newuoa} uses less than~$100 (n_p + 1)$ function evaluations\footnote{Even though the corresponding value is~$200 (n_p + 1)$ when~$\sigma = 10^{-10}$, we should not interpreted that \gls{newuoa} performs better with higher noise. When~$\sigma$ is larger, \gls{newuoa} solves fewer problems and~$\obj_p^{\ast}$ in~\cref{eq:convergence-test-profiles-unconstrained} is often larger, leading to a weaker convergence test.} to solve most of the problems that it can solve, while the other two solvers fail on most of the problems.

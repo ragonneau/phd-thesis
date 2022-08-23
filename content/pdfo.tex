@@ -413,7 +413,7 @@ A description of the datasets employed is provided in \cref{tab:htdata}.
 \nomenclature[Sb]{$[a, b]$}{Closed set~$\set{\iter \in \R : a \le \iter \le b}$ with~$a \le b$}%
 
 The problem we consider is as follows.
-A dataset~$\mathcal{D} \subseteq [-1, 1]^d$ from \cref{tab:htdata} is randomly split into a training dataset~$\mathcal{T}_1$, admitting approximately~$70\%$ of the data, and a testing dataset~$\mathcal{T}_2$, with~$\mathcal{D} = \mathcal{T}_1 \cup \mathcal{T}_2$.
+A dataset~$\mathcal{D} \subseteq [-1, 1]^d$ from \cref{tab:htdata} is randomly split into a training dataset~$\mathcal{T}_1$, admitting approximately \SI{70}{\percent} of the data, and a testing dataset~$\mathcal{T}_2$, with~$\mathcal{D} = \mathcal{T}_1 \cup \mathcal{T}_2$.
 We want to maximize the~$5$-fold \gls{auc} validation score of the \gls{svm} trained on~$\mathcal{T}_1$ with respect to the hyperparameters~$C$ and~$\gamma$.
 The \gls{auc} score, a real number in~$[0, 1]$, measures the area underneath the \gls{roc} curve, a graph representing the performance of a binary classification model.
 This curve plots the true positive classification rate with respect to the false positive classification rate at different classification thresholds.
