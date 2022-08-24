@@ -630,9 +630,6 @@ An important characteristic of \gls{cobyqa} is that it never attempts to visits 
 All interpolation points and trial points always respect the bounds.
 This is motivated by the fact that the objective functions of applications for which \gls{cobyqa} is designed are often undefined when the bound constraints are violated.
 
-Finally, we remark that there another derivate-free trust-region \gls{sqp} method, named \gls{sqpdfo}~\cite{Troltzsch_2016,Gratton_Toint_Troltzsch_2011,Troltzsch_Ilic_Siggel_2021}.
-This method reformulates the nonlinear inequality constraints using slack variables, and tackles the bound constraints using the active-set approach.
-Therefore, it is not scalable to a large number of nonlinear inequality constraints.
+Finally, we note that there exists another derivate-free trust-region \gls{sqp} method, named \gls{sqpdfo}~\cite{Troltzsch_2016,Gratton_Toint_Troltzsch_2011,Troltzsch_Ilic_Siggel_2021}.
+This method reformulates the nonlinear inequality constraints using slack variables, and tackles the bound constraints using an active-set approach.
 In \gls{cobyqa}, we do not reformulate the inequality constraints using slack variables and hence, we do not increase the dimension of the feasible set.
-Moreover, \gls{sqpdfo} allows the bound constraints to be slightly infeasible, while \gls{cobyqa} always ensures that the points its visits lie within the bounds.
-Hence, our work does not overlap with \gls{sqpdfo}.

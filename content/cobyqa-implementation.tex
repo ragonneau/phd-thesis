@@ -1060,7 +1060,7 @@ The performance and data profiles are provided in \cref{fig:perf-nonlinearly-con
 The results are similar to the ones in \cref{fig:perf-nonlinearly-constrained-problems,fig:data-nonlinearly-constrained-problems}, altough the performance of \gls{cobyqa} compared to that of \gls{cobyla} increases even more.
 This is also perfectly expected, because \gls{cobyla} is not designed to always satisfy the bound constraints.
 
-To conclude this section, we make the numerical experiment that reflects the most the reality for which \gls{cobyqa} is designed.
+We now make the numerical experiment that reflects the most the reality for which \gls{cobyqa} is designed.
 We compare \gls{cobyqa} with \gls{cobyla} on all the problems that admit at least one bound constraint, setting their objective functions to~$\infty$ outside of the bounds.
 The performance and data profiles are provided in \cref{fig:perf-all-problems-bounds,fig:data-all-problems-bounds}, respectively.
 
@@ -1122,6 +1122,76 @@ The performance and data profiles are provided in \cref{fig:perf-all-problems-bo
 
 All in all, the performance of \gls{cobyqa} are compellingly better than that of \gls{cobyla}, particularly for moderate and high tolerances.
 Therefore, \gls{cobyqa} is a great successor for \gls{cobyla}.
+
+To conclude this section, we make a last numerical experiments that compares the performance of \gls{cobyqa} for different size of the interpolation set.
+More particularly, we compare \gls{cobyqa} using different size of the interpolation, the default~$m = 2n + 1$ and the least possible one~$m = n + 2$.
+We also compare these two variations with \gls{cobyla}.
+When using~$m = n + 2$, the initial models are almost linear, and only one coefficient of the Hessian matrix may be nonzero.
+The experiment select all the available problems with a dimension at most \num{50} and a number of constraints at most \num[group-minimum-digits=4]{1000}.
+The performance and data profiles are provided in \cref{fig:perf-interpolation-sets,fig:data-interpolation-sets}, respectively.
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA-$m=2n+1$","COBYQA-$m=n+2$","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-np2-ubnlqo.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA-$m=2n+1$","COBYQA-$m=n+2$","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-np2-ubnlqo.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA-$m=2n+1$","COBYQA-$m=n+2$","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-np2-ubnlqo.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA-$m=2n+1$","COBYQA-$m=n+2$","COBYLA"}}{plain-1-50-perf-cobyla-cobyqa-np2-ubnlqo.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Performance profiles on different interpolation sets}
+    \label{fig:perf-interpolation-sets}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA-$m=2n+1$","COBYQA-$m=n+2$","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-np2-ubnlqo.csv}{1}
+        \caption{Tolerance~$\tau = 10^{-1}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA-$m=2n+1$","COBYQA-$m=n+2$","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-np2-ubnlqo.csv}{3}
+        \caption{Tolerance~$\tau = 10^{-3}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA-$m=2n+1$","COBYQA-$m=n+2$","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-np2-ubnlqo.csv}{5}
+        \caption{Tolerance~$\tau = 10^{-5}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \drawperformanceprofiles{{"COBYQA-$m=2n+1$","COBYQA-$m=n+2$","COBYLA"}}{plain-1-50-data-cobyla-cobyqa-np2-ubnlqo.csv}{7}
+        \caption{Tolerance~$\tau = 10^{-7}$}
+    \end{subfigure}
+    \caption{Data profiles on different interpolation sets}
+    \label{fig:data-interpolation-sets}
+\end{figure}
+
+We observe a perfectly excepted result.
+For the highest tolerance, \gls{cobyla} and the version of \gls{cobyqa} with~$m = n + 2$ solve more problems using the least amount of function evaluations than \gls{cobyqa} with~$m = 2n + 1$.
+This is because they require the least number of evaluations for building their initial models.
+However, for lower tolerance, \gls{cobyqa} with~$m = 2n + 1$ always outperforms \gls{cobyqa} with~$m = n + 2$, which itself outperforms \gls{cobyla}.
+Recall that \gls{cobyla} necessitate~$m = n + 1$ to build its initial interpolation models.
+Therefore, \gls{cobyqa} with~$m = n + 2$ only has a single interpolation point more than \gls{cobyla}, but has significantly better performance.
 
 \section{Summary and remarks}
 
