@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/08/23 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/08/24 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifinitial
@@ -80,7 +80,7 @@
 
 % Spacing between lines
 % The Hong Kong Polytechnic University imposes a space of 1.5 or 2
-\RequirePackage{setspace}
+\RequirePackage[nodisplayskipstretch]{setspace}
 \onehalfspacing
 
 % Page headers and footers
@@ -331,14 +331,15 @@
 \lstset{
     autogobble=true,
     basicstyle=\normalsize\ttfamily,
+    belowcaptionskip=\bigskipamount,
     breakautoindent=true,
     breakatwhitespace=false,
     breaklines=true,
     commentstyle=\itshape\color{black!50},
     frame=tb,
     keywordstyle=\bfseries\color{Maroon},
-    numbers=left,
-    numberstyle=\scriptsize\bfseries,
+    % numbers=left,
+    % numberstyle=\scriptsize\bfseries,
     postbreak=\space,
     showstringspaces=false,
     stepnumber=1,
@@ -426,7 +427,7 @@
     \hypersetup{%
         pdftitle=\thetitle,%
         pdfauthor=\theauthor,%
-        pdfsubject={},%
+        pdfsubject={Ph.D. thesis},%
         pdfkeywords={},%
     }%
 }

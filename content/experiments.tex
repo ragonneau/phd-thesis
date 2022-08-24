@@ -14,11 +14,10 @@
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \chapter{List of testing problems}
 
-In this appendix, we provide exhaustive lists of the CUTEst problems that are employed in our experiments.
-We employed PyCUTEst\footnote{See \url{https://jfowkes.github.io/pycutest/}.} to load the CUTEst problems in Python, and we select all the available problems with a dimension at most \num{50} and a number of constraints at most \num[group-minimum-digits=4]{1000}.
-Some experiments select only subsets of the provided lists.
-More specifically, some experiments require the problems to admit bound constraints.
-In such a case, we select all the listed problems that admit at least one bound constraint.
+In this appendix, we provide the lists of CUTEst problems that are tested in our experiments.
+We employed PyCUTEst\footnote{See \url{https://jfowkes.github.io/pycutest/}.} to load the CUTEst problems in Python, and we select all the available problems with a dimension at most \num{50} and a number of constraints at most \num[group-minimum-digits=4]{1000}, excluding bound constraints.
+Some experiments require the problems to admit at least one bound constraint, so that we extract the problems from these lists accordingly\todo{Refer to such an experiment}.
+For detailed information on these problems, we refer to the official GitHub repository of CUTEst at \url{https://github.com/ralna/CUTEst}.
 
 \section{Unconstrained problems}
 \label{sec:list-unconstrained-problems}

@@ -70,12 +70,12 @@ The user provides a number~$m$, satisfying
     n + 2 \le m \le \frac{1}{2} (n + 1) (n + 2),
 \end{equation*}
 which will be the number interpolation points at each iteration.
-We are also provided with an initial guess~$\iter[0] \in \R^n$ satisfying~$\xl \le \iter[0] \le \xu$ and an initial trust-region radius~$\rad[0] > 0$ that satisfies
+We are also provided with an initial guess~$\iter[0] \in \R^n$ and an initial trust-region radius~$\rad[0] > 0$ that satisfies
 \begin{equation*}
     \rad[0] \le \frac{1}{2} \min_{1 \le i \le n} (\xu_i - \xl_i),
 \end{equation*}
 so that~$\xu_i \ge \xl_i + 2 \rad[0]$ for all~$i \in \set{1, 2, \dots, n}$.
-Further, to avoid conflicts between the bounds and the interpolation points,~$\iter[0]$ is modified so that each component of~$\iter[0]$ is either on a bound or keeps a distance of at least~$\rad[0]$ from the corresponding bounds.
+Further, to avoid conflicts between the bounds and the interpolation points,~$\iter[0]$ is modified so that each component of~$\iter[0]$ is either on a bound or keeps a distance of at least~$\rad[0]$ from the corresponding bounds, while being feasible.
 
 The initial interpolation set~$\xpt[0] = \set{y^1, y^2, \dots, y^m}$ is constructed in the following way.
 The first~$n + 1$ points of~$\xpt[0]$ are defined by
@@ -116,6 +116,7 @@ Once the initial models are constructed, they will be maintained by the derivati
 See~\cite{Powell_2004b,Powell_2004c},~\cite[\S~4]{Powell_2006}, and~\cite[\S~4]{Powell_2009} for details.
 
 \subsection{A derivative-free trust-region \glsfmtshort{sqp} framework}
+\label{subsec:cobyqa-framework}
 
 We present in this section the derivative-free trust-region \gls{sqp} framework employed by \gls{cobyqa}.
 We denote for convenience by~$\lagm[k]$\nomenclature[Fh]{$\lagm$}{Quadratic model of~$\lag$} the Lagrangian function evaluated on the models, i.e.,
@@ -626,10 +627,16 @@ This is adopted from~\cite{Powell_2006,Powell_2009}.
 The objective of this procedure is to improve the conditioning of the interpolation system.
 As a consequence, the geometry improvement also makes the interpolation problem numerically more stable.
 
-An important characteristic of \gls{cobyqa} is that it never attempts to visits points lying outside of the bounds.
+An important feature of \gls{cobyqa} is that it never attempts to visits points lying outside of the bounds.
 All interpolation points and trial points always respect the bounds.
-This is motivated by the fact that the objective functions of applications for which \gls{cobyqa} is designed are often undefined when the bound constraints are violated.
+The motivation for us to design \gls{cobyqa} in this way is that, in many applications, the objective function is undefined when the bound constraints are violated.
 
 Finally, we note that there exists another derivate-free trust-region \gls{sqp} method, named \gls{sqpdfo}~\cite{Troltzsch_2016,Gratton_Toint_Troltzsch_2011,Troltzsch_Ilic_Siggel_2021}.
-This method reformulates the nonlinear inequality constraints using slack variables, and tackles the bound constraints using an active-set approach.
-In \gls{cobyqa}, we do not reformulate the inequality constraints using slack variables and hence, we do not increase the dimension of the feasible set.
+This method reformulates the inequality constraints using slack variables, so that the reformulated problem has only equality constraints and bound constraints.
+This increases the dimension of the problem, which may lead to inefficiency, especially if the amount of inequality constraints is large.
+\Gls{cobyqa} does not have this problem because it handles the inequality constraints directly, without introducing slack variables.
+% Moreover, it tackles the bound constraints using an active-set approach.
+% In \gls{cobyqa}, we do not reformulate the inequality constraints using slack variables and hence, we do not increase the dimension of the feasible set.
+Moreover, the current (August 2022) publicly available implementation of \gls{sqpdfo}\footnote{See \url{https://github.com/DLR-SC/sqpdfo}.} does not always respect the bound constraints, particularly during the geometry-improving phase.
+In contrast, as mentioned above, \gls{cobyqa} always respects the bounds, which is crucial for many engineering and industrial applications (see \cref{sec:simple-constraints}).
+% Finally, the current implementation of \gls{sqpdfo} encounters internal errors when solving , particularly on Line 494, in \texttt{sqpdfo\_prelim\_}.

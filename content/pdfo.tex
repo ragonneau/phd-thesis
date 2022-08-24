@@ -286,6 +286,7 @@ For both MATLAB and Python, \gls{pdfo} returns the best point calculated (evalua
 \end{lstpython}
 
 \subsection{Problem preprocessing}
+\label{subsec:pdfo-preprocessing}
 
 The package \gls{pdfo} preprocesses the arguments provided by the user, detects the type of the problem, and then invokes the Powell's solver that best matches the given problem.
 The initial preprocessing of the arguments include handling their internal types together with some programming-related procedures to allow as much freedom in the problem definition as possible, in order to make the use of \gls{pdfo} as easy as possible.
@@ -347,7 +348,7 @@ We can observe an expected behavior; \gls{uobyqa} performs better on small probl
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \drawperformanceprofiles{{"NEWUOA","BOBYQA","LINCOA","COBYLA"}}{plain-1-50-perf-newuoa-bobyqa-lincoa-cobyla-uobyqa-u.csv}{4}
+        \drawperformanceprofiles{{"NEWUOA","BOBYQA","LINCOA","COBYLA"}}{plain-1-50-perf-newuoa-bobyqa-lincoa-cobyla-u.csv}{4}
         \caption{Dimension at most~$50$}
         \label{fig:ppu-50}
     \end{subfigure}

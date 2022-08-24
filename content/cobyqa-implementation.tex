@@ -12,159 +12,165 @@
 % This work has the LPPL maintenance status `maintained'.
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
-\chapter{\glsfmttext{cobyqa} \textemdash\ description of the Python implementation and experiments}
+\chapter{\glsfmttext{cobyqa} \textemdash\ implementation and experiments}
 \label{ch:cobyqa-implementation}
 
-In this chapter, we provide details on the publicly available Python implementation of \gls{cobyqa}, which is open-source and easily readable.
-This implementation is a very technical work.
-In particular, we present in detail the management of the user's inputs, describe every stopping criterion, and exhibit a mechanism for returning the best iterate in \cref{sec:implementation-details}.
-\Cref{sec:python-implementation} introduces the Python implementation, provides some examples of use, and present how the \gls{cobyqa} package is distributed.
-Finally, we provide in \cref{sec:cobyqa-experiments} some numerical experiments, comparing in different scenarios \gls{cobyqa} with \gls{newuoa}, \gls{bobyqa}, \gls{lincoa}, and \gls{cobyla}.
-These numerical experiments confirm that the method is working on the considered problems, although the implementation necessitates being fine-tuned in the future.
+In this chapter, we provide details on the implementation of \gls{cobyqa}.
+% This implementation is a very technical work.
+In particular, \cref{sec:implementation-details} presents in detail the management of the user's inputs, describes every stopping criterion, and exhibits a mechanism for returning the best iterate, which is not necessarily the last one.
+\Cref{sec:python-implementation} introduces the Python implementation, which is open-source and publicly available, and it also provides some examples of use.
+Finally, we present in \cref{sec:cobyqa-experiments} some numerical experiments, comparing in different scenarios \gls{cobyqa} with \gls{newuoa}, \gls{bobyqa}, \gls{lincoa}, and \gls{cobyla}.
+These numerical experiments confirm the good performance of \gls{cobyqa}.
+In particular, it outperforms \gls{cobyla} on all experiments, often by a significant margin.
+% These numerical experiments confirm that \gls{cobyqa} perform compatively with \gls{newuoa}, \gls{bobyqa}, while being able to solve more general problems; moreover, it performs much better than \gls{lincoa} on problems with inviolable bounds.
+% More importantly, it outperforms \gls{cobyla} on all types of problems.
 
 % We decided to implement the first version of \gls{cobyqa} in Python for its simplicity and its large amount of users.
 % However, Python has the computational flows of an interpreted language, making it slow compared to compiled languages.
 % Therefore, we implement the subproblem solvers of \gls{cobyqa} in Cython, a programming language that blends the advantages of both Python and C.
 % Cython is a compiled language and is, therefore, much faster than Python alone.
 
-\section{Additional implementation details}
+\section{Additional algorithmic details}
 \label{sec:implementation-details}
 
-\subsection{Preprocessing of the arguments}
+\subsection{Preprocessing of the inputs}
 
-When presenting the framework of \gls{cobyqa} in \cref{ch:cobyqa-introduction}, we assumed that
-\begin{enumerate}
-    \item the bound constraints satisfy~$\xl < \xu$,
-    \item the initial guess is feasible with respect to the bound constraints, and
-    \item the initial trust-region radius satisfy
-    \begin{equation}
-        \label{eq:initial-trust-region-radius-condition}
-        \rad[0] \le \frac{1}{2} \min_{1 \le i \le n} @@ (\xu_i - \xl_i).
-    \end{equation}
-\end{enumerate}
-In the implementation of \gls{cobyqa}, we try to satisfy these conditions as long as possible.
+When presenting the framework of \gls{cobyqa} in \cref{ch:cobyqa-introduction}, we assumed that the bound constraints satisfy~$\xl < \xu$, and that the initial trust-region radius satisfies
+\begin{equation}
+    \label{eq:initial-trust-region-radius-condition}
+    \rad[0] \le \frac{1}{2} \min_{1 \le i \le n} @@ (\xu_i - \xl_i).
+\end{equation}
+However, the inputs received from the user may not fulfil these conditions.
+In the implementation of \gls{cobyqa}, we preprocess the inputs to satisfy them as long as possible.
 
 First of all, if~$\xl_i > \xu_i$ for some~$i \in \set{1, 2, \dots, n}$, then no computation is attempted since the problem is infeasible.
-However, all the constraints that satisfy~$\xl_i = \xu_i$ are excluded from the computations.
-Moreover, if \cref{eq:initial-trust-region-radius-condition} does not hold, then the value of~$\rad[0]$ is reduced.
+If there exist bound constraints such that~$\xl_i$ and~$\xu_i$ takes the same value, then we fix the corresponding component of~$x$ at this value and perform the computations on the problem restricted to the remaining components of~$x$.
+After this restriction, if~\cref{eq:initial-trust-region-radius-condition} does not hold, then the value of~$\rad[0]$ is reduced to the right-hand side of~\cref{eq:initial-trust-region-radius-condition}.
+% If the initial does not satisfy the bound constraints we project it to the box defined by these constraints.
+% Note that this projection is already described in \cref{subsec:interpolation-based-quadratic-models}, because the initial is modified so that each component is either on a bound or keeps a distance of at least~$\rad[0]$ from the corresponding bounds.
 
-Now that~$\xl < \xu$, we must ensure that the initial guess is feasible.
-If it is not, it must be projected onto the bounds constraints.
-Note that this projection is already described in \cref{subsec:interpolation-based-quadratic-models}, because the initial is modified so that each component is either on a bound or keeps a distance of at least~$\rad[0]$ from the corresponding bounds.
-
-Recall that the package \gls{pdfo} removes the linear equality constraints by defining a subspace of~$\R^n$ of lower dimension, and ensures that each iterate lies in this subspace.
-This is not done in \gls{cobyqa}, because it handles directly equality constraints.
-Moreover, the author plans to include \gls{cobyqa} into \gls{pdfo} in the future.
-Hence, this feature will become available.
+% Recall from \cref{subsec:pdfo-preprocessing} that the package \gls{pdfo} removes the linear equality constraints by defining a subspace of~$\R^n$ of lower dimension, and ensures that each iterate lies in this subspace.
+% This is not necessary for \gls{cobyqa}, which handles equality constraints directly.
+% Moreover, the author plans to include \gls{cobyqa} into \gls{pdfo} in the future.
+% Hence, this feature will become available.
 
 \subsection{Additional stopping criteria}
 
-The only stopping criterion we presented so far is when the lower-bound~$\radlb[k]$ on the trust-region radius reaches a threshold value~$\radlb[\infty]$.
-However, \gls{cobyqa} also stops the computations if
+The only stopping criterion presented so far is that we terminate the algorithm when the lower-bound~$\radlb[k]$ needs to be reduced to a value below a threshold~$\radlb[\infty]$.
+However, in the implementation, we also stop the computations if
 \begin{enumerate}
-    \item the number of function evaluations reaches a threshold value,
-    \item the number of iteration reaches a threshold value,
+    \item the number of function evaluations reaches a maximal value,
+    \item the number of iterations reaches a maximal value,
     \item a target value on the objective function is reached by a feasible iterate,
-    \item an absolute tolerance on the objective values of two successive iterates is achieved,
-    \item a relative tolerance on the objective values of two successive iterates is achieved,
-    \item an absolute tolerance on two successive iterates in~$\ell_2$-norm is achieved, or
-    \item a relative tolerance on two successive iterates in~$\ell_2$-norm is achieved.
 \end{enumerate}
-The only remaining stopping criterion is when the computations must stop due to computer rounding error.
-In practice, this happens if the denominator of the updating formula discussed in \cref{ch:cobyqa-introduction} is zero.
+The only remaining stopping criterion is when the computations must stop due to computer rounding errors.
+In practice, this happens if the denominator of the updating formula described in \cref{ch:cobyqa-introduction} becomes zero, which should not happen in exact arithmetic.
 
-\begin{table}[ht]
-    \caption{Exit statuses of \gls{cobyqa}}
-    \label{tab:exit-statuses}
-    \centering
-    \begin{tabularx}{\textwidth}{cX}
-        \toprule
-        $0$     & The lower bound for the trust-region radius has been reached.\\
-        \midrule
-        $1$     & A feasible iterate reached the target value on the objective values.\\
-        \midrule
-        $2$     & The desired absolute tolerance on the objective values of two successive iterates is reached.\\
-        \midrule
-        $3$     & The desired relative tolerance on the objective values of two successive iterates is reached.\\
-        \midrule
-        $4$     & The desired absolute tolerance on two successive iterates in~$\ell_2$-norm is reached.\\
-        \midrule
-        $5$     & The desired relative tolerance on two successive iterates in~$\ell_2$-norm is reached.\\
-        \midrule
-        $6$     & The maximum number of function evaluations has been exceeded.\\
-        \midrule
-        $7$     & The maximum number of iterations has been exceeded.\\
-        \midrule
-        $8$     & The denominator of the updating formula is zero.\\
-        \midrule
-        $9$     & All variables are fixed by the constraints.\\
-        \midrule
-        $-1$    & The bound constraints are infeasible.\\
-        \bottomrule
-    \end{tabularx}
-\end{table}
+% \begin{table}[ht]
+%     \caption{Exit statuses of \gls{cobyqa}}
+%     \label{tab:exit-statuses}
+%     \centering
+%     \begin{tabularx}{\textwidth}{cX}
+%         \toprule
+%         $0$     & The lower bound for the trust-region radius has been reached.\\
+%         \midrule
+%         $1$     & A feasible iterate reached the target value on the objective values.\\
+%         \midrule
+%         % $2$     & The desired absolute tolerance on the objective values of two successive iterates is reached.\\
+%         % \midrule
+%         % $3$     & The desired relative tolerance on the objective values of two successive iterates is reached.\\
+%         % \midrule
+%         % $4$     & The desired absolute tolerance on two successive iterates in~$\ell_2$-norm is reached.\\
+%         % \midrule
+%         % $5$     & The desired relative tolerance on two successive iterates in~$\ell_2$-norm is reached.\\
+%         % \midrule
+%         $2$     & The maximum number of function evaluations has been exceeded.\\
+%         \midrule
+%         $3$     & The maximum number of iterations has been exceeded.\\
+%         \midrule
+%         $4$     & The denominator of the updating formula is zero.\\
+%         \midrule
+%         $5$     & All variables are fixed by the constraints.\\
+%         \midrule
+%         $-1$    & The bound constraints are infeasible.\\
+%         \bottomrule
+%     \end{tabularx}
+% \end{table}
 
-\subsection{Retention of the history}
+\subsection{Returning the best iterate}
 
-It is important to remark that~$\iter[k]$ may not be the best point ever encountered by \gls{cobyqa}.
-Indeed, it is possible that a point close from feasibility (or even feasible) has been discarded because it had a large objective function value and only low penalty parameters were encountered.
-Therefore, \gls{cobyqa} can store the history of all the points visited, together with the corresponding objective and constraint values.
-Since this mechanism is expensive in terms of memory, it is executed only if the user desires it.
+It is important to remark that the current iterate may not be the best point encountered so far by \gls{cobyqa}.
+This depends on the penalty parameters in the merit function that we use to assess the quality of the iterates.
+Indeed, a point that is removed from a previous interpolation set may be better than the current iterate according to the current merit function.
+% Therefore, \gls{cobyqa} can store the history of all the points visited, together with the corresponding objective and constraint values.
+% Since this mechanism is expensive in terms of memory, it is executed only if the user desires it.
+Therefore, it is not always reasonable to return the last iterate as the approximate solution when \gls{cobyqa} terminates.
 
-Amoung all the iterates, the best one is finally selected as follows.
-First of all, only the points whose constraint violation is at most twice as large as the least one are considered.
-Hence, if a feasible point is encountered, a feasible point will be returned by \gls{cobyqa}.
-Among all these points, \gls{cobyqa} selects the one with the least merit value, using the last penalty parameter.
-If several minimizers exist, we select the one with the least constraint violation and if several minimizers still exist, we select one with the least objective value.
+Instead, \gls{cobyqa} returns a point that is selected in the following way from all the points visited upon the termination.
+First of all, we consider only the points whose constraint violations are at most twice as large as the least one.
+Hence, if a feasible point has been produced, only the feasible points will be under consideration.
+Among all these points, \gls{cobyqa} selects the one that minimizes the merit function value, with the penalty parameter taking the value of the last iteration.
+If several minimizers exist, we choose the one with the least constraint violation; 
+if multiple choices are still possible, we select one with the least objective value.
 
-Since this implementation is very expensive in terms of memory, the following technique will be implemented in the future.
-The user will provide a maximum number~$N$ of iterate to retain, and only the last~$N$ iterates will be kept in memory, together with the interpolation set.
-Finally, the procedure described in the previous paragraph will be applied.
+In order to perform the selection specified above, the current version of \gls{cobyqa} stores all the iterates, together with the corresponding objective function values and constraint violations.
+This is expensive in terms of memory.
+Indeed, it is not necessary to save a point if both its objective function value and its constraint violation are larger than those of another point visited by \gls{cobyqa}.
+We will improve the implementation of \gls{cobyqa} in this way in future versions.
 
 \section{Description of the Python implementation}
 \label{sec:python-implementation}
 
-In this section, we provide details on the Python implementation of \gls{cobyqa}, its testing, and its distribution.\todo[color=OliveGreen!50]{Add project's links}
-The source code of \gls{cobyqa} is available at the following url:
-\begin{center}
-    \url{https://github.com/ragonneau/cobyqa}
-\end{center}
-A complete user's guide for \gls{cobyqa} is available at the following url:
-\begin{center}
-    \url{https://www.cobyqa.com/}
-\end{center}
+In this section, we provide details on the Python implementation of \gls{cobyqa} and the way we distribute it.
 
 \subsection{Choice of programming languages}
 
-We chose to develop \gls{cobyqa} in Python because it is a simple open-source language, perfectly adapted to experimentation.
-Although the current version of \gls{cobyqa} is mostly written in Python, the author plans to develop a Fortran version in the future.
-This would have the ability to be interfaced with several other languages, such a Python, MATLAB, or Julia.
-However, developing software in Fortran is time-consuming, and hence, this work will be carried out in the future.
+We chose to develop \gls{cobyqa} in Python because it is a simple open-source language, widely used by both researchers and industrial practitioners.
+% Although the current version of \gls{cobyqa} is mostly written in Python, the author plans to develop a Fortran version in the future.
+% This would have the ability to be interfaced with several other languages, such a Python, MATLAB, or Julia.
+% However, developing software in Fortran is time-consuming, and hence, this work will be carried out in the future.
+However, the subproblems solvers described in \cref{ch:cobyqa-subproblems} are not written in pure Python, but in Cython~\cite{Behnel_Etal_2011}, which is a compiled language that aims at improving the performance of Python code.
+The motivation is that these solvers are the bottleneck for the executation time of the linear algegra calculations made by \gls{cobyqa}.
+Indeed, the initial version of \gls{cobyqa} was entirely written in Python, but the executation time was prohibitively long on problems of dimensions~$n = 20$ and above.
 
-The initial version of \gls{cobyqa} was entirely written in pure Python.
-However, its execution time was prohibitively long on problems of dimensions~$n = 50$ and above.
-Since most of the work was done in the subproblem solvers, the author decided to implement them in Cython~\cite{Behnel_Etal_2011}.
-It is a compiled language that aims at improving the performance of Python code.
-All the functions implemented in the module \texttt{cobyqa.linalg} are implemented in Cython.
+Another motivation for us to develop the \gls{cobyqa} in Python is the extensive availability of librairies.
+\Gls{cobyqa} does not only rely on Cython, but also on NumPy~\cite{Harris_Etal_2020} and SciPy~\cite{Virtanen_Etal_2020}.
+These packages provides array structures, together with basic mathematical operations and basic scientific computing tools.
+In particular, SciPy provides interfaces for BLAS~\cite{Blackford_Etal_2002} and LAPACK~\cite{Anderson_Etal_1999} subroutines in Cython, which are intensively used by the subproblem solvers.
 
-Other motivativations for the author to develop the initial version of \gls{cobyqa} in Python are the extensive librairies that are available.
-\Gls{cobyqa} does not only rely on Cython, but also on NumPy~\cite{Harris_Etal_2020} and Scipy~\cite{Virtanen_Etal_2020}.
-These packages provides array structures, together with basic mathematical operations on them, and basic scientific computing tools.
-In particular, the subproblem solvers call BLAS~\cite{Blackford_Etal_2002} for making matrices and vectors operations, and the implementation of \gls{nnls} relies on the DGELSY subroutine of LAPACK~\cite{Anderson_Etal_1999} to solve its unconstrained linear least-squares subproblem.
+\subsection{Distribution of the package}
 
-\subsection{Examples of usage}
+The implementation of \gls{cobyqa} is open-source and distributed under the BSD-3-Clause license.
+The source code of \gls{cobyqa} is available at
+\begin{center}
+    \url{https://github.com/ragonneau/cobyqa}.
+\end{center}
+A complete documentation for \gls{cobyqa} is available at
+\begin{center}
+    \url{https://www.cobyqa.com/}.
+\end{center}
 
-The package \gls{cobyqa} provides a function \texttt{minimize}, which takes as parameters
+A C/C++ compiler is needed to build the subproblem solvers of \gls{cobyqa} written in Cython.
+To ease the efforts of users, we made wheel distributions available for
 \begin{enumerate}
-    \item the objective function to be minimized,
+    \item Windows, both 32-bit and 64-bit operating systems,
+    \item macOS, both x64 and ARM64 architectures, and
+    \item Linux, both x64 and ARM64 architectures.
+\end{enumerate}
+The current version of \gls{cobyqa} is available for Python 3.7, 3.8, 3.9, and 3.10, i.e., all the Python version supported as of August 2022.
+% The Python wheels are compiled using GitHub Actions, and relies on the Python package cibuildwheel\footnote{See \url{https://cibuildwheel.readthedocs.io/}.}.
+
+\subsection{Illustrations of usage}
+
+The package \gls{cobyqa} provides a function \texttt{minimize}, which takes the following arguments.
+\begin{enumerate}
+    \item The objective function to be minimized,
     \item the initial guess,
     \item bound constraints (optional),
-    \item linear constriants (optional),
+    \item linear constraints (optional),
     \item nonlinear constraints (optional), and
-    \item a dictionary of options (each being optional).
+    \item a dictionary of options (listed in \cref{tab:cobyqa-options}, each being optional).
 \end{enumerate}
-
-We provide an list of the available options in \cref{tab:cobyqa-options}.
 
 \begin{table}[ht]
     \caption{Options of \gls{cobyqa}}
@@ -172,32 +178,34 @@ We provide an list of the available options in \cref{tab:cobyqa-options}.
     \centering
     \begin{tabularx}{\textwidth}{cX}
         \toprule
-        \texttt{rhobeg}     & Initial trust-region radius.\\
+        \texttt{rhobeg}     & Initial trust-region radius\\
         \midrule
-        \texttt{rhoend}     & Final trust-region radius.\\
+        \texttt{rhoend}     & Final trust-region radius\\
         \midrule
-        \texttt{npt}        & Number of interpolation points.\\
+        \texttt{npt}        & Number of interpolation points\\
         \midrule
-        \texttt{maxfev}     & Maximum number of objective and constraint function evaluations.\\
+        \texttt{maxfev}     & Maximum number of objective and constraint function evaluations\\
         \midrule
-        \texttt{maxiter}    & Maximum number of iterations.\\
+        \texttt{maxiter}    & Maximum number of iterations\\
         \midrule
-        \texttt{target}     & Target value on the objective function.\\
+        \texttt{target}     & Target value on the objective function\\
+        % \midrule
+        % \texttt{ftol\_abs}  & Absolute tolerance on the objective function.\\
+        % \midrule
+        % \texttt{ftol\_rel}  & Relative tolerance on the objective function.\\
+        % \midrule
+        % \texttt{xtol\_abs}  & Absolute tolerance on the decision variables.\\
+        % \midrule
+        % \texttt{xtol\_rel}  & Relative tolerance on the decision variables.\\
         \midrule
-        \texttt{ftol\_abs}  & Absolute tolerance on the objective function.\\
+        \texttt{disp}       & Whether to print pieces of information on the execution of the solver\\
         \midrule
-        \texttt{ftol\_rel}  & Relative tolerance on the objective function.\\
-        \midrule
-        \texttt{xtol\_abs}  & Absolute tolerance on the decision variables.\\
-        \midrule
-        \texttt{xtol\_rel}  & Relative tolerance on the decision variables.\\
-        \midrule
-        \texttt{disp}       & Whether to print pieces of information on the execution of the solver.\\
-        \midrule
-        \texttt{debug}      & Whether to make debugging tests during the execution.\\
+        \texttt{debug}      & Whether to make debugging tests during the execution\\
         \bottomrule
     \end{tabularx}
 \end{table}
+
+In the following, we will provide example to illustrate how to specify the aforementioned arguments.
 
 \subsubsection{Examples of usage}
 
@@ -205,8 +213,9 @@ For example, consider the unconstrained minimization of the chained Rosenbrock f
 \begin{equation*}
     \obj(x) = \sum_{i = 1}^{n - 1} 100(x_{i + 1} - x_i^2)^2 + (1 - x_i)^2, \quad \text{for~$x \in \R^n$.}
 \end{equation*}
-As those afterwards, it is clearly unreasonable to employ a \gls{dfo} method to solve such a problem and it only serves as an example.
-\Cref{lst:cobyqa-rosenbrock} shows how to solve such a problem with~$n = 5$ using \gls{cobyqa}.
+It only serves as an illustration.
+In practice, it is clearly unreasonable to employ a \gls{dfo} method to solve such a problem.
+\Cref{lst:cobyqa-rosenbrock} shows how to solve such a problem with~$n = 5$ using \gls{cobyqa}, starting from the initial guess~$\iter[0] = [1.3, 0.7, 0.8, 1.9, 1.2]^{\T}$.
 
 \begin{lstpython}[%
     caption=Solving the Rosenbrock problem using \gls{cobyqa},
@@ -215,7 +224,7 @@ As those afterwards, it is clearly unreasonable to employ a \gls{dfo} method to 
     >>> from scipy.optimize import rosen
     >>> from cobyqa import minimize
     >>>
-    >>> x0 = [1.3, 0.7, 0.8, 1.9, 1.2]  # or anything else
+    >>> x0 = [1.3, 0.7, 0.8, 1.9, 1.2]  # starting point
     >>> res = minimize(rosen, x0)
     >>> res.x
     array([1., 1., 1., 1., 1.]) 
@@ -230,7 +239,7 @@ To see how to supply to \gls{cobyqa} bound and linear constraints, consider the 
                             & \quad \iter_1 \ge 0,\\
                             & \quad \iter_2 \ge 0.
 \end{align*}
-\Cref{lst:cobyqa-bound-linear} shows how to solve this problem using \gls{cobyqa}.
+\Cref{lst:cobyqa-bound-linear} shows how to solve this problem using \gls{cobyqa} starting from the initial guess~$\iter[0] = [2, 0]^{\T}$.
 
 \begin{lstpython}[%
     caption=An example of \gls{cobyqa} with linear constraints,
@@ -250,7 +259,7 @@ To see how to supply to \gls{cobyqa} bound and linear constraints, consider the 
     array([1.4, 1.7])
 \end{lstpython}
 
-Thus, to see how to supply nonlinear constraints to \gls{cobyqa}, consider the Problem G of~\cite{Powell_1994}, defined as
+Finally, to see how to supply nonlinear constraints to \gls{cobyqa}, consider the Problem G of~\cite{Powell_1994}, defined by
 \begin{align*}
     \min_{\iter \in \R^3}   & \quad \iter_3\\
     \text{s.t.}             & \quad -5 \iter_1 + \iter_2 - \iter_3 \le 0,\\
@@ -279,9 +288,9 @@ Thus, to see how to supply nonlinear constraints to \gls{cobyqa}, consider the P
     array([ 0., -3., -3.])   
 \end{lstpython}
 
-\subsubsection{Details on the returned structure}
+\subsubsection{Details of the returned structure}
 
-The function \texttt{minimize} returns a structure (that we named \texttt{res} in the examples above) whose attributes are details in \cref{tab:optimize-result}.
+The function \texttt{minimize} returns a structure (that we named \texttt{res} in the examples above) whose attributes are detailed in \cref{tab:optimize-result}.
 
 \begin{table}[ht]
     \caption{Structure for the result of the optimization algorithm}
@@ -289,48 +298,38 @@ The function \texttt{minimize} returns a structure (that we named \texttt{res} i
     \centering
     \begin{tabularx}{\textwidth}{cX}
         \toprule
-        \texttt{x}          & Solution point provided by the optimization solver.\\
+        \texttt{x}          & Solution point\\
+        % \midrule
+        % \texttt{success}    & Flag indicating whether \gls{cobyqa} terminated successfully\\
         \midrule
-        \texttt{success}    & Flag indicating whether the optimization solver terminated successfully.\\
+        \texttt{status}     & Termination status of the optimization solver reflecting which stopping criterion has been reached\\
         \midrule
-        \texttt{status}     & Termination status of the optimization solver.\\
+        \texttt{message}    & Description of the termination status\\
         \midrule
-        \texttt{message}    & Description of the termination status of the optimization solver.\\
+        \texttt{fun}        & Value of the objective function at the solution point\\
         \midrule
-        \texttt{fun}        & Value of the objective function at the solution point provided by the optimization solver.\\
+        \texttt{jac}        & Approximate gradient of the objective function at the solution point\\
         \midrule
-        \texttt{jac}        & Approximation of the gradient of the objective function at the solution point provided by the optimization solver. If the value of a component is unknown, it is replaced by NaN.\\
+        \texttt{nfev}       & Number of objective and constraint function evaluations\\
         \midrule
-        \texttt{nfev}       & Number of objective and constraint function evaluations.\\
+        \texttt{nit}        & Number of iterations\\
         \midrule
-        \texttt{nit}        & Number of iterations performed by the optimization solver.\\
-        \midrule
-        \texttt{maxcv}      & Maximum constraint violation at the solution point provided by the optimization solver. It is set only if the problem is not declared unconstrained by the optimization solver.\\
+        \texttt{maxcv}      & $\ell_{\infty}$-constraint violation at the solution point, if applicable\\
         \bottomrule
     \end{tabularx}
 \end{table}
 
-\subsection{Distribution of the package}
-
-The subproblem solvers of \gls{cobyqa} are written in Cython, which necessitate a C/C++ compiler to work.
-However, we made wheel distributions available for
-\begin{enumerate}
-    \item Windows, for both 32-bit and 64-bit operating systems,
-    \item macOS, for both x64 and ARM64 architectures, and
-    \item Linux, for both x64 and ARM64 architectures.
-\end{enumerate}
-The current version of \gls{cobyqa} is available for Python 3.7, 3.8, 3.9, and 3.10 (i.e., all the Python version available as of today).
-The compilation is made using GitHub Actions, and relies on the Python package cibuildwheel\footnote{See \url{https://cibuildwheel.readthedocs.io/}.}.
-
-\section{Some numerical experiments}
+\section{Numerical experiments}
 \label{sec:cobyqa-experiments}
 
-To conclude this chapter, we present several numerical results for \gls{cobyqa}.
-The performance and data profiles presented in this section have been obtained on the CUTEst library~\cite{Gould_Orban_Toint_2015}.
-The experiments select all the available problems with a dimension at most \num{50} and a number of constraints at most \num[group-minimum-digits=4]{1000}.
-See \cref{sec:benchmarking-tools} for the definition of the performance and data profiles in a \gls{dfo} context.
-The merit function we consider in the following is defined as follows.
-Let~$v_{\infty}(\iter) \in \R$ be the~$\ell_{\infty}$-constraint violation at~$\iter \in \R^n$, and define the merit function~$\varphi$ employed by the performance profiles by
+To conclude this chapter, we present extensive numerical experiments for \gls{cobyqa}.
+We will make comparisons using performance and data profiles obtained on CUTEst problems~\cite{Gould_Orban_Toint_2015}, with at most \num{50} variables and at most \num[group-minimum-digits=4]{1000} constraints, excluding bound constraints.
+These problems are listed in \cref{sec:list-unconstrained-problems,sec:list-bound-constrained-problems,sec:list-linearly-constrained-problems,sec:list-nonlinearly-constrained-problems}, according to the types of their constraints.
+
+As introduced in \cref{sec:benchmarking-tools}, the performance and data profiles require us to define a merit function.
+% The merit function we consider is as follows.
+Let~$v_{\infty}(\iter) \in \R$ be the~$\ell_{\infty}$-constraint violation at~$\iter \in \R^n$.
+The merit function~$\varphi$ is defined by
 \begin{empheq}[left={\varphi(\iter) = \empheqlbrace}]{alignat*=2}
     & \obj(\iter),                              && \quad \text{if~$v_{\infty}(\iter) \le \nu_1$,}\\
     & \infty,                                   && \quad \text{if~$v_{\infty}(\iter) \ge \nu_2$,}\\
@@ -340,16 +339,21 @@ for~$\iter \in \R^n$.
 We choose in the experiments~$\nu_1 = 10^{-10}$,~$\nu_2 = 10^{-5}$, and~$\gamma = 10^5$.
 Note that~$v_{\infty}$ is always zero for unconstrained problems.
 
-\subsection{Performance of the \glsfmtshort{sqp} framework}
+For all the experiments, we present the performance and data profiles corresponding to~$\tau \in \set{10^{-1}, 10^{-3}, 10^{-5}, 10^{-7}}$ in the convergence test~\cref{eq:convergence-test-profiles}.
 
-We observe in what follows the effects of the \gls{sqp} framework employed by \gls{cobyqa}.
-We then compare the \gls{cobyqa} with a modification that replaces the term~$\nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k])$ in its trust-region \gls{sqp} subproblem~\cref{eq:derivative-free-trust-region-sqp-subproblem} with~$\nabla^2 \objm[k](\iter[k])$.
-Although it is known that the resulting algorithm is invalid, making the comparison between the two methods is interesting because it reveals the importance of the strategy.
+\subsection{Testing the Hessian of the \glsfmtshort{sqp} subproblem}
 
-Therefore, we make the following numerical experiments.
-We consider the nonlinearly-constrained problems of the CUTEst library~\cite{Gould_Orban_Toint_2015} whose dimensions are at most \num{50} with at most \num[group-minimum-digits=4]{1000} constraints.
-\Cref{sec:list-nonlinearly-constrained-problems} provides a detailed list of these problems.
-We then plot the performance and data profiles for the two methods in \cref{fig:perf-wrong-hessian,fig:data-wrong-hessian}, respectively.
+Recall that the objective function of the \gls{sqp} subproblem takes a Hessian matrix that approximates~$\nabla_{x, x}^2 \lag(\iter[k], \lm[k])$.
+In \gls{cobyqa}, this Hessian is set to~$\nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k])$, defined in \cref{subsec:cobyqa-framework}.
+It is erroneous to set this Hessian to~$\nabla^2 \objm[k](\iter[k])$, unless there is no nonlinear constraints (see \cref{sec:sqp-method}).
+To demonstrate this fact, we compare \gls{cobyqa} with a modification that sets this Hessian to~$\nabla^2 \objm[k](\iter[k])$.
+% Although it is known that the resulting algorithm is invalid, making the comparison between the two methods is interesting because it reveals the importance of the strategy.
+
+\Cref{fig:perf-wrong-hessian,fig:data-wrong-hessian} provide the performance and data profiles for these two methods, based on the nonlinearly-constrained problems listed in \cref{sec:list-nonlinearly-constrained-problems}.
+According to these profiles, \gls{cobyqa} performs much better than the modified method, which is expected.
+It solves more problems, and uses less function evaluations than the modified method on most of the problems.
+These results demonstrate the effectiveness of the \gls{sqp} methodology of \gls{cobyqa}.
+It also shows that the estimated Lagrange multipliers we chose in \cref{subsec:least-squares-lagrange-multipliers} are reasonable.
 
 \begin{figure}[ht]
     \centering
@@ -375,7 +379,7 @@ We then plot the performance and data profiles for the two methods in \cref{fig:
         \drawperformanceprofiles{{"COBYQA","Erroneous-COBYQA"}}{plain-1-50-perf-cobyqa-wrong-hessian-qo.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Performance profiles for the \gls{sqp} framework}
+    \caption{Performance profiles of \gls{cobyqa} and the modified version with erroneous Hessian on nonlinearly-constrained problems}
     \label{fig:perf-wrong-hessian}
 \end{figure}
 
@@ -403,30 +407,24 @@ We then plot the performance and data profiles for the two methods in \cref{fig:
         \drawperformanceprofiles{{"COBYQA","Erroneous-COBYQA"}}{plain-1-50-data-cobyqa-wrong-hessian-qo.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Data profiles for the \gls{sqp} framework}
+    \caption{Data profiles of \gls{cobyqa} and the modified version with erroneous Hessian on nonlinearly-constrained problems}
     \label{fig:data-wrong-hessian}
 \end{figure}
 
-We observe that \gls{cobyqa} performs much better than the modification for all tolerances considered.
-It solves more problems, and uses less function evaluations than the modified algorithms on most of the problems.
-Note that this observation is perfectly excepted.
-We presented an example in \cref{subsec:sqp-simple-example} on which the modified \gls{sqp} framework does not work, while the true framework does.
-Moreover, all the interpretations we presented in \cref{subsec:sqp-interpretation} indicate that it is necessary to employ~$\nabla_{x, x}^2 \lagm[k](\iter[k], \lm[k])$ in the second-order term of the objective function of the \gls{sqp} subproblem.
-
-We can also observe on these plots that the estimated Lagrange multipliers we chose for \gls{cobyqa} are effective.
-In the future, we may also attempt different strategy to estimate the Lagrange multipliers.
-
-\subsection{Performance of the new Byrd-Omojokun approach}
+\subsection{Testing our Byrd-Omojokun approach for inequality constraints}
 \label{subsec:perf-byrd-omojokun}
 
-We now compare the performance of \gls{cobyqa} with another modification.
-More specifically, we replace our Byrd-Omojokun approach with the traditional Byrd-Omojokun approach, presented in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
-The objective of this experiment is to show that our approach provides a much greater performance for \gls{cobyqa}.
+To handle inequality constraints, \gls{cobyqa} takes an extension of the Byrd-Omojokun that we devised in \cref{subsec:composite-step-inequality}.
+This extension is different from the one presented in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
+To demonstrate the advantage of our extension, we compare \gls{cobyqa} with a modified version that employs the Byrd-Omojokun approach in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
 
-We make the following numerical experiments.
-We consider the linearly- and nonlinearly-constrained problems of the CUTEst library~\cite{Gould_Orban_Toint_2015} whose dimensions are at most \num{50} with at most \num[group-minimum-digits=4]{1000} constraints.
-\Cref{sec:list-linearly-constrained-problems,sec:list-nonlinearly-constrained-problems} provide detailed lists of these problems.
-We plot the performance and data profiles for the two methods in \cref{fig:perf-byrd-omojokun,fig:data-byrd-omojokun}, respectively.
+In this comparison, we consider only linearly- and nonlinearly-constrained problems with at least one inequality constraint.
+The problems are taken from \cref{sec:list-linearly-constrained-problems,sec:list-nonlinearly-constrained-problems} accordingly.
+
+\Cref{fig:perf-byrd-omojokun,fig:data-byrd-omojokun} presents the corresponding performance and data profiles of \gls{cobyqa} and the modified version specified above.
+According to these profiles, our extension to the Byrd-Omojokun approach evidently outperforms the one presented in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
+As mentioned in \cref{subsec:composite-step-inequality}, this can be explained by the fact that our Byrd-Omojokun approach provides a larger feasible region to the tangential steps.
+Hence, a larger reduction in the objective function of the \gls{sqp} subproblem can be expected.
 
 \begin{figure}[ht]
     \centering
@@ -452,7 +450,7 @@ We plot the performance and data profiles for the two methods in \cref{fig:perf-
         \drawperformanceprofiles{{"COBYQA","Modified-COBYQA"}}{plain-1-50-perf-cobyqa-byrd-omojokun-nlqo.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Performance profiles for the Byrd-Omojokun approaches}
+    \caption{Performance profiles of \gls{cobyqa} and a modified version on linearly- and nonlinearly-constrained problems with at least one inequality constraint}
     \label{fig:perf-byrd-omojokun}
 \end{figure}
 
@@ -480,29 +478,23 @@ We plot the performance and data profiles for the two methods in \cref{fig:perf-
         \drawperformanceprofiles{{"COBYQA","Modified-COBYQA"}}{plain-1-50-data-cobyqa-byrd-omojokun-nlqo.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Data profiles for the Byrd-Omojokun approaches}
+    \caption{Data profiles of \gls{cobyqa} and a modified version on linearly- and nonlinearly-constrained problems with at least one inequality constraint}
     \label{fig:data-byrd-omojokun}
 \end{figure}
 
-The results are inequivocal; our Byrd-Omojokun approach unquestionably overcomes the traditional Byrd-Omojokun approach in \gls{cobyqa}, for all displayed tolerances.
-This can be explain by the fact that our Byrd-Omojokun approach provides a larger feasible region to the tangential steps, without worsening their feasibility.
-Hence, a larger reduction in the objective function is usually obtained at each iteration.
-It is interesting to observe that the difference is even greater than in the previous experiment.
-
-\subsection{Performance of the quadratic models}
+\subsection{Performance of the derivative-free symmetric Broyden update}
 \label{subsec:alternative-models}
 
-We now compare the performance of \gls{cobyqa} with two modifications.
 Recall that \gls{cobyqa} employs quadratic models based on the derivative-free symmetric Broyden update (see \cref{subsec:symmetric-broyden-updates}).
-Morever, recall that it includes a strategy to replace these models with the minimum Frobenius norm models if the method considers that the current models are inefficient (this replacement being exceptional).
-The two modifications of \gls{cobyqa} we make are as follows.
-The first one, referred to as \gls{cobyqa}~PSB, uses only the models based on the derivative-free symmetric Broyden update, without any replacement.
-The second one, referred to as \gls{cobyqa}~MNH, uses only minimum Frobenius norm models.
+Moreover, it includes a strategy to replace these models with the minimum Frobenius norm models when the method considers that the current models are inefficient, as detailed at the end of \cref{subsec:geometry-improvement}.
 
-We make the following numerical experiments.
-We consider all the problems of the CUTEst library~\cite{Gould_Orban_Toint_2015} whose dimensions are at most \num{50} with at most \num[group-minimum-digits=4]{1000} constraints.
-\Cref{sec:list-unconstrained-problems,sec:list-bound-constrained-problems,sec:list-linearly-constrained-problems,sec:list-nonlinearly-constrained-problems} provide detailed lists of these problems.
-We plot the performance and data profiles for the three methods in \cref{fig:perf-models,fig:data-models}, respectively.
+To justify our choice for the models, we now compare the performance of \gls{cobyqa} with two modifications.
+The first one, referred to as \gls{cobyqa}~PSB, uses always the models based on the derivative-free symmetric Broyden update.
+The second one, referred to as \gls{cobyqa}~MNH, uses always the minimum Frobenius norm models.
+
+\Cref{fig:perf-models,fig:data-models} provide the performance and data profiles for these three methods, based on all the problems listed in \cref{sec:list-unconstrained-problems,sec:list-bound-constrained-problems,sec:list-linearly-constrained-problems,sec:list-nonlinearly-constrained-problems}.
+These profiles show that \gls{cobyqa} outperforms \gls{cobyqa}~PSB, which in turn performs better than \gls{cobyqa}~MNH.
+These results confirm that our choice for the quadratic models is reasonable.
 
 \begin{figure}[ht]
     \centering
@@ -528,7 +520,7 @@ We plot the performance and data profiles for the three methods in \cref{fig:per
         \drawperformanceprofiles{{"COBYQA","COBYQA-PSB","COBYQA-MNH"}}{plain-1-50-perf-cobyqa-models-ubnlqo.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Performance profiles for the different models}
+    \caption{Performance profiles of \gls{cobyqa}, \gls{cobyqa}~PSB, and \gls{cobyqa}~MNH on all problems}
     \label{fig:perf-models}
 \end{figure}
 
@@ -556,16 +548,12 @@ We plot the performance and data profiles for the three methods in \cref{fig:per
         \drawperformanceprofiles{{"COBYQA","COBYQA-PSB","COBYQA-MNH"}}{plain-1-50-data-cobyqa-models-ubnlqo.csv}{7}
         \caption{Tolerance~$\tau = 10^{-7}$}
     \end{subfigure}
-    \caption{Data profiles for the different models}
+    \caption{Data profiles of \gls{cobyqa}, \gls{cobyqa}~PSB, and \gls{cobyqa}~MNH on all problems}
     \label{fig:data-models}
 \end{figure}
 
-We can draw the same conclusions for all considered tolerances, namely that \gls{cobyqa} performs better than \gls{cobyqa}~PSB, which itself performs better than \gls{cobyqa}~MNH.
-More precisely, we can observe that \gls{cobyqa} always outperforms the two modifications for each precision at each iteration.
-These results comfort us in the choice of the quadratic models.
-
-Powell proposed a sophisticated mechanism to replace the quadratic models obtained by the derivative-free symmetric Broyden update of \gls{lincoa} with the minimum Frobenius norm ones.
-We plan in the future to always try this mechanism, as it may provide even better performance for \gls{cobyqa}.
+% Powell proposed a sophisticated mechanism to replace the quadratic models obtained by the derivative-free symmetric Broyden update of \gls{lincoa} with the minimum Frobenius norm ones.
+% We plan in the future to always try this mechanism, as it may provide even better performance for \gls{cobyqa}.
 
 \subsection{Comparison on unconstrained problems}
 
@@ -1122,6 +1110,8 @@ The performance and data profiles are provided in \cref{fig:perf-all-problems-bo
 
 All in all, the performance of \gls{cobyqa} are compellingly better than that of \gls{cobyla}, particularly for moderate and high tolerances.
 Therefore, \gls{cobyqa} is a great successor for \gls{cobyla}.
+
+\subsection{Advantage of quadratic models over linear models}
 
 To conclude this section, we make a last numerical experiments that compares the performance of \gls{cobyqa} for different size of the interpolation set.
 More particularly, we compare \gls{cobyqa} using different size of the interpolation, the default~$m = 2n + 1$ and the least possible one~$m = n + 2$.

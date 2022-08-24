@@ -27,14 +27,14 @@ Finally, \cref{sec:benchmarking-tools} presents two benchmarking tools that will
 \label{sec:overview}
 
 \index{DFO@\glsfmtshort{dfo}|(}Optimization is the study of extremal points and values of mathematical functions.
-It aims at minimizing (or maximizing) a real-valued function~$\obj$\nomenclature[Fa]{$\obj$}{Real-valued objective function defined on~$\R^n$}, referred to as the \emph{objective function}, within a given set of points~$\fset \subseteq \R^n$\nomenclature[Nb]{$\subseteq$}{Set inclusion notation}\nomenclature[Sf]{$\R^n$}{Real coordinate space of dimension~$n$}\nomenclature[Sj]{$\fset$}{Feasible set, included in~$\R^n$}, referred to as the \emph{feasible set}.
+It aims at minimizing (or maximizing) a real-valued function~$\obj$\nomenclature[Fa]{$\obj$}{Real-valued objective function defined on~$\R^n$}, referred to as the \emph{objective function}\index{objective function}, within a given set of points~$\fset \subseteq \R^n$\nomenclature[Nb]{$\subseteq$}{Set inclusion notation}\nomenclature[Sf]{$\R^n$}{Real coordinate space of dimension~$n$}\nomenclature[Sj]{$\fset$}{Feasible set, included in~$\R^n$}, referred to as the \emph{feasible set}\index{feasible set}.
 It is well known that essential information for optimization is embraced in the (possibly generalized) derivatives of the functions involved.
 However, in practice, evaluations of such derivatives may be unreliable or prohibitively expensive, if not impossible.
 It motivates the study of \gls{dfo}~\cite{Conn_Scheinberg_Vicente_2009b,Audet_Hare_2017,Custodio_Scheinberg_Vicente_2017,Larson_Menickelly_Wild_2019}, where problems are solved using only function values.
 This thesis focuses on methods and software for \gls{dfo}.
 
 \Gls{dfo} problems arise naturally when the objective function or the feasible set results from complex experiments or simulations.
-Regarding these functions as black boxes, people often refer to those problems as \gls{bbo} problems~\cite{Audet_Hare_2017}, which constitute a significant type of \gls{dfo} problem in practice.
+Regarding these functions as black boxes, people often refer to those problems as \gls{bbo}\index{DFO@\glsfmtshort{dfo}!BBO@\glsfmtshort{bbo}} problems~\cite{Audet_Hare_2017}, which constitute a significant type of \gls{dfo} problem in practice.
 Note that \gls{dfo} differs from nonsmooth optimization~\cite{Clark_1983,Cui_Pang_2021}, which studies problems involving nonsmooth functions.
 In \gls{dfo}, the major difficulty is not the possible nonsmoothness of the functions involved but the lack of knowledge about the structures of the problems.
 In theoretical analysis of \gls{dfo} methods, it is not uncommon to assume that the underlying functions enjoy some smoothness, although algorithms cannot retrieve their (classical or generalized) derivatives.
@@ -53,24 +53,24 @@ In this introduction, we consider the nonlinearly-constrained problem
     \begin{align}
         \min_{\iter \in \R^n}   & \quad \obj(\iter)\\
         \text{s.t.}             & \quad \con{i}(\iter) \le 0, ~ i \in \iub, \label{eq:problem-introduction-cub}\\
-                                & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:problem-introduction-ceq}\\
+                                & \quad \con{i}(\iter) = 0, ~ i \in \ieq, \label{eq:problem-introduction-ceq}
     \end{align}
 \end{subequations}
 \nomenclature[Fb]{$\con{i}$}{Real-valued constraint function defined on~$\R^n$, with~$i \in \iub \cup \ieq$}%
 \nomenclature[Na]{$\in$}{Set membership notation}%
 \nomenclature[Sk]{$\ieq$}{Set of indices of the equality constraints}%
 \nomenclature[Sl]{$\iub$}{Set of indices of the inequality constraints}%
-where the \emph{objective} and \emph{constraint functions}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and where the sets of indices~$\iub$ and~$\ieq$ are finite (perhaps empty) and disjoint.
+where the \emph{objective}\index{objective function} and \emph{constraint functions}\index{constraint function}~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are real-valued functions on~$\R^n$, and where the sets of indices~$\iub$ and~$\ieq$ are finite (perhaps empty) and disjoint.
 The feasible set of this problem is
 \begin{equation*}
     \fset \eqdef \set{\iter \in \R^n : \text{$\con{i}(\iter) \le 0, ~ i \in \iub$ and~$\con{i}(\iter) = 0, ~ i \in \ieq$}}.
 \end{equation*}
-If~$\obj$ is convex, while~$\con{i}$ is convex for all~$i \in \iub$ and affine for all~$i \in \ieq$, then the problem~\cref{eq:problem-introduction} is \emph{convex}.
+If~$\obj$ is convex, while~$\con{i}$ is convex for all~$i \in \iub$ and affine for all~$i \in \ieq$, then problem~\cref{eq:problem-introduction} is \emph{convex}.
 However, this thesis does \emph{not} assume convexity.
 
 We emphasize that~\cref{eq:problem-introduction-cub,eq:problem-introduction-ceq} may include bound constraints.
 We do not extract them explicitly in this chapter, but they may need to be handled differently from other constraints because they often represent inalienable physical or theoretical restrictions.
-We will later in this thesis introduce a new \gls{dfo} method, namely \gls{cobyqa}, which will consider this (see \cref{ch:cobyqa-introduction}).
+This will be considered by our new \gls{dfo} method (see \cref{ch:cobyqa-introduction}).
 
 \section{Examples of applications}
 \label{sec:dfo-examples}
@@ -117,12 +117,12 @@ To study the worst-case scenario, we wish to determine how large~$\rho_n$ can be
     \label{eq:gaussian-elimination-problem}
     \max_{A \in \R^{n \times n}} \rho_n(A).
 \end{equation}
-Note that~$\R^{n \times n}$ is isomorphic to~$\R^{n^2}$; hence, the problem~\cref{eq:gaussian-elimination-problem} can be formulated as the problem~\cref{eq:problem-introduction}.
+Note that~$\R^{n \times n}$ is isomorphic to~$\R^{n^2}$; hence, problem~\cref{eq:gaussian-elimination-problem} can be formulated as problem~\cref{eq:problem-introduction}.
 Besides, although the growth factor is defined everywhere, it may not be continuous at the points yielding a tie in selecting the pivot element.
 Moreover, it is not differentiable at the points yielding a tie in any maximum operator in equation~\cref{eq:gaussian-elimination-growth-factor}.
 Hence, optimization methods based on derivative information cannot be used for this problem.
-In such a case, \gls{dfo} methods can help solve the problem~\cref{eq:gaussian-elimination-problem}.
-Note that the optimal value and all local solutions to the problem~\cref{eq:gaussian-elimination-problem} are known~\cite{Higham_Higham_1989}, but \gls{dfo} methods can be used to help the theoretical development~\cite{Higham_1993}.
+In such a case, \gls{dfo} methods can help solve problem~\cref{eq:gaussian-elimination-problem}.
+Note that the optimal value and all local solutions to problem~\cref{eq:gaussian-elimination-problem} are known~\cite{Higham_Higham_1989}, but \gls{dfo} methods can be used to help the theoretical development~\cite{Higham_1993}.
 
 \subsection{Tuning nonlinear optimization methods}
 \label{subsec:tuning-nonlinear-optimization-methods}
@@ -168,8 +168,8 @@ A complete framework includes a parameter~$\eta_0 \ge 0$ satisfying~$\eta_0 \le 
 In practice, we usually have~$\eta_0 = 0$.
 However, this parameter genuinely complexifies the theoretical analysis of the trust-region method, and hence, we omit it here for simplicity.
 We consider only the four parameters~$\eta_1$,~$\eta_2$,~$\theta_1$, and~$\theta_2$.
-To choose those parameters, we minimize some measure of the method's expense (e.g., the \glsxtrshort{cpu} time to solve a given set of optimization problems),~$C$ say.
-In other words, we wish to solve the optimization problem
+To choose those parameters, we minimize some measure of the method's expense (e.g., the \glsxtrshort{cpu} time to solve a given set of problems),~$C$ say.
+In other words, we wish to solve
 \begin{subequations}
     \label{eq:tuning-algorithms-problem}
     \begin{align}
@@ -191,8 +191,8 @@ The \gls{bfo}~\cite{Porcelli_Toint_2017}, a method for bound-constrained problem
 A more recent example of \gls{dfo} applications is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}.
 Google solves for instance hyperparameter tuning problems using Google Vizier~\cite{Golovin_Etal_2017}, the Google-internal service for performing black-box optimization.
 To illustrate this example, we consider the following hyperparameter tuning problem of a \gls{svm} for binary classification.
-Given a binary-labeled dataset~$\set{(\iter_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$, we build an \gls{svm} to classify the data with their respective labels.
-Binary classification is obtained using a~$C$-\gls{svc}~\cite{Chang_Lin_2011} by solving the optimization problem
+\index{SVM@\glsfmtshort{svm}|(}Given a binary-labeled dataset~$\set{(\iter_i, y_i)}_{i = 1, 2, \dots, m} \subseteq \R^n \times \set{\pm 1}$, we build an \gls{svm} to classify the data with their respective labels.
+Binary classification is obtained using a~$C$-\gls{svc}\index{SVM@\glsfmtshort{svm}!CSVC@$C$-\glsfmtshort{svc}}~\cite{Chang_Lin_2011} by solving the optimization problem
 \begin{subequations}
     \label{eq:csvc}
     \begin{align}
@@ -208,10 +208,9 @@ Given a solution~$(\omega^{\ast}, \beta^{\ast}, \xi^{\ast}) \in \R^{\ell} \times
     \delta(\iter) \eqdef \sgn \big( \beta^{\ast} + (\omega^{\ast})^{\T} \psi_{\gamma}(\iter) \big),
 \end{equation}
 \nomenclature[On]{$\sgn$}{Sign operator}%
-which maps an observation~$\iter \in \R^n$ to a label in~$\set{\pm 1}$.
+which maps an observation~$\iter \in \R^n$ to a label in~$\set{\pm 1}$.\index{SVM@\glsfmtshort{svm}|)}
 It is clear that~$\delta$ depends on the two parameters~$C$ and~$\gamma$, which can be chosen by solving an optimization problem.
-The objective function~$P$ of this problem can be a~$5$-fold cross-validation based on some performance measure of the model~\cref{eq:csvc-classifier}.
-The general~$k$-fold cross-validation to define~$P(C, \gamma)$ is presented in \cref{alg:cross-validation}.
+The objective function~$P$ of this problem can be a~$5$-fold cross-validation based on some performance measure of model~\cref{eq:csvc-classifier}, presented in \cref{alg:cross-validation}.
 
 \begin{algorithm}
     \caption{$k$-fold cross-validation of an \glsfmtshort{svc} with parameters~$C$ and~$\gamma$}
@@ -228,14 +227,12 @@ The general~$k$-fold cross-validation to define~$P(C, \gamma)$ is presented in \
     Define~$P(C, \gamma)$ by summarizing the performances in~$\set{p_1, p_2, \dots, p_k}$\;
 \end{algorithm}
 
-A typical example of a model's performance used in the~$k$-fold cross-validation is the model's accuracy, i.e., the ratio of data correctly classified.
-The~\gls{auc}~\cite{Hanley_Mcneil_1982} is another example, particularly effective for imbalanced datasets~\cite{Bradley_1997}.
-The hyperparameter tuning problem can be formulated as
+Typical example of model's performances are the model's accuracy, i.e., the ratio of data correctly classified, and the~\gls{auc}~\cite{Hanley_Mcneil_1982}, particularly effective for imbalanced datasets~\cite{Bradley_1997}.
+The hyperparameter tuning problem is
 \begin{equation*}
     \begin{aligned}
         \min        & \quad P(C, \gamma)\\
-        \text{s.t.} & \quad C > 0,\\
-                    & \quad \gamma > 0.
+        \text{s.t.} & \quad C, \gamma > 0,\\
     \end{aligned}
 \end{equation*}
 It is clear that derivatives of the objective function of such a problem cannot be easily evaluated and may even not exist.
@@ -253,7 +250,7 @@ This concept is often referred to as derivative-free reinforcement learning.
 Such problems arise from helicopter rotor blade manufacturing~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, computational fluid dynamics~\cite{Duvigneau_Visonneau_2004}, worst-case analysis of analog circuits~\cite{Latorre_Etal_2019}, rapid-cycling synchrotron accelerator modeling~\cite{Eldred_Etal_2021}, nuclear energy engineering~\cite{Kortelainen_Etal_2010,Kortelainen_Etal_2012,Kortelainen_Etal_2014}, reservoir engineering and engine calibration~\cite{Langouet_2011}, and groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, to name but a few.
 In general, problems that involve sophisticated models, simulations, or experiments, induce \gls{dfo} problems.
 
-A particular application of \gls{dfo} comes from \gls{mdo} in the industry.
+A particular application of \gls{dfo} comes from \gls{mdo}\index{dfo@\glsfmtshort{dfo}!mdo@\glsfmtshort{mdo}} in the industry.
 It is a field that uses optimization methods to solve design problems defined by multiple disciplines.
 The objective and constraint functions of an \gls{mdo} problem can be provided by different departments of the same company or even by different companies.
 It is the case in aircraft engine engineering~\cite{Gazaix_Etal_2019}, where the design problem of one component is solved while taking into account constraints imposed by other components handled by different departments.
@@ -264,29 +261,29 @@ It has been included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo}
 \section{Optimality conditions for smooth optimization}
 \label{sec:optimality-conditions}
 
-We discuss in this section optimality conditions for the problem~\cref{eq:problem-introduction}.
+We discuss in this section optimality conditions for problem~\cref{eq:problem-introduction}.
 We do not assume any structure on the objective and constraint functions, except some smoothness.
 More specialized results can be obtained by assuming that problem~\cref{eq:problem-introduction} is convex, for example, but it is out of the scope of this work.
 
 \subsection{Local and global solutions}
 
-Before solving the problem~\cref{eq:problem-introduction}, we must define what a solution is.
+\index{solution|(}Before solving problem~\cref{eq:problem-introduction}, we must define what a solution is.
 \Cref{def:global-solution} presents the most natural understanding of a solution.
 
 \begin{definition}[Global solution]
     \label{def:global-solution}
-    To the problem~\cref{eq:problem-introduction}, a point~$\iter[\ast] \in \R^n$ is a \emph{global solution} if~$\iter[\ast] \in \fset$ and~$\obj(\iter) \ge \obj(\iter[\ast])$ for all~$\iter \in \fset$.
+    \index{solution!global solution|(}To problem~\cref{eq:problem-introduction}, a point~$\iter[\ast] \in \R^n$ is a \emph{global solution} if~$\iter[\ast] \in \fset$ and~$\obj(\iter) \ge \obj(\iter[\ast])$ for all~$\iter \in \fset$.\index{solution!global solution|)}
 \end{definition}
 
-The following relaxed concepts of solutions to the problem~\cref{eq:problem-introduction} are of interest in theory and practice.
+The following relaxed concepts of solutions are of interest in theory and practice.
 
 \begin{definition}[Local solution]
-    To the problem~\cref{eq:problem-introduction}, a point~$\iter[\ast] \in \R^n$ is
+    \index{solution!local solution|(}To problem~\cref{eq:problem-introduction}, a point~$\iter[\ast] \in \R^n$ is
     \begin{itemize}
         \item a \emph{local solution} if~$\iter[\ast] \in \fset$ and there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$\iter[\ast]$ such that~$\obj(\iter) \ge \obj(\iter[\ast])$ for all~$\iter \in \mathcal{N} \cap \fset$,
         \item a \emph{strict local solution} if~$\iter[\ast] \in \fset$ and there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$\iter[\ast]$ such that~$\obj(\iter) > \obj(\iter[\ast])$ for all~$\iter \in \mathcal{N} \cap \fset \setminus \set{\iter[\ast]}$, and
         \item an \emph{isolated local solution} if there exists a neighborhood~$\mathcal{N} \subseteq \R^n$ of~$\iter[\ast]$ such that it is the only local solution in~$\mathcal{N} \cap \fset$.
-    \end{itemize}
+    \end{itemize}\index{solution!local solution|)}
 \end{definition}
 
 It is known that finding a local solution to a general nonconvex problem is NP-hard.
@@ -295,18 +292,18 @@ There also exist convex optimization problems that are NP-hard, such as copositi
 See~\cite{Murty_Kabadi_1987} for more discussions.
 
 The methods we consider in this thesis are local.
-They attempt to find approximate local solutions to the problem~\cref{eq:problem-introduction}.
-However, in general, theoretical analyses of these methods can only guarantee approximations of stationary points, which will be introduced hereafter.
+They attempt to find approximate local solutions to problem~\cref{eq:problem-introduction}.
+However, in general, theoretical analyses of these methods can only guarantee approximations of stationary points, which will be introduced hereafter\index{solution|)}.
 
 \subsection{Constraint qualifications}
 
-Before introducing any necessary and sufficient conditions for local optimality, we discuss some regularity conditions on the constraints~\cref{eq:problem-introduction-cub,eq:problem-introduction-ceq}, referred to as \emph{constraint qualifications}.
+\index{constraint qualification|(}Before introducing any necessary and sufficient conditions for local optimality, we discuss some regularity conditions on the constraints~\cref{eq:problem-introduction-cub,eq:problem-introduction-ceq}, referred to as \emph{constraint qualifications}.
 They will be required for the necessary conditions to hold.
 We first introduce the notion of \emph{active sets}.
 
 \begin{definition}[Active set]
     \label{def:active-set}
-    The \emph{active set}~$\act(\iter) \subseteq \iub \cup \ieq$ for the problem~\cref{eq:problem-introduction} at a point~$\iter \in \R^n$ is defined by
+    The \emph{active set}~$\act(\iter) \subseteq \iub \cup \ieq$ for problem~\cref{eq:problem-introduction} at a point~$\iter \in \R^n$ is defined by
     \begin{equation*}
         \act(\iter) \eqdef \ieq \cup \set{i \in \iub : \con{i}(\iter) \ge 0}.
     \end{equation*}
@@ -319,11 +316,11 @@ We introduce hereafter two classical constraint qualifications.
 
 \begin{definition}[Constraint qualifications]
     \label{def:constraint-qualifications}
-    Given~$\iter \in \fset$, denote~$\act(\iter)$ the active set for the problem~\cref{eq:problem-introduction} at~$x$, and assume that the constraint functions~$\con{i}$ are differentiable at~$x$ for all~$i \in \act(\iter)$.
+    Given~$\iter \in \fset$, denote~$\act(\iter)$ the active set for problem~\cref{eq:problem-introduction} at~$x$, and assume that the constraint functions~$\con{i}$ are differentiable at~$x$ for all~$i \in \act(\iter)$.
     We say that
     \begin{itemize}
-        \item the \gls{licq} holds at~$x$ if the gradients~$\nabla \con{i}(\iter)$\nomenclature[Og]{$\nabla$}{Gradient operator (elements~$\partial / \partial x_i$, with~$i \in \set{1, 2, \dots, n}$)} are linearly independent for all~$i \in \act(\iter)$, and
-        \item the \gls{mfcq} holds at~$x$ if the gradients~$\nabla \con{i}(\iter)$ are linearly independent for all~$i \in \ieq$ and there exists a vector~$z \in \R^n$ such that
+        \item the \gls{licq}\index{constraint qualification!LICQ@\glsfmtshort{licq}} holds at~$x$ if the gradients~$\nabla \con{i}(\iter)$\nomenclature[Og]{$\nabla$}{Gradient operator (elements~$\partial / \partial x_i$, with~$i \in \set{1, 2, \dots, n}$)} are linearly independent for all~$i \in \act(\iter)$, and
+        \item the \gls{mfcq}\index{constraint qualification!MFCQ@\glsfmtshort{mfcq}} holds at~$x$ if the gradients~$\nabla \con{i}(\iter)$ are linearly independent for all~$i \in \ieq$ and there exists a vector~$z \in \R^n$ such that
         \begin{subequations}
             \label{eq:mangasarian-fromovitz}
             \begin{empheq}[left=\empheqlbrace]{alignat=1}
@@ -335,23 +332,23 @@ We introduce hereafter two classical constraint qualifications.
 \end{definition}
 
 The \gls{licq} is stronger than the \gls{mfcq}.
-If the \gls{licq} holds at~$\iter \in \fset$, then the system~\cref{eq:mangasarian-fromovitz} is consistent because of the linear independence of all~$\nabla \con{i}(\iter)$ for~$i \in \act(\iter)$.
+If the \gls{licq} holds at~$\iter \in \fset$, then system~\cref{eq:mangasarian-fromovitz} is consistent because of the linear independence of all~$\nabla \con{i}(\iter)$ for~$i \in \act(\iter)$.
 
 Many other constraint qualifications exist.
 Examples include the \gls{acq} and the \gls{gcq}, which are formulated using tangent and linearized cones of the feasible set.
 There also exist several traditional constraint qualifications weaker than the \gls{mfcq}, such as the \gls{crcq}, the \gls{cpld}, or the \gls{qncq}.
-We also note that dedicated constraint qualifications may exist when the problem has a particular structure, such as the \gls{sc} for convex problems.
+We also note that dedicated constraint qualifications may exist when the problem has a particular structure, such as the \gls{sc} for convex problems.\index{constraint qualification|)}
 
 \subsection{First-order optimality conditions}
 
 \subsubsection{Statement of the optimality conditions}
 
-\index{KKT conditions@\glsfmtshort{kkt} conditions|(}Let~$\lag$\nomenclature[Fc]{$\lag$}{Lagrangian function} be the \emph{Lagrangian} of the problem~\cref{eq:problem-introduction}, defined by
+\index{KKT conditions@\glsfmtshort{kkt} conditions|(}Let~$\lag$\nomenclature[Fc]{$\lag$}{Lagrangian function} be the \emph{Lagrangian}\index{Lagrangian function} of     problem~\cref{eq:problem-introduction}, defined by
 \begin{equation*}
     \lag(\iter, \lm) \eqdef \obj(\iter) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lm_i \con{i}(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lm_i \in \R$ for~$i \in \iub \cup \ieq$},
 \end{equation*}
 where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
-\Cref{thm:first-order-necessary-conditions} introduces the first-order necessary conditions for a point to be a local solution of problem~\cref{eq:problem-introduction}.
+% \Cref{thm:first-order-necessary-conditions} introduces the first-order necessary conditions for a point to be a local solution of problem~\cref{eq:problem-introduction}.
 
 \begin{theorem}[First-order necessary conditions~{\cite[Thm.~12.1]{Nocedal_Wright_2006}}]
     \label{thm:first-order-necessary-conditions}
@@ -387,7 +384,7 @@ We do not provide a proof of \cref{thm:first-order-necessary-conditions}, but we
     \end{align}
 \end{subequations}
 whose solution is~$\iter[\ast] = [-\sqrt{2}, 0]^{\T}$.
-A graphical representation of the problem~\cref{eq:kkt-description} is given in \cref{fig:kkt-description}, where the white area represents the feasible set.
+A graphical representation of problem~\cref{eq:kkt-description} is given in \cref{fig:kkt-description}, where the white area represents the feasible set.
 
 \begin{figure}[ht]
     \centering
@@ -441,13 +438,13 @@ See~\cite[\S~12.4]{Nocedal_Wright_2006} for a complete proof of \cref{thm:first-
 \subsection{Second-order optimality conditions}
 
 It is known that at a local solution of a smooth unconstrained optimization problem, the gradient of the objective function is zero and its Hessian matrix is positive semidefinite.
-\Cref{thm:second-order-necessary-conditions} generalizes this fact to the optimization problem~\cref{eq:problem-introduction}.
+\Cref{thm:second-order-necessary-conditions} generalizes this fact to    problem~\cref{eq:problem-introduction}.
 
 \begin{theorem}[Second-order necessary conditions~{\cite[Thm.~12.5]{Nocedal_Wright_2006}}]
     \label{thm:second-order-necessary-conditions}
     Let~$\iter[\ast] \in \fset$ be a local solution to~\cref{eq:problem-introduction}.
     Assume that the functions~$\obj$ and~$\con{i}$, with~$i \in \iub \cup \ieq$, are twice continuously differentiable in a neighborhood or~$\iter[\ast]$, and that the \gls{licq} holds at~$\iter[\ast]$.
-    Denote the active set for the problem~\cref{eq:problem-introduction} at~$\iter[\ast]$ by~$\act(\iter[\ast])$.
+    Denote the active set for problem~\cref{eq:problem-introduction} at~$\iter[\ast]$ by~$\act(\iter[\ast])$.
     Let~$\lm[\ast] = [\lm[\ast]_i]_{i \in \iub \cup \ieq}^{\T}$ be a Lagrange multiplier with~$\lm[\ast]_i \in \R$ for all~$i \in \iub \cup \ieq$ satisfying the \gls{kkt} conditions~\cref{eq:kkt-introduction}, and let~$z \in \R^n$ be any vector such that
     \begin{subequations}
         \label{eq:second-order-introduction}
@@ -482,7 +479,7 @@ The other strategy builds iteratively models that approximate the problems (e.g.
 These methods are referred to as \emph{model-based} methods.
 Hybrid methods also exist, such as implicit filtering~\cite{Kelley_2011} and \gls{sidpsm}~\cite{Custodio_Rocha_Vicente_2009}, which combine direct search and models.
 
-Some methods can solve \gls{dfo} problems but are not covered by the above categories.
+We remark that there exist methods that can solve \gls{dfo} problems but that are not covered by the above categories.
 Examples include random search methods~\cite{Zhigljavsky_1991}, simulated annealing methods~\cite{Kirkpatrick_Gelatt_Vecchi_1983}, the genetic algorithm~\cite{Jong_1975,Holland_1975}, and Bayesian optimization methods~\cite{Mockus_1975,Shahriari_Etal_2016}.
 For more information on these methods, we refer to the review~\cite{Larson_Menickelly_Wild_2019} and the reference therein.
 
@@ -866,17 +863,17 @@ The main contributions of this thesis are as follows.
         \item \Cref{thm:sqp-path} provides a new interpretation of the objective function of the \gls{sqp} subproblem, showing that it is a natural quadratic approximation of the original objective function in the tangent space of a surface.
         \item We reveal in \cref{prop:vardi-byrd-omojokun} a relation between the Byrd-Omojokun and the Vardi approaches for solving the trust-region \gls{sqp} subproblem in the equality-constrained case, interpreting the former as an approximation of the latter.
         \item We extend the Byrd-Omojokun and the Vardi approaches to the inequality-constrained case in \cref{subsec:composite-step-inequality}.
-        They differ from the extensions given in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
+        They differ from those given in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
         In particular, our Byrd-Omojokun approach is employed in the new solver described in \cref{ch:cobyqa-introduction}, and performs much better than the one in~\cite[\S~15.4.4]{Conn_Gould_Toint_2000}.
     \end{enumerate}
     \item \emph{A new model-based \gls{dfo} algorithm and its implementation.}
     \begin{enumerate}
         \item We present in \cref{ch:cobyqa-introduction} a new derivative-free trust-region \gls{sqp} algorithm for nonlinearly-constrained optimization, named \gls{cobyqa}.
-        To the best of our knowledge, this is the first trust-region \gls{sqp} algorithm that can solve \gls{dfo} problems with nonlinear equality and inequality constraints.
-        \item We detail in \cref{ch:cobyqa-subproblems} the algorithms for solving the subproblems of \gls{cobyqa} in our implementation.
+        To the best of our knowledge, this is the first trust-region \gls{sqp} algorithm that can solve \gls{dfo} problems with nonlinear equality and inequality constraints without introducing slack variables.
+        \item We detail in \cref{ch:cobyqa-subproblems} the methods for solving the subproblems of \gls{cobyqa} in our implementation.
         In particular, we propose in \cref{ch:cobyqa-subproblems} a new method for approximately solving convex piecewise quadratic programming problems within a trust region.
         We use this method to deal with the normal subproblem of \gls{cobyqa}.
-        \item We present in \cref{ch:cobyqa-implementation} the Python implementation of \gls{cobyqa}, which is open-source and publicly available at \url{https://www.cobyqa.com/}.
+        \item \Cref{ch:cobyqa-implementation} presents the Python implementation of \gls{cobyqa}, which is open-source and publicly available at \url{https://www.cobyqa.com/}.
         \Cref{sec:cobyqa-experiments} details numerical experiments that compare \gls{cobyqa} with Powell's solvers.
         % We note that this implementation is highly nontrivial due to the nature of \gls{dfo}.
         \Gls{cobyqa} is competitive with \gls{newuoa} and \gls{bobyqa} on unconstrained and bound-constrained problems, respectively, while being able to tackle more general problems.

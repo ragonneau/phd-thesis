@@ -46,7 +46,7 @@ For example, a least-square regression model~$\objm$ minimizes
 \begin{equation*}
     \sum_{i = 1}^m [\obj(y^i) - \objm(y^i)]^2.
 \end{equation*}
-Although there are successful methods that use regression models (see, e.g.,~\cite{Billups_Larson_Graf_2013,Conn_Scheinberg_Vicente_2008b}), the \gls{dfo} methods we present and develop in this thesis use interpolation models and ensure that the interpolation conditions are consistent and well-conditioned (see \cref{ch:pdfo,ch:cobyqa-introduction}).
+Although there are successful methods that use regression models (see, e.g.,~\cite{Billups_Larson_Graf_2013,Conn_Scheinberg_Vicente_2008b}), the \gls{dfo} methods we present in this thesis use interpolation models and ensure that the interpolation conditions are consistent and well-conditioned (see \cref{ch:pdfo,ch:cobyqa-introduction}).
 
 It is also possible to use polynomials of degree higher than two.
 However, we do not consider such models in this thesis due to the following observations.
@@ -85,13 +85,13 @@ Moreover, we assume in this section that number of interpolation points~$m$ equa
 \end{definition}
 
 Let us first consider the problem of finding a linear model~$\objm \in \lpoly$ satisfying the interpolation system~\cref{eq:interpolation-conditions} whenever~$m = \dim \lpoly = n + 1$.
-In the natural basis of~$\lpoly$, the system~\cref{eq:interpolation-conditions} can be reformulated as
+In the natural basis of~$\lpoly$, system~\cref{eq:interpolation-conditions} can be reformulated as
 \begin{equation}
     \label{eq:linear-interpolation-conditions}
     \alpha + g^{\T} y^i = \obj(y^i), \quad \text{for~$i \in \set{1, 2, \dots, m}$},
 \end{equation}
 where~$\alpha \in \R$ and~$g \in \R^n$ are the coefficients to determine.
-If~$\xpt$ is poised for linear interpolation, given~$(\alpha^{\ast}, g^{\ast})$ the unique solution to the system~\cref{eq:linear-interpolation-conditions}, the linear model~$\objm$ is defined by
+If~$\xpt$ is poised for linear interpolation, given~$(\alpha^{\ast}, g^{\ast})$ the solution to~\cref{eq:linear-interpolation-conditions}, the linear model~$\objm$ is defined by
 \begin{equation*}
     \objm(\iter) = \alpha^{\ast} + (g^{\ast})^{\T} x, \quad \text{for~$\iter \in \R^n$},
 \end{equation*}
@@ -143,7 +143,7 @@ As we mentioned above, the interpolation set~$\xpt$ is poised if it admits a uni
 However, given a poised set, how good is this interpolation set?
 This section briefly discusses this topic and introduce the concept of~$\Lambda$-poisedness.
 
-Suppose that~$\obj$ is thrice differentiable on~$\R^n$.
+Suppose that~$\obj$ is thrice differentiable on~$\R^n$.\todo{Continue review from here}
 It is well-known that for any~$\iter \in \R^n$, we have
 \begin{equation}
     \label{eq:Ciarlet_Raviart_0}
