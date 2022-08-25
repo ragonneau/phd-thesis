@@ -114,7 +114,7 @@ The tangential and normal subproblem solvers employed by \gls{cobyqa} are constr
 \label{sec:cobyqa-tangential}
 
 We now present the constrained variations of the \gls{tcg} method we use in \gls{cobyqa} to solve the tangential subproblem~\cref{eq:cobyqa-tangential}.
-We introduce two variations, one for the bound constrained case (when~$\iub \cup \ieq = \emptyset$), and the other for the linearly-constrained case (when~$\iub \cup \ieq \neq \emptyset$).
+We introduce two variations, one for the bound constrained case (when~$\iub \cup \ieq = \emptyset$), and the other for the linearly constrained case (when~$\iub \cup \ieq \neq \emptyset$).
 
 \subsection{Bound-constrained case}
 
@@ -244,7 +244,7 @@ The second additional stopping criterion is not mentioned in~\cite{Powell_2009} 
 \end{equation}
 \Gls{cobyqa} includes both of the stopping criteria with~$\nu = 0.01$ when implementing~\cref{alg:bvtcg}.\index{TCG@\glsfmtshort{tcg}!bound-constrained|)}
 
-% The linearly-constrained \gls{tcg} procedure with these additional stopping criteria is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.lctcg}.
+% The linearly constrained \gls{tcg} procedure with these additional stopping criteria is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.lctcg}.
 
 \subsubsection{Moving round the trust-region boundary}
 
@@ -296,10 +296,10 @@ Since the working set is only enlarged, this procedure is invoked at most~$n - \
 
 % The bound-constrained \gls{tcg} procedure together with the improving mechanism is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.bvtcg}.\index{TCG@\glsfmtshort{tcg}!bound-constrained|)}
 
-\subsection{Linearly-constrained case}
+\subsection{Linearly constrained case}
 \label{subsec:lctcg}
 
-\index{TCG@\glsfmtshort{tcg}!linearly-constrained|(}We now introduce the linearly-constrained variation of the \gls{tcg} method designed by \citeauthor{Powell_2015}~\cite{Powell_2015} for his solver \gls{lincoa}.
+\index{TCG@\glsfmtshort{tcg}!linearly constrained|(}We now introduce the linearly constrained variation of the \gls{tcg} method designed by \citeauthor{Powell_2015}~\cite{Powell_2015} for his solver \gls{lincoa}.
 This algorithm is described in~\cite[\S~3,\S~5]{Powell_2015}.
 For ease of reference, we present it in \cref{alg:lctcg} and briefly explain the idea behind the algorithm in the sequel.
 The original method in~\cite{Powell_2015} is devised for linear inequality constraints only, and \cref{alg:lctcg} adapts it to handle linear equality constraints as well.
@@ -391,14 +391,14 @@ Further, the working set is modified to be
 
 \subsubsection{Description of the \glsfmtshort{tcg} method}
 
-\Cref{alg:lctcg} details the linearly-constrained \gls{tcg} method designed by \citeauthor{Powell_2015}~\cite{Powell_2015}.
+\Cref{alg:lctcg} details the linearly constrained \gls{tcg} method designed by \citeauthor{Powell_2015}~\cite{Powell_2015}.
 In the algorithm, we denote by~$\Pi^k$ the projection onto the orthogonal complement of
 \begin{equation*}
     \set[\big]{a_j : j \in \mathcal{W}^k} \cup \set[\big]{c_j : 1 \le j \le m_2}.
 \end{equation*}
 
 \begin{algorithm}
-    \caption[Linearly-constrained \glsfmtshort{tcg} method]{Linearly-constrained \glsfmtshort{tcg} method~\cite[\S~3, \S~5]{Powell_2015}}
+    \caption[Linearly constrained \glsfmtshort{tcg} method]{Linearly constrained \glsfmtshort{tcg} method~\cite[\S~3, \S~5]{Powell_2015}}
     \label{alg:lctcg}
     \DontPrintSemicolon
     \onehalfspacing
@@ -525,11 +525,11 @@ for some constant~$\nu > 0$.
 The condition~\cref{eq:lctcg-stop1} can be regarded as a refined and weakened version of~\cref{eq:bvtcg-stop1}.
 Moreover, the algorithm also tests~\cref{eq:bvtcg-stop2} and stop when this condition holds.
 %, which means that the reduction in~$Q$ provided by the recent iteration is tiny compared to the reduction so far.
-\index{TCG@\glsfmtshort{tcg}!linearly-constrained|)}
+\index{TCG@\glsfmtshort{tcg}!linearly constrained|)}
 As demonstrated by~\citeauthor{Powell_2015}~\cite[\S~5]{Powell_2015}, these two stopping criteria guarantee that the algorithm terminates after a finite number of iterations.
 \Gls{cobyqa} includes both of the stopping criteria with~$\nu = 0.01$ when implementing~\cref{alg:lctcg}.
 
-% The linearly-constrained \gls{tcg} procedure with these additional stopping criteria is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.lctcg}.
+% The linearly constrained \gls{tcg} procedure with these additional stopping criteria is implemented in \gls{cobyqa} under the function \texttt{cobyqa.linalg.lctcg}.
 
 % \todo{Tom: Your description of the ``modification'' (moving towards boundaries of the active
 % constraints) is wrong. Check

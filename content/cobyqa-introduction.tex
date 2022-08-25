@@ -16,7 +16,7 @@
 \label{ch:cobyqa-introduction}
 
 This chapter introduces a new \gls{dfo} method, named \gls{cobyqa}.
-It is a derivative-free trust-region \gls{sqp} method designed to tackle nonlinearly-constrained optimization problems that include equality and inequality constraints.
+It is a derivative-free trust-region \gls{sqp} method designed to tackle nonlinearly constrained optimization problems that include equality and inequality constraints.
 A particular feature of \gls{cobyqa} is that it visits only points that respect the bound constraints, if any.
 This is useful because the objective functions of applications that admit bound constraints are often undefined when the bounds are violated.
 
@@ -280,7 +280,7 @@ See~\cite[pp.~538--539]{Nocedal_Wright_2006} for more details.
 \subsection{Managing the trust-region radius}
 \label{subsec:managing-trust-region-radius}
 
-Inspired by \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa} briefly described in \cref{subsec:uobyqa,subsec:newuoa-bobyqa-lincoa}, we employ their trust-region radius management strategy in \gls{cobyqa}, in place of \cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}.
+Inspired by \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa} briefly described in \cref{subsec:uobyqa,subsec:newuoa,subsec:bobyqa,subsec:lincoa}, we employ their trust-region radius management strategy in \gls{cobyqa}, in place of \cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}.
 It consists in maintaining both the trust-region radius~$\rad[k]$ and a lower bound~$\radlb[k]$ of it.
 
 The update of~$\rad[k]$ is given in \cref{alg:update-trust-region-radius}, which is typical for trust-region methods, except that the lower bound~$\radlb[k]$ is imposed.
@@ -432,6 +432,7 @@ The second step~$\rstep[k + 1]_L$, adopted from \gls{lincoa}, is defined as foll
 Let~$\mathcal{W}$ be some approximation of the active set of the linearized constraints at~$\iter[k + 1]$.
 In \gls{cobyqa}, we set~$\mathcal{W}$ to be the working set returned by the active-set method that evaluates the tangential step~\cref{eq:cobyqa-tangential} (see \cref{sec:cobyqa-tangential} for details).
 Then~$\rstep[k + 1]_L$ is a Cauchy step for~$\abs{\lagp[\bar{y}](\iter[k + 1] + \step)}$ in the null space of the linearized constraints in~$\mathcal{W}$ subject to~$\norm{\step} \le \bar{\rad}$.
+In our experiments, considering this step turns out to be crucial for the performance of \gls{cobyqa}.
 
 The selection between~$\rstep[k + 1]_B$ and~$\rstep[k + 1]_L$ is done as follows.
 We set~$\rstep[k + 1]$ to~$\rstep[k + 1]_L$ if
@@ -506,12 +507,12 @@ They are handled separately, for the following reasons.
 % the bound and linear constraints being included in the constraints~$\set{\con{i}}_{i \in \iub \cup \ieq}$.
 % However, our implementation handles these types of constraints separately, for the following reasons.
 
-% First of all, note that in the general form of nonlinearly-constrained problems~\cref{eq:problem-cobyqa}, we did not include the bound constraints~\cref{eq:problem-cobyqa-bd} in the inequality constraints~\cref{eq:problem-cobyqa-ub}.
+% First of all, note that in the general form of nonlinearly constrained problems~\cref{eq:problem-cobyqa}, we did not include the bound constraints~\cref{eq:problem-cobyqa-bd} in the inequality constraints~\cref{eq:problem-cobyqa-ub}.
 First of all, bound constraints often represent inalienable physical or theoretical restrictions.
 In many applications for which \gls{cobyqa} is designed, the objective function is not defined if the bound constraints are violated.
 % For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods}) involves bounds that cannot be violated, as the optimization methods that are tuned may not be defined otherwise.
 For example, see the parameter tuning problem given in \cref{subsec:tuning-nonlinear-optimization-methods}.
-For this reason, we implement \gls{cobyqa} so that it visits only points that respect the bounds, as is also the case for the \gls{bobyqa} method, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
+For this reason, we implement \gls{cobyqa} so that it visits only points that respect the bounds, as is also the case for the \gls{bobyqa} method, presented in \cref{subsec:bobyqa}.
 % When establishing the problem~\cref{eq:problem-cobyqa}, we assumed that~$\xl < \xu$.
 % Note that this requirement is weak, as otherwise, the problem~\cref{eq:problem-cobyqa} would be either infeasible, or admit fix variables.
 % Thus, note also that they are very simple constraints.

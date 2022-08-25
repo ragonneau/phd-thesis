@@ -350,7 +350,7 @@ More specifically, we build a quadratic model~$\objm$ by solving
 \end{subequations}
 In a \gls{dfo} method, the model~$\objm[k] \in \qpoly$ of~$\obj$ at the~$k$th iteration can be constructed by solving~\cref{eq:symmetric-broyden-models} with~$H_{\text{old}} = \nabla^2 \objm[k - 1]$, and we define~$\objm[-1] \equiv 0$.
 This is referred to as the \emph{least Frobenius norm updating of quadratic models}~\cite{Powell_2004b}.
-Examples of \gls{dfo} methods that use this update include \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and~\gls{lincoa}, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
+Examples of \gls{dfo} methods that use this update include \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and~\gls{lincoa}, presented in \cref{subsec:newuoa,subsec:bobyqa,subsec:lincoa}.
 The new method we introduce in \cref{ch:cobyqa-introduction} is also based on this update.
 
 The above discussions we had on the minimum Frobenius norm models can be easily adapted to the least Frobenius norm updating.
@@ -468,7 +468,7 @@ The explicit and implicit parts of~$H^k$ can then be updated as
 \end{subequations}
 In doing so, updating a quadratic model requires only~$\bigo(n^2)$ basic operations, after solving the linear system~\cref{eq:least-frobenius-kkt-system-2}.
 
-\citeauthor{Powell_2006} applied~\cref{eq:hessian-explicit-implicit} and~\cref{eq:hessian-explicit-implicit-update} in his three recent solvers \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and~\gls{lincoa}~\cite{Powell_2015}, presented in \cref{subsec:newuoa-bobyqa-lincoa}.
+\citeauthor{Powell_2006} applied~\cref{eq:hessian-explicit-implicit} and~\cref{eq:hessian-explicit-implicit-update} in his three recent solvers \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and~\gls{lincoa}~\cite{Powell_2015}, presented in \cref{subsec:newuoa,subsec:bobyqa,subsec:lincoa}.
 The new method we introduce in \cref{ch:cobyqa-introduction} also uses this technique.
 
 \subsubsection{Storage and update of the inverse of the coefficient matrix}

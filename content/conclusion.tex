@@ -19,42 +19,63 @@
 
 \section{Conclusion}
 
-In this thesis, we presented and analyzed trust-region methods for \gls{dfo}, including some theoretical analyses and some practical implementation.
-In particular, we introduced in \cref{ch:pdfo} \gls{pdfo}, a cross-platform package providing MATLAB and Python interfaces for using late Prof.\ M. J. D. Powell's \gls{dfo} solvers, developed in joint work with Dr.\ Zaikun Zhang.
-As of August 2022, this package has been downloaded more than \num{30000} times, and is included in GEMSEO~\cite{Gallard_Etal_2018}, an engine for \gls{mdo}.
+In this thesis, we investigated model-based methods for \gls{dfo}, covering both theoretical and practical aspects.
 
-Further, we presented our new method \gls{cobyqa}, for nonlinear-constrained \gls{dfo} problems.
-It is based on the \gls{sqp} framework, which we carefully introduced in \cref{ch:sqp}.
-In particular, we interpreted its subproblem from different perspectives, one of which led to establishing a new result, namely \cref{thm:sqp-path}.
-It interprets the objective function of the \gls{sqp} subproblem as a quadratic approximation of the original objective function in the tangent space of a surface.
-After introducing a classical trust-region \gls{sqp} framework for derivative-based optimization, we adapted it in \cref{ch:cobyqa-introduction} to \gls{dfo} settings.
-To tackle the trust-region \gls{sqp} subproblem, we proposed a new Byrd-Omojokun approach, which drastically increases the performance of \gls{cobyqa} compared to employing the traditional Byrd-Omojokun approach.
-Finally, in \cref{ch:cobyqa-subproblems,ch:cobyqa-implementation}, we provided more details on the Python implementation of \gls{cobyqa}.
-The implementation of such a \gls{dfo} method is a highly challenging work, due to the nature of \gls{dfo} solvers.
-The numerical experiments in \cref{sec:cobyqa-experiments} are very promising, and encourage us to propose \gls{cobyqa} as a replacement for \gls{cobyla}.
+On the theoretical side, we first studied properties of an interpolation set for underdetermined interpolation employed by Powell in \gls{newuoa}.
+We showed that this set is optimal when composed of~$2n + 1$ points,~$n$ being the dimension of the problem.
+This supports the recommendation made by Powell, and it also guides us to devise the initial interpolation set of our new \gls{dfo} method.
+
+We also examined several theoretical aspects of the \gls{sqp} method.
+In particular, we highlighted a new interpretation of the \gls{sqp} subproblem, regarding its objective function as a quadratic approximation of the original objective function in the tangent space of a surface.
+Moreover, we established a relation between the Vardi and the Byrd-Omojokun approaches in the equality-constrained case, interpreting the former as an approximation of the latter.
+We also briefly studied the Lagrangian and augmented Lagrangian functions of the \gls{sqp} subproblem, establishing connections between the \gls{sqp} method and certain augmented Lagrangian methods.
+
+Writing a thesis on model-based \gls{dfo} methods, we allocated a major part of our efforts to practices and implementations of these methods, which are essential in \gls{dfo}.
+In particular, we developed in \cref{ch:pdfo} a cross-platform package named \gls{pdfo}, providing user-friendly MATLAB and Python interfaces for employing late Prof.\ M. J. D. Powell's \gls{dfo} solvers.
+The package also patches several bugs contained in the Fortran 77 code.
+As of August 2022, this package has been downloaded more than \num{30000} times, and has been included in GEMSEO, an engine for \gls{mdo}.
+
+The aforementioned theoretical and practical study lays a solid groundwork for our development of a new derivative-free method for nonlinearly constrained optimization.
+Named \gls{cobyqa}, it is a trust-region \gls{sqp} method that models the objective and constraint functions using quadratic models based on the derivative-free symmetric Broyden update.
+The development of this method is fully documented in \cref{ch:cobyqa-introduction,ch:cobyqa-subproblems,ch:cobyqa-implementation}, covering the mathematical basis, the detailed descriptions of the subproblem solvers, and the Python implementation.
+In this development, we documented, adapted, and extended various tools for the practices of \gls{sqp} and \gls{dfo}.
+For example, we proposed a new extension of the Byrd-Omojokun approach for the inequality-constrained case, which worked remarkably well in our tests.
+Finally, extensive numerical experiments demonstrated the excellent performance of \gls{cobyqa}, confirming that we have achieved our initial goal of developing a general-purpose \gls{dfo} solver, as a successor to \gls{cobyla}.
 
 \section{Future research directions}
 
-To conclude this thesis, we summarize in this section the future research directions we discussed in the thesis.
+The study of this thesis opens many interesting directions for further investigations.
+We briefly mention four of them.
 
 \begin{enumerate}
-    \item We showed in \cref{sec:optimal-interpolation-set} that an interpolation set for quadratic underdetermined interpolation introduced by \citeauthor{Powell_2006}~\cite{Powell_2006} is optimal to some extend when the number of interpolation points is~$2n + 1$.
-    However, we assume in this study that this number of points was at most~$2n + 1$, although the original interpolation set is also define for more.
-    Therefore, we will later extend the properties shown to the general case.
-    \item We presented our software \gls{pdfo} for MATLAB and Python.
-    However, Julia~\cite{Bezanson_Etal_2017} is gaining more and more interest for researchers and practitioners.
-    Therefore, the author and Dr.\ Zaikun Zhang plan to implement an Julia version of \gls{pdfo}.
-    \item We established in \cref{thm:sqp-path} a new result on the subproblem of the \gls{sqp} framework.
-    More specifically, it shows that the objective function of the \gls{sqp} subproblem is a natural approximation of the original objective function in the tangent space of the contour of the constraints at the current iterate.
-    However, we established this result in the case where no inequality constraint is provided.
-    Therefore, we plan to extend this result in the future to the general case.
-    \item We showed in \cref{prop:vardi-byrd-omojokun} an intriguing relation between the Vardi approach and the Byrd-Omojokun approach, presented in \cref{subsec:composite-step-equality}.
-    More specifically, we showed that the normal step of the Vardi approach was a truncated Newton step for normal subproblem the Byrd-Omojokun approach.
-    We established however this result only in the equality-constrained case, and we will extend it in the future to the general case.
-    \item We plan to study in the near future the convergence properties of \gls{cobyqa}.
-    As we discussed, numerical experiments indicate that the method works in practice, but mathematical proofs are yet to be constructed.
-    \item Finally, we plan to implement \gls{cobyqa} in Fortran, as the current Python version can be slow for high-dimensional problem, because Python is an interpreted language.
-    Moreover, we will fine-tune the implementation to improve the performance, particularly in the linearly- and nonlinearly-constrained cases.
+    \item When developing \gls{cobyqa}, we followed Powell's philosophy reflected in his work on \gls{dfo}, which is to first produce an efficient and robust solver that performs well in practice, instead of setting up a conceptual framework without a practical implementation.
+    Now that \gls{cobyqa} is successful in practice, we will proceed to analyze its convergence properties, including global convergence and worst-case complexity.
+    We expect that such an analysis can be done based on the existing techniques for analyzing \gls{dfo} methods in the unconstrained case, and the \gls{sqp} method in the derivative-based case.
+    \item We will further improve the implementation of \gls{cobyqa} to enhance its performance, particularly in the linearly constrained case, recalling that the current version does not perform as well as \gls{lincoa} on linearly constrained problems with violable bounds.
+    In addition, we plan to implement \gls{cobyqa} in modern Fortran (F2018 or above), because the current Python version can be slow for high-dimensional problems.
+    We will also make \gls{cobyqa} available in other languages, such as MATLAB, Julia, and R.
+    The implementation of \gls{pdfo} in Julia and R are also under consideration.
+    \item Our new interpretation of the \gls{sqp} subproblem sheds lights on the approximation of nonlinear functions on manifolds.
+    It will be interesting to investigate the implication of our interpretation on manifold optimization.
+    \item The connections between the \gls{sqp} and the augmented Lagrangian methods that we mentioned in \cref{subsec:lagrangian-augmented-lagrangian} also deserve further investigations.
+    We will study the implications of these connections on the theory and practice of the \gls{sqp} and the augmented Lagrangian methods, trying to develop theories that bridge these two methodologies and algorithms that combine their strenghts.
+    % \item We showed in \cref{sec:optimal-interpolation-set} that an interpolation set for quadratic underdetermined interpolation introduced by \citeauthor{Powell_2006}~\cite{Powell_2006} is optimal to some extend when the number of interpolation points is~$2n + 1$.
+    % However, we assume in this study that this number of points was at most~$2n + 1$, although the original interpolation set is also define for more.
+    % Therefore, we will later extend the properties shown to the general case.
+    % \item We presented our software \gls{pdfo} for MATLAB and Python.
+    % However, Julia~\cite{Bezanson_Etal_2017} is gaining more and more interest for researchers and practitioners.
+    % Therefore, the author and Dr.\ Zaikun Zhang plan to implement an Julia version of \gls{pdfo}.
+    % \item We established in \cref{thm:sqp-path} a new result on the subproblem of the \gls{sqp} framework.
+    % More specifically, it shows that the objective function of the \gls{sqp} subproblem is a natural approximation of the original objective function in the tangent space of the contour of the constraints at the current iterate.
+    % However, we established this result in the case where no inequality constraint is provided.
+    % Therefore, we plan to extend this result in the future to the general case.
+    % \item We showed in \cref{prop:vardi-byrd-omojokun} an intriguing relation between the Vardi approach and the Byrd-Omojokun approach, presented in \cref{subsec:composite-step-equality}.
+    % More specifically, we showed that the normal step of the Vardi approach was a truncated Newton step for normal subproblem the Byrd-Omojokun approach.
+    % We established however this result only in the equality-constrained case, and we will extend it in the future to the general case.
+    % \item We plan to study in the near future the convergence properties of \gls{cobyqa}.
+    % As we discussed, numerical experiments indicate that the method works in practice, but mathematical proofs are yet to be constructed.
+    % \item Finally, we plan to implement \gls{cobyqa} in Fortran, as the current Python version can be slow for high-dimensional problem, because Python is an interpreted language.
+    % Moreover, we will fine-tune the implementation to improve the performance, particularly in the linearly and nonlinearly constrained cases.
 \end{enumerate}
 
 \todo[noline]{Complete the index}

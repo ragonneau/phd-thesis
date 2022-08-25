@@ -676,11 +676,12 @@ Given two solvers~$s_1$ and~$s_2$,~$d_{s_1}(\alpha) > d_{s_2}(\alpha)$ means tha
 Therefore, a larger value of~$d_s$ indicates a better performance of~$s$.
 
 \subsection{An illustrative example}
+\label{subsec:profiles-example}
 
 In this section, as an example, we compare three solvers using performance and data profiles.
 These solvers, constituting the set~$\xsv$, are
 \begin{enumerate}
-    \item \gls{newuoa} (see \cref{subsec:newuoa-bobyqa-lincoa}), a model-based \gls{dfo} method; and
+    \item \gls{newuoa} (see \cref{subsec:newuoa}), a model-based \gls{dfo} method; and
     \item \gls{bfgs} and \gls{cg}, two gradient-based solvers provided by SciPy~1.0~\cite{Virtanen_Etal_2020}.
     When no derivatives are provided, they use forward finite-difference to approximate gradients, with the difference parameter~$h = \sqrt{u}$, where~$u$ is the unit roundoff.
 \end{enumerate}
@@ -876,7 +877,7 @@ The main contributions of this thesis are as follows.
         \item \Cref{ch:cobyqa-implementation} presents the Python implementation of \gls{cobyqa}, which is open-source and publicly available at \url{https://www.cobyqa.com/}.
         \Cref{sec:cobyqa-experiments} details numerical experiments that compare \gls{cobyqa} with Powell's solvers.
         % We note that this implementation is highly nontrivial due to the nature of \gls{dfo}.
-        \Gls{cobyqa} is competitive with \gls{newuoa} and \gls{bobyqa} on unconstrained and bound-constrained problems, respectively, while being able to tackle more general problems.
+        \Gls{cobyqa} is competitive with \gls{newuoa} on unconstrained problems and outperforms \gls{bobyqa} on bound-constrained ones, while being able to handle more general problems.
         Compared with \gls{lincoa} and \gls{cobyla}, a strength of \gls{cobyqa} is that it always respects the bound constraints, while \gls{lincoa} and \gls{cobyla} do not.
         Such a strength is crucial in many applications, as is requested by engineers from IRT Saint Exup{\'{e}}ry.
         On linearly-constrained problems, \gls{cobyqa} performs much better than \gls{lincoa} if the problems also contain bound constraints that cannot be violated.

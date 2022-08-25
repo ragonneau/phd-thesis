@@ -17,27 +17,29 @@
 \addcontentsline{toc}{chapter}{\nameref*{ch:abstract}}
 \markboth{\nameref*{ch:abstract}}{\nameref*{ch:abstract}}
 
-In many applications, it is frequent to address optimization problems for which the objective function or the constraints require experiments or simulations.
-The first-order information of these functions is often not assessable; hence, we need algorithms that use only function values, namely \glsxtrfull{dfo} algorithms.
-This thesis focuses on a particular class of \glsxtrshort{dfo} methods, referred to as model-based methods.
+This thesis studies \glsxtrfull{dfo}, particularly model-based methods and software.
+These methods are motivated by optimization problems for which it is impossible or prohibitively expensive to access the first-order information of the objective function and possibly constraint functions.
+Such problems frequently arise in engineering and industrial applications, and keep emerging due to recent advances in data science and machine learning.
 
-Prof.\ M. J. D. Powell developed five \glsxtrshort{dfo} algorithms that are in the public domain: \gls{cobyqa}, \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa}.
-He implemented these methods in Fortran 77; therefore, they may not be easily accessible to some users.
-After first presenting some theory of optimization and polynomial interpolation, we introduce in this thesis the \gls{pdfo} package, developed to provide both Python and MATLAB interfaces to Powell's code, in joint work with Dr.\ Zaikun Zhang.
-With \gls{pdfo}, users can call each Powell's algorithm directly based on their choice.
-Alternatively, if the user does not specify any algorithm, the package can also select one automatically based on the problem characteristics.
-When multiple algorithms can solve a problem, the package selects one based on experimental results obtained on the CUTEst problems.
-We also share some observations about the behavior of Powell's algorithms on these problems.
-Moreover, Powell's three most recent methods share similar default initial interpolation sets.
-We show that, to some extent, this interpolation set is optimal.
+We first provide an overview of \glsxtrshort{dfo} and of interpolation models for \glsxtrshort{dfo} methods.
+In particular, we show that an interpolation set employed by Powell for underdetermined quadratic interpolation is optimal in terms of well-poisedness.
 
-Later in this thesis, we design a \glsxtrshort{dfo} algorithm for nonlinearly-constrained optimization problems.
-The algorithm, named \gls{cobyqa}, is a derivative-free trust-region \glsxtrfull{sqp} method designed to tackle nonlinearly-constrained optimization problems that include equality and inequality constraints.
-The method accepts bound constraints and always respects them.
-Moreover, it builds the trust-region quadratic models using Powell's derivative-free symmetric Broyden updates.
-We first discuss some theoretical properties of the traditional \glsxtrshort{sqp} method underlying \gls{cobyqa}.
-In particular, we will show an intriguing interpretation of the \glsxtrshort{sqp} method.
-Indeed, the objective function of the \glsxtrshort{sqp} subproblem turns out to be a quadratic approximation of the original objective function in the tangent space of a surface.
-To solve the trust-region \glsxtrshort{sqp} subproblem, we employ a Byrd-Omojokun approach that is different from the traditional one, and numerical experiments show that our new approach significantly improves the performance of \gls{cobyqa}.
-Finally, we introduce the Python implementation of \gls{cobyqa}, made publicly available.
-Such an implementation is highly nontrivial due to the nature of \glsxtrshort{dfo} algorithms.
+We then present \gls{pdfo}, a package that we develop to provide both MATLAB and Python interfaces to Powell's model-based \glsxtrshort{dfo} solvers, namely \gls{cobyla}, \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa}.
+They were implemented by Powell in Fortran 77, and hence, are becoming inaccessible to many users nowadays.
+\Gls{pdfo} provides user-friendly interfaces to these solvers, so that users do not need to deal with the Fortran code.
+In addition, it patches bugs in the original Fortran implementation.
+We also share some observations about the behavior of Powell's solvers.
+
+A major part of this thesis is devoted to the development of a new \glsxtrshort{dfo} method based on the \glsxtrfull{sqp} method.
+Therefore, we first present an overview of the \glsxtrshort{sqp} method and provide some perspectives on its theory and practice.
+In particular, we show that the objective function of the \glsxtrshort{sqp} subproblem is a natural quadratic approximation of the original objective function in the tangent space of a surface.
+Moreover, we propose an extension of the Byrd-Omojokun approach for solving trust-region \glsxtrshort{sqp} subproblems with inequality constraints.
+This extension works quite well in our experiments.
+
+Finally, we elaborate on the development of our new \glsxtrshort{dfo} method, named \gls{cobyqa} after \textit{\glsdesc{cobyqa}}.
+This is a derivative-free trust-region \glsxtrshort{sqp} method designed to tackle nonlinearly constrained optimization problems that admit equality and inequality constraints.
+An important feature of \gls{cobyqa} is that it always respects bound constraints, if any, which is motivated by applications where the objective function is undefined when bounds are violated.
+\Gls{cobyqa} builds quadratic trust-region models based on the derivative-free symmetric Broyden update proposed by Powell.
+We provide a detailed description of \gls{cobyqa}, including its subproblem solvers, and introduce its Python implementation.
+Finally, we expose extensive numerical experiments of \gls{cobyqa}, showing evident advantages of \gls{cobyqa} compared with Powell's \glsxtrshort{dfo} solvers.
+These experiments demonstrate that \gls{cobyqa} is an excellent successor to \gls{cobyla} as a general-purpose \glsxtrshort{dfo} solver.
