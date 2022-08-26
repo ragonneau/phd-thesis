@@ -813,7 +813,7 @@ Define the normal step~$\nstep[k]$ as the least-norm solution to~\cref{eq:vardi-
 Further, define~$\tstep[k]$ as a solution to~\cref{eq:tangential-step-original} with~$\mathcal{V}$ expressed in~\cref{eq:tangential-subproblem-feasible-set}.
 It is then elementary to check that the composite step~$\nstep[k] + \tstep[k]$ solves~\cref{eq:sqp-subproblem-vardi-original}.
 
-We now point out that the above-mentioned normal step~$\nstep[k]$ is an approximate solution to~\cref{eq:byrd-omojokun-original} with~$\zeta = \norm{\nstep[k]} / \rad[k]$, which is at most one according to the definition of~$\nstep[k]$.
+We now point out that the normal step~$\nstep[k]$ is an approximate solution to~\cref{eq:byrd-omojokun-original} with~$\zeta = \norm{\nstep[k]} / \rad[k]$, which is at most one according to the definition of~$\nstep[k]$.
 
 \begin{proposition}
     \label{prop:vardi-byrd-omojokun}
@@ -826,7 +826,7 @@ We now point out that the above-mentioned normal step~$\nstep[k]$ is an approxim
 \end{proposition}
 
 \begin{proof}
-    For simplicity, we let~$A$ be the matrix whose rows are~$\nabla \con{i}(\iter[k])^{\T}$ and~$b$ the vector with components~$\con{i}(\iter[k])$, with~$i \in \ieq$, arranged in the same order.
+    We let~$A$ be the matrix whose rows are~$\nabla \con{i}(\iter[k])^{\T}$ and~$b$ the vector with components~$\con{i}(\iter[k])$, with~$i \in \ieq$, arranged in the same order.
     We have~$\step[\ast] = -A^{\dagger} b$ and
     \begin{equation*}
         \nstep[k] = \argmin_{\step \in \R^n} \set{\norm{\step} : \alpha b + A \step = 0} = -\alpha A^{\dagger} b = \alpha \step[\ast],
@@ -857,7 +857,7 @@ for some~$\tau \ge 0$, so that the trust-region subproblem after replacement bec
     \begin{align}
         \min_{\step \in \R^n}   & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step\\
         \text{s.t.}             & \quad \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step]^2 \le \tau, \label{eq:cdt-composite-step-original-eq}\\
-                                & \quad \norm{\step} \le \rad[k]. \label{eq:cdt-composite-step-original-tr}\\
+                                & \quad \norm{\step} \le \rad[k]. \label{eq:cdt-composite-step-original-tr}
     \end{align}
 \end{subequations}
 The method selects the scalar~$\tau$ in a composite-step fashion, as follows.

@@ -189,7 +189,7 @@ Then a trial point is obtained by solving the trust-region subproblem~\cref{eq:p
 Further, the algorithm replaces an interpolation point in~$\xpt[k]$ by the trial point, obtaining~$\xpt[k + 1]$, unless this replacement seems to be unreasonable for maintaining a good geometry of~$\xpt[k + 1]$.
 
 \Gls{uobyqa} undertakes a geometry-improving step when the model seem not to be accurate.
-It first removes a point~$y \in \xpt[k]$, and then builds~$\xpt[k + 1]$ by including a solution to
+It first removes a point~$y \in \xpt[k]$, and builds~$\xpt[k + 1]$ by including a solution to
 % According to the analysis in~\cite[\S~2]{Powell_2001}, given a point~$y \in \xpt[k]$ to be removed from the interpolation set, it is suitable to build~$\xpt[k + 1]$ by substituting~$y$ with a solution to
 \begin{subequations}
     \label{eq:biglag}
@@ -421,7 +421,7 @@ This is because it uses only linear models to approximate the objective and cons
         \caption{Dimension at most~$50$}
         \label{fig:ppu-50}
     \end{subfigure}
-    \caption{Performance profiles of Powell's \glsfmtshort{dfo} solvers on unconstrained problems with~$\tau = 10^{-4}$}
+    \caption[Performance profiles of Powell's \glsfmtshort{dfo} solvers]{Performance profiles of Powell's \glsfmtshort{dfo} solvers on unconstrained problems with~$\tau = 10^{-4}$}
 \end{figure}
 
 We now consider the experiment on noisy unconstrained problems described in \cref{subsec:profiles-example}.
@@ -460,7 +460,7 @@ It seems that the linear models of \gls{cobyla} are more robust to noise, but we
 
 \subsection{An example of hyperparameter tuning problem}
 
-We now consider the hyperparameter tuning problem of an \gls{svm} described in \cref{subsec:machine-learning}.
+We now consider the hyperparameter tuning problem of an \gls{svm} described in details in \cref{subsec:machine-learning}.
 % The model we consider is a~$C$-SVM~\cite{Chang_Lin_2011} for binary classification problems with an \gls{rbf} kernel, admitting two hyperparameters: a regularization parameter~$C > 0$ and a kernel parameter~$\gamma > 0$.
 We will compare the performance of \gls{pdfo} with a Bayesian optimization method named \gls{tpe} and a \gls{rs} method.
 Since the hyperparameter tuning problem is a bound-constrained problem, \gls{pdfo} selects \gls{bobyqa} as the solver.
@@ -593,7 +593,6 @@ It performs quite well compared to the other four solvers on noisy unconstrained
 We plan to study this phenomenon in the future from a theoretical point of view.
 We also tested \gls{pdfo} on a hyperparameter tuning problem of an \gls{svm}, for which \gls{pdfo} outperformed two standard solvers.
 
-The Fortran 77 source code of Powell's \gls{dfo} solvers is highly complicated, with a unique coding style.
-This poses significant difficulties for maintenance and extensions.
+Powell implemented his \gls{dfo} solvers in Fortran 77. Due to features of the language and the unique coding style, this sophisticated implementation is highly nontrivial to maintain and to extend.
 We are currently reimplementing these solvers using modern languages, in a structured and modulized way, so that the code is readable, maintainable, and extendable.
 The modernized code will be incorporated into future releases of \gls{pdfo}.

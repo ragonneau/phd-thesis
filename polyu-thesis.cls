@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/08/24 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/08/26 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifinitial
@@ -295,14 +295,14 @@
 \fi
 
 % Initial submission
-\ifinitial
-    \usepackage[%
-        firstpageonly,%
-        fontsize=0.06\paperwidth,%
-        text={INITIAL SUBMISSION FOR\\[0.5em] EXAMINATION PURPOSE},%
-        colorspec=0.88,%
-    ]{draftwatermark}
-\fi
+% \ifinitial
+%     \usepackage[%
+%         firstpageonly,%
+%         fontsize=0.06\paperwidth,%
+%         text={INITIAL SUBMISSION FOR\\[0.5em] EXAMINATION PURPOSE},%
+%         colorspec=0.88,%
+%     ]{draftwatermark}
+% \fi
 
 % Bibliography information processing
 \RequirePackage[%

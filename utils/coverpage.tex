@@ -13,10 +13,9 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \begin{titlepage}
-    \raggedleft
-    \hfill
-    \vfill
-    {\parbox[b]{0.8\textwidth}{\raggedleft\LARGE\textsc{\thetitle}}\par}
+    \centering
+    \vspace*{\fill}
+    {\parbox[b]{0.8\textwidth}{\centering\LARGE\textsc{\thetitle}}\par}
     \rule{\textwidth}{.4pt}\par
     {\Large\textsc{\theauthor}\par}
     \vspace{5em}
@@ -25,7 +24,10 @@
     {\large\itshape\university\par}
     \makeatletter
     \vfill
-    \centering
+    \ifinitial
+    {\large\itshape Initial Submission for Examination Purpose\par}
+    \vspace{1em}
+    \fi
     {\Large\@dtm@ini@year\par}
     \makeatother
 \end{titlepage}

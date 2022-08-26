@@ -558,7 +558,7 @@ The same as~$\meritm[k]$, we do not include the bound constraints in the definit
 
 \begin{proof}
     % Since~$\nstep[k]$ solves~\cref{eq:cobyqa-normal}, we have~$\Phi(\nstep[k]) \le \Phi(0)$.
-    Since~$\tstep[k]$ satisfies~\cref{eq:cobyqa-tangential-ub,eq:cobyqa-tangential-eq}, we have~$\Phi(\nstep[k] + \tstep[k]) \le \Phi(\nstep[k])$ so that~$\Phi(\step[k]) \le \Phi(0)$.
+    Since~$\tstep[k]$ satisfies~\cref{eq:cobyqa-tangential-ub,eq:cobyqa-tangential-eq}, we have~$\Phi(\nstep[k] + \tstep[k]) \le \Phi(\nstep[k])$ so that it is necessary that~$\Phi(\step[k]) \le \Phi(0)$.
     If~$\Phi(\step[k]) = \Phi(0)$, then~$\Phi(\nstep[k]) = \Phi(0)$ and hence,~$\nstep[k] = 0$.
     In such a case, the result is clear, because of~\cref{eq:byrd-omojokun-tangential-assumption}.
     Otherwise, if~$\Phi(\step[k]) < \Phi(0)$, the result is clear because~$\meritm_{\gamma}$ is linear with respect to~$\gamma$.

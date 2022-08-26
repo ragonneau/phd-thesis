@@ -132,7 +132,7 @@ In such a case,~\cref{eq:cobyqa-tangential} is of the form
                                 & \quad \norm{\sstep} \le \rad,
     \end{align}
 \end{subequations}
-where the objective function~$Q$ is quadratic, the bounds~$\xl \in (\R \cup \set{-\infty})^n$ and~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl \le 0$,~$\xu \ge 0$, and~$\xl < \xu$.
+where the objective function~$Q$ is quadratic, the lower bound~$\xl \in (\R \cup \set{-\infty})^n$ and the upper bound~$\xu \in (\R \cup \set{\infty})^n$ satisfy~$\xl \le 0$,~$\xu \ge 0$, and~$\xl < \xu$.
 Note that the lower bound~$\xl$ in~\cref{eq:problem-bvtcg} indeed corresponds to the bound~$\xl - \iter[k]$ in~\cref{eq:cobyqa-tangential}, but we abuse the notation~$\xl$ for simplicity.
 The situation for~$\xu$ is similar.
 
@@ -938,7 +938,7 @@ Therefore, we decide not to use this strategy in the implementation of \gls{coby
 
 We presented in this chapter the detailed methods employed by \gls{cobyqa} to solve its various subproblems.
 
-To solve the tangential subproblem~\cref{eq:cobyqa-tangential} and the normal subproblem~\cref{eq:cobyqa-normal}, we apply active-set variations of the Steihaug-Toint \gls{tcg} algorithm.
+To solve the tangential subproblem~\cref{eq:cobyqa-tangential} and the normal subproblem~\cref{eq:cobyqa-normal}, we apply active-set variations of the \gls{tcg} algorithm.
 In particular, the tangential subproblem~\cref{eq:cobyqa-tangential} is either solved using the subproblem solver of \gls{bobyqa}~\cite{Powell_2009} or a that of \gls{lincoa}~\cite{Powell_2015} with a slight modification, depending on whether it admits linear constraints or not.
 Moreover, we adapted the subproblem solver of \gls{lincoa} to approximately solve a reformulation of the normal subproblem.
 

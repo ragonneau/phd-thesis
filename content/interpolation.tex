@@ -143,7 +143,7 @@ As we mentioned above, the interpolation set~$\xpt$ is poised if it admits a uni
 However, given a poised set, how good is this interpolation set?
 This section briefly discusses this topic and introduce the concept of~$\Lambda$-poisedness.
 
-Suppose that~$\obj$ is thrice differentiable on~$\R^n$.\todo{Continue review from here}
+Suppose that~$\obj$ is thrice differentiable on~$\R^n$.
 It is well-known that for any~$\iter \in \R^n$, we have
 \begin{equation}
     \label{eq:Ciarlet_Raviart_0}
@@ -215,6 +215,8 @@ Two examples of the functional~$\mathcal{F}$ are given in \cref{subsec:least-fro
 If~$m = \dim \qpoly$ and if~$\xpt$ is poised in the sense of \cref{def:poisedness}, then the underdetermined interpolant reduces to the unique model that satisfies the interpolation conditions.
 
 In the remaining of this section, we adapt the definitions and some properties presented in the previous section to special cases of underdetermined interpolation.
+We still briefly present two underdetermined schemes, namely the least Frobenius norms scheme and the derivative-free symmetric Broyden update.
+The latter is of particular interest to us, because it underlies the three most recent \gls{dfo} solvers of Powell and our new model-based \gls{dfo} method, presented in \cref{ch:cobyqa-introduction}.
 
 \subsection{Least Frobenius norm quadratic models}
 \label{subsec:least-frobenius-norm-models}
@@ -363,7 +365,7 @@ If we are given a function~$\objm[\text{old}]$ such that~$H_{\text{old}} = \nabl
     \end{align}
 \end{subequations}
 In a \gls{dfo} method, we have~$\objm[\text{old}] = \objm[k - 1]$.
-Therefore, the coefficients of the model obtained by least Frobenius norm updates can be evaluated by solving a linear system similar to~\cref{eq:least-frobenius-kkt-system}.
+Therefore, the coefficients of the model can be evaluated by solving a linear system similar to~\cref{eq:least-frobenius-kkt-system}.
 
 The minimum Frobenius norm update can be regarded as a derivative-free variation of the \gls{psb} update in the quasi-Newton method.
 The \gls{psb}\index{PSB@\glsfmtshort{psb}} method~\cite{Powell_1970b} approximates the function~$\obj$ at a point~$y^1 \in \R^n$ by a quadratic function
@@ -468,8 +470,8 @@ The explicit and implicit parts of~$H^k$ can then be updated as
 \end{subequations}
 In doing so, updating a quadratic model requires only~$\bigo(n^2)$ basic operations, after solving the linear system~\cref{eq:least-frobenius-kkt-system-2}.
 
-\citeauthor{Powell_2006} applied~\cref{eq:hessian-explicit-implicit} and~\cref{eq:hessian-explicit-implicit-update} in his three recent solvers \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and~\gls{lincoa}~\cite{Powell_2015}, presented in \cref{subsec:newuoa,subsec:bobyqa,subsec:lincoa}.
-The new method we introduce in \cref{ch:cobyqa-introduction} also uses this technique.
+\citeauthor{Powell_2006} applied~\cref{eq:hessian-explicit-implicit} and~\cref{eq:hessian-explicit-implicit-update} in his three recent solvers \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and~\gls{lincoa}, presented in \cref{subsec:newuoa,subsec:bobyqa,subsec:lincoa}.
+The new method that we introduce in \cref{ch:cobyqa-introduction} also uses this technique.
 
 \subsubsection{Storage and update of the inverse of the coefficient matrix}
 

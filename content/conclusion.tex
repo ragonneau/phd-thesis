@@ -52,7 +52,7 @@ We briefly mention four of them.
     Now that \gls{cobyqa} is successful in practice, we will proceed to analyze its convergence properties, including global convergence and worst-case complexity.
     We expect that such an analysis can be done based on the existing techniques for analyzing \gls{dfo} methods in the unconstrained case, and the \gls{sqp} method in the derivative-based case.
     \item We will further improve the implementation of \gls{cobyqa} to enhance its performance, particularly in the linearly constrained case, recalling that the current version does not perform as well as \gls{lincoa} on linearly constrained problems with violable bounds.
-    In addition, we plan to implement \gls{cobyqa} in modern Fortran (F2018 or above), because the current Python version can be slow for high-dimensional problems.
+    In addition, we plan to implement \gls{cobyqa} in modern Fortran (Fortran 2018 or above), because the current Python version can be slow for high-dimensional problems.
     We will also make \gls{cobyqa} available in other languages, such as MATLAB, Julia, and R.
     The implementation of \gls{pdfo} in Julia and R are also under consideration.
     \item Our new interpretation of the \gls{sqp} subproblem sheds lights on the approximation of nonlinear functions on manifolds.
