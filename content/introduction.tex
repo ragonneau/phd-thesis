@@ -229,12 +229,10 @@ The objective function~$P$ of this problem can be a~$5$-fold cross-validation ba
 
 Typical example of model's performances are the model's accuracy, i.e., the ratio of data correctly classified, and the~\gls{auc}~\cite{Hanley_Mcneil_1982}, particularly effective for imbalanced datasets~\cite{Bradley_1997}.
 The hyperparameter tuning problem is
-\begin{equation*}
-    \begin{aligned}
-        \min        & \quad P(C, \gamma)\\
-        \text{s.t.} & \quad C, \gamma > 0,\\
-    \end{aligned}
-\end{equation*}
+\begin{align*}
+    \min        & \quad P(C, \gamma)\\
+    \text{s.t.} & \quad C, \gamma > 0,
+\end{align*}
 It is clear that derivatives of the objective function of such a problem cannot be easily evaluated and may even not exist.
 This problem can be solved using \gls{dfo} methods.
 

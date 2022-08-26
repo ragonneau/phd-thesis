@@ -678,7 +678,7 @@ A similar framework for equality-constrained problems can be found in~\cite[\S~2
                 \min_{\step \in \R^n}   & \quad \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step \label{eq:trust-region-sqp-subproblem-obj}\\
                 \text{s.t.}             & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step \le 0, ~ i \in \iub, \label{eq:trust-region-sqp-subproblem-ub}\\
                                         & \quad \con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step = 0, ~ i \in \ieq, \label{eq:trust-region-sqp-subproblem-eq}\\
-                                        & \quad \norm{\step} \le \rad[k], \label{eq:trust-region-sqp-subproblem-tr}\\
+                                        & \quad \norm{\step} \le \rad[k], \label{eq:trust-region-sqp-subproblem-tr}
             \end{algomathalign}
         \end{subequations} \nllabel{alg:trust-region-sqp-step}
         Pick a penalty parameter~$\gamma^k \ge \max @@ \set{\gamma^{k - 1}, \norm{\lm[k]}}$ providing~$\meritm[k](\step[k]) < \meritm[k](0)$\; \nllabel{alg:trust-region-sqp-penalty}
