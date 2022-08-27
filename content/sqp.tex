@@ -744,8 +744,7 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
 \subsection{Composite steps for equality constrained optimization}
 \label{subsec:composite-step-equality}
 
-\index{SQP@\glsfmtshort{sqp}!composite step|(}The \cref{alg:trust-region-sqp-step} of \cref{alg:trust-region-sqp} hides the following crucial point.
-If the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem} is infeasible, what should~$\step[k]$ approximate?
+\index{SQP@\glsfmtshort{sqp}!composite step|(}The \cref{alg:trust-region-sqp-step} of \cref{alg:trust-region-sqp} hides a crucial point: what should~$\step[k]$ approximate if the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem} is infeasible?
 Since the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} are linear approximations of the constraints~\cref{eq:problem-cobyqa-sqp-ub,eq:problem-cobyqa-sqp-eq}, we cannot guarantee the feasibility of of the subproblem~\cref{eq:trust-region-sqp-subproblem}, even if the original problem is feasible.
 
 We review in this section the composite-step approach to coping with this difficulty in the equality-constrained case (i.e.,~$\iub = \emptyset$).

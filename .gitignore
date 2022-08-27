@@ -288,6 +288,22 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+# Visual Studio Code
+
+## General
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+## Local History for Visual Studio Code
+.history/
+
+## Built Visual Studio Code Extensions
+*.vsix
+
 # macOS
 
 ## General
@@ -311,19 +327,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Visual Studio Code
-
-## General
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
-
-## Local History for Visual Studio Code
-.history/
-
-## Built Visual Studio Code Extensions
-*.vsix
+# Project specific
+images/signature.png
 
