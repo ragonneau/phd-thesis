@@ -344,7 +344,7 @@ A crucial point of \gls{bobyqa} and \gls{lincoa} is that they require the initia
 Therefore, \gls{pdfo} attempts to project the provided initial guess onto the feasible set.
 
 Another noticeable preprocessing of the constraints made by \gls{pdfo} is the treatment of the linear equality constraints~\cref{eq:pdfo-leq}.
-As long as these constraints are consistent, we reformulate~\cref{eq:pdfo} into a~$(n - \rank A_{\scriptscriptstyle\ieq})$\nomenclature[Om]{$\rank$}{Rank operator}-dimensional problem by eliminating these linear equality constraints.
+As long as these constraints are consistent, we reformulate~\cref{eq:pdfo} into an~$(n - \rank A_{\scriptscriptstyle\ieq})$\nomenclature[Om]{$\rank$}{Rank operator}-dimensional problem by eliminating these linear equality constraints.
 This is done using a QR factorization of~$A_{\scriptscriptstyle\ieq}$.
 
 % Finally, \gls{pdfo} preprocesses the constraints.
