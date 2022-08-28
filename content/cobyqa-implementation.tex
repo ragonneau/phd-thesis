@@ -40,7 +40,7 @@ When presenting the framework of \gls{cobyqa} in \cref{ch:cobyqa-introduction}, 
     \label{eq:initial-trust-region-radius-condition}
     \rad[0] \le \frac{1}{2} \min_{1 \le i \le n} @@ (\xu_i - \xl_i).
 \end{equation}
-However, the inputs received from the user may not fulfil these conditions.
+However, the inputs received from the user may not fulfill these conditions.
 In the implementation of \gls{cobyqa}, we preprocess the inputs to satisfy them as long as possible.
 
 First of all, if~$\xl_i > \xu_i$ for some~$i \in \set{1, 2, \dots, n}$, then no computation is attempted since the problem is infeasible.
@@ -129,13 +129,13 @@ We chose to develop \gls{cobyqa} in Python because it is a simple open-source la
 % Although the current version of \gls{cobyqa} is mostly written in Python, the author plans to develop a Fortran version in the future.
 % This would have the ability to be interfaced with several other languages, such a Python, MATLAB, or Julia.
 % However, developing software in Fortran is time-consuming, and hence, this work will be carried out in the future.
-However, the subproblems solvers described in \cref{ch:cobyqa-subproblems} are not written in pure Python, but in Cython~\cite{Behnel_Etal_2011}, which is a compiled language that aims at improving the performance of Python code.
-The motivation is that these solvers are the bottleneck for the executation time of the linear algegra calculations made by \gls{cobyqa}.
-Indeed, the initial version of \gls{cobyqa} was entirely written in Python, but the executation time was prohibitively long on problems of dimensions~$n = 20$ and above.
+However, the subproblem solvers described in \cref{ch:cobyqa-subproblems} are not written in pure Python, but in Cython~\cite{Behnel_Etal_2011}, which is a compiled language that aims at improving the performance of Python code.
+The motivation is that these solvers are the bottleneck for the execution time of the linear algebra calculations made by \gls{cobyqa}.
+Indeed, the initial version of \gls{cobyqa} was entirely written in Python, but the execution time was prohibitively long on problems of dimensions~$n = 20$ and above.
 
-Another motivation for us to develop the \gls{cobyqa} in Python is the extensive availability of librairies.
+Another motivation for us to develop the \gls{cobyqa} in Python is the extensive availability of libraries.
 \Gls{cobyqa} does not only rely on Cython, but also on NumPy~\cite{Harris_Etal_2020} and SciPy~\cite{Virtanen_Etal_2020}.
-These packages provides array structures, together with basic mathematical operations and basic scientific computing tools.
+These packages provide array structures, together with basic mathematical operations and basic scientific computing tools.
 In particular, SciPy provides interfaces for BLAS~\cite{Blackford_Etal_2002} and LAPACK~\cite{Anderson_Etal_1999} subroutines in Cython, which are intensively used by the subproblem solvers.
 
 \subsection{Distribution of the package}
@@ -497,8 +497,8 @@ Recall that \gls{cobyqa} employs quadratic models based on the derivative-free s
 Moreover, it includes a strategy to replace these models with the minimum Frobenius norm models when the method considers that the current models are inefficient, as detailed at the end of \cref{subsec:geometry-improvement}.
 
 To justify our choice for the models, we now compare the performance of \gls{cobyqa} with two modifications.
-The first one, referred to as \gls{cobyqa}~PSB, uses always the models based on the derivative-free symmetric Broyden update.
-The second one, referred to as \gls{cobyqa}~MNH, uses always the minimum Frobenius norm models.
+The first one, referred to as \gls{cobyqa}~PSB, always uses the models based on the derivative-free symmetric Broyden update.
+The second one, referred to as \gls{cobyqa}~MNH, always uses the minimum Frobenius norm models.
 
 \Cref{fig:perf-models,fig:data-models} provide the performance and data profiles for these three methods, based on all the problems listed in \cref{sec:list-unconstrained-problems,sec:list-bound-constrained-problems,sec:list-linearly-constrained-problems,sec:list-nonlinearly-constrained-problems}.
 These profiles show that \gls{cobyqa} outperforms \gls{cobyqa}~PSB, which in turn outperforms \gls{cobyqa}~MNH.
@@ -1009,7 +1009,7 @@ Among all the nonlinearly constrained problems of the CUTEst library with at mos
     \label{fig:data-nonlinearly-constrained-problems-bounds}
 \end{figure}
 
-The results are similar to the ones in \cref{fig:perf-nonlinearly-constrained-problems,fig:data-nonlinearly-constrained-problems}, altough the advantage of \gls{cobyqa} over \gls{cobyla} becomes even more visible.
+The results are similar to the ones in \cref{fig:perf-nonlinearly-constrained-problems,fig:data-nonlinearly-constrained-problems}, although the advantage of \gls{cobyqa} over \gls{cobyla} becomes even more visible.
 This is also expected, because \gls{cobyqa} is designed to always respect the bound constraints, while \gls{cobyla} is not.
 
 \subsubsection{Comparison on all types of problems}
@@ -1075,12 +1075,12 @@ To demonstrate that it is reasonable to replace \gls{cobyla} with \gls{cobyqa} i
 \end{figure}
 
 The superiority of \gls{cobyqa} over \gls{cobyla} is demonstrated evidently by these profiles.
-\Gls{cobyqa} outperforms \gls{cobyla} with a substantial margin, and the margin is larger when the precisions of the comparisons is higher.
+\Gls{cobyqa} outperforms \gls{cobyla} with a substantial margin, and the margin is larger when the precision of the comparisons is higher.
 When~$\tau = 10^{-3}$,~$10^{-5}$, and~$10^{-7}$, \gls{cobyqa} solves much more problems than \gls{cobyla}, while taking less function evaluations on most of the problems solved.
 These results are not surprising, because \gls{cobyla} uses linear models of the objective and constraint functions, whereas \gls{cobyqa} uses quadratic models, which approximate these functions better in general.
 
 We also conducted a similar experiment when the bound constraints are inviolable.
-The results are similar to those presented in \cref{fig:perf-all-problems,fig:data-all-problems} and hence ommitted, although the margins are even larger, as expected.
+The results are similar to those presented in \cref{fig:perf-all-problems,fig:data-all-problems} and hence omitted, although the margins are even larger, as expected.
 
 To conclude, \gls{cobyqa} performs convincingly better than \gls{cobyla}, and hence, is a great successor for \gls{cobyla} as a general-purpose solver.
 
@@ -1222,7 +1222,7 @@ To conclude, \gls{cobyqa} performs convincingly better than \gls{cobyla}, and he
 
 In this chapter, we presented the Python implementation of \gls{cobyqa}, and extensive numerical experiments.
 
-We first provided additional algorithmic details, which were ommitted in the general presentation of \gls{cobyqa} in \cref{ch:cobyqa-introduction,ch:cobyqa-subproblems}.
+We first provided additional algorithmic details, which were omitted in the general presentation of \gls{cobyqa} in \cref{ch:cobyqa-introduction,ch:cobyqa-subproblems}.
 
 We then detailed the Python implementation of \gls{cobyqa}, which is available at \url{https://www.cobyqa.com/}.
 We briefly introduced some programming aspects of the implementation, provided an overview of the signature of the main Python function, and illustrated the usage by several simple examples.
@@ -1236,5 +1236,5 @@ On linearly constrained problems, \gls{cobyqa} clearly outperforms \gls{lincoa} 
 Most importantly, \gls{cobyqa} has much better performance than \gls{cobyla} on all types of problems, constrained and unconstrained, no matter whether bound constraints (if any) can be violated or not.
 
 The implementation of \gls{cobyqa} has been highly challenging, as is the case for all model-based \gls{dfo} solvers\footnote{Recall that \citeauthor{Powell_2006}~\cite{Powell_2006} mentioned that the development of \gls{newuoa} was time-consuming, and \enquote{was very frustrating,} so was the implementation of \gls{cobyqa}.}.
-We endeavoured to develop \gls{cobyqa} in order to provide a successor to \gls{cobyla} as a general-purpose \gls{dfo} solver.
+We endeavored to develop \gls{cobyqa} in order to provide a successor to \gls{cobyla} as a general-purpose \gls{dfo} solver.
 Finally, the numerical experiments have demonstrated that our goal is achieved.

@@ -444,7 +444,7 @@ Otherwise, we set~$\rstep[k + 1]$ to~$\rstep[k + 1]_B$.
 When checking the feasibility of~$\iter[k + 1] + \rstep[k + 1]_L$, we allow small infeasibility of the linearized constraints, to include a tolerance for contributions from computer rounding errors.
 
 Now that the general framework of the geometry-improving phase is set up, we need to decide when to entertain such a mechanism.
-It is trigerred when
+It is triggered when
 \begin{enumerate}
     \item the trust-region trial step~$\step[k]$ performed poorly, and
     \item some interpolation points are far away from~$\iter[k + 1]$.
@@ -476,17 +476,17 @@ We then invoke \cref{alg:geometry-improving} if
 \begin{equation*}
     \max_{y \in \xpt[k + 1]} @@ \norm{y - \iter[k + 1]} \ge \rad[k + 1].
 \end{equation*}
-However, if~$\norm{\step[k]} < \rad[k] / 2$ has happened at five consective iterations, or~$\norm{\step[k]} < \rad[k] / 10$ at three consecutive iterations, then the geometry-improving phase is not invoked.
+However, if~$\norm{\step[k]} < \rad[k] / 2$ has happened at five consecutive iterations, or~$\norm{\step[k]} < \rad[k] / 10$ at three consecutive iterations, then the geometry-improving phase is not invoked.
 Instead, we decrease~$\radlb[k]$ by invoking \cref{alg:reducing-lower-bound-trust-region-radius}, and continue with the next trust-region iteration.
 This mechanism has been developed by Powell in his solver \gls{lincoa}, and similar strategies exist in \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, and \gls{bobyqa}~\cite{Powell_2009}.
 
 We also employ the following mechanism from \gls{newuoa}, which aims at improving the performance of the quadratic models.
-We denote for convenience~$\objmalt[k]$ the least Frobeninus norm model of~$\obj$ on~$\xpt[k]$.
-When evaluating the models at \cref{alg:derivative-free-trust-region-sqp-models} of \cref{alg:derivative-free-trust-region-sqp}, if at three consecute iterations we have
+We denote for convenience~$\objmalt[k]$ the least Frobenius norm model of~$\obj$ on~$\xpt[k]$.
+When evaluating the models at \cref{alg:derivative-free-trust-region-sqp-models} of \cref{alg:derivative-free-trust-region-sqp}, if at three consecutive iterations we have
 \begin{equation*}
     \rad[k - 1] = \radlb[k - 1], \quad \ratio[k - 1] \le \eta_5, \quad \text{and} \quad \norm{\nabla \objm[k](\iter[k])} \ge \nu \norm{\nabla \objmalt[k](\iter[k])},
 \end{equation*}
-with~$\eta_5 \in (0, 1)$ and~$\nu \ge 0$, then~$\objm[k]$ is replaced with~$\objmalt[k]$, and the models of the nonlinear constraints are also replaced with their least Frobeninus norm counterparts.
+with~$\eta_5 \in (0, 1)$ and~$\nu \ge 0$, then~$\objm[k]$ is replaced with~$\objmalt[k]$, and the models of the nonlinear constraints are also replaced with their least Frobenius norm counterparts.
 We choose in \gls{cobyqa}~$\eta_5 = 0.01$ and~$\nu = 10$.
 Since \gls{cobyqa} maintains the inverse of the coefficient matrix of the interpolation problem, the least Frobenius norm models are easy to evaluate.
 See~\cref{subsec:implementation-symmetric-broyden-update} for details.
@@ -567,7 +567,7 @@ The same as~$\meritm[k]$, we do not include the bound constraints in the definit
 The strategy of \gls{cobyqa} to set the penalty parameter at \cref{alg:derivative-free-trust-region-sqp-penalty} of \cref{alg:derivative-free-trust-region-sqp} is given in \cref{alg:increase-penalty}.
 Note that this strategy imposes~$\gamma^k \ge \gamma^{k - 1}$.
 However, in the implementation of \gls{cobyqa}, we do include a procedure that attempts to reduce~$\gamma^k$, preventing it from becoming large, and avoiding computational difficulties.
-This procedure is not included in \cref{alg:derivative-free-trust-region-sqp} for simplicity, and is trigerred whenever~$\radlb[k]$ is decreased, i.e., immediatly after \cref{alg:reducing-lower-bound-trust-region-radius} is entertained.
+This procedure is not included in \cref{alg:derivative-free-trust-region-sqp} for simplicity, and is triggered whenever~$\radlb[k]$ is decreased, i.e., immediately after \cref{alg:reducing-lower-bound-trust-region-radius} is entertained.
 \Cref{alg:reducting-penalty} presents this procedure.
 For simplicity, we assume in this algorithm that~$\ieq = \emptyset$.
 If~$\ieq \neq \emptyset$, \gls{cobyqa} will view each equality constraint as two inequality constraints when invoking \cref{alg:reducting-penalty}.
@@ -628,7 +628,7 @@ This is adopted from~\cite{Powell_2006,Powell_2009}.
 The objective of this procedure is to improve the conditioning of the interpolation system.
 As a consequence, the geometry improvement also makes the interpolation problem numerically more stable.
 
-An important feature of \gls{cobyqa} is that it never attempts to visits points lying outside of the bounds.
+An important feature of \gls{cobyqa} is that it never attempts to visit points lying outside of the bounds.
 All interpolation points and trial points always respect the bounds.
 The motivation for us to design \gls{cobyqa} in this way is that, in many applications, the objective function is undefined when the bound constraints are violated.
 

@@ -59,7 +59,7 @@ Nevertheless, \gls{pdfo} has several features that distinguish it from others.
     \item \emph{Comprehensiveness}.
     To the best of our knowledge, \gls{pdfo} is the only package that provides all of \gls{cobyla}, \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa} with a uniform interface.
     In addition to homogenizing the usage, such an interface eases the comparison between these solvers in case multiple of them can tackle a given problem.
-    Doing so, we may gain insights that cannot be obtained otherwise into the behavior of the solvers, as will be illustrated in~\cref{sec:pdfo-experiments}.
+    By doing so, we may gain insights that cannot be obtained otherwise into the behavior of the solvers, as will be illustrated in~\cref{sec:pdfo-experiments}.
     \item \emph{Solver selection}.
     When using \gls{pdfo}, the user can specifically invoke one of Powell's solvers; nevertheless, if the user does not specify any solver, \gls{pdfo} will automatically select a solver according to the given problem.
     The selection takes into consideration the performance of the solvers on the CUTEst problem set~\cite{Gould_Orban_Toint_2015}.
@@ -74,7 +74,7 @@ Nevertheless, \gls{pdfo} has several features that distinguish it from others.
     See~\cref{subsec:bug-corrections} for details.
     \item \emph{Fault tolerance}.
     \Gls{pdfo} takes care of failures in the evaluations of the objective or constraint functions when NaN or infinite values are returned.
-    In case of such failures, \gls{pdfo} will not exit but try to progress.
+    In case of such failures, \gls{pdfo} will not exit but will try to progress.
     Moreover, \gls{pdfo} ensures that the returned solution is not a point where the evaluation fails, while the original code of Powell may return a point whose objective function value is numerically NaN.
     \item \emph{Problem preprocessing}.
     \gls{pdfo} preprocesses the inputs to simplify the problem and reformulate it to meet the requirements of Powell's solvers.
@@ -124,7 +124,7 @@ Then the interpolation set is updated by replacing one of the existing interpola
 In addition, the algorithms may take a step to improve the geometry of the interpolation set before the next trust-region iteration.
 Instead of repeating Powell's description of these algorithms, we provide a sketch of them in the sequel.
 
-In all the five algorithms, the~$k$th iteration places the trust-region center~$\iter[k]$ at the \enquote{best} point where the objective function and constraints have been evaluated so far.
+In all five algorithms, the~$k$th iteration places the trust-region center~$\iter[k]$ at the \enquote{best} point where the objective function and constraints have been evaluated so far.
 Such a point is selected according to the objective function or a merit function that takes the constraints into account.
 After choosing the trust-region center~$\iter[k]$, with the trust-region model~$\objm[k]$ constructed, a trial point is then obtained by solving approximately the trust-region subproblem
 \begin{subequations}
@@ -259,7 +259,7 @@ Note that it may violate the linear constraints.
     \item a point obtained by a gradient step that maximizes~$\abs{\lagp[y](\cdot)}$ within the trust region, and
     \item a point obtained by a projected gradient step that maximizes~$\abs{\lagp[y](\cdot)}$ within the trust region, the projection being made onto the null space of the constraints that are considered active at~$\iter[k]$.
 \end{enumerate}
-The procedure first selects the point among the first two alternatives that provides the larger value of~$\abs{\lagp[y](\cdot)}$.
+The procedure first selects the point among the first two alternatives that provide the larger value of~$\abs{\lagp[y](\cdot)}$.
 Further, this point is replaced with the third alternative if the latter provides a value of~$\abs{\lagp[y](\cdot)}$ that is not too small compared with the above one, while being either feasible or with a constraint violation that is at least~$0.2 \bar{\rad}^k$.\index{LINCOA@\glsfmttext{lincoa}|)}\index{BOBYQA@\glsfmttext{bobyqa}|)}\index{NEWUOA@\glsfmttext{newuoa}|)}
 
 \section{Core features of the \glsfmttext{pdfo} package}
@@ -344,7 +344,7 @@ A crucial point of \gls{bobyqa} and \gls{lincoa} is that they require the initia
 Therefore, \gls{pdfo} attempts to project the provided initial guess onto the feasible set.
 
 Another noticeable preprocessing of the constraints made by \gls{pdfo} is the treatment of the linear equality constraints~\cref{eq:pdfo-leq}.
-As long as these constraints are consistent, we reformulate~\cref{eq:pdfo} into an~$(n - \rank A_{\scriptscriptstyle\ieq})$\nomenclature[Om]{$\rank$}{Rank operator}-dimensional problem by eliminating these linear equality constraints.
+As long as these constraints are consistent, we reformulate~\cref{eq:pdfo} into a~$(n - \rank A_{\scriptscriptstyle\ieq})$\nomenclature[Om]{$\rank$}{Rank operator}-dimensional problem by eliminating these linear equality constraints.
 This is done using a QR factorization of~$A_{\scriptscriptstyle\ieq}$.
 
 % Finally, \gls{pdfo} preprocesses the constraints.
@@ -378,7 +378,7 @@ The current version of \gls{pdfo} also fixes several bugs in the Fortran source 
 \begin{enumerate}
     \item The solvers may encounter infinite loops.
     This is because the exit conditions of some loops cannot be met because variables involved in these conditions become NaN values due to floating point exceptions.
-    \item The Fortran code may encounter memory errors due to unitialized variables that are used as indices.
+    \item The Fortran code may encounter memory errors due to uninitialized variables that are used as indices.
     This is because some variables are initialized according to conditions that can never be met due to NaN values, similar to the previous case.
     \item \Gls{cobyla} may not return the best point that is evaluated; sometimes, it returns a point with a large constraint violation, even though the initial guess is feasible.
     This is because \gls{cobyla} may discard points that are not considered good according to the current merit function, depending on a penalty parameter.
@@ -401,12 +401,12 @@ The initial trust-region radius~$\rad[0]$ is set to one, and the final value~$\r
 The maximal number of function evaluations is~$500n$, where~$n$ denotes the dimension of the problem being solved.
 For the methods that employ underdetermined quadratic interpolation models, the number of interpolation points is set to~$2n + 1$.
 
-Performance profiles on unconstrained problem of dimensions at most \num{10} and \num{50} are provided respectively in \cref{fig:ppu-10,fig:ppu-50}.
+Performance profiles on unconstrained problems of dimensions at most \num{10} and \num{50} are provided respectively in \cref{fig:ppu-10,fig:ppu-50}.
 According to \cref{fig:ppu-10}, \gls{uobyqa} performs better than all the other solvers on small problems.
 This can be explained by the fact that it uses quadratic models obtained by fully-determined interpolation.
 However, we excluded \gls{uobyqa} from the second experiment, because the execution time was excessively long on problems with moderately big dimensions, due to the fully-determined interpolation that it does.
 Moreover, \gls{cobyla} is always outperformed by all other solvers.
-This is because it uses only linear models to approximate the objective and constraint functions of the problems, which are not as precised as the quadratic models employed by other solvers.
+This is because it uses only linear models to approximate the objective and constraint functions of the problems, which are not as precise as the quadratic models employed by other solvers.
 
 \begin{figure}[ht]
     \begin{subfigure}[b]{0.49\textwidth}
@@ -462,7 +462,7 @@ It seems that the linear models of \gls{cobyla} are more robust to noise, but we
 
 \subsection{An example of hyperparameter tuning problem}
 
-We now consider the hyperparameter tuning problem of an \gls{svm} described in details in \cref{subsec:machine-learning}.
+We now consider the hyperparameter tuning problem of an \gls{svm} described in detail in \cref{subsec:machine-learning}.
 % The model we consider is a~$C$-SVM~\cite{Chang_Lin_2011} for binary classification problems with an \gls{rbf} kernel, admitting two hyperparameters: a regularization parameter~$C > 0$ and a kernel parameter~$\gamma > 0$.
 We will compare the performance of \gls{pdfo} with a Bayesian optimization method named \gls{tpe} and a \gls{rs} method.
 Since the hyperparameter tuning problem is a bound-constrained problem, \gls{pdfo} selects \gls{bobyqa} as the solver.
@@ -500,8 +500,8 @@ The objective function of the hyperparameter tuning is given in \cref{alg:cross-
 % This curve plots the true positive classification rate with respect to the false positive classification rate at different classification thresholds.
 % For details on the~$5$-fold cross-validation of an \gls{auc}, see \cref{subsec:machine-learning}.
 % Such an experiment lies in the \gls{dfo} context.
-The results for this experiment are provided in \cref{tab:splice,tab:svmguide1,tab:svmguide3,tab:ijcnn1}.
-For both the \gls{auc} score and the accuracy, the higher the better.
+The results of this experiment are provided in \cref{tab:splice,tab:svmguide1,tab:svmguide3,tab:ijcnn1}.
+For both the \gls{auc} score and the accuracy, the higher, the better.
 In terms of \gls{auc} score and accuracy, we observe that \gls{pdfo} achieved a clearly better result than \gls{tpe} and \gls{rs} on the \enquote{splice} dataset, and they all attain comparable results on all the other datasets.
 However, \gls{pdfo} always uses much less function evaluations, and hence, much less computation time.
 The difference in the computation time is particularly visible on the dataset \enquote{ijcnn1} in \cref{tab:ijcnn1}, as the size of this dataset is large, so that each function evaluation takes much time.
@@ -595,6 +595,6 @@ It performs quite well compared to the other four solvers on noisy unconstrained
 We plan to study this phenomenon in the future from a theoretical point of view.
 We also tested \gls{pdfo} on a hyperparameter tuning problem of an \gls{svm}, for which \gls{pdfo} outperformed two standard solvers.
 
-Powell implemented his \gls{dfo} solvers in Fortran 77. Due to features of the language and the unique coding style, this sophisticated implementation is highly nontrivial to maintain and to extend.
-We are currently reimplementing these solvers using modern languages, in a structured and modulized way, so that the code is readable, maintainable, and extendable.
+Powell implemented his \gls{dfo} solvers in Fortran 77. Due to the features of the language and the unique coding style, this sophisticated implementation is highly nontrivial to maintain and to extend.
+We are currently reimplementing these solvers using modern languages, in a structured and modularized way, so that the code is readable, maintainable, and extendable.
 The modernized code will be incorporated into future releases of \gls{pdfo}.

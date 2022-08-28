@@ -19,7 +19,7 @@ This thesis will develop model-based \gls{dfo} methods and software.
 In this chapter, we provide an overview of \gls{dfo}, introduce some applications, and present the concepts and tools that we will use throughout this thesis.
 In particular, \cref{sec:overview} includes basic concepts of \gls{dfo} and its motivation.
 \Cref{sec:dfo-examples} provides several examples of \gls{dfo} problems from academic, engineering, and industrial applications.
-\Cref{sec:optimality-conditions} introduces the optimility conditions for smooth nonlinear optimization, which will be used in the development of our algorithms.
+\Cref{sec:optimality-conditions} introduces the optimality conditions for smooth nonlinear optimization, which will be used in the development of our algorithms.
 We then summarize existing methodologies for the design of \gls{dfo} algorithms in \cref{sec:methodology-dfo}.
 Finally, \cref{sec:benchmarking-tools} presents two benchmarking tools that will be used to compare and assess the performance of \gls{dfo} solvers.
 
@@ -47,7 +47,7 @@ In practice, each function evaluation may require several minutes or even severa
 For instance, a recent application of \gls{dfo} is hyperparameter tuning in machine learning~\cite{Ghanbari_Scheinberg_2017}, for which every objective function evaluation necessitates training a machine learning model (see \cref{subsec:machine-learning}).
 Hence, in \gls{dfo} methods, the expense of numerical linear algebra is less of a concern, although we will maintain it acceptable.
 
-In this introduction, we consider the nonlinearly-constrained problem
+In this introduction, we consider the nonlinearly constrained problem
 \begin{subequations}
     \label{eq:problem-introduction}
     \begin{align}
@@ -477,13 +477,13 @@ The other strategy builds iteratively models that approximate the problems (e.g.
 These methods are referred to as \emph{model-based} methods.
 Hybrid methods also exist, such as implicit filtering~\cite{Kelley_2011} and \gls{sidpsm}~\cite{Custodio_Rocha_Vicente_2009}, which combine direct search and models.
 
-We remark that there exist methods that can solve \gls{dfo} problems but that are not covered by the above categories.
+We remark that there exist methods that can solve \gls{dfo} problems, but that are not covered by the above categories.
 Examples include random search methods~\cite{Zhigljavsky_1991}, simulated annealing methods~\cite{Kirkpatrick_Gelatt_Vecchi_1983}, the genetic algorithm~\cite{Jong_1975,Holland_1975}, and Bayesian optimization methods~\cite{Mockus_1975,Shahriari_Etal_2016}.
 For more information on these methods, we refer to the review~\cite{Larson_Menickelly_Wild_2019} and the reference therein.
 
 \subsection{Direct-search methods}
 
-\index{DFO@\glsfmtshort{dfo}!direct-search|(}An early example of \gls{dfo} is a method from \citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed in \citeyear{Fermi_Metropolis_1952} a nonlinear least-squares solver on MANIAC, an computer based on the von Neumann architecture.
+\index{DFO@\glsfmtshort{dfo}!direct-search|(}An early example of \gls{dfo} is a method from \citeauthor{Fermi_Metropolis_1952}~\cite{Fermi_Metropolis_1952}, who developed in \citeyear{Fermi_Metropolis_1952} a nonlinear least-squares solver on MANIAC, a computer based on the von Neumann architecture.
 From a modern viewpoint, this method is a coordinate search method, a particular example of direct-search methods, where the search directions are defined to be the coordinate axes.
 
 Several direct-search methods appeared after that.
@@ -530,7 +530,7 @@ The Wedge method~\cite{Marazzi_Nocedal_2002} of \citeauthor{Marazzi_Nocedal_2002
 Instead, it adds a so-called wedge constraint to the trust-region subproblems to prevent the trial steps from lying in a region that is likely to worsen the geometry of the interpolation set.
 The method of \citeauthor{Fasano_Morales_Nocedal_2009}~\cite{Fasano_Morales_Nocedal_2009} does not include geometry-improving steps either but performs surprisingly well.
 The authors conjecture that a self-correcting mechanism may be at play and prevents the geometry from deteriorating.
-\citeauthor{Scheinberg_Toint_2010}~\cite{Scheinberg_Toint_2010} point out that the geometry improvement cannot be dispensed in general, but a slight modification of the algorithm in~\cite{Fasano_Morales_Nocedal_2009} does enjoy a self-correcting mechanism that garantees the convergence without taking explicit geometry-improving steps.
+\citeauthor{Scheinberg_Toint_2010}~\cite{Scheinberg_Toint_2010} point out that the geometry improvement cannot be dispensed in general, but a slight modification of the algorithm in~\cite{Fasano_Morales_Nocedal_2009} does enjoy a self-correcting mechanism that guarantees the convergence without taking explicit geometry-improving steps.
 
 There are many other trust-region \gls{dfo} methods, such as \gls{csv2}~\cite{Billups_Larson_Graf_2013}, which determines its models by regression and not interpolation.
 Examples of solvers that use nonpolynomial models include \gls{orbit}~\cite{Wild_Regis_Shoemaker_2008}, \gls{conorbit}~\cite{Regis_Wild_2017}, and \gls{boosters}~\cite{Oeuvray_Bierlaire_2009}, which use cubic \gls{rbf}.
@@ -559,7 +559,7 @@ or the central difference
     \label{eq:central-difference}
     \frac{\partial \obj}{\partial x_i}(\iter) = \frac{\obj(\iter + h e_i) - \obj(\iter - h e_i)}{2h} + \bigo(h^2),
 \end{equation}
-where~$h > 0$ is the difference parameter,~$e_i \in \R^n$ is the~$i$th standard coordinate vector of~$\R^n$, and the order of precisions require standard assumptions (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006}).
+where~$h > 0$ is the difference parameter,~$e_i \in \R^n$ is the~$i$th standard coordinate vector of~$\R^n$, and the order of precision require standard assumptions (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006}).
 
 Methods based on finite differences have several advantages.
 Firstly, they are relatively easy to implement, whereas the implementation of many commonly used \gls{dfo} methods is highly nontrivial and challenging\footnote{For example, \citeauthor{Powell_2006}~\cite{Powell_2006} wrote \enquote{The development of \gls{newuoa} has taken nearly three years. The work was very frustrating [\dots]}}.
@@ -760,7 +760,7 @@ We can make the following observations on the noise-free experiment in \cref{fig
 
 We observe the following for the noisy experiments according to~\cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}.
 \begin{enumerate}
-    \item \Gls{newuoa} solves always more than \SI{70}{\percent} of the problems while the two other solvers solve significantly less problems.
+    \item \Gls{newuoa} always solves more than \SI{70}{\percent} of the problems while the two other solvers solve significantly fewer problems.
     \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses the least number of function evaluations on more than \SI{55}{\percent} of the problems, while the percentages for \gls{bfgs} and \gls{cg} are about \SI{20}{\percent} and \SI{15}{\percent} respectively.
     For~$\sigma \in \set{10^{-8}, 10^{-6}}$, \gls{newuoa} is the most efficient on almost all the problems that it can solve, while the other two solvers fail on most of the problems in~$\xpb$.
 \end{enumerate}
@@ -818,17 +818,17 @@ A higher curve indicates a better performance.
 
 We can make the following observations on the noise-free experiment on \cref{fig:data-profile-example-noiseless}.
 \begin{enumerate}
-    \item \Gls{bfgs} solves more than \SI{90}{\percent} of the problems while the two other solvers solve slightly less problems.
+    \item \Gls{bfgs} solves more than \SI{90}{\percent} of the problems while the two other solvers solve slightly fewer problems.
     It agrees with what is indicated by \cref{fig:performance-profile-example-noiseless}, as it should be the case according to theory.
     \item \Gls{bfgs} uses less than~$300 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \xpb$ that it can solve, while \gls{newuoa} and \gls{cg} use about~$400 (n_p + 1)$.
 \end{enumerate}
 
 We observe the following for the noisy experiments according to~\cref{fig:data-profile-example-noisy-10,fig:data-profile-example-noisy-8,fig:data-profile-example-noisy-6}.
 \begin{enumerate}
-    \item \Gls{newuoa} solves always more than \SI{70}{\percent} of the problems while the two other solvers solve significantly fewer problems.
+    \item \Gls{newuoa} always solves more than \SI{70}{\percent} of the problems while the two other solvers solve significantly fewer problems.
     It agrees with what is indicated by \cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}, as it should be the case.
-    \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses less than~$200 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \xpb$ that it can solve, while \gls{bfgs} and \gls{cg} use less than~$100 (n_p + 1)$, altough they solve much fewer problems.
-    For~$\sigma \in \set{10^{-8}, 10^{-6}}$, \gls{newuoa} uses less than~$100 (n_p + 1)$ function evaluations\footnote{Even though the corresponding value is~$200 (n_p + 1)$ when~$\sigma = 10^{-10}$, we should not interpreted that \gls{newuoa} performs better with higher noise. When~$\sigma$ is larger, \gls{newuoa} solves fewer problems and~$\obj_p^{\ast}$ in~\cref{eq:convergence-test-profiles-unconstrained} is often larger, leading to a weaker convergence test.} to solve most of the problems that it can solve, while the other two solvers fail on most of the problems.
+    \item When~$\sigma = 10^{-10}$, \gls{newuoa} uses less than~$200 (n_p + 1)$ function evaluations to solve most of the problems~$p \in \xpb$ that it can solve, while \gls{bfgs} and \gls{cg} use less than~$100 (n_p + 1)$, although they solve much fewer problems.
+    For~$\sigma \in \set{10^{-8}, 10^{-6}}$, \gls{newuoa} uses less than~$100 (n_p + 1)$ function evaluations\footnote{Even though the corresponding value is~$200 (n_p + 1)$ when~$\sigma = 10^{-10}$, we should not interpret that \gls{newuoa} performs better with higher noise. When~$\sigma$ is larger, \gls{newuoa} solves fewer problems and~$\obj_p^{\ast}$ in~\cref{eq:convergence-test-profiles-unconstrained} is often larger, leading to a weaker convergence test.} to solve most of the problems that it can solve, while the other two solvers fail on most of the problems.
 \end{enumerate}
 
 \subsection{Absoluteness and relativeness of the profiles}
@@ -867,7 +867,7 @@ The main contributions of this thesis are as follows.
     \end{enumerate}
     \item \emph{A new model-based \gls{dfo} algorithm and its implementation.}
     \begin{enumerate}
-        \item We present in \cref{ch:cobyqa-introduction} a new derivative-free trust-region \gls{sqp} algorithm for nonlinearly-constrained optimization, named \gls{cobyqa}.
+        \item We present in \cref{ch:cobyqa-introduction} a new derivative-free trust-region \gls{sqp} algorithm for nonlinearly constrained optimization, named \gls{cobyqa}.
         To the best of our knowledge, this is the first trust-region \gls{sqp} algorithm that can solve \gls{dfo} problems with nonlinear equality and inequality constraints without introducing slack variables.
         \item We detail in \cref{ch:cobyqa-subproblems} the methods for solving the subproblems of \gls{cobyqa} in our implementation.
         In particular, we propose in \cref{ch:cobyqa-subproblems} a new method for approximately solving convex piecewise quadratic programming problems within a trust region.
@@ -902,7 +902,7 @@ In particular, we elaborate an interpretation of the \gls{sqp} subproblem that i
 We also present a trust-region \gls{sqp} method, discuss various approaches to solving its subproblem, and show an interesting connection between two of them.
 
 \Cref{ch:cobyqa-introduction} presents a new model-based \gls{dfo} method named \gls{cobyqa}.
-It is a trust-region \gls{sqp} method, designed to tackle nonlinearly-constrained problems that include equality and inequality constraints.
+It is a trust-region \gls{sqp} method, designed to tackle nonlinearly constrained problems that include equality and inequality constraints.
 It builds the trust-region quadratic models using derivative-free symmetric Broyden update presented in \cref{ch:interpolation}.
 
 \Cref{ch:cobyqa-subproblems} introduces in details the methods employed by \gls{cobyqa} to solve its subproblems, including the trust-region subproblem, the multiplier-estimating subproblem, and the geometry-improving subproblem.

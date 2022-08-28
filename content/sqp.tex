@@ -179,7 +179,7 @@ If we want to solve this system by the Newton-Raphson method\footnote{Discussion
 \end{subequations}
 which is a linear approximation of~\cref{eq:sqp-kkt} at~$(\iter[k], \lm[k])$.
 However, as pointed out by \citeauthor{Robinson_1972a}~\cite[Rem.~3]{Robinson_1972a}, an objection to such a method is that it would not solve even a linear program in one iteration.
-To cope with this deffect, we let~$(d, \mu)$ solve instead the following bilinear approximation of~\cref{eq:sqp-kkt},
+To cope with this defect, we let~$(d, \mu)$ solve instead the following bilinear approximation of~\cref{eq:sqp-kkt},
 \begin{subequations}
     \label{eq:sqp-subproblem-kkt}
     \begin{empheq}[left=\empheqlbrace]{alignat=1}
@@ -325,8 +325,7 @@ This is the tangent space of
 at~$\bar{\iter}$, and~$\mathcal{S}_{\bar{\iter}}$ is the contour surface of the constraints at~$\bar{\iter}$.
 Therefore, \cref{thm:sqp-path} reveals that the objective function of the \gls{sqp} subproblem is a natural approximation of~$\obj$ in this tangent space if we regard $\obj$ as a function on~$\mathcal{S}_{\bar{\iter}}$.
 
-However, the feasible region of the \gls{sqp} subproblem is in general not the tangent
-space~$\mathcal{T}_{\bar{\iter}}$ but the linearized feasible direction set
+However, the feasible region of the \gls{sqp} subproblem is in general not the tangent space~$\mathcal{T}_{\bar{\iter}}$, but the linearized feasible direction set
 \begin{equation*}
     \mathcal{F}_{\bar{\iter}}^{\mathsf{L}} = \set{\step \in \R^n : h(\bar{\iter}) +\nabla h(\bar{\iter}) \step  = 0},
 \end{equation*}
@@ -334,7 +333,7 @@ which is assumed nonempty for the current discussion.
 This set equals~$\mathcal{T}_{\bar{\iter}}$ only if~$\bar{\iter}$ is feasible so that~$h(\bar{\iter}) = 0$.
 When~$\bar{\iter}$ is infeasible, $\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ is a shifted copy of~$\mathcal{T}_{\bar{\iter}}$ as illustrated in \cref{fig:sqp-path}.
 The distance between~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ and~$\mathcal{T}_{\bar{\iter}}$ is~$\delta_{\bar{\iter}} = \norm{\step[\ast]} = \norm{\nabla h(\bar{\iter})^{\dagger} h(\bar{\iter})}$, where~$\step[\ast]$ is the projection of~$0 \in \mathcal{T}_{\bar{\iter}}$ onto~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, and~$\nabla h(\bar{\iter})^{\dagger}$ denotes the Moore-Penrose pseudoinverse of~$\nabla h(\bar{\iter})$.
-The purpose of this shifting is to improve the feasibility.
+The purpose of this shift is to improve the feasibility.
 % Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion provides~$\norm{h(\bar{\iter} + \step)} =\bigo(\norm{\step}^2)$ for all $\step$ in a bounded subset of~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, whereas~$\norm{h(\bar{\iter} + \step)} = \norm{h(\bar{\iter})} + \bigo(\norm{\step}^2)$ if~$\step$ stays in a bounded subset of~$\mathcal{T}_{\bar{\iter}}$.
 Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion provides~$\norm{h(\bar{\iter} + \step)} = \bigo(\norm{\step}^2)$ for all~$\step$ in a bounded subset of~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, which further implies~$\norm{h(\bar{\iter} + \step)} = \bigo(\norm{h(\bar{\iter})}^2)$ unless~$\norm{\step}$ is much larger than~$\norm{\step[\ast]}$; in contrast,~$\norm{h(\bar{\iter} + \step)} = \norm{h(\bar{\iter})} + \bigo(\norm{\step}^2)$ if~$\step$ stays in a bounded subset of~$\mathcal{T}_{\bar{\iter}}$.
 
@@ -373,7 +372,7 @@ On the other hand, if we defined~$\nabla^2 Q$ by~$\nabla^2 \obj(\bar{\iter})$ in
 which can be obtained by setting~$\bar{\lm} = 0$ in \cref{thm:sqp-path}.
 However, since we are considering constrained optimization, we cannot expect~$\norm{\nabla \obj(\bar{\iter})}$ to be small even if~$\bar{\iter}$ is close to a solution unless no constraint is taking effect at this solution.
 This explains why the second-order term of the \gls{sqp} subproblem should be defined by the Hessian matrix of the Lagrangian, rather than that of~$\obj$.
-A special case occurs if the Lagrangian and~$\obj$ have the same Hessian, for example when~$h$ is linear.
+A special case occurs if the Lagrangian and~$\obj$ have the same Hessian, for example, when~$h$ is linear.
 In such a case,~\cref{eq:sqp-path-proof-6} implies
 \begin{equation*}
     \iter''(0)^{\T} \nabla h(\bar{\iter})^{\T} \bar{\lm} = -\sum_{i = 1}^m \bar{\lm}_i \iter'(0)^{\T} \nabla^2 h_i(\bar{\iter}) \iter'(0) = \iter'(0)^{\T} [\nabla^2 \obj(\bar{\iter}) - \nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})] \iter'(0) = 0,
@@ -596,7 +595,7 @@ where~$\lm[\mathsf{LS}](\iter)$ denotes the least-norm solution to
 where~$\lm = [\lm_i]_{i \in \ieq}^{\T}$.
 % The least-squares Lagrange multipliers attempts to satisfy the \gls{kkt} conditions as much as possible.
 If~$\iter[\ast]$ is a solution to the problem~\cref{eq:problem-cobyqa-sqp}, then~$(\iter[\ast], \lm(\iter[\ast]))$ is a \gls{kkt} pair.
-When~$\iub \neq \emptyset$, to achieve the same property, the complamentary slackness conditions must be taken into account in~\cref{eq:least-squares-lagrange-multipliers}.
+When~$\iub \neq \emptyset$, to achieve the same property, the complementary slackness conditions must be taken into account in~\cref{eq:least-squares-lagrange-multipliers}.
 
 A clear drawback of such a merit function is that it is expensive to evaluate, as one evaluation necessitates solving a linear least-squares problem that involves the gradients of~$\obj$ and~$\con{i}$, with~$i \in \ieq$.
 Nonetheless, this merit function offers several advantages.
@@ -647,7 +646,7 @@ The merit function we consider from now on is the~$\ell_2$-merit function, defin
     \merit_{\gamma}(\iter) \eqdef \obj(\iter) + \gamma \sqrt{\sum_{i \in \iub} \posp{\con{i}(\iter)}^2 + \sum_{i \in \ieq} \abs{\con{i}(\iter)}^2}, \quad \text{for~$\iter \in \R^n$ and~$\gamma \ge 0$,}
 \end{equation*}
 where~$\gamma$ is the penalty parameter.
-The algorithm we present below maintains a penalty parameter~$\gamma^k \ge 0$ at the~$k$th iteration and we use~$\merit[k]$ to denote the function~$\merit_{\gamma^k}$.
+The algorithm we present below maintains a penalty parameter~$\gamma^k \ge 0$ at the~$k$th iteration, and we use~$\merit[k]$ to denote the function~$\merit_{\gamma^k}$.
 We denote by~$\meritm[k]$\nomenclature[Fi]{$\meritm$}{Quadratic model of~$\merit$} the~$\ell_2$-merit function computed on the \gls{sqp} subproblem~\cref{eq:sqp-subproblem}, i.e.,
 \begin{equation*}
     \meritm[k](\step) \eqdef \nabla \obj(\iter[k])^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\iter[k], \lm[k]) \step + \gamma^k \Phi(\step), \quad \text{for~$\step \in \R^n$,}
@@ -745,7 +744,7 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
 \label{subsec:composite-step-equality}
 
 \index{SQP@\glsfmtshort{sqp}!composite step|(}The \cref{alg:trust-region-sqp-step} of \cref{alg:trust-region-sqp} hides a crucial point: what should~$\step[k]$ approximate if the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem} is infeasible?
-Since the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} are linear approximations of the constraints~\cref{eq:problem-cobyqa-sqp-ub,eq:problem-cobyqa-sqp-eq}, we cannot guarantee the feasibility of of the subproblem~\cref{eq:trust-region-sqp-subproblem}, even if the original problem is feasible.
+Since the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} are linear approximations of the constraints~\cref{eq:problem-cobyqa-sqp-ub,eq:problem-cobyqa-sqp-eq}, we cannot guarantee the feasibility of the subproblem~\cref{eq:trust-region-sqp-subproblem}, even if the original problem is feasible.
 
 We review in this section the composite-step approach to coping with this difficulty in the equality-constrained case (i.e.,~$\iub = \emptyset$).
 Most discussions here are covered in~\cite[\S~15.4]{Conn_Gould_Toint_2000}, except \cref{prop:vardi-byrd-omojokun}, which gives a simple observation on the Vardi approach introduced below.
@@ -835,7 +834,7 @@ We now point out that the normal step~$\nstep[k]$ is an approximate solution to~
     \begin{equation*}
         \zeta \rad[k] = \norm{\nstep[k]} = \alpha \norm{\step[\ast]}.
     \end{equation*}
-    Hence we only need to show that~$\alpha \step[\ast]$ is a least-squares solution to~$b + A \step$ on the line segment~$\set{t \step[\ast] : t \in [0, \alpha]}$.
+    Hence, we only need to show that~$\alpha \step[\ast]$ is a least-squares solution to~$b + A \step$ on the line segment~$\set{t \step[\ast] : t \in [0, \alpha]}$.
     This holds because $\alpha \le 1$ and~$\norm{b + A \step}^2$ is nonincreasing when $\step$ varies from~$0$ to~$\step[\ast]$ along a straight line, the monotonicity of~$\norm{b + A \step}^2$ coming from its convexity and the fact that~$\step[\ast]$ is its global minimizer.
 \end{proof}
 
@@ -896,7 +895,7 @@ Further, similar to the equality-constrained case, we let the tangential step~$\
 \subsubsection{Byrd-Omojokun approach}
 
 \index{SQP@\glsfmtshort{sqp}!composite step!Byrd-Omojokun|(}The Byrd-Omojokun approach has been originally introduced in a method that tackles both equality and inequality constraints.
-However, this method employes an active-set strategy, where the inequality constraints considered active are handled as equalities (see~\cite[\S~3.2.6]{Omojokun_1989}).
+However, this method employs an active-set strategy, where the inequality constraints considered active are handled as equalities (see~\cite[\S~3.2.6]{Omojokun_1989}).
 In other words, the Byrd-Omojokun approach has been defined from an equality-constrained perspective.
 
 To extend the Byrd-Omojokun approach to the general case without employing an active-set method, we define the normal step~$\nstep[k]$ by solving~\cref{eq:byrd-omojokun} for some~$\zeta \in (0, 1]$.
@@ -956,7 +955,7 @@ for some~$\alpha \in [0, 1]$, where~$\act(\iter[k])$ designates the active set f
     \end{align}
 \end{subequations}
 Note that if~$\alpha = 0$, then~\cref{eq:sqp-subproblem-vardi} is clearly feasible.
-The relaxation of the equality constraints~\cref{eq:vardi-eq} is due to \citeauthor{Vardi_1985}~\cite{Vardi_1985}, but the relaxed inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2} are adopted from \citeauthor{Powell_1978a}~\cite {Powell_1978a}.
+The relaxation of the equality constraints~\cref{eq:vardi-eq} is due to \citeauthor{Vardi_1985}~\cite{Vardi_1985}, but the relaxed inequality constraints~\cref{eq:vardi-ub1,eq:vardi-ub2} are adopted from \citeauthor{Powell_1978a}~\cite{Powell_1978a}.
 
 Remark that~\cref{eq:vardi} does not modify a linearized inequality constraint if~$\iter[k]$ strictly satisfies the corresponding original constraint.
 Even more, if~$\iter[k]$ satisfies a constraint (whether inequality or equality), then its linearized counterpart is not modified.

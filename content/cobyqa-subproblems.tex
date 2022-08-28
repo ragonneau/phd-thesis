@@ -34,7 +34,7 @@ The classical trust-region subproblem for unconstrained optimization is of the f
 \end{subequations}
 with~$Q \in \qpoly$ being the trust-region model and~$\rad > 0$ being the trust-region radius.
 The usual convergence results for trust-region methods do not require us to solve~\cref{eq:problem-tcg} exactly.
-Rather, we only need to find a inexact solution~$\sstep[\ast]$ that satisfies
+Rather, we only need to find an inexact solution~$\sstep[\ast]$ that satisfies
 \begin{equation*}
     Q(0) - Q(\sstep[\ast]) \ge c \norm{\nabla Q(0)} \min @@ \set[\bigg]{\frac{\norm{\nabla Q(0)}}{\norm{\nabla^2 Q}}, \rad},
 \end{equation*}
@@ -114,7 +114,7 @@ The tangential and normal subproblem solvers employed by \gls{cobyqa} are constr
 \label{sec:cobyqa-tangential}
 
 We now present the constrained variations of the \gls{tcg} method we use in \gls{cobyqa} to solve the tangential subproblem~\cref{eq:cobyqa-tangential}.
-We introduce two variations, one for the bound constrained case (when~$\iub \cup \ieq = \emptyset$), and the other for the linearly constrained case (when~$\iub \cup \ieq \neq \emptyset$).
+We introduce two variations, one for the bound-constrained case (when~$\iub \cup \ieq = \emptyset$), and the other for the linearly constrained case (when~$\iub \cup \ieq \neq \emptyset$).
 
 \subsection{Bound-constrained case}
 
@@ -335,7 +335,7 @@ Moreover, this tiny step would lead to a change of the working set, and as obser
 expensive, and hence, should be avoided.
 Therefore, we must consider constraints with small residuals when defining the working set.
 
-The method defines simultaneously the initial search direction and the initial working set.
+The method simultaneously defines the initial search direction and the initial working set.
 More precisely, for any~$\sstep \in \R^n$ that is feasible for~\cref{eq:problem-lctcg}, we set
 \begin{equation*}
     \mathcal{J}(\sstep) \eqdef \set[\big]{j \in \set{1, \dots, m_1} : b_j - a_j^{\T} \sstep \le \sigma \rad \norm{a_j}},
@@ -506,7 +506,7 @@ Its proof is \emph{trivial}, but we include it for completeness.
     It is obvious that~$\norm{\pstep[k]} = 0$ implies~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$.
     Suppose that~$\nabla Q (\sstep[k])^{\T} \pstep[k] \ge 0$ in \cref{alg:lctcg-stop} of~\cref{alg:lctcg}, and assume without loss of generality that~$k \ge 1$.
     If \cref{alg:lctcg-stop} is reached from \cref{alg:lctcg-set-restart}, then we have~$\pstep[k] = -\Pi^k(\nabla Q(\sstep[k]))$ according to \cref{lem:lctcg}.
-    Thus
+    Thus,
     \begin{equation*}
         \norm{\pstep[k]}^2 = \norm{\Pi^k(\nabla Q(\sstep[k]))}^2 = Q (\sstep[k])^{\T}  \Pi^k(\nabla Q(\sstep[k])) = - Q (\sstep[k])^{\T}  \pstep[k] \le 0,
     \end{equation*}
@@ -793,8 +793,6 @@ Problem~\cref{eq:least-squares-lagrange-multipliers-cobyqa} takes the form
 where~$A \in \R^{m \times n}$,~$b \in \R^m$, and~$n_0$ is a nonnegative integer with~$n_0 \le n$.
 We observe that if~$n_0 = 0$, then~\cref{eq:problem-nnls} is a simple unconstrained least-squares problem, which can be solved using traditional methods.
 Our major concern in this section is the case~$n_0 \ge 1$.
-
-\subsubsection{Description of the method}
 
 In order to solve problem~\cref{eq:problem-nnls} when~$n_0 \ge 1$, we construct an active-set method based on~\cite[Alg.~23.10]{Lawson_Hanson_1987}, that maintains a working set of the nonnegativity constraints.
 %, referred to as \gls{nnls}.

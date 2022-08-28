@@ -21,7 +21,7 @@ This thesis studies \glsxtrfull{dfo}, particularly model-based methods and softw
 These methods are motivated by optimization problems for which it is impossible or prohibitively expensive to access the first-order information of the objective function and possibly the constraint functions.
 Such problems frequently arise in engineering and industrial applications, and keep emerging due to recent advances in data science and machine learning.
 
-We first provide an overview of \glsxtrshort{dfo} and of interpolation models for \glsxtrshort{dfo} methods.
+We first provide an overview of \glsxtrshort{dfo} and interpolation models for \glsxtrshort{dfo} methods.
 In particular, we show that an interpolation set employed by Powell for underdetermined quadratic interpolation is optimal in terms of well-poisedness.
 
 We then present \gls{pdfo}, a package that we develop to provide both MATLAB and Python interfaces to Powell's model-based \glsxtrshort{dfo} solvers, namely \gls{cobyla}, \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa}.
@@ -37,7 +37,7 @@ Moreover, we propose an extension of the Byrd-Omojokun approach for solving trus
 This extension works quite well in our experiments.
 
 Finally, we elaborate on the development of our new \glsxtrshort{dfo} method, named \gls{cobyqa} after \textit{\glsdesc{cobyqa}}.
-This is a derivative-free trust-region \glsxtrshort{sqp} method designed to tackle nonlinearly constrained optimization problems that admit equality and inequality constraints.
+This derivative-free trust-region \glsxtrshort{sqp} method is designed to tackle nonlinearly constrained optimization problems that admit equality and inequality constraints.
 An important feature of \gls{cobyqa} is that it always respects bound constraints, if any, which is motivated by applications where the objective function is undefined when bounds are violated.
 \Gls{cobyqa} builds quadratic trust-region models based on the derivative-free symmetric Broyden update proposed by Powell.
 We provide a detailed description of \gls{cobyqa}, including its subproblem solvers, and introduce its Python implementation.
