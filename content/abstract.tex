@@ -22,7 +22,7 @@ These methods are motivated by optimization problems for which it is impossible 
 Such problems frequently arise in engineering and industrial applications, and keep emerging due to recent advances in data science and machine learning.
 
 We first provide an overview of \glsxtrshort{dfo} and interpolation models for \glsxtrshort{dfo} methods.
-In particular, we show that an interpolation set employed by Powell for underdetermined quadratic interpolation is optimal in terms of well-poisedness.
+In addition, we show that an interpolation set employed by Powell for underdetermined quadratic interpolation is optimal in terms of well-poisedness.
 
 We then present \gls{pdfo}, a package that we develop to provide both MATLAB and Python interfaces to Powell's model-based \glsxtrshort{dfo} solvers, namely \gls{cobyla}, \gls{uobyqa}, \gls{newuoa}, \gls{bobyqa}, and \gls{lincoa}.
 They were implemented by Powell in Fortran 77, and hence, are becoming inaccessible to many users nowadays.
@@ -41,5 +41,5 @@ This derivative-free trust-region \glsxtrshort{sqp} method is designed to tackle
 An important feature of \gls{cobyqa} is that it always respects bound constraints, if any, which is motivated by applications where the objective function is undefined when bounds are violated.
 \Gls{cobyqa} builds quadratic trust-region models based on the derivative-free symmetric Broyden update proposed by Powell.
 We provide a detailed description of \gls{cobyqa}, including its subproblem solvers, and introduce its Python implementation.
-Finally, we expose extensive numerical experiments of \gls{cobyqa}, showing evident advantages of \gls{cobyqa} compared with Powell's \glsxtrshort{dfo} solvers.
+We expose extensive numerical experiments of \gls{cobyqa}, showing evident advantages of \gls{cobyqa} compared with Powell's \glsxtrshort{dfo} solvers.
 These experiments demonstrate that \gls{cobyqa} is an excellent successor to \gls{cobyla} as a general-purpose \glsxtrshort{dfo} solver.
