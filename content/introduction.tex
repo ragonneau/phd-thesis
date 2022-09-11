@@ -680,7 +680,7 @@ Therefore, a larger value of~$d_s$ indicates a better performance of~$s$.
 In this section, as an example, we compare three solvers using performance and data profiles.
 These solvers, constituting the set~$\xsv$, are
 \begin{enumerate}
-    \item \gls{newuoa} (see \cref{subsec:newuoa}), a model-based \gls{dfo} method; and
+    \item \gls{newuoa} (see \cref{subsec:newuoa}), a model-based \gls{dfo} method by Powell~\cite{Powell_2006}; and
     \item \gls{bfgs} and \gls{cg}, two gradient-based solvers provided by SciPy~1.0~\cite{Virtanen_Etal_2020}.
     When no derivatives are provided, they use forward finite-difference to approximate gradients, with the difference parameter~$h = \sqrt{u}$, where~$u$ is the unit roundoff.
 \end{enumerate}
@@ -711,6 +711,8 @@ We conduct two experiments as follows.
     Note that the convergence test~\cref{eq:convergence-test-profiles-unconstrained} uses the values of~$\obj_p$ and not those of~$\tilde{\obj}_p$.
     This means that we evaluate the solvers according to the true objective function, even though the solvers can access only the noisy values produced by~\cref{eq:relative-gaussian-noisy-objective-function}.
 \end{enumerate}
+
+In these experiments, we invoke \gls{newuoa} via \gls{pdfo} (see~\cref{ch:pdfo}) under the default settings. In particular, the initial trust-region radius is~$1$, the final trust-region radius is~$10^{-6}$, and the number of interpolation points is~$2n+1$, with~$n$ being the dimension of the problem being solved. \gls{bfgs} and \gls{cg} are called with the default configurations in SciPy~1.0. For each testing problem, the starting point is set to the one provided by CUTEst, and the maximal number of function evaluations is set to~$500$ times the number of variables.  
 
 \subsubsection{Performance profiles}
 
