@@ -638,7 +638,7 @@ We observe that problem~\cref{eq:problem-cpqp-reformulated} takes almost the sam
 Based on this observation, we propose to approximately solve~\cref{eq:problem-cpqp-reformulated} using~\cref{alg:cpqp}, which is a straightforward adaptation of \cref{alg:lctcg} that replaces~$\norm{\cdot}$ with~$\norm{\cdot}_D$ in the trust region.
 
 \begin{algorithm}
-    \caption{\Glsfmtshort{tcg} method for solving~\cref{eq:problem-cpqp-reformulated}}
+    \caption{\Glsfmtshort{tcg} method for approximately solving~\cref{eq:problem-cpqp-reformulated}}
     \label{alg:cpqp}
     \DontPrintSemicolon
     \onehalfspacing
@@ -646,7 +646,7 @@ Based on this observation, we propose to approximately solve~\cref{eq:problem-cp
     \KwResult{An approximate solution to~\cref{eq:problem-cpqp-reformulated}.}
     \nonl Identical to \cref{alg:lctcg} with~$C = 0$, except that the initial guess~$\sstep[0]$ is not~$0$ but a feasible point, and the formula in \cref{alg:lctcg-alpharad} is replaced with
     \begin{algomathdisplay}
-        \alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]}_D \le \rad}
+        \alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]}_D \le \rad}.
     \end{algomathdisplay}
 \end{algorithm}
 
