@@ -712,7 +712,7 @@ We conduct two experiments as follows.
     This means that we evaluate the solvers according to the true objective function, even though the solvers can access only the noisy values produced by~\cref{eq:relative-gaussian-noisy-objective-function}.
 \end{enumerate}
 
-In these experiments, we invoke \gls{newuoa} via \gls{pdfo} (see~\cref{ch:pdfo}) under the default settings. In particular, the initial trust-region radius is~$1$, the final trust-region radius is~$10^{-6}$, and the number of interpolation points is~$2n+1$, with~$n$ being the dimension of the problem being solved. \gls{bfgs} and \gls{cg} are called with the default configurations in SciPy~1.0. For each testing problem, the starting point is set to the one provided by CUTEst, and the maximal number of function evaluations is set to~$500$ times the number of variables.  
+In these experiments, we invoke \gls{newuoa} via the \glsxtrshort{pdfo} package (see~\cref{ch:pdfo}) under the default settings. In particular, the initial trust-region radius is~$1$, the final trust-region radius is~$10^{-6}$, and the number of interpolation points is~$2n+1$, with~$n$ being the dimension of the problem being solved. \gls{bfgs} and \gls{cg} are called with the default configurations in SciPy~1.0. For each testing problem, the starting point is set to the one provided by CUTEst, and the maximal number of function evaluations is set to~$500$ times the number of variables.  
 
 \subsubsection{Performance profiles}
 
