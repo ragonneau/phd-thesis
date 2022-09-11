@@ -38,7 +38,7 @@ As of August 2022, this package has been downloaded more than \num{30000} times,
 The aforementioned theoretical and practical study lays a solid groundwork for our development of a new derivative-free method for nonlinearly constrained optimization.
 Named \gls{cobyqa}, it is a trust-region \gls{sqp} method that models the objective and constraint functions using quadratic models based on the derivative-free symmetric Broyden update.
 The development of this method is fully documented in \cref{ch:cobyqa-introduction,ch:cobyqa-subproblems,ch:cobyqa-implementation}, covering the mathematical basis, the detailed descriptions of the subproblem solvers, and the Python implementation.
-In this development, we documented, adapted, and extended various tools for the practices of \gls{sqp} and \gls{dfo}.
+In this development, we summarized, adapted, and extended various tools for the practices of \gls{sqp} and \gls{dfo}.
 For example, we proposed a new extension of the Byrd-Omojokun approach for the inequality-constrained case, which worked remarkably well in our tests.
 Finally, extensive numerical experiments demonstrated the excellent performance of \gls{cobyqa}, confirming that we have achieved our initial goal of developing a general-purpose \gls{dfo} solver, as a successor to \gls{cobyla}.
 
@@ -48,7 +48,7 @@ The study of this thesis opens many interesting directions for further investiga
 We briefly mention four of them.
 
 \begin{enumerate}
-    \item When developing \gls{cobyqa}, we followed Powell's philosophy reflected in his work on \gls{dfo}, which is to first produce an efficient and robust solver that performs well in practice, instead of setting up a conceptual framework without a practical implementation.
+    \item When developing \gls{cobyqa}, we followed Powell's philosophy reflected in his work on \gls{dfo}, which is to first produce an efficient and robust solver that performs well in practice, instead of setting up a conceptual framework without a practical implementation. 
     Now that \gls{cobyqa} is computationally successful, we will proceed to analyze its convergence properties, including global convergence and worst-case complexity.
     We expect that such an analysis can be done based on the existing techniques for analyzing \gls{dfo} methods in the unconstrained case, and the \gls{sqp} method in the derivative-based case.
     \item We will further improve the implementation of \gls{cobyqa} to enhance its performance, particularly in the linearly constrained case, recalling that the current version does not perform as well as \gls{lincoa} on linearly constrained problems with violable bounds.
