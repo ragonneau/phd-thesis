@@ -644,9 +644,10 @@ Based on this observation, we propose to approximately solve~\cref{eq:problem-cp
     \onehalfspacing
     \KwData{Quadratic function~$Q$, matrices~$A$ and~$D$, right-hand side~$b$, trust-region radius~$\rad > 0$, and constant~$\sigma \in (0, 1)$.}
     \KwResult{An approximate solution to~\cref{eq:problem-cpqp-reformulated}.}
-    \nonl Identical to \cref{alg:lctcg} with~$C = 0$, except that the initial guess~$\sstep[0]$ is not~$0$ but a feasible point, and the formula in \cref{alg:lctcg-alpharad} is replaced with
+    \nonl Identical to \cref{alg:lctcg} with~$C = 0$, except that the initial guess~$\sstep[0]$ is not~$0$ but\;
+    \nonl a feasible point, and the formula in \cref{alg:lctcg-alpharad} is replaced with
     \begin{algomathdisplay}
-        \alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]}_D \le \rad}.
+        \alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]}_D \le \rad}
     \end{algomathdisplay}
 \end{algorithm}
 
