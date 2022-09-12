@@ -24,7 +24,7 @@ This chapter introduces the basic concepts of polynomial interpolation that we w
 \Cref{sec:interpolation-introduction} motivates the use of linear and quadratic polynomials in \gls{dfo} methods.
 We then introduce the poisedness of interpolation sets and the quadratic Lagrange polynomials in \cref{sec:multivariate-interpolation}.
 \Cref{sec:poisedness} presents a notion of well-poisedness referred to as the~$\Lambda$-poisedness.
-We then introduce in \cref{sec:underdetermined-interpolation} the methodology of underdetermined quadratic interpolation that will be employed later in this thesis.
+Further, we summarize in \cref{sec:underdetermined-interpolation} the methodology of underdetermined quadratic interpolation that will be employed later in this thesis.
 Finally, in \cref{sec:optimal-interpolation-set}, we study a particular interpolation set proposed by \citeauthor{Powell_2006}~\cite{Powell_2006}, showing that this set is, in some sense, optimal.
 This set is essential to us because we will use a variation of it as the initial interpolation set of a new \gls{dfo} method we will present in \cref{ch:cobyqa-introduction}.
 
@@ -62,7 +62,7 @@ However, we do not consider such models in this thesis due to the following obse
     \item The \gls{dfo} methods need to solve approximately subproblems (e.g., trust-region subproblems) built upon these models.
     Sophisticated models usually lead to complicated subproblems to solve.
     On the other hand, even with models that are not quadratic, practical algorithms normally solve the subproblems based on first- or second-order approximations of the models, e.g., calculate the approximate Cauchy point discussed in~\cite[\S~6.3.3]{Conn_Gould_Toint_2000}.
-    Therefore, building polynomial models of degrees higher than two may not be necessary.
+    Therefore, building polynomial models of degrees higher than two may not be necessary in practice.
 \end{enumerate}
 
 Although we do not study \gls{rbf} models, we mention that there also exist many \gls{dfo} methods based on these models.
@@ -71,8 +71,8 @@ Examples of such methods include \gls{orbit}~\cite{Wild_Regis_Shoemaker_2008}, \
 \section{Elementary concepts of multivariate interpolation}
 \label{sec:multivariate-interpolation}
 
-The space in which~$\objm$ lies in this section is either~$\lpoly$ or~$\qpoly$.
-Moreover, we assume in this section that the number of interpolation points~$m$ equals the dimension of the chosen space, i.e., either~$n + 1$ or~$(n + 1)(n + 2) / 2$, respectively.
+In this section, the space in which~$\objm$ lies is either~$\lpoly$ or~$\qpoly$.
+Moreover, we assume that the number of interpolation points~$m$ equals the dimension of the chosen space, i.e., either~$n + 1$ or~$(n + 1)(n + 2) / 2$, respectively.
 
 \subsection{Poisedness of interpolation sets}
 \label{subsec:poisedness}
@@ -123,7 +123,7 @@ We introduce the Lagrange polynomials for the interpolation problem
 \end{definition}
 
 We note that in \cref{def:lagrange-polynomials}, the poisedness of the interpolation set ensures the existence and the uniqueness of the Lagrange polynomials.
-Further, it is well-known that the interpolant~$\objm \in \qpoly$ of~$\obj$ on~$\xpt$ can be formulated as a linear combination of the Lagrange polynomials, as detailed in \cref{thm:lagrange-polynomials-basis}
+Further, it is well known that the interpolant~$\objm \in \qpoly$ of~$\obj$ on~$\xpt$ can be formulated as a linear combination of the Lagrange polynomials, as detailed in \cref{thm:lagrange-polynomials-basis}
 
 \begin{theorem}
     \label{thm:lagrange-polynomials-basis}
@@ -144,7 +144,7 @@ However, given a poised set, how good is this interpolation set?
 This section briefly discusses this topic and introduces the concept of~$\Lambda$-poisedness.
 
 Suppose that~$\obj$ is thrice differentiable on~$\R^n$.
-It is well-known that for any~$\iter \in \R^n$, we have
+It is well known that for any~$\iter \in \R^n$, we have
 \begin{equation}
     \label{eq:Ciarlet_Raviart_0}
     \abs{\obj(\iter) - \objm(\iter)} \le \frac{\theta}{6} \sum_{i = 1}^m \abs{\lagp[i](\iter)} \norm{x - y^i}^3,
