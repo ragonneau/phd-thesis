@@ -163,12 +163,11 @@ For example, consider \cref{alg:trust-region}, a basic trust-region method for s
     }
 \end{algorithm}
 
-The most critical simplification in \cref{alg:trust-region} lies in \cref{alg:trust-region-success}.
+A critical simplification in \cref{alg:trust-region} lies in \cref{alg:trust-region-success}.
 A complete framework includes a parameter~$\eta_0 \ge 0$ satisfying~$\eta_0 \le \eta_1$, and the condition in \cref{alg:trust-region-success} is replaced by~$\ratio[k] \ge \eta_0$.
-In practice, we usually have~$\eta_0 = 0$.
-However, this parameter genuinely complexifies the theoretical analysis of the trust-region method, and hence, we omit it here for simplicity.
-We consider only the four parameters~$\eta_1$,~$\eta_2$,~$\theta_1$, and~$\theta_2$.
-To choose those parameters, we minimize some measure of the method's expense (e.g., the \glsxtrshort{cpu} time to solve a given set of problems),~$C$ say.
+In practice, it is not uncommon to set~$\eta_0 = 0$.
+
+To choose the parameters~$\eta_1$,~$\eta_2$,~$\theta_1$, and~$\theta_2$, we minimize some measure of the method's expense (e.g., the \glsxtrshort{cpu} time to solve a given set of problems), which will be denoted by~$C$.
 In other words, we wish to solve
 \begin{subequations}
     \label{eq:tuning-algorithms-problem}
@@ -180,9 +179,10 @@ In other words, we wish to solve
 \end{subequations}
 Derivatives of~$C$ cannot be evaluated, if they even exist.
 Moreover, observe that the objective function~$C$ is likely to be undefined if the bound constraints are violated.
-Such a problem is then solved using \gls{dfo} methods, such as the \gls{mads} method~\cite{Audet_Orban_2006}.
-\Citeauthor{Audet_Digabel_Tribes_2019} modified the \gls{mads} method to solve the problem~\cref{eq:tuning-algorithms-problem} with a controlled number of significant digits~\cite{Audet_Digabel_Tribes_2019} to determine parameters that practitioners can use.
-Interestingly, \gls{dfo} methods can be self-tuned using the method presented above.
+Such a problem can be solved using \gls{dfo} methods, such as the \gls{mads} method~\cite{Audet_Orban_2006,Audet_Digabel_Tribes_2019}.
+%\Citeauthor{Audet_Digabel_Tribes_2019} modified the \gls{mads} method to solve the problem~\cref{eq:tuning-algorithms-problem} with a controlled number of significant digits~\cite{Audet_Digabel_Tribes_2019} to determine parameters that practitioners can use.
+
+Interestingly, \gls{dfo} methods can be self-tuned following this methodology.
 The \gls{bfo}~\cite{Porcelli_Toint_2017}, a method for bound-constrained problems mixing continuous and discrete variables, is an example of self-tuned \gls{dfo} methods.\index{DFO@\glsfmtshort{dfo}!model-based!trust-region|)}
 
 \subsection{Hyperparameter tuning in machine learning}
