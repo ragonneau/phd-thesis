@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/08/26 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/09/26 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifinitial
@@ -306,7 +306,8 @@
 
 % Bibliography information processing
 \RequirePackage[%
-    style=numeric-comp,%
+    style=ext-numeric-comp,%
+    articlein=false,%
     sorting=nyt,%
     sortcites=false,%
     maxbibnames=99,%
@@ -315,8 +316,8 @@
     abbreviate=false,%
 ]{biblatex}
 \DefineBibliographyStrings{american}{%
-    backrefpage={Cited on page},%
-    backrefpages={Cited on pages},%
+    backrefpage={Cited on p.},%
+    backrefpages={Cited on pp.},%
 }
 \defbibheading{bibintoc}[\bibname]{%
     \chapter*{#1\markboth{#1}{#1}}%

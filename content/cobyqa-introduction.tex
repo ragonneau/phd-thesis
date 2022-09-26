@@ -118,7 +118,7 @@ See~\cite{Powell_2004b,Powell_2004c},~\cite[\S~4]{Powell_2006}, and~\cite[\S~4]{
 \subsection{A derivative-free trust-region \glsfmtshort{sqp} framework}
 \label{subsec:cobyqa-framework}
 
-We present in this section the derivative-free trust-region \gls{sqp} framework employed by \gls{cobyqa}.
+We now present the derivative-free trust-region \gls{sqp} framework employed by \gls{cobyqa}.
 We denote for convenience by~$\lagm[k]$\nomenclature[Fh]{$\lagm$}{Quadratic model of~$\lag$} the Lagrangian function evaluated on the models, i.e.,
 \begin{equation*}
     \lagm[k](\iter, \lm) \eqdef \objm[k](\iter) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lm_i \conm[k]{i}(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lm_i \in \R$, with~$i \in \iub \cup \ieq$.}
@@ -393,11 +393,11 @@ Hence, from a computational perspective, we decide not to employ this technique 
 \subsection{Improving the geometry of the interpolation set}
 \label{subsec:geometry-improvement}
 
-In this section, we detail the geometry-improving procedure of \gls{cobyqa}, corresponding to \cref{alg:derivative-free-trust-region-sqp-geometry} of \cref{alg:derivative-free-trust-region-sqp}.
+We now detail the geometry-improving procedure, corresponding to \cref{alg:derivative-free-trust-region-sqp-geometry} of \cref{alg:derivative-free-trust-region-sqp}.
 As we mentioned in \cref{ch:interpolation}, the interpolation set has to be reasonably well-poised to ensure the accuracy of the interpolation models.
 However, it is known that model-based \gls{dfo} methods tend to lose the poisedness of their interpolation set as the iterations progress.
 To cope with this difficulty, such methods usually include a geometry-improving mechanism.
-This topic is well studied, see for example~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b,Fasano_Morales_Nocedal_2009,Scheinberg_Toint_2010}.
+This topic is well studied, see, e.g.,~\cite{Conn_Scheinberg_Vicente_2008a,Conn_Scheinberg_Vicente_2008b,Fasano_Morales_Nocedal_2009,Scheinberg_Toint_2010}.
 
 We adapt the geometry-improving strategies designed by \citeauthor{Powell_2009} for \gls{bobyqa}~\cite{Powell_2009} and \gls{lincoa}.
 Briefly speaking, a point~$\bar{y} \in \xpt[k + 1]$ is chosen to be replaced with another one~$\iter[k + 1] + \rstep[k + 1]$, where~$\rstep[k + 1] \in \R^n$ is a \emph{model step} to improve the geometry of~$\xpt[k + 1]$.

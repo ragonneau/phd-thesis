@@ -404,7 +404,7 @@ Note that the dimension of~$\mathcal{T}_{\bar{\iter}, \bar{\lm}}$ is at least~$n
 \subsection{Lagrangian and augmented Lagrangian of the \glsfmtshort{sqp} subproblem}
 \label{subsec:lagrangian-augmented-lagrangian}
 
-In this section, we study the Lagrangian and the augmented Lagrangian of the \gls{sqp} subproblem and observe their relations with those of the original optimization problem.
+In the sequel, we study the Lagrangian and the augmented Lagrangian of the \gls{sqp} subproblem and observe their relations with those of the original optimization problem.
 We also point out that the augmented Lagrangian of the \gls{sqp} subproblem is exactly the approximate augmented Lagrangian used in~\cite{Niu_Yuan_2010,Wang_Yuan_2014}.
 
 For simplicity, instead of the problem~\cref{eq:problem-cobyqa-sqp}, we consider the problem
@@ -640,7 +640,7 @@ The new method that we will present in \cref{ch:cobyqa-introduction} uses a deri
 
 \subsection{Overview of the method}
 
-We present in this section the basic trust-region \gls{sqp} method.
+We now present the basic trust-region \gls{sqp} method.
 The merit function we consider from now on is the~$\ell_2$-merit function, defined by
 \begin{equation*}
     \merit_{\gamma}(\iter) \eqdef \obj(\iter) + \gamma \sqrt{\sum_{i \in \iub} \posp{\con{i}(\iter)}^2 + \sum_{i \in \ieq} \abs{\con{i}(\iter)}^2}, \quad \text{for~$\iter \in \R^n$ and~$\gamma \ge 0$,}
@@ -746,7 +746,7 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
 \index{SQP@\glsfmtshort{sqp}!composite step|(}The \cref{alg:trust-region-sqp-step} of \cref{alg:trust-region-sqp} hides a crucial point: what should~$\step[k]$ approximate if the trust-region subproblem~\cref{eq:trust-region-sqp-subproblem} is infeasible?
 Since the constraints~\cref{eq:trust-region-sqp-subproblem-ub,eq:trust-region-sqp-subproblem-eq} are linear approximations of the constraints~\cref{eq:problem-cobyqa-sqp-ub,eq:problem-cobyqa-sqp-eq}, we cannot guarantee the feasibility of the subproblem~\cref{eq:trust-region-sqp-subproblem}, even if the original problem is feasible.
 
-We review in this section the composite-step approach to coping with this difficulty in the equality-constrained case (i.e.,~$\iub = \emptyset$).
+We review the composite-step approach to coping with this difficulty in the equality-constrained case (i.e.,~$\iub = \emptyset$).
 Most discussions here are covered in~\cite[\S~15.4]{Conn_Gould_Toint_2000}, except \cref{prop:vardi-byrd-omojokun}, which gives a simple observation on the Vardi approach introduced below.
 
 The composite-step approach is to define~$\step[k]$ as the sum of two steps, a \emph{normal step}~$\nstep[k]$ that aims at reducing the constraint violation, and a \emph{tangential step}~$\tstep[k]$ that aims at reducing the objective function~\cref{eq:trust-region-sqp-subproblem-obj} without increasing the violation of the linearized constraints.

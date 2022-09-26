@@ -106,7 +106,7 @@ In the remaining of this chapter, we focus our discussions on quadratic models.\
 \subsection{Lagrange polynomials}
 \label{sec:lagrange-polynomials}
 
-Throughout this section, we fix a poised interpolation set~$\xpt = \set{y^1, y^2, \dots, y^m} \subseteq \R^n$ of~$m = \dim \qpoly = (n + 1)(n + 2) / 2$ points.
+Assume that~$\xpt = \set{y^1, y^2, \dots, y^m} \subseteq \R^n$ is a poised interpolation set of~$m = (n + 1)(n + 2) / 2$ points.
 We introduce the Lagrange polynomials for the interpolation problem
 \begin{equation}
     \label{eq:interpolation-conditions-quadratic}
@@ -214,8 +214,8 @@ An interpolant~$\objm$ of~$\obj$ is then defined as a solution of
 Two examples of the functional~$\mathcal{F}$ are given in \cref{subsec:least-frobenius-norm-models,subsec:symmetric-broyden-updates}.
 If~$m = \dim \qpoly$ and if~$\xpt$ is poised in the sense of \cref{def:poisedness}, then the underdetermined interpolant reduces to the unique model that satisfies the interpolation conditions.
 
-In the remaining of this section, we adapt the definitions and some properties presented in the previous section to special cases of underdetermined interpolation.
-We still briefly present two underdetermined schemes, namely the least Frobenius norms scheme and the derivative-free symmetric Broyden update.
+In what follows, we adapt the definitions and some properties presented in the previous section to special cases of underdetermined interpolation.
+We briefly present two underdetermined schemes; the least Frobenius norms scheme and the derivative-free symmetric Broyden update.
 The latter is of particular interest to us, because it underlies the three most recent \gls{dfo} solvers of Powell and our new model-based \gls{dfo} method, presented in \cref{ch:cobyqa-introduction}.
 
 \subsection{Least Frobenius norm quadratic models}
@@ -339,7 +339,7 @@ Moreover, one can show that the set~$\xpt$ is~$\Lambda$-poised if and only if th
 \subsection{Quadratic models based on the symmetric Broyden update}
 \label{subsec:symmetric-broyden-updates}
 
-\index{PSB@\glsfmtshort{psb}!derivative-free|(}In this section, we present another functional~$\mathcal{F}$ that can be used in the variational problem~\cref{eq:underdetermined-models}.
+\index{PSB@\glsfmtshort{psb}!derivative-free|(}Now, we present another functional~$\mathcal{F}$ that can be used in the variational problem~\cref{eq:underdetermined-models}.
 It is introduced by \citeauthor{Powell_2004b}~\cite{Powell_2004b}.
 It takes up the freedom bequeathed by the interpolation conditions~\cref{eq:interpolation-conditions-quadratic} by minimizing the difference between the Hessian matrix of the interpolant and a prior estimation~$H_{\text{old}} \in \R^{n \times n}$ of this matrix instead of minimizing the Frobenius norm of the Hessian matrix.
 More specifically, we build a quadratic model~$\objm$ by solving
@@ -395,7 +395,7 @@ Therefore, following \citeauthor{Powell_2013}~\cite{Powell_2013}, we will also r
 \subsection{Implementation in \glsfmtlong{dfo} methods}
 \label{subsec:implementation-symmetric-broyden-update}
 
-We consider in this section a model-based \gls{dfo} algorithm that builds models by the derivative-free symmetric Broyden update, and we summarize the implementation of this update, as proposed by \citeauthor{Powell_2004b}~\cite{Powell_2004b,Powell_2004c}.
+We consider a model-based \gls{dfo} algorithm that builds models by the derivative-free symmetric Broyden update, and we summarize the implementation of this update, as proposed by \citeauthor{Powell_2004b}~\cite{Powell_2004b,Powell_2004c}.
 The implementation can straightforwardly be adapted to construct minimum Frobenius norm models.
 
 For each~$k \ge 0$, we denote by~$\iter[k] \in \R^n$ and the~$k$th iterate, and the~$k$th interpolation set is~$\xpt[k] = \set{y^{k, 1}, y^{k, 2}, \dots, y^{k, m}} \subseteq \R^n$, with~$\iter[k] \in \xpt[k]$.

@@ -167,7 +167,7 @@ A critical simplification in \cref{alg:trust-region} lies in \cref{alg:trust-reg
 A complete framework includes a parameter~$\eta_0 \ge 0$ satisfying~$\eta_0 \le \eta_1$, and the condition in \cref{alg:trust-region-success} is replaced by~$\ratio[k] \ge \eta_0$.
 In practice, it is not uncommon to set~$\eta_0 = 0$.
 
-To choose the parameters~$\eta_1$,~$\eta_2$,~$\theta_1$, and~$\theta_2$, we minimize some measure of the method's expense (e.g., the \glsxtrshort{cpu} time to solve a given set of problems), which will be denoted by~$C$.
+To choose the parameters~$\eta_1$,~$\eta_2$,~$\theta_1$, and~$\theta_2$, we minimize some measure of the expense of the method (e.g., the \glsxtrshort{cpu} time to solve a given set of problems), which will be denoted by~$C$.
 In other words, we wish to solve
 \begin{subequations}
     \label{eq:tuning-algorithms-problem}
@@ -547,7 +547,7 @@ The work of \citeauthor{Bandeira_Scheinberg_Vicente_2012} has motivated many inv
 \label{subsec:finite-difference}
 
 Perhaps the most straightforward approach to solving \gls{dfo} problems is to make finite-difference approximations of the derivatives and then employ derivative-based methods.
-This section  briefly discusses the advantages and disadvantages of this approach.
+Here, we briefly discuss the advantages and disadvantages of this approach.
 
 The~$i$th coordinate of the gradient of a smooth function~$\obj : \R^n \to \R$ at a point~$\iter \in \R^n$ can be approximated by the forward difference
 \begin{equation}
@@ -677,7 +677,7 @@ Therefore, a larger value of~$d_s$ indicates a better performance of~$s$.
 \subsection{An illustrative example}
 \label{subsec:profiles-example}
 
-In this section, as an example, we compare three solvers using performance and data profiles.
+As an example, we now compare three solvers using performance and data profiles.
 These solvers, constituting the set~$\xsv$, are
 \begin{enumerate}
     \item \gls{newuoa} (see \cref{subsec:newuoa}), a model-based \gls{dfo} method by Powell~\cite{Powell_2006}; and
@@ -881,7 +881,7 @@ The main contributions of this thesis are as follows.
         \Gls{cobyqa} is competitive with \gls{newuoa} on unconstrained problems and outperforms \gls{bobyqa} on bound-constrained ones, while being able to handle more general problems.
         Compared with \gls{lincoa} and \gls{cobyla}, a strength of \gls{cobyqa} is that it always respects the bound constraints, while \gls{lincoa} and \gls{cobyla} do not.
         Such a strength is crucial in many applications, as is requested by engineers from IRT Saint Exup{\'{e}}ry.
-        On linearly-constrained problems, \gls{cobyqa} performs much better than \gls{lincoa} if the problems also contain bound constraints that cannot be violated.
+        On linearly constrained problems, \gls{cobyqa} performs much better than \gls{lincoa} if the problems also contain bound constraints that cannot be violated.
         % However, the current version of \gls{cobyqa} does not perform as well as \gls{lincoa}.
         Most importantly, \gls{cobyqa} outperforms \gls{cobyla} on all types of problems, no matter whether bound constraints (if any) can be violated or not.
         % though \gls{cobyla} does not always respect the bound constraints.
