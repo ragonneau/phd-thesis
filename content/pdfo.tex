@@ -195,7 +195,7 @@ It first removes a point~$y \in \xpt[k]$, and builds~$\xpt[k + 1]$ by including 
     \label{eq:biglag}
     \begin{align}
         \max_{x \in \R^n}   & \quad \abs{\lagp[y](x)}\\
-        \text{s.t.}         & \quad \norm{x - \iter} \le \bar{\rad}^k, \label{eq:biglag-tr}
+        \text{s.t.}         & \quad \norm{x - \iter[k]} \le \bar{\rad}^k, \label{eq:biglag-tr}
     \end{align}
 \end{subequations}
 where~$\lagp[y] \colon \R^n \to \R$ denotes the Lagrange function associated with~$y$ (see \cref{sec:lagrange-polynomials} for details), and~$\bar{\rad}^k > 0$ is defined according to the value of~$\rad[k]$ and the diameter of~$\xpt[k]$.

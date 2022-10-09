@@ -39,5 +39,8 @@ jobs:
       - name: Store artifacts
         uses: actions/upload-artifact@v3
         with:
+          path: |
+             thesis_*.pdf
+             figures/thesis-figure*.pdf
           path: thesis_*.pdf
           if-no-files-found: error

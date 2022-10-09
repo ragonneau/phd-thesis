@@ -4,6 +4,6 @@ set -e
 set -x
 
 TIMESTAMP=$(date "+%FT%H-%M-%S%Z")
-for f in *.pdf; do
-    mv "$f" "${f%.*}_${GITHUB_ACTOR}_${TIMESTAMP}.pdf"
+for f in *.pdf figures/*.pdf; do
+    cp "$f" "${f%.*}_${GITHUB_ACTOR}_${TIMESTAMP}.pdf"
 done
