@@ -90,15 +90,15 @@
 \newtheorem*{remark}{Remark}
 
 % Display mathematical environments in boxes
-\tcbset{%
-    after skip=\baselineskip,%
-    before skip=\baselineskip,%
-    boxrule=0pt,%
-    breakable,%
-    colback=gray!15,%
-    enhanced jigsaw,%
-    frame hidden,%
-    shield externalize,%
+\tcbset{
+    after skip=\baselineskip,
+    before skip=\baselineskip,
+    boxrule=0pt,
+    breakable,
+    colback=gray!15,
+    enhanced jigsaw,
+    frame hidden,
+    shield externalize,
 }
 \tcolorboxenvironment{assumption}{borderline west={4pt}{0pt}{black!30}}
 \tcolorboxenvironment{condition}{borderline west={4pt}{0pt}{black!30}}
@@ -124,7 +124,6 @@
 \newcommand{\auglagalt}{\widetilde{\mathcal{L}}_{\mathsf{A}}}
 \newcommandx{\ball}[2][1={},2={}]{\mathcal{B}\ifthenelse{\equal{#1}{}}{}{_{#1}}\ifthenelse{\equal{#2}{}}{}{^{#2}}}
 \newcommand{\con}[1]{c_{#1}}
-% \newcommand{\conm}[2][]{\hat{c}_{\ifthenelse{\equal{#1}{}}{}{{#1}, }#2}}
 \newcommand{\conm}[2][]{\hat{c}_{#2}\ifthenelse{\equal{#1}{}}{}{^{#1}}}
 \newcommand{\fset}{\Omega}
 \newcommand{\iter}[1][]{x\ifthenelse{\equal{#1}{}}{}{^{#1}}}

@@ -12,7 +12,7 @@
 % This work has the LPPL maintenance status `maintained'.
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
-\documentclass[initial]{polyu-thesis}
+\documentclass{polyu-thesis}
 \usepackage[final]{microtype}
 \usepackage{nameref}
 
@@ -40,18 +40,18 @@
 
 % Dedicated macros
 \usepackage{xstring}
-\newcommand{\drawprofiles}[4]{%
-    \def\selectsolvers{#2}%
-    \def\selectcsv{figures/#3}%
-    \def\selectprofile{#4}%`'
-    \ifthenelse{\equal{#1}{performance}}{%
-        \def\selectxlabel{$\log_2(\alpha)$}%
-        \def\selectylabel{Performance profiles~$\rho_s(\alpha)$}%
-    }{%
-        \def\selectxlabel{Number of simplex gradients~$\alpha$}%
-        \def\selectylabel{Data profiles~$d_s(\alpha)$}%
+\newcommand{\drawprofiles}[4]{
+    \def\selectsolvers{#2}
+    \def\selectcsv{figures/#3}
+    \def\selectprofile{#4}
+    \ifthenelse{\equal{#1}{performance}}{
+        \def\selectxlabel{$\log_2(\alpha)$}
+        \def\selectylabel{Performance profiles~$\rho_s(\alpha)$}
+    }{
+        \def\selectxlabel{Number of simplex gradients~$\alpha$}
+        \def\selectylabel{Data profiles~$d_s(\alpha)$}
     }
-    \input{utils/profiles.tex}%
+    \input{utils/profiles.tex}
 }
 \newcommand{\drawperformanceprofiles}[3]{\drawprofiles{performance}{#1}{#2}{#3}}
 \newcommand{\drawdataprofiles}[3]{\drawprofiles{data}{#1}{#2}{#3}}
@@ -60,7 +60,7 @@
 \title{Model-Based Derivative-Free Optimization Methods and Software}
 \author{Tom Ma{\"{e}}l Ragonneau}
 \DTMsavedate{ini}{2022-08-25}  % date of creation
-\DTMsavedate{rev}{2022-08-25}  % date of revision
+\DTMsavedate{rev}{2022-10-20}  % date of revision
 \date{\DTMusedate{ini}}
 \newcommand{\degree}{Doctor of Philosophy}
 \newcommand{\university}{The Hong Kong Polytechnic University}
@@ -100,9 +100,9 @@
 \cleardoublepage
 \include{utils/nomenclature}
 
-\ifdraft{%
-    \cleardoublepage%
-    \listoftodos%
+\ifdraft{
+    \cleardoublepage
+    \listoftodos
 }{}
 
 \mainmatter

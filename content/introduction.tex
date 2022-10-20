@@ -180,7 +180,6 @@ In other words, we wish to solve
 Derivatives of~$C$ cannot be evaluated, if they even exist.
 Moreover, observe that the objective function~$C$ is likely to be undefined if the bound constraints are violated.
 This problem can be solved using \gls{dfo} methods, such as the \gls{mads} method~\cite{Audet_Orban_2006,Audet_Digabel_Tribes_2019}.
-%\Citeauthor{Audet_Digabel_Tribes_2019} modified the \gls{mads} method to solve the problem~\cref{eq:tuning-algorithms-problem} with a controlled number of significant digits~\cite{Audet_Digabel_Tribes_2019} to determine parameters that practitioners can use.
 
 Interestingly, \gls{dfo} methods can be self-tuned following this methodology.
 The \gls{bfo}~\cite{Porcelli_Toint_2017}, a method for bound-constrained problems mixing continuous and discrete variables, is an example of self-tuned \gls{dfo} methods.\index{DFO@\glsfmtshort{dfo}!model-based!trust-region|)}
@@ -346,7 +345,6 @@ We also note that dedicated constraint qualifications may exist when the problem
     \lag(\iter, \lm) \eqdef \obj(\iter) + \sum_{\mathclap{i \in \iub \cup \ieq}} \lm_i \con{i}(\iter), \quad \text{for~$\iter \in \R^n$ and~$\lm_i \in \R$ for~$i \in \iub \cup \ieq$},
 \end{equation*}
 where~$\lm = [\lm_i]_{i \in \iub \cup \ieq}^{\T}$.
-% \Cref{thm:first-order-necessary-conditions} introduces the first-order necessary conditions for a point to be a local solution of problem~\cref{eq:problem-introduction}.
 
 \begin{theorem}[First-order necessary conditions~{\cite[Thm.~12.1]{Nocedal_Wright_2006}}]
     \label{thm:first-order-necessary-conditions}
@@ -589,7 +587,6 @@ This freedom allows us to reuse most of the interpolation points, which is essen
 
 \Cref{sec:benchmarking-tools} will present some simple numerical experiments after introducing the benchmarking tools we use in this thesis for comparing \gls{dfo} solvers.
 These results will demonstrate that the methods based on finite differences are highly sensitive to noise.
-%Unsurprisingly, the methods suffer if the difference parameter does not consider the noise level and the smoothness of the functions.
 Unsurprisingly, the methods suffer if the difference parameter is not adapted to the noise level.
 
 \section{Benchmarking tools for \glsfmtlong{dfo} methods}
@@ -877,16 +874,12 @@ The main contributions of this thesis are as follows.
         We use this method to deal with the normal subproblem of \gls{cobyqa}.
         \item \Cref{ch:cobyqa-implementation} presents the Python implementation of \gls{cobyqa}, which is open-source and publicly available at \url{https://www.cobyqa.com/}.
         \Cref{sec:cobyqa-experiments} details numerical experiments that compare \gls{cobyqa} with Powell's solvers.
-        % We note that this implementation is highly nontrivial due to the nature of \gls{dfo}.
         \Gls{cobyqa} is competitive with \gls{newuoa} on unconstrained problems and outperforms \gls{bobyqa} on bound-constrained ones, while being able to handle more general problems.
         Compared with \gls{lincoa} and \gls{cobyla}, a strength of \gls{cobyqa} is that it always respects the bound constraints, while \gls{lincoa} and \gls{cobyla} do not.
         Such a strength is crucial in many applications, as is requested by engineers from IRT Saint Exup{\'{e}}ry.
         On linearly constrained problems, \gls{cobyqa} performs much better than \gls{lincoa} if the problems also contain bound constraints that cannot be violated.
-        % However, the current version of \gls{cobyqa} does not perform as well as \gls{lincoa}.
         Most importantly, \gls{cobyqa} outperforms \gls{cobyla} on all types of problems, no matter whether bound constraints (if any) can be violated or not.
-        % though \gls{cobyla} does not always respect the bound constraints.
         As a general-purpose solver, \gls{cobyqa} is a good successor to \gls{cobyla}.
-        % Indeed, implementing \gls{cobyqa} requires implementing many components (trust-region subproblem solvers, updating of quadratic models, etc) that must be correct independently, but also work together when integrating them.
     \end{enumerate}
 \end{enumerate}
 

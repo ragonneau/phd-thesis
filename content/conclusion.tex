@@ -14,8 +14,6 @@
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \chapter{Conclusion and future research directions}
 \label{ch:conclusion}
-% \addcontentsline{toc}{chapter}{\nameref*{ch:conclusion}}
-% \markboth{\nameref*{ch:conclusion}}{\nameref*{ch:conclusion}}
 
 \section{Conclusion}
 
@@ -59,21 +57,4 @@ We briefly mention four of them.
     It will be interesting to investigate the implication of our interpretation on manifold optimization.
     \item The connections between the \gls{sqp} and the augmented Lagrangian methods that we mentioned in \cref{subsec:lagrangian-augmented-lagrangian} also deserve further investigations.
     We will study the implications of these connections on the theory and practice of the \gls{sqp} and the augmented Lagrangian methods, trying to develop theories that bridge these two methodologies and algorithms that combine their strengths.
-    % \item We showed in \cref{sec:optimal-interpolation-set} that an interpolation set for quadratic underdetermined interpolation introduced by \citeauthor{Powell_2006}~\cite{Powell_2006} is optimal to some extend when the number of interpolation points is~$2n + 1$.
-    % However, we assume in this study that this number of points was at most~$2n + 1$, although the original interpolation set is also define for more.
-    % Therefore, we will later extend the properties shown to the general case.
-    % \item We presented our software \gls{pdfo} for MATLAB and Python.
-    % However, Julia~\cite{Bezanson_Etal_2017} is gaining more and more interest for researchers and practitioners.
-    % Therefore, the author and Dr.\ Zaikun Zhang plan to implement an Julia version of \gls{pdfo}.
-    % \item We established in \cref{thm:sqp-path} a new result on the subproblem of the \gls{sqp} framework.
-    % More specifically, it shows that the objective function of the \gls{sqp} subproblem is a natural approximation of the original objective function in the tangent space of the contour of the constraints at the current iterate.
-    % However, we established this result in the case where no inequality constraint is provided.
-    % Therefore, we plan to extend this result in the future to the general case.
-    % \item We showed in \cref{prop:vardi-byrd-omojokun} an intriguing relation between the Vardi approach and the Byrd-Omojokun approach, presented in \cref{subsec:composite-step-equality}.
-    % More specifically, we showed that the normal step of the Vardi approach was a truncated Newton step for normal subproblem the Byrd-Omojokun approach.
-    % We established however this result only in the equality-constrained case, and we will extend it in the future to the general case.
-    % \item We plan to study in the near future the convergence properties of \gls{cobyqa}.
-    % As we discussed, numerical experiments indicate that the method works in practice, but mathematical proofs are yet to be constructed.
-    % \item Finally, we plan to implement \gls{cobyqa} in Fortran, as the current Python version can be slow for high-dimensional problem, because Python is an interpreted language.
-    % Moreover, we will fine-tune the implementation to improve the performance, particularly in the linearly and nonlinearly constrained cases.
 \end{enumerate}

@@ -220,7 +220,6 @@ By expressing its subproblem in this form, we see that the \gls{sqp} method is a
 
 \subsubsection{Approximation of the objective function in the tangent space of a surface}
 
-% Inspired by an observation in~\cite[\S~2]{Gill_Wong_2011}, we can also interpret the \gls{sqp} subproblem as minimizing an approximation of the objective function in the tangent space of the feasible set.
 Inspired by an observation in~\cite[\S~2]{Gill_Wong_2011}, we can also interpret the objective function of the \gls{sqp} subproblem as an approximation of the original objective function in the tangent space of a particular surface described below.
 As shown in \cref{thm:sqp-path}, when approximating~$\obj$ in this space, we will naturally get the Hessian matrix of the Lagrangian in the second-order term.
 
@@ -243,9 +242,6 @@ Let~$\bar{\iter} \in \R^n$,~$\bar{\lm} \in \R^m$ be given, and define
     Q(\step) \eqdef \obj(\bar{\iter}) + \nabla \obj(\bar{\iter})^{\T} \step + \frac{1}{2} \step^{\T} \nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm}) \step.
 \end{equation*}
 If~$\bar{\iter}$ and~$\bar{\lm}$ represent the current iterate and approximate Lagrange multiplier, then~$Q$ is the objective function of the \gls{sqp} subproblem with an exact second-order term.
-% Therefore, the \gls{sqp} subproblem approximates~$\obj$ by~$Q$ and the feasible set by its tangent space.
-% Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tangent space, which turns out to be true, as detailed by \cref{thm:sqp-path}.
-% Such an approximation is reasonable only if~$Q$ approximates~$\obj$ in this tangent space.
 At first glance,~$Q$ does not seem to be a natural approximation of~$\obj$ due to its second-order term.
 However, this approximation turns out to be indeed natural if we focus on the contour surface of~$h$ at~$\bar{\iter}$ and its tangent space.
 This is detailed in \cref{thm:sqp-path}.
@@ -253,7 +249,6 @@ This is detailed in \cref{thm:sqp-path}.
 \begin{theorem}
     \label{thm:sqp-path}
     Assume that~$\obj$ and~$h$ are twice differentiable with~$\nabla^2 \obj$ being locally Lipschitz continuous.
-    % Suppose that~$\bar{\iter}$ is feasible for~\cref{eq:problem-sqp-econ}.
     Consider a curve parametrized by~$\iter : \R \to \R^n$, satisfying
     \begin{equation}
         \label{eq:sqp-path}
@@ -334,7 +329,6 @@ This set equals~$\mathcal{T}_{\bar{\iter}}$ only if~$\bar{\iter}$ is feasible so
 When~$\bar{\iter}$ is infeasible, $\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ is a shifted copy of~$\mathcal{T}_{\bar{\iter}}$ as illustrated in \cref{fig:sqp-path}.
 The distance between~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$ and~$\mathcal{T}_{\bar{\iter}}$ is~$\delta_{\bar{\iter}} = \norm{\step[\ast]} = \norm{\nabla h(\bar{\iter})^{\dagger} h(\bar{\iter})}$, where~$\step[\ast]$ is the projection of~$0 \in \mathcal{T}_{\bar{\iter}}$ onto~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, and~$\nabla h(\bar{\iter})^{\dagger}$ denotes the Moore-Penrose pseudoinverse of~$\nabla h(\bar{\iter})$.
 The purpose of this shift is to improve the feasibility.
-% Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion provides~$\norm{h(\bar{\iter} + \step)} =\bigo(\norm{\step}^2)$ for all $\step$ in a bounded subset of~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, whereas~$\norm{h(\bar{\iter} + \step)} = \norm{h(\bar{\iter})} + \bigo(\norm{\step}^2)$ if~$\step$ stays in a bounded subset of~$\mathcal{T}_{\bar{\iter}}$.
 Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion provides~$\norm{h(\bar{\iter} + \step)} = \bigo(\norm{\step}^2)$ for all~$\step$ in a bounded subset of~$\mathcal{F}_{\bar{\iter}}^{\mathsf{L}}$, which further implies~$\norm{h(\bar{\iter} + \step)} = \bigo(\norm{h(\bar{\iter})}^2)$ unless~$\norm{\step}$ is much larger than~$\norm{\step[\ast]}$; in contrast,~$\norm{h(\bar{\iter} + \step)} = \norm{h(\bar{\iter})} + \bigo(\norm{\step}^2)$ if~$\step$ stays in a bounded subset of~$\mathcal{T}_{\bar{\iter}}$.
 
 \begin{figure}[ht]
@@ -360,8 +354,6 @@ Indeed, if~$h$ is twice continuously differentiable, then its Taylor expansion p
 \end{figure}
 
 Therefore, the \gls{sqp} subproblem models the objective function in the tangent space of the contour surface of the constraint at the current iterate, and then minimizes this model in an affine space that shifts the tangent space towards improvement of feasibility.
-% Thanks to the~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$ term, the model enjoys a second to third order accuracy if $(\bar{\iter}, \bar{\lm})$ is a good approximate \gls{kkt} pair.
-% If we replace~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$ with~$\nabla^2 \obj(\bar{\iter})$, the accuracy is only second order.
 We observe that a smaller magnitude of~$\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}$ implies a better accuracy of the model, as indicated by the error estimation in \cref{thm:sqp-path}.
 If~$(\bar{\iter}, \bar{\lm})$ is close to a \gls{kkt} pair, then~$\norm{\nabla \obj(\bar{\iter}) + \nabla h(\bar{\iter})^{\T} \bar{\lm}}$ is small.
 On the other hand, if we defined~$\nabla^2 Q$ by~$\nabla^2 \obj(\bar{\iter})$ instead of~$\nabla_{x, x}^2 \lag(\bar{\iter}, \bar{\lm})$, then under the assumptions of \cref{thm:sqp-path}, we would have
@@ -593,7 +585,6 @@ where~$\lm[\mathsf{LS}](\iter)$ denotes the least-norm solution to
     \min_{\lm} @@ \norm[\bigg]{\nabla \obj(\iter) + \sum_{i \in \ieq} \lm_i \nabla \con{i}(x)},
 \end{equation}
 where~$\lm = [\lm_i]_{i \in \ieq}^{\T}$.
-% The least-squares Lagrange multipliers attempts to satisfy the \gls{kkt} conditions as much as possible.
 If~$\iter[\ast]$ is a solution to the problem~\cref{eq:problem-cobyqa-sqp}, then~$(\iter[\ast], \lm(\iter[\ast]))$ is a \gls{kkt} pair.
 When~$\iub \neq \emptyset$, to achieve the same property, the complementary slackness conditions must be taken into account in~\cref{eq:least-squares-lagrange-multipliers}.
 
@@ -704,7 +695,6 @@ A similar framework for equality-constrained problems can be found in~\cite[\S~2
 \label{subsec:penalty-parameter-merit-function}
 
 To ensure that the requirement on \cref{alg:trust-region-sqp-penalty} of \cref{alg:trust-region-sqp} can be satisfied, when choosing the trial step~$\step[k]$, we make sure that there exists~$\bar{\gamma} \ge 0$ such that for all~$\gamma \ge \bar{\gamma}$, the property~$\meritm[k](\step[k]) < \meritm[k](0)$ is guaranteed.
-% Recall that we define~$\meritm[k]$ as the~$\ell_2$-merit function associated with the \gls{sqp} subproblem.
 According to the aforementioned definition of~$\meritm[k]$, this can be achieved if the step~$\step[k]$ satisfies either
 \begin{equation*}
     \sum_{i \in \iub} \posp{\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step[k]}^2 + \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \step[k]]^2 < \sum_{i \in \iub} \posp{\con{i}(\iter[k])}^2 + \sum_{i \in \ieq} \con{i}(\iter[k])^2,
@@ -863,7 +853,6 @@ It first takes a normal step~$\nstep[k]$ by solving approximately the problem~\c
 \begin{equation*}
     \tau = \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} \nstep[k]]^2.
 \end{equation*}
-% and solves~\cref{eq:cdt-composite-step-original}.
 The \gls{cdt} approach does not contain a tangential step explicitly, but we can define it as~$\tstep[k] = \step[k] - \nstep[k]$, which solves~\cref{eq:tangential-step-original} with
 \begin{equation*}
     \mathcal{V} = \set[\bigg]{d \in \R^n : \sum_{i \in \ieq} [\con{i}(\iter[k]) + \nabla \con{i}(\iter[k])^{\T} (\nstep[k] + \step)]^2 \le \tau}.

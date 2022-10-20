@@ -24,33 +24,33 @@
     \pgfmathparse{\selectsolvers[0]}
     \let\selectsolver\pgfmathresult\relax
     \getxmaxcsv{x\selectprofile_\selectsolver}
-    \begin{axis}[%
-        width=205pt,%
-        xmin=0,%
-        xmax=0.55*\selectxmaxcsv,%
-        ymin=0,%
-        ymax=1,%
-        minor y tick num=1,%
-        yminorticks=true,%
-        ytick={0,0.2,...,1},%
-        cycle list name=profiles,%
-        legend pos=south east,%
-        xlabel={\selectxlabel},%
-        ylabel={\selectylabel},%
-        xticklabel style={/pgf/number format/1000 sep={}},%
+    \begin{axis}[
+        width=205pt,
+        xmin=0,
+        xmax=0.55*\selectxmaxcsv,
+        ymin=0,
+        ymax=1,
+        minor y tick num=1,
+        yminorticks=true,
+        ytick={0,0.2,...,1},
+        cycle list name=profiles,
+        legend pos=south east,
+        xlabel={\selectxlabel},
+        ylabel={\selectylabel},
+        xticklabel style={/pgf/number format/1000 sep={}},
     ]
         \pgfmathparse{dim{\selectsolvers}-1}
         \let\selectlastindex\pgfmathresult\relax
-        \foreach \i in {0,1,...,\selectlastindex} {%
-            \pgfmathparse{\selectsolvers[\i]}%
-            \let\selectsolver\pgfmathresult\relax%
-            \StrSubstitute{\selectsolver}{-}{~}[\selectsolverescaped]%
-            \addplot table[%
-            x=x\selectprofile_\selectsolver,%
-            y=y\selectprofile,%
-            col sep=comma,%
-            ]{\selectcsvread};%
-            \addlegendentryexpanded{\selectsolverescaped}%
+        \foreach \i in {0,1,...,\selectlastindex} {
+            \pgfmathparse{\selectsolvers[\i]}
+            \let\selectsolver\pgfmathresult\relax
+            \StrSubstitute{\selectsolver}{-}{~}[\selectsolverescaped]
+            \addplot table[
+            x=x\selectprofile_\selectsolver,
+            y=y\selectprofile,
+            col sep=comma,
+            ]{\selectcsvread};
+            \addlegendentryexpanded{\selectsolverescaped}
         }
     \end{axis}
 \end{tikzpicture}

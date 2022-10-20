@@ -13,7 +13,7 @@
 %
 % The Current Maintainer of this work is Tom M. Ragonneau.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{polyu-thesis}[2022/09/26 PolyU thesis document class]
+\ProvidesClass{polyu-thesis}[2022/10/20 PolyU thesis document class]
 
 % Load book class as basis
 \newif\ifinitial
@@ -23,16 +23,16 @@
 \LoadClass[11pt]{book}
 
 % General packages
-\RequirePackage[%
-    a4paper,%
-    includemp,%
-    top=33.48mm,%
-    left=25.20mm,%
-    right=4.80mm,%
-    bottom=33.48mm,%
-    marginparwidth=30mm,%
-    marginparsep=3mm,%
-    footskip=15mm,%
+\RequirePackage[
+    a4paper,
+    includemp,
+    top=33.48mm,
+    left=25.20mm,
+    right=4.80mm,
+    bottom=33.48mm,
+    marginparwidth=30mm,
+    marginparsep=3mm,
+    footskip=15mm,
 ]{geometry}
 \RequirePackage[dvipsnames]{xcolor}
 \RequirePackage[american]{babel}
@@ -45,37 +45,35 @@
 \usepackage{longtable}
 \usepackage{multirow}
 \RequirePackage[en-US]{datetime2}
-% \RequirePackage{footnote}
-% \RequirePackage[bottom]{footmisc}
 
 % Latin and Chinese fonts
 \RequirePackage[T1]{fontenc}
 \RequirePackage{fontspec}
 \RequirePackage{xeCJK}
-\newfontfamily{\regularheader}[%
-    Path=fonts/Roboto/,%
-    Extension=.ttf,%
-    UprightFont=*-Regular,%
-    BoldFont=*-Bold,%
-    ItalicFont=*-Italic,%
-    BoldItalicFont=*-BoldItalic,%
+\newfontfamily{\regularheader}[
+    Path=fonts/Roboto/,
+    Extension=.ttf,
+    UprightFont=*-Regular,
+    BoldFont=*-Bold,
+    ItalicFont=*-Italic,
+    BoldItalicFont=*-BoldItalic,
 ]{Roboto}
 \setmainfont{TeX Gyre Pagella}
-\setCJKmainfont[%
-    Path=fonts/NotoSerifTC/,%
-    Extension=.otf,%
-    UprightFont=*-Medium,%
-    BoldFont=*-Bold,%
+\setCJKmainfont[
+    Path=fonts/NotoSerifTC/,
+    Extension=.otf,
+    UprightFont=*-Medium,
+    BoldFont=*-Bold,
 ]{NotoSerifTC}
-\setCJKsansfont[%
-    Path=fonts/NotoSerifTC/,%
-    Extension=.otf,%
-    UprightFont=*-Medium,%
+\setCJKsansfont[
+    Path=fonts/NotoSerifTC/,
+    Extension=.otf,
+    UprightFont=*-Medium,
 ]{NotoSerifTC}
-\setCJKmonofont[%
-    Path=fonts/NotoSerifTC/,%
-    Extension=.otf,%
-    UprightFont=*-Medium,%
+\setCJKmonofont[
+    Path=fonts/NotoSerifTC/,
+    Extension=.otf,
+    UprightFont=*-Medium,
 ]{NotoSerifTC}
 
 % Spacing between lines
@@ -89,23 +87,23 @@
 \newcommand{\textmark}[2]{\textbf{#1}\quad\color{NavyBlue}#2}
 \renewcommand*{\chaptermark}[1]{\markboth{\textmark{\chaptername\ \thechapter}{#1}}{}}
 \renewcommand*{\sectionmark}[1]{\markright{\textmark{\thesection}{#1}}}
-\fancypagestyle{plain}{%
-    \fancyhf{}%
-    \renewcommand{\headrulewidth}{0pt}%
-    \renewcommand{\footrulewidth}{0pt}%
-    \fancyfootoffset[OR]{1.85cm}%
-    \fancyfoot[OR]{\ \regularheader{\color{NavyBlue}\rule[-18.48mm]{1.25pt}{21.98mm}}\hspace*{10pt}\begin{minipage}[b]{1.5cm}\normalsize\textbf{\thepage}\end{minipage}}%
-    \fancyfootoffset[EL]{1.85cm}%
-    \fancyfoot[EL]{\regularheader\begin{minipage}[b]{1.5cm}\raggedleft\normalsize\textbf{\thepage}\end{minipage}\hspace*{10pt}{\color{NavyBlue}\rule[-18.48mm]{1.25pt}{21.98mm}}}%
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
+    \fancyfootoffset[OR]{1.85cm}
+    \fancyfoot[OR]{\ \regularheader{\color{NavyBlue}\rule[-18.48mm]{1.25pt}{21.98mm}}\hspace*{10pt}\begin{minipage}[b]{1.5cm}\normalsize\textbf{\thepage}\end{minipage}}
+    \fancyfootoffset[EL]{1.85cm}
+    \fancyfoot[EL]{\regularheader\begin{minipage}[b]{1.5cm}\raggedleft\normalsize\textbf{\thepage}\end{minipage}\hspace*{10pt}{\color{NavyBlue}\rule[-18.48mm]{1.25pt}{21.98mm}}}
 }
-\fancypagestyle{main}{%
-    \fancyhf{}%
-    \renewcommand{\headrulewidth}{0pt}%
-    \renewcommand{\footrulewidth}{0pt}%
-    \fancyfootoffset[OR]{1.85cm}%
-    \fancyfoot[OR]{\ \regularheader\footnotesize\rightmark\hspace*{1pc}{\color{NavyBlue}\rule[-18.48mm]{1.25pt}{21.98mm}}\hspace*{10pt}\begin{minipage}[b]{1.5cm}\normalsize\textbf{\thepage}\end{minipage}}%
-    \fancyfootoffset[EL]{1.85cm}%
-    \fancyfoot[EL]{\regularheader\footnotesize\begin{minipage}[b]{1.5cm}\raggedleft\normalsize\textbf{\thepage}\end{minipage}\hspace*{10pt}{\color{NavyBlue}\rule[-18.48mm]{1.25pt}{21.98mm}}\hspace*{1pc}\leftmark}%
+\fancypagestyle{main}{
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
+    \fancyfootoffset[OR]{1.85cm}
+    \fancyfoot[OR]{\ \regularheader\footnotesize\rightmark\hspace*{1pc}{\color{NavyBlue}\rule[-18.48mm]{1.25pt}{21.98mm}}\hspace*{10pt}\begin{minipage}[b]{1.5cm}\normalsize\textbf{\thepage}\end{minipage}}
+    \fancyfootoffset[EL]{1.85cm}
+    \fancyfoot[EL]{\regularheader\footnotesize\begin{minipage}[b]{1.5cm}\raggedleft\normalsize\textbf{\thepage}\end{minipage}\hspace*{10pt}{\color{NavyBlue}\rule[-18.48mm]{1.25pt}{21.98mm}}\hspace*{1pc}\leftmark}
 }
 \pagestyle{main}
 
@@ -119,13 +117,13 @@
 
 % Customize list environments
 \RequirePackage{enumitem}
-\setitemize{%
-    topsep=\parsep,%
-    itemsep=0pt,%
+\setitemize{
+    topsep=\parsep,
+    itemsep=0pt,
 }
-\setenumerate{%
-    topsep=\parsep,%
-    itemsep=0pt,%
+\setenumerate{
+    topsep=\parsep,
+    itemsep=0pt,
 }
 
 % Enhanced support for graphics
@@ -137,8 +135,8 @@
 
 % Set up SI units
 \RequirePackage{siunitx}
-\sisetup{%
-    group-separator={,},%
+\sisetup{
+    group-separator={,},
 }
 
 % Index processing
@@ -158,25 +156,25 @@
 % Note: hyperref must be imported after utils/mathematics.tex and imakeidx
 \RequirePackage[final]{hyperref}
 \RequirePackage{url}
-\hypersetup{%
-    colorlinks=true,%
-    linkcolor=OliveGreen,%
-    anchorcolor=black,%
-    citecolor=DarkOrchid,%
-    filecolor=black,%
-    menucolor=black,%
-    runcolor=black,%
-    urlcolor=black,%
-    linktoc=page,%
+\hypersetup{
+    colorlinks=true,
+    linkcolor=OliveGreen,
+    anchorcolor=black,
+    citecolor=DarkOrchid,
+    filecolor=black,
+    menucolor=black,
+    runcolor=black,
+    urlcolor=black,
+    linktoc=page,
 }
 
 % Terms and acronyms processing
 % Note: glossaries-extra must be imported after hyperref
-\RequirePackage[%
-    acronym,%
-    nopostdot=false,%
-    nogroupskip,%
-    indexonlyfirst,%
+\RequirePackage[
+    acronym,
+    nopostdot=false,
+    nogroupskip,
+    indexonlyfirst,
 ]{glossaries-extra}
 \setabbreviationstyle[acronym]{long-short}
 \setglossarystyle{alttree}
@@ -188,12 +186,12 @@
 \loadglsentries{utils/glossary}
 
 % Environments for writing algorithms
-\RequirePackage[%
-    ruled,%
-    algochapter,%
-    lined,%
-    longend,%
-    linesnumbered,%
+\RequirePackage[
+    ruled,
+    algochapter,
+    lined,
+    longend,
+    linesnumbered,
 ]{algorithm2e}
 \SetKwInput{KwNote}{Note}
 \newcommand{\algorithmfootnote}[2][\footnotesize]{%
@@ -209,7 +207,6 @@
 }
 \let\oldnl\nl
 \newcommand{\nonl}{\renewcommand{\nl}{\let\nl\oldnl}}
-% \renewenvironment{algorithm}[1][htbp]{\begin{algocf@algorithm}[#1]\begin{onehalfspace}}{\end{onehalfspace}\end{algocf@algorithm}}
 \renewenvironment{algomathdisplay}{\begin{equation*}}{\@endalgocfline\end{equation*}\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
 \newenvironment{algomathdisplaynumbered}{\begin{equation}}{\@endalgocfline\end{equation}\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
 \newenvironment{algomathalign}[1]{\align #1}{\@endalgocfline\endalign\ifthenelse{\boolean{algocf@linesnumbered}}{\vspace{-\baselineskip}}{\relax}\;}
@@ -234,42 +231,39 @@
 \RequirePackage{tikz}
 \RequirePackage{pgfplots}
 \RequirePackage{pgfplotstable}
-\pgfplotsset{%
-    compat=1.18,%
+\pgfplotsset{
+    compat=1.18,
 }
 \usetikzlibrary{arrows,calc,patterns,shapes}
 \usepgfplotslibrary{external}
-\pgfplotscreateplotcyclelist{profiles}{%
-    thick,mark=none,NavyBlue,solid\\%
-    thick,mark=none,BurntOrange,dashed\\%
-    thick,mark=none,OliveGreen,dotted\\%
-    thick,mark=none,BrickRed,dashdotted\\%
-    thick,mark=none,Purple,densely dashed\\%
-    thick,mark=none,Mahogan,densely dashed\\%
-    thick,mark=none,Rhodamine,densely dashdotted\\%
-    thick,mark=none,Gray,loosely dashed\\%
-    thick,mark=none,LimeGreen,loosely dotted\\%
-    thick,mark=none,JungleGreen,loosely dashdotted\\%
+\pgfplotscreateplotcyclelist{profiles}{
+    thick,mark=none,NavyBlue,solid\\
+    thick,mark=none,BurntOrange,dashed\\
+    thick,mark=none,OliveGreen,dotted\\
+    thick,mark=none,BrickRed,dashdotted\\
+    thick,mark=none,Purple,densely dashed\\
+    thick,mark=none,Mahogan,densely dashed\\
+    thick,mark=none,Rhodamine,densely dashdotted\\
+    thick,mark=none,Gray,loosely dashed\\
+    thick,mark=none,LimeGreen,loosely dotted\\
+    thick,mark=none,JungleGreen,loosely dashdotted\\
 }
 \pgfplotsset{%
-    every axis/.append style={%
-        label style={font=\footnotesize},%
-        legend cell align=left,%
-        legend style={%
-            rounded corners,%
-            thick,%
-            draw=black!15,%
-            % fill opacity=0.8,%
-            % draw opacity=1,%
-            % text opacity=1,%
-            font=\scriptsize,%
-        },%
-        tick label style={font=\footnotesize},%
-    },%
+    every axis/.append style={
+        label style={font=\footnotesize},
+        legend cell align=left,
+        legend style={
+            rounded corners,
+            thick,
+            draw=black!15,
+            font=\scriptsize,
+        },
+        tick label style={font=\footnotesize},
+    },
 }
 \pgfkeys{/pgf/images/include external/.code=\includegraphics{#1}}
-\tikzexternalize[%
-    prefix=figures/,%
+\tikzexternalize[
+    prefix=figures/,
 ]
 \tikzstyle{decision} = [diamond,draw,text width=2.5cm,text badly centered,inner sep=0pt]
 \tikzstyle{block} = [rectangle,draw,text width=5.5cm,text centered,rounded corners,minimum height=1.5cm]
@@ -277,12 +271,12 @@
 
 % Drafting packages
 \RequirePackage{ifdraft}
-\RequirePackage[%
-    obeyDraft,%
-    english,%
-    colorinlistoftodos,%
-    color=Apricot,%
-    textsize=scriptsize,%
+\RequirePackage[
+    obeyDraft,
+    english,
+    colorinlistoftodos,
+    color=Apricot,
+    textsize=scriptsize,
 ]{todonotes}
 \renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
 \if@todonotes@disabled
@@ -294,30 +288,20 @@
 }
 \fi
 
-% Initial submission
-% \ifinitial
-%     \usepackage[%
-%         firstpageonly,%
-%         fontsize=0.06\paperwidth,%
-%         text={INITIAL SUBMISSION FOR\\[0.5em] EXAMINATION PURPOSE},%
-%         colorspec=0.88,%
-%     ]{draftwatermark}
-% \fi
-
 % Bibliography information processing
-\RequirePackage[%
-    style=ext-numeric-comp,%
-    articlein=false,%
-    sorting=nyt,%
-    sortcites=false,%
-    maxbibnames=99,%
-    backref,%
-    backrefstyle=three,%
-    abbreviate=false,%
+\RequirePackage[
+    style=ext-numeric-comp,
+    articlein=false,
+    sorting=nyt,
+    sortcites=false,
+    maxbibnames=99,
+    backref,
+    backrefstyle=three,
+    abbreviate=false,
 ]{biblatex}
-\DefineBibliographyStrings{american}{%
-    backrefpage={Cited on p.},%
-    backrefpages={Cited on pp.},%
+\DefineBibliographyStrings{american}{
+    backrefpage={Cited on p.},
+    backrefpages={Cited on pp.},
 }
 \defbibheading{bibintoc}[\bibname]{%
     \chapter*{#1\markboth{#1}{#1}}%
@@ -339,8 +323,6 @@
     commentstyle=\itshape\color{black!50},
     frame=tb,
     keywordstyle=\bfseries\color{Maroon},
-    % numbers=left,
-    % numberstyle=\scriptsize\bfseries,
     postbreak=\space,
     showstringspaces=false,
     stepnumber=1,
@@ -415,20 +397,20 @@
 }
 
 % Insert coverpage and titlepage
-\renewcommand{\maketitle}{%
-    \hypersetup{pageanchor=false}%
-    \include{utils/coverpage}%
-    \include{utils/typeset}%
-    \include{utils/titlepage}%
-    \hypersetup{pageanchor=true}%
+\renewcommand{\maketitle}{
+    \hypersetup{pageanchor=false}
+    \include{utils/coverpage}
+    \include{utils/typeset}
+    \include{utils/titlepage}
+    \hypersetup{pageanchor=true}
 }
 
 % Insert document metadata
-\AtBeginDocument{%
-    \hypersetup{%
-        pdftitle=\thetitle,%
-        pdfauthor=\theauthor,%
-        pdfsubject={Ph.D. thesis},%
-        pdfkeywords={},%
-    }%
+\AtBeginDocument{
+    \hypersetup{
+        pdftitle=\thetitle,
+        pdfauthor=\theauthor,
+        pdfsubject={Ph.D. thesis},
+        pdfkeywords={},
+    }
 }

@@ -63,8 +63,6 @@ Nevertheless, \gls{pdfo} has several features that distinguish it from others.
     \item \emph{Solver selection}.
     When using \gls{pdfo}, the user can specifically invoke one of Powell's solvers; nevertheless, if the user does not specify any solver, \gls{pdfo} will automatically select a solver according to the given problem.
     The selection takes into consideration the performance of the solvers on the CUTEst problem set~\cite{Gould_Orban_Toint_2015}.
-    % Interestingly, it turns out that the solver with the best performance may not be the most intuitive one.
-    % For example, \gls{newuoa} is not always the best choice for solving an unconstrained problem.
     This will be elaborated on in~\cref{subsec:solver-selection}.
     \item \emph{Code patching}.
     During the development of \gls{pdfo}, we spotted in the original Fortran code some bugs, which led, for example, to infinite cycling or segmentation faults on some ill-conditioned problems.
@@ -184,13 +182,11 @@ This replacement tends to increase the volume of the simplex engendered by the i
 It aims at solving the nonlinear optimization problem~\cref{eq:problem-pdfo} in the unconstrained case, i.e., when~$\iub = \emptyset$.
 
 At the~$k$th iteration, \gls{uobyqa} models the objective function with a quadratic obtained by fully-determined interpolation on the set~$\xpt[k] \subseteq \R^n$ containing~$(n + 1)(n + 2) / 2$ points.
-% The set~$\xpt[k + 1]$ differs from~$\xpt[k]$ by at most one point.
 Then a trial point is obtained by solving the trust-region subproblem~\cref{eq:powell-trust-region} with the Mor{\'{e}}-Sorensen algorithm~\cite{More_Sorensen_1983}.
 Further, \gls{uobyqa} replaces an interpolation point in~$\xpt[k]$ by the trial point, obtaining~$\xpt[k + 1]$, unless this replacement seems to be unreasonable for maintaining a good geometry of~$\xpt[k + 1]$.
 
 \Gls{uobyqa} undertakes a geometry-improving step when the model seem not to be accurate.
 It first removes a point~$y \in \xpt[k]$, and builds~$\xpt[k + 1]$ by including a solution to
-% According to the analysis in~\cite[\S~2]{Powell_2001}, given a point~$y \in \xpt[k]$ to be removed from the interpolation set, it is suitable to build~$\xpt[k + 1]$ by substituting~$y$ with a solution to
 \begin{subequations}
     \label{eq:biglag}
     \begin{align}
@@ -200,7 +196,6 @@ It first removes a point~$y \in \xpt[k]$, and builds~$\xpt[k + 1]$ by including 
 \end{subequations}
 where~$\lagp[y] \colon \R^n \to \R$ denotes the Lagrange function associated with~$y$ (see \cref{sec:lagrange-polynomials} for details), and~$\bar{\rad}^k > 0$ is defined according to the value of~$\rad[k]$ and the diameter of~$\xpt[k]$.
 This subproblem is motivated by the analysis in~\cite[\S~2]{Powell_2001}.
-% Since \gls{uobyqa} requires only a rough solution of the geometry-improving subproblem~\cref{eq:biglag},
 Powell developed an algorithm to solve~\cref{eq:biglag} approximately, based on an estimation of~$\abs{\lagp[y](\cdot)}$.
 Once such a point is calculated, the solver constructs~$\xpt[k + 1]$ and continues with a trust-region step.\index{UOBYQA@\glsfmttext{uobyqa}|)}
 
@@ -208,20 +203,9 @@ Once such a point is calculated, the solver constructs~$\xpt[k + 1]$ and continu
 \label{subsec:newuoa}
 
 \index{NEWUOA@\glsfmttext{newuoa}|(}\index{BOBYQA@\glsfmttext{bobyqa}|(}\index{LINCOA@\glsfmttext{lincoa}|(}\Gls{newuoa}~\cite{Powell_2006} was designed as a successor to \gls{uobyqa}.
-% , while \gls{bobyqa}~\cite{Powell_2009} and \gls{lincoa} are variations of \gls{newuoa} designed to tackle bound-constrained and linearly constrained problems.
 Using the derivative-free symmetric Broyden update presented in \cref{subsec:symmetric-broyden-updates}, it can build quadratic models using much fewer interpolation points than \gls{uobyqa}.
 Hence, it is able to solve much larger problems.
-% \Gls{uobyqa} requires~$(n + 1)(n + 2) / 2$ interpolation points to build a model, which can become prohibitively huge when~$n$ increases.
-% Even though most of the interpolation points are reused throughout the iterations, this amount of function evaluations are needed to build the initial model.
-% It prevents \gls{uobyqa} from solving problems with a modestly large dimension.
-% To overcome this difficulty, Powell designed a mechanism to define quadratic models that require much fewer interpolation points~\cite{Powell_2004a}.
-% This mechanism is the symmetric Broyden update presented in \cref{subsec:symmetric-broyden-updates}.
-% It only requires the number of points in~$\xpt[k]$ to be at least~$n + 2$ and at most~$(n + 1)(n + 2) / 2$.
-% It is often implemented with~$\card(\xpt[k]) = 2n + 1$.
-% As in the fully-determined case, the geometry of the interpolation set plays a crucial role, as it influences the accuracy of the quadratic models and the geometry-improving steps~\cref{eq:biglag} should also be entertained.
-% The last three \gls{dfo} solvers of Powell are \gls{newuoa}~\cite{Powell_2006, Powell_2008}, \gls{bobyqa}~\cite{Powell_2009}, and~\gls{lincoa}.
 
-% \Gls{bobyqa} and \gls{lincoa} are named respectively after \emph{\glsdesc{bobyqa}} and \emph{\glsdesc{lincoa}}, but 
 Powell did not mention the meaning of the acronym \gls{newuoa}, but we speculate that it means \emph{\glsdesc{newuoa}}.
 In addition to the symmetric Broyden update, \gls{newuoa} also differs from \gls{uobyqa} by the way that it solves its trust-region subproblem~\cref{eq:powell-trust-region}.
 Instead of the Mor{\'{e}}-Sorensen algorithm, this subproblem is handled using the Steihaug-Toint \gls{tcg} method~\cite{Steihaug_1983,Toint_1981} (see \cref{alg:tcg}) followed by a two-dimensional search.
@@ -284,7 +268,6 @@ It takes for input an optimization problem of the form
     \end{align}
 \end{subequations}
 where~$\xl, \xu \in (\R \cup \set{\pm \infty})^n$,~$A_{\scriptscriptstyle\iub}$ and~$A_{\scriptscriptstyle\ieq}$ are real matrices,~$b _{\iub}$ and~$b _{\ieq}$ are real vectors, and~$\con{i}$, for~$i \in \iub \cup \ieq$, is a real-valued function.
-% The problem~\cref{eq:pdfo} covers every possible case, since all matrices, vectors and functions can be set to zero from a mathematical viewpoint and \gls{pdfo} does not require the constraints~\cref{eq:pdfo-bds,eq:pdfo-lub,eq:pdfo-leq,eq:pdfo-nlub,eq:pdfo-nleq} to be provided.
 A simple example of usage is shown for MATLAB in \cref{lst:minimum-example-matlab} and Python in \cref{lst:minimum-example-python}, where variable names have clear correspondences with the problem~\cref{eq:pdfo}.
 For both MATLAB and Python, \gls{pdfo} returns the best point calculated and (optionally) the corresponding optimal value.
 Additional information that describes the backend calculations can also be returned.
@@ -347,9 +330,6 @@ Another noticeable preprocessing of the constraints made by \gls{pdfo} is the tr
 As long as these constraints are consistent, we reformulate~\cref{eq:pdfo} into an~$(n - \rank A_{\scriptscriptstyle\ieq})$\nomenclature[Om]{$\rank$}{Rank operator}-dimensional problem by eliminating these linear equality constraints.
 This is done using a QR factorization of~$A_{\scriptscriptstyle\ieq}$.
 
-% Finally, \gls{pdfo} preprocesses the constraints.
-% For instance, all linear constraints in~\cref{eq:pdfo-lub,eq:pdfo-leq} that are satisfied for every point in~$\R^n$ are removed and obvious infeasibility in the constraints~\cref{eq:pdfo-bds,eq:pdfo-lub,eq:pdfo-leq} is detected.
-
 \subsection{Automatic selection of the solver}
 \label{subsec:solver-selection}
 
@@ -361,10 +341,6 @@ When a problem is received, unless the user specifies the solver to use, \gls{pd
     \item If the problem is linearly constrained, then \gls{lincoa} is selected.
     \item Otherwise, \gls{cobyla} is selected.
 \end{enumerate}
-% For example, when \gls{pdfo} receives a problem that admits both bound constraints~\cref{eq:pdfo-bds} and linear constraints~\cref{eq:pdfo-lub,eq:pdfo-leq}, \gls{lincoa} will be chosen.
-% It is possible on some examples that \gls{lincoa} gives better results than \gls{bobyqa} on bound-constrained problems.
-% This is likely because \gls{bobyqa} is a feasible method, while \gls{lincoa} may visit infeasible points (but on an engineering problem, these points may be unassessable).
-% At last, when \gls{pdfo} receives an unconstrained problem, it will attempt to solve it with \gls{uobyqa} when its size is reasonable ($2 \le n \le 8$, say), and with \gls{newuoa} otherwise.
 
 For the unconstrained case, we select \gls{uobyqa} for small problems because it is more efficient, and the number~$8$ is set according to our experiments on the CUTEst problems.
 We note that Powell's implementation of \gls{uobyqa} cannot handle problems with univariate objective functions, for which \gls{newuoa} is invoked.
@@ -428,16 +404,6 @@ This is because it uses only linear models to approximate the objective and cons
 We now consider the experiment on noisy unconstrained problems described in \cref{subsec:profiles-example}.
 We take~$\epsilon(\iter) \sim N(0, \sigma^2)$ with~$\sigma = 10^{-2}$ in~\cref{eq:relative-gaussian-noisy-objective-function}.
 \Cref{fig:ppun-50} presents the performance profiles on the unconstrained problems of dimension at most \num{50} with an error term~$\sigma = 10^{-2}$.
-% Given a smooth objective function~$\obj$, assume that the value received by the solvers is
-% \begin{equation*}
-%     \tilde{\obj}(\iter) \eqdef [1 + \epsilon(\iter)] \obj(\iter),
-% \end{equation*}
-% where~$\epsilon(x)$ is a random variable that follows a standard normal distribution~$N(0, \sigma^2)$, and~$\sigma \ge 0$ is a given noise level.
-% \Cref{fig:ppun-50} presents the performance profiles on the same unconstrained problems of dimension at most \num{50} from the CUTEst library as the previous experiment by randomizing the objective functions as~$\tilde{\obj}$ with~$\sigma = 10^{-2}$.
-%Because of the stochastic behavior of the experiment, the convergence test~\cref{eq:convergence-test-profiles-unconstrained} needs to be adapted.
-% Each problem is solved \num{10} times by each solver, the objective value considered at each iteration is the average value for all runs, and the optimal value of a given problem is decided as follows.
-% It is the least value reached by the solvers for every run on the noised variation of the problem and by all the solvers on the noise-free original problem.
-% In doing so, one should expect a decrease in the proportion of problems solved when compared with the previous experiment.
 
 \begin{figure}[ht]
     \centering
@@ -463,7 +429,6 @@ It seems that the linear models of \gls{cobyla} are more robust to noise, but we
 \subsection{An example of hyperparameter tuning problem}
 
 We now consider the hyperparameter tuning problem of an \gls{svm} described in detail in \cref{subsec:machine-learning}.
-% The model we consider is a~$C$-SVM~\cite{Chang_Lin_2011} for binary classification problems with an \gls{rbf} kernel, admitting two hyperparameters: a regularization parameter~$C > 0$ and a kernel parameter~$\gamma > 0$.
 We will compare the performance of \gls{pdfo} with a Bayesian optimization method named \gls{tpe} and a \gls{rs} method.
 Since the hyperparameter tuning problem is a bound-constrained problem, \gls{pdfo} selects \gls{bobyqa} as the solver.
 For the \gls{tpe} and the \gls{rs} methods, we use the Python package hyperopt~\cite{Bergstra_Yamins_Cox_2013}.
@@ -493,13 +458,6 @@ The objective function of the hyperparameter tuning is given in \cref{alg:cross-
 \end{table}
 \nomenclature[Sb]{$[a, b]$}{Closed set~$\set{\iter \in \R : a \le \iter \le b}$ with~$a \le b$}%
 
-% The problem we consider is as follows.
-% A dataset~$\mathcal{D} \subseteq [-1, 1]^d$ from \cref{tab:htdata} is randomly split into a training dataset~$\mathcal{T}_1$, admitting approximately \SI{70}{\percent} of the data, and a testing dataset~$\mathcal{T}_2$, with~$\mathcal{D} = \mathcal{T}_1 \cup \mathcal{T}_2$.
-% We want to maximize the~$5$-fold \gls{auc} validation score of the \gls{svm} trained on~$\mathcal{T}_1$ with respect to the hyperparameters~$C$ and~$\gamma$.
-% The \gls{auc} score, a real number in~$[0, 1]$, measures the area underneath the \gls{roc} curve, a graph representing the performance of a binary classification model.
-% This curve plots the true positive classification rate with respect to the false positive classification rate at different classification thresholds.
-% For details on the~$5$-fold cross-validation of an \gls{auc}, see \cref{subsec:machine-learning}.
-% Such an experiment lies in the \gls{dfo} context.
 The results of this experiment are provided in \cref{tab:splice,tab:svmguide1,tab:svmguide3,tab:ijcnn1}.
 For both the \gls{auc} score and the accuracy, the higher, the better.
 In terms of \gls{auc} score and accuracy, we observe that \gls{pdfo} achieved a clearly better result than \gls{tpe} and \gls{rs} on the \enquote{splice} dataset, and they all attain comparable results on all the other datasets.
@@ -517,7 +475,6 @@ In summary, we can conclude that \gls{pdfo} performs better than \gls{tpe} and \
         \midrule
         \gls{pdfo}  & 65            & 9.568                     & 9.933                     & 3.697\\
         \gls{rs}    & 100           & 6.409                     & 5.300                     & 4.635\\
-        % \gls{rs}    & 200           & 7.880                     & 5.300                     & 9.244\\
         \gls{rs}    & 300           & 7.880                     & 5.300                     & 13.763\\
         \gls{tpe}   & 100           & 5.000                     & 5.033                     & 4.889\\
         \gls{tpe}   & 300           & 7.736                     & 5.300                     & 15.726\\
@@ -535,7 +492,6 @@ In summary, we can conclude that \gls{pdfo} performs better than \gls{tpe} and \
         \midrule
         \gls{pdfo}  & 68            & 9.966                     & 9.730                     & 4.906\\
         \gls{rs}    & 100           & 9.966                     & 9.676                     & 16.178\\
-        % \gls{rs}    & 200           & 9.966                     & 9.676                     & 32.914\\
         \gls{rs}    & 300           & 9.966                     & 9.676                     & 48.404\\
         \gls{tpe}   & 100           & 9.966                     & 9.720                     & 13.057\\
         \gls{tpe}   & 300           & 9.966                     & 9.720                     & 33.392\\
@@ -553,7 +509,6 @@ In summary, we can conclude that \gls{pdfo} performs better than \gls{tpe} and \
         \midrule
         \gls{pdfo}  & 68            & 8.241                     & 8.016                     & 2.793\\
         \gls{rs}    & 100           & 8.025                     & 7.882                     & 4.233\\
-        % \gls{rs}    & 200           & 8.141                     & 7.775                     & 8.308\\
         \gls{rs}    & 300           & 8.141                     & 7.775                     & 12.414\\
         \gls{tpe}   & 100           & 7.774                     & 7.453                     & 4.197\\
         \gls{tpe}   & 300           & 8.106                     & 7.989                     & 12.912\\
@@ -571,7 +526,6 @@ In summary, we can conclude that \gls{pdfo} performs better than \gls{tpe} and \
         \midrule
         \gls{pdfo}  & 59            & 9.940                     & 9.819                     & 1.892\\
         \gls{rs}    & 100           & 9.886                     & 9.773                     & 4.435\\
-        % \gls{rs}    & 200           & 9.886                     & 9.773                     & 9.146\\
         \gls{rs}    & 300           & 9.886                     & 9.773                     & 13.251\\
         \gls{tpe}   & 100           & 9.891                     & 9.791                     & 4.426\\
         \gls{tpe}   & 300           & 9.896                     & 9.786                     & 12.552\\
@@ -583,7 +537,6 @@ In summary, we can conclude that \gls{pdfo} performs better than \gls{tpe} and \
 
 We presented in this chapter \gls{pdfo}, our package for interfacing Powell's five model-based \gls{dfo} solvers with MATLAB and Python.
 To the best of our knowledge, it is the only package that provides all the five solvers with a uniform interface.
-% Moreover, when a user does not specify a particular solver to use, \gls{pdfo} makes a selection according to the problem's type.
 
 We first presented an overview of the Powell's algorithms for these solvers.
 In a nutshell, they are all trust-region \gls{dfo} methods that use either linear or quadratic models.

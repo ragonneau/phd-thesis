@@ -497,28 +497,11 @@ As will be demonstrated in \cref{subsec:alternative-models}, this procedure impr
 
 \Gls{cobyqa} accepts three types of constraints, namely bound, linear, and nonlinear constraints.
 They are handled separately, for the following reasons.
-% From a theoretical standpoint, we can formulated a general optimization problem as
-% \begin{align*}
-%     \min        & \quad \obj(\iter)\\
-%     \text{s.t.} & \quad \con{i}(\iter) \le 0, ~ i \in \iub,\\
-%                 & \quad \con{i}(\iter) = 0, ~ i \in \ieq,\\
-%                 & \quad \iter \in \R^n,
-% \end{align*}
-% the bound and linear constraints being included in the constraints~$\set{\con{i}}_{i \in \iub \cup \ieq}$.
-% However, our implementation handles these types of constraints separately, for the following reasons.
 
-% First of all, note that in the general form of nonlinearly constrained problems~\cref{eq:problem-cobyqa}, we did not include the bound constraints~\cref{eq:problem-cobyqa-bd} in the inequality constraints~\cref{eq:problem-cobyqa-ub}.
 First of all, bound constraints often represent inalienable physical or theoretical restrictions.
 In many applications for which \gls{cobyqa} is designed, the objective function is not defined if the bound constraints are violated.
-% For instance, the tuning of nonlinear optimization methods (see \cref{subsec:tuning-nonlinear-optimization-methods}) involves bounds that cannot be violated, as the optimization methods that are tuned may not be defined otherwise.
 For example, see the parameter tuning problem given in \cref{subsec:tuning-nonlinear-optimization-methods}.
 For this reason, we implement \gls{cobyqa} so that it visits only points that respect the bounds, as is also the case for the \gls{bobyqa} method, presented in \cref{subsec:bobyqa}.
-% When establishing the problem~\cref{eq:problem-cobyqa}, we assumed that~$\xl < \xu$.
-% Note that this requirement is weak, as otherwise, the problem~\cref{eq:problem-cobyqa} would be either infeasible, or admit fix variables.
-% Thus, note also that they are very simple constraints.
-% It is, for example, trivial to check whether a point is feasible with respect to the bound constraints~\cref{eq:problem-cobyqa-bd}, and easy to project any point onto the bound constraints.
-% Therefore, \gls{cobyqa} handles bound constraints separately.
-% This is another reason why \gls{cobyqa} handles them separately.
 
 The linear constraints are usually less restrictive.
 In applications, the objective function is often well-defined even at points that violate linear constraints.
@@ -557,7 +540,6 @@ The same as~$\meritm[k]$, we do not include the bound constraints in the definit
 \end{proposition}
 
 \begin{proof}
-    % Since~$\nstep[k]$ solves~\cref{eq:cobyqa-normal}, we have~$\Phi(\nstep[k]) \le \Phi(0)$.
     Since~$\tstep[k]$ satisfies~\cref{eq:cobyqa-tangential-ub,eq:cobyqa-tangential-eq}, we have~$\Phi(\nstep[k] + \tstep[k]) \le \Phi(\nstep[k])$ so that it is necessary that~$\Phi(\step[k]) \le \Phi(0)$.
     If~$\Phi(\step[k]) = \Phi(0)$, then~$\Phi(\nstep[k]) = \Phi(0)$ and hence,~$\nstep[k] = 0$.
     In such a case, the result is clear, because of~\cref{eq:byrd-omojokun-tangential-assumption}.
@@ -606,8 +588,6 @@ Its numerator corresponds to a typical change in the objective function, while t
 \end{equation*}
 represents a typical change in the~$i$th constraint if~$\min_{y \in \xpt[k + 1]} \con{i}(y) \le 0$, and some distance to feasibility otherwise.
 See~\cite[\S~4]{Powell_1994} for more discussions about~\cref{eq:reducting-penalty}.\index{COBYQA@\glsfmttext{cobyqa}|)}
-% Of course, this term is very empirical, and other choices could be made.
-% This concludes the general description of \gls{cobyqa}.
 
 \section{Summary and remarks}
 
@@ -636,8 +616,5 @@ Finally, we note that there exists another derivate-free trust-region \gls{sqp} 
 This method reformulates the inequality constraints using slack variables, so that the reformulated problem has only equality constraints and bound constraints.
 This increases the dimension of the problem, which may lead to inefficiency, especially if the amount of inequality constraints is large.
 \Gls{cobyqa} does not have this problem because it handles the inequality constraints directly, without introducing slack variables.
-% Moreover, it tackles the bound constraints using an active-set approach.
-% In \gls{cobyqa}, we do not reformulate the inequality constraints using slack variables and hence, we do not increase the dimension of the feasible set.
 Moreover, the current (August 2022) publicly available implementation of \gls{sqpdfo}\footnote{See \url{https://github.com/DLR-SC/sqpdfo}.} does not always respect the bound constraints, particularly during the geometry-improving phase.
 In contrast, as mentioned above, \gls{cobyqa} always respects the bounds, which is crucial for many engineering and industrial applications (see \cref{sec:simple-constraints}).
-% Finally, the current implementation of \gls{sqpdfo} encounters internal errors when solving , particularly on Line 494, in \texttt{sqpdfo\_prelim\_}.
