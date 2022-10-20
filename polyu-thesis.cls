@@ -302,6 +302,9 @@
 \DefineBibliographyStrings{american}{
     backrefpage={Cited on p.},
     backrefpages={Cited on pp.},
+    bathesis={B\adddot A\adddotspace thesis},
+    mathesis={M\adddot A\adddotspace thesis},
+    phdthesis={Ph\adddot D\adddotspace thesis},
 }
 \defbibheading{bibintoc}[\bibname]{%
     \chapter*{#1\markboth{#1}{#1}}%
