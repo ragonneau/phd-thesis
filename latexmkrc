@@ -31,8 +31,8 @@ $clean_ext = "auxlock ist loa lol mw run.xml synctex.gz tdo";
 add_cus_dep("acn", "acr", 0, "makeglo2gls");
 add_cus_dep("glo", "gls", 0, "makeglo2gls");
 sub makeglo2gls {
-    my ($base_name, $path) = fileparse( $_[0] );
-    my @args = ( "-q", "-d", $path, $base_name );
+    my ($base_name, $path) = fileparse($_[0]);
+    my @args = ("-q", "-d", $path, $base_name);
     if ($silent) { unshift @args, "-q"; }
     return system "makeglossaries", "-d", $path, $base_name;
 }
@@ -42,6 +42,6 @@ push @generated_exts, "acn", "acr", "alg";
 # Build dependencies for the nomencl package
 add_cus_dep("nlo", "nls", 0, "makenlo2nls");
 sub makenlo2nls {
-    system("makeindex $_[0].nlo -s nomencl.ist -o $_[0].nls");
+    system("makeindex $_[0].nlo -s nomencl.ist -o $_[0].nls -t $_[0].nlg");
 }
-push @generated_exts, "nlo", "nls";
+push @generated_exts, "nlg", "nlo", "nls";
