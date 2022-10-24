@@ -244,7 +244,7 @@ This concept is often referred to as derivative-free reinforcement learning.
 \subsection{Other industrial and engineering applications}
 
 \Gls{dfo} methods are also widely used in industry and engineering, especially for solving problems that involve heavy simulations.
-Such problems arise from helicopter rotor blade manufacturing~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, computational fluid dynamics~\cite{Duvigneau_Visonneau_2004}, worst-case analysis of analog circuits~\cite{Latorre_Etal_2019}, rapid-cycling synchrotron accelerator modeling~\cite{Eldred_Etal_2021}, nuclear energy engineering~\cite{Kortelainen_Etal_2010,Kortelainen_Etal_2012,Kortelainen_Etal_2014}, reservoir engineering and engine calibration~\cite{Langouet_2011}, and groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, to name but a few.
+Such problems arise from helicopter rotor blade manufacturing~\cite{Booker_Etal_1998a,Booker_Etal_1998b,Serafini_1998}, aeroacoustic shape design~\cite{Marsden_2004,Marsden_Etal_2004}, computational fluid dynamics~\cite{Duvigneau_Visonneau_2004}, worst-case analysis of analog circuits~\cite{Latorre_Etal_2019}, rapid-cycling synchrotron accelerator modeling~\cite{Eldred_Etal_2022}, nuclear energy engineering~\cite{Kortelainen_Etal_2010,Kortelainen_Etal_2012,Kortelainen_Etal_2014}, reservoir engineering and engine calibration~\cite{Langouet_2011}, and groundwater supply and bioremediation engineering~\cite{Fowler_Etal_2008,Mugunthan_Shoemaker_Regis_2005,Yoon_Shoemaker_1999}, to name but a few.
 In general, problems that involve sophisticated models, simulations, or experiments, induce \gls{dfo} problems.
 
 A particular application of \gls{dfo} comes from \gls{mdo}\index{dfo@\glsfmtshort{dfo}!mdo@\glsfmtshort{mdo}} in the industry.
@@ -566,8 +566,8 @@ Finally, we highlight that the function evaluations needed by the approximated d
 
 Meanwhile, such methods come with disadvantages as well.
 First of all, if the problem is noisy, it is nontrivial to choose the difference parameter~$h$.
-From a theoretical standpoint, the optimal choice for the difference parameter depends on the noise level and the Lipschitz constants of the derivatives of the function~$\obj$ (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006} and~\cite[Eqs.~(2.13) and~(2.14)]{Shi_Etal_2021}).
-There exist procedures to estimate these quantities (see, e.g.,~\cite[\S~3]{More_Wild_2011} and~\cite[Proc.~I]{Shi_Etal_2021}).
+From a theoretical standpoint, the optimal choice for the difference parameter depends on the noise level and the Lipschitz constants of the derivatives of the function~$\obj$ (see, e.g.,~\cite[\S~8.1]{Nocedal_Wright_2006} and~\cite[Eqs.~(2.13) and~(2.14)]{Shi_Etal_2022}).
+There exist procedures to estimate these quantities (see, e.g.,~\cite[\S~3]{More_Wild_2011} and~\cite[Proc.~I]{Shi_Etal_2022}).
 However, these procedures are often costly in terms of function evaluations in practice.
 In addition, it is difficult to reuse the function values in methods based on finite differences.
 A finite difference at~$x \in \R^n$ requires the function to be evaluated on a mesh of~$\bigo(n)$ points around~$x$ oriented along the coordinate directions.
@@ -769,10 +769,10 @@ Overall, on the noise-free problems, \gls{bfgs} is slightly more reliable than \
 In contrast, \gls{newuoa} outperforms the two other solvers on noisy problems.
 The performances of \gls{bfgs} and \gls{cg} deteriorate significantly when Gaussian noise is imposed as in~\cref{eq:relative-gaussian-noisy-objective-function}, even though the noise level is not high and the convergence tolerance is not demanding.
 
-Note that our results do not contradict the observations of \citeauthor{Shi_Etal_2021}~\cite{Shi_Etal_2021}, where they choose the difference parameter~$h$ more carefully, according to the noise levels and the smoothness of the problems.
+Note that our results do not contradict the observations of \citeauthor{Shi_Etal_2022}~\cite{Shi_Etal_2022}, where they choose the difference parameter~$h$ more carefully, according to the noise levels and the smoothness of the problems.
 We rather keep the default value provided for the solvers \gls{bfgs} and \gls{cg} in SciPy~1.0~\cite{Virtanen_Etal_2020}.
-As commented in~\cite{Shi_Etal_2021}, the performance of methods based on finite differences is encouraging when there is no noise, yet much more care is needed when the problems are noisy.
-\Gls{newuoa} performs robustly with the noise according to this experiment, which agrees with the observations in~\cite{Shi_Etal_2021}.
+As commented in~\cite{Shi_Etal_2022}, the performance of methods based on finite differences is encouraging when there is no noise, yet much more care is needed when the problems are noisy.
+\Gls{newuoa} performs robustly with the noise according to this experiment, which agrees with the observations in~\cite{Shi_Etal_2022}.
 
 We also mention that no conclusive comparison can be made between \gls{bfgs} and \gls{cg} according to \cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}.
 In fact, as pointed out in~\cite{Gould_Scott_2016}, when there are more than two solvers to compare, performance profiles have limitations when ranking the solvers, except for the one that outperforms the others (if any), such as \gls{newuoa} in \cref{fig:performance-profile-example-noisy-10,fig:performance-profile-example-noisy-8,fig:performance-profile-example-noisy-6}.
