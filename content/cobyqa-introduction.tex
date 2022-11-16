@@ -137,7 +137,7 @@ where~$\Phi$ is defined by
     \label{eq:l2-merit-function-model-penalty}
     \Phi(d) \eqdef \sqrt{\sum_{i \in \iub} \posp{\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step}^2 + \sum_{i \in \ieq} [\conm[k]{i}(\iter[k]) + \nabla \conm[k]{i}(\iter[k])^{\T} \step]^2}.
 \end{equation}
-The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hides many details, including the definition of \enquote{convergence} in the loop, the calculation of~$\step[k]$, the update of~$\lm[k]$, and the geometry improvement of the interpolation set, which will be specified in \cref{subsec:managing-trust-region-radius,subsec:solving-trust-region-subproblem,subsec:least-squares-lagrange-multipliers,subsec:geometry-improvement}, respectively.
+The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hides many details, including the definition of \enquote{convergence} in the loop, the calculation of~$\step[k]$, the update of~$\lm[k]$, the update of~$\rad[k]$, and the geometry improvement of the interpolation set, which will be specified in \cref{subsec:managing-trust-region-radius,subsec:solving-trust-region-subproblem,subsec:least-squares-lagrange-multipliers,subsec:managing-trust-region-radius,subsec:geometry-improvement}, respectively.
 
 \begin{algorithm}
     \caption[Derivative-free trust-region \glsfmtshort{sqp} method]{Derivative-free trust-region \glsfmtshort{sqp} method\textsuperscript{$\dagger$}}
@@ -174,12 +174,12 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
         Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k] \setminus \set{\bar{y}}) \cup \set{\iter[k] + \step[k]}$\;
         Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$\; \nllabel{alg:derivative-free-trust-region-sqp-iterate}
         Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$\; \nllabel{alg:derivative-free-trust-region-sqp-multipliers}
-        Update the trust-region radius
-        \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
-            & \theta_1 \rad[k],  && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
-            & \rad[k],           && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
-            & \theta_2 \rad[k],  && \quad \text{otherwise}
-        \end{algoempheq} \label{alg:derivative-free-trust-region-sqp-radius}
+        Update the trust-region radius~$\rad[k + 1]$\; \label{alg:derivative-free-trust-region-sqp-radius}
+        % \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
+        %     & \theta_1 \rad[k],  && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
+        %     & \rad[k],           && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
+        %     & \theta_2 \rad[k],  && \quad \text{otherwise}
+        % \end{algoempheq} \label{alg:derivative-free-trust-region-sqp-radius}
         Improve the geometry of~$\xpt[k + 1]$ if necessary\; \label{alg:derivative-free-trust-region-sqp-geometry}
     }
 \end{algorithm}
@@ -280,7 +280,7 @@ See~\cite[pp.~538--539]{Nocedal_Wright_2006} for more details.
 \subsection{Managing the trust-region radius}
 \label{subsec:managing-trust-region-radius}
 
-Inspired by \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa} briefly described in \cref{subsec:uobyqa,subsec:newuoa,subsec:bobyqa,subsec:lincoa}, we employ their trust-region radius management strategy in \gls{cobyqa}, in place of \cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}.
+Inspired by \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa} briefly described in \cref{subsec:uobyqa,subsec:newuoa,subsec:bobyqa,subsec:lincoa}, we employ their trust-region radius management strategy in \gls{cobyqa} in  \cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}.
 It consists in maintaining both the trust-region radius~$\rad[k]$ and a lower bound~$\radlb[k]$ of it.
 
 The update of~$\rad[k]$ is given in \cref{alg:update-trust-region-radius}, which is typical for trust-region methods, except that the lower bound~$\radlb[k]$ is imposed.
@@ -321,9 +321,8 @@ More specifically, similar to Powell's solvers, \gls{cobyqa} reduces the value o
     \radlb[k] = \rad[k], \quad \ratio[k] \le \eta_1, \quad \text{and} \quad \max_{y \in \xpt[k + 1]} @@ \norm{y  - \iter[k + 1]} \le 2 \radlb[k].
 \end{equation*}
 There is also another exceptional case where~$\radlb[k]$ is reduced, which will be detailed at the end of \cref{subsec:geometry-improvement}.
-\Cref{alg:reducing-lower-bound-trust-region-radius} presents the method employed by \gls{cobyqa} to reduce~$\radlb[k]$ in such a case.
-The parameters chosen in \gls{cobyqa} are~$\eta_3 = 16$,~$\eta_4 = 250$, and~$\theta_5 = 0.1$.
-The algorithm and the parameters are identical to those of \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}.
+When \gls{cobyqa} decides to reduce~$\radlb[k]$, it invokes \cref{alg:reducing-lower-bound-trust-region-radius} to do so, with the parameters~$\eta_3 = 16$,~$\eta_4 = 250$, and~$\theta_5 = 0.1$.
+\Cref{alg:reducing-lower-bound-trust-region-radius} and these parameters are adopted from \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}.
 
 \begin{algorithm}
     \caption{Reducing the lower bound on the trust-region radius}
