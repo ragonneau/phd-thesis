@@ -174,7 +174,7 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
         Update the interpolation set~$\xpt[k + 1] \gets (\xpt[k] \setminus \set{\bar{y}}) \cup \set{\iter[k] + \step[k]}$\;
         Update the current iterate~$\iter[k + 1]$ to a solution to~$\min_{y \in \xpt[k + 1]} \merit[k](y)$\; \nllabel{alg:derivative-free-trust-region-sqp-iterate}
         Estimate the Lagrange multiplier~$\lm[k + 1] = [\lm[k + 1]_i]_{i \in \iub \cup \ieq}^{\T}$\; \nllabel{alg:derivative-free-trust-region-sqp-multipliers}
-        Update the trust-region radius~$\rad[k + 1]$\; \label{alg:derivative-free-trust-region-sqp-radius}
+        Update the trust-region radius from~$\rad[k]$ to~$\rad[k + 1]$\; \label{alg:derivative-free-trust-region-sqp-radius}
         % \begin{algoempheq}[left={\rad[k + 1] \gets \empheqlbrace}]{alignat*=2}
         %     & \theta_1 \rad[k],  && \quad \text{if~$\ratio[k] \le \eta_1$,}\\
         %     & \rad[k],           && \quad \text{if~$\eta_1 < \ratio[k] \le \eta_2$,}\\
@@ -280,8 +280,7 @@ See~\cite[pp.~538--539]{Nocedal_Wright_2006} for more details.
 \subsection{Managing the trust-region radius}
 \label{subsec:managing-trust-region-radius}
 
-Inspired by \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa} briefly described in \cref{subsec:uobyqa,subsec:newuoa,subsec:bobyqa,subsec:lincoa}, we employ their trust-region radius management strategy in \gls{cobyqa} in  \cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}.
-It consists in maintaining both the trust-region radius~$\rad[k]$ and a lower bound~$\radlb[k]$ of it.
+Now we detail the trust-region radius management strategy employed by \gls{cobyqa}, corresponding to~\cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}. The strategy consists in maintaining both the trust-region radius~$\rad[k]$ and a lower bound~$\radlb[k]$ of it. This strategy is taken from~\gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}, which were briefly described in \cref{subsec:uobyqa,subsec:newuoa,subsec:bobyqa,subsec:lincoa}.
 
 The update of~$\rad[k]$ is given in \cref{alg:update-trust-region-radius}, which is typical for trust-region methods, except that the lower bound~$\radlb[k]$ is imposed.
 The idea behind~$\radlb[k]$ will be explained later.
@@ -307,7 +306,7 @@ Otherwise, if~$\rad[k] = \radlb[k]$ and the trial step~$\step[k]$ performs very 
     }
 \end{algorithm}
 
-The value of~$\radlb[k]$ can be regarded as an indicator of the resolution of the algorithm.
+The value of~$\radlb[k]$ can be regarded as an indicator of the \emph{resolution} of the algorithm at the current iteration.
 If we do not impose~$\rad[k] \ge \radlb[k]$, the trust-region radius~$\rad[k]$ may be reduced to a value that is too small for the current precision of the algorithm, making the interpolation points concentrate too much.
 The value of~$\radlb[k]$ is never increased and is decreased when the algorithm decides that the work for the current value of~$\radlb[k]$ is finished.
 This is reflected in practice by
