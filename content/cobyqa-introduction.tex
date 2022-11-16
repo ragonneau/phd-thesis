@@ -280,7 +280,9 @@ See~\cite[pp.~538--539]{Nocedal_Wright_2006} for more details.
 \subsection{Managing the trust-region radius}
 \label{subsec:managing-trust-region-radius}
 
-Now we detail the trust-region radius management strategy employed by \gls{cobyqa}, corresponding to~\cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}. The strategy consists in maintaining both the trust-region radius~$\rad[k]$ and a lower bound~$\radlb[k]$ of it. This strategy is taken from~\gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}, which were briefly described in \cref{subsec:uobyqa,subsec:newuoa,subsec:bobyqa,subsec:lincoa}.
+We now detail the trust-region radius management strategy employed by \gls{cobyqa}, corresponding to~\cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}.
+The strategy consists in maintaining simultaneously the trust-region radius~$\rad[k]$ and a lower bound~$\radlb[k]$ of it.
+This strategy is taken from~\gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}, which were briefly described in \cref{subsec:uobyqa,subsec:newuoa,subsec:bobyqa,subsec:lincoa}.
 
 The update of~$\rad[k]$ is given in \cref{alg:update-trust-region-radius}, which is typical for trust-region methods, except that the lower bound~$\radlb[k]$ is imposed.
 The idea behind~$\radlb[k]$ will be explained later.
