@@ -44,7 +44,7 @@ The lower bounds~$\xl \in (\R \cup \set{-\infty})^n$ and the upper bounds~$\xu \
 Note that the bound constraints~\cref{eq:problem-cobyqa-bd} are not included in the inequality constraints~\cref{eq:problem-cobyqa-ub}, because they will be handled separately, as detailed in \cref{sec:simple-constraints}.
 
 We will develop a derivative-free trust-region \gls{sqp} method for the problem~\cref{eq:problem-cobyqa}.
-The method, named~\gls{cobyqa} after \emph{\glsdesc{cobyqa}}, does not use derivatives of the objective function or the nonlinear constraint functions, but models them using underdetermined interpolation based on the derivative-free symmetric Broyden update (see \cref{subsec:symmetric-broyden-updates}).
+The method, named \gls{cobyqa} after \emph{\glsdesc{cobyqa}}, does not use derivatives of the objective function or the nonlinear constraint functions, but models them using underdetermined interpolation based on the derivative-free symmetric Broyden update (see \cref{subsec:symmetric-broyden-updates}).
 This chapter presents the framework of the method, while the subproblems and the Python implementation will be discussed in \cref{ch:cobyqa-subproblems,ch:cobyqa-implementation}, respectively.
 
 \section{The derivative-free trust-region \glsfmtshort{sqp} method}
@@ -145,9 +145,11 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
     \DontPrintSemicolon
     \onehalfspacing
     \algorithmfootnote{\textsuperscript{$\dagger$}Recall that superscripts are iteration counters rather than exponents.}
-    \KwData{Objective function~$f$, constraint functions~$\set{\con{i}}_{i \in \iub \cup \ieq}$, initial guess~$\iter[0] \in \R^n$, estimated Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
+    \KwData{Objective function~$f$, constraint functions~$\set{\con{i}}_{i \in \iub \cup \ieq}$, initial guess~$\iter[0] \in \R^n$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
     Set the penalty parameter~$\gamma^{-1} \gets  0$\;
     Build the initial interpolation set~$\xpt[0] \subseteq \R^n$ described in \cref{subsec:interpolation-based-quadratic-models}\;
+    Redefine~$x^0$ to a solution to~$\min_{y \in \xpt[0]} \obj(y)$\;
+    Estimate the initial Lagrange multiplier~$\lm[0] = [\lm[0]_i]_{i \in \iub \cup \ieq}^{\T}$\; \nllabel{alg:derivative-free-trust-region-sqp-initial-multipliers}
     \For{$k = 0, 1, \dots$ until convergence}{
         Update~$\objm[k]$ and~$\conm[k]{i}$ for~$i \in \iub \cup \ieq$ as mentioned in \cref{subsec:interpolation-based-quadratic-models} \nllabel{alg:derivative-free-trust-region-sqp-models}\;
         Set the trial step~$\step[k] \in \R^n$ to an approximate solution to
@@ -274,6 +276,9 @@ The conditions~\cref{eq:least-squares-lagrange-multipliers-cobyqa-complementary-
 Even though the complementary slackness conditions at the solution are~$\lm[\ast]_i \con{i}(\iter[\ast]) = 0$ for~$i \in \iub$, it is unreasonable to force~$\lm_i^{k + 1} = 0$ if~$\con{i}(\iter[k]) > 0$ and~$i \in \iub$, because the corresponding constraint is currently active.
 Details on the calculations of the least-squares Lagrange multiplier are provided in \cref{sec:cobyqa-lagrange-multipliers}.
 
+The initial Lagrange multiplier~$\lm[0]$ on \cref{alg:derivative-free-trust-region-sqp-initial-multipliers} of \cref{alg:derivative-free-trust-region-sqp} is evaluated in a very similar fashion.
+It is set to a solution to~\cref{eq:least-squares-lagrange-multipliers-cobyqa} with~$k = 0$, so that it equals~$\lm[1]$.
+
 We also mention that the least-squares multiplier can be regarded as an approximation of the multiplier of the \gls{sqp} subproblem, known as the QP multiplier.
 See~\cite[pp.~538--539]{Nocedal_Wright_2006} for more details.
 
@@ -281,8 +286,8 @@ See~\cite[pp.~538--539]{Nocedal_Wright_2006} for more details.
 \label{subsec:managing-trust-region-radius}
 
 We now detail the trust-region radius management strategy employed by \gls{cobyqa}, corresponding to~\cref{alg:derivative-free-trust-region-sqp-radius} of \cref{alg:derivative-free-trust-region-sqp}.
-The strategy consists in maintaining simultaneously the trust-region radius~$\rad[k]$ and a lower bound~$\radlb[k]$ of it.
-This strategy is taken from~\gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}, which were briefly described in \cref{subsec:uobyqa,subsec:newuoa,subsec:bobyqa,subsec:lincoa}.
+The strategy does not only maintain the trust-region radius~$\rad[k]$ but also a lower bound~$\radlb[k]$ of it.
+This strategy is taken from \gls{uobyqa}~\cite{Powell_2002}, \gls{newuoa}~\cite{Powell_2006}, \gls{bobyqa}~\cite{Powell_2009}, and \gls{lincoa}, which were briefly described in \cref{subsec:uobyqa,subsec:newuoa,subsec:bobyqa,subsec:lincoa}.
 
 The update of~$\rad[k]$ is given in \cref{alg:update-trust-region-radius}, which is typical for trust-region methods, except that the lower bound~$\radlb[k]$ is imposed.
 The idea behind~$\radlb[k]$ will be explained later.
