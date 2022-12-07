@@ -46,9 +46,9 @@
             \let\selectsolver\pgfmathresult\relax
             \StrSubstitute{\selectsolver}{-}{~}[\selectsolverescaped]
             \addplot table[
-            x=x\selectprofile_\selectsolver,
-            y=y\selectprofile,
-            col sep=comma,
+                x=x\selectprofile_\selectsolver,
+                y=y\selectprofile,
+                col sep=comma,
             ]{\selectcsvread};
             \addlegendentryexpanded{\selectsolverescaped}
         }
