@@ -566,6 +566,7 @@ Based on this observation, we propose to approximately solve~\cref{eq:problem-cp
         \alpha_{\rad}^k \gets \argmax @@ \set{\alpha \ge 0 : \norm{\sstep[k] + \alpha \pstep[k]}_D \le \rad}.
     \end{algomathdisplay}
 \end{algorithm}
+\vspace{-10pt}
 
 Note that \cref{alg:cpqp} requires the initial guess to be feasible; otherwise,~$\alpha_{\rad}^0$ or~$\alpha_L^0$ may not exist (see \cref{alg:lctcg-alpharad,alg:lctcg-alphal} of \cref{alg:lctcg}).
 In practice, we take
