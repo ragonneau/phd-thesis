@@ -1,6 +1,7 @@
 # Ph.D. thesis of Tom M. Ragonneau
 
-[![Build](https://github.com/ragonneau/phd-thesis/actions/workflows/build.yml/badge.svg)](https://github.com/ragonneau/phd-thesis/actions/workflows/build.yml)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ragonneau/phd-thesis/build.yml?logo=github&style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/ragonneau/phd-thesis?logo=github&style=for-the-badge)
 
 LaTeX source files of the Ph.D. thesis of Tom M. Ragonneau.
 
