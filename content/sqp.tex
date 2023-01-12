@@ -712,7 +712,7 @@ Note moreover that we imposed~$\gamma^k \ge \norm{\lm[k]}$.
 This is because \cref{thm:exact-merit-function} tells us that if ~$\gamma^k > \norm{\lm[\ast]}$, where~$\lm[\ast]$ is the Lagrange multiplier at the solution, then the merit function~$\merit[k]$ enjoys an exactness property.
 Therefore, we attempt to fulfill this condition as much as possible using the information available so far.
 A scheme for updating the penalty parameter is given in \cref{alg:increase-penalty}.
-\citeauthor{Powell_1994} used in his solver \gls{cobyla}~\cite{Powell_1994} a very similar scheme, with the constants~$\eta_3 = 3/2$ and~$\eta_4 = 2$.
+\citeauthor{Powell_1994} used in his solver \gls{cobyla}~\cite{Powell_1994} a very similar scheme, with the constants~$\upsilon_1 = 3/2$ and~$\upsilon_2 = 2$.
 See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_2006} for more discussions on the update of the penalty parameter.
 
 \begin{algorithm}
@@ -720,11 +720,11 @@ See~\cite[pp.~661--662]{Conn_Gould_Toint_2000} and~\cite[p.~542]{Nocedal_Wright_
     \label{alg:increase-penalty}
     \DontPrintSemicolon
     \onehalfspacing
-    \KwData{Merit function~$\meritm_{\gamma}$ for~$\gamma \ge 0$, trial step~$\step[k] \in \R^n$, Lagrange multiplier estimate~$\lm[k]$, previous penalty parameter~$\gamma^{k - 1} \ge 0$, and parameters~$1 \le \eta_3 \le \eta_4$.}
+    \KwData{Merit function~$\meritm_{\gamma}$ for~$\gamma \ge 0$, trial step~$\step[k] \in \R^n$, Lagrange multiplier estimate~$\lm[k]$, previous penalty parameter~$\gamma^{k - 1} \ge 0$, and parameters~$1 \le \upsilon_1 \le \upsilon_2$.}
     \KwResult{Updated penalty parameter~$\gamma^k \ge \gamma^{k - 1}$.}
     Set~$\bar{\gamma} \gets \argmin \set{\gamma \ge 0 : \meritm_{\gamma}(\step[k]) \le \meritm_{\gamma}(0)}$\nomenclature[Oo]{$\argmin$}{Global minimizer operator}\;
-    \eIf{$\gamma^{k - 1} \le \eta_3 \max @@ \set{\bar{\gamma}, \norm{\lm[k]}}$}{
-        Set~$\gamma^k \gets \eta_4 \max @@ \set{\bar{\gamma}, \norm{\lm[k]}}$\;
+    \eIf{$\gamma^{k - 1} \le \upsilon_1 \max @@ \set{\bar{\gamma}, \norm{\lm[k]}}$}{
+        Set~$\gamma^k \gets \upsilon_2 \max @@ \set{\bar{\gamma}, \norm{\lm[k]}}$\;
     }{
         Set~$\gamma^k \gets \gamma^{k - 1}$\;
     }
