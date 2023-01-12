@@ -1057,7 +1057,7 @@ Many well-known software packages are based on the \gls{sqp} method.
 \Gls{snopt}~\cite{Gill_Murray_Saunders_2002,Gill_Murray_Saunders_2005} for example is an implementation of the \gls{sqp} method for inequality-constrained optimization.
 It approximates the Hessians of the Lagrangian function with a limited-memory quasi-Newton technique\footnote{Although not studied in this thesis, the limited-memory quasi-Newton method~\cite{Perry_1977,Shanno_1978} is an important technique in numerical optimization. See the historical comments in~\cite[\S~1, \P~3]{Liu_Nocedal_1989} for more details.}.
 The \gls{sqp} method is embedded in a line-search framework, which uses the augmented Lagrangian function as the merit function.
-It employs a reduced-Hessian algorithm (see~\cite{Byrd_Nocedal_1991} for more information about this class of methods) named \gls{sqopt}~\cite{Gill_Murray_Saunders_2008} for solving the subproblems.
+It employs a reduced-Hessian algorithm (see~\cite{Byrd_Nocedal_1991} for more information about this class of methods) named \gls{sqopt}~\cite{Gill_Murray_Saunders_2021} for solving the subproblems.
 Moreover, the possible infeasibility of the \gls{sqp} subproblem is handled using an~$\ell_1$-penalty approach detailed in~\cite[\S~1.2]{Gill_Murray_Saunders_2005}.
 
 Another classical \gls{sqp} solver is \gls{nlpqlp}~\cite{Schittkowski_2015}.
