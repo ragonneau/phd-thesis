@@ -145,7 +145,7 @@ The framework is given in \cref{alg:derivative-free-trust-region-sqp}, which hid
     \DontPrintSemicolon
     \onehalfspacing
     \algorithmfootnote{\textsuperscript{$\dagger$}Recall that superscripts are iteration counters rather than exponents.}
-    \KwData{Objective function~$f$, constraint functions~$\set{\con{i}}_{i \in \iub \cup \ieq}$, initial guess~$\iter[0] \in \R^n$, initial trust-region radius~$\rad[0] > 0$, and parameters~$0 < \eta_1 \le \eta_2 < 1$ and~$0 < \theta_1 < 1 < \theta_2$.}
+    \KwData{Objective function~$f$, constraint functions~$\set{\con{i}}_{i \in \iub \cup \ieq}$, initial guess~$\iter[0] \in \R^n$, and initial trust-region radius~$\rad[0] > 0$.}
     Set the penalty parameter~$\gamma^{-1} \gets  0$\;
     Build the initial interpolation set~$\xpt[0] \subseteq \R^n$ described in \cref{subsec:interpolation-based-quadratic-models}\;
     Redefine~$x^0$ to a solution to~$\min_{y \in \xpt[0]} \obj(y)$\;
