@@ -709,7 +709,7 @@ We conduct two experiments as follows.
     This means that we evaluate the solvers according to the true objective function, even though the solvers can access only the noisy values produced by~\cref{eq:relative-gaussian-noisy-objective-function}.
 \end{enumerate}
 
-In these experiments, we invoke \gls{newuoa} via the \gls{pdfo} package (see~\cref{ch:pdfo}) under the default settings. In particular, the initial trust-region radius is~$1$, the final trust-region radius is~$10^{-6}$, and the number of interpolation points is~$2n+1$, with~$n$ being the dimension of the problem being solved. \gls{bfgs} and \gls{cg} are called with the default configurations in SciPy~1.0. For each testing problem, the starting point is set to the one provided by CUTEst, and the maximal number of function evaluations is set to~$500$ times the number of variables.  
+In these experiments, we invoke \gls{newuoa} via the \gls{pdfo} package (see~\cref{ch:pdfo}) under the default settings. In particular, the initial trust-region radius is~$1$, the final trust-region radius is~$10^{-6}$, and the number of interpolation points is~$2n+1$, with~$n$ being the dimension of the problem being solved. \gls{bfgs} and \gls{cg} are called with the default configurations in SciPy~1.0. For each testing problem, the starting point is set to the one provided by CUTEst, and the maximal number of function evaluations is set to~$500$ times the number of variables.
 
 \subsubsection{Performance profiles}
 
@@ -834,9 +834,9 @@ We observe the following for the noisy experiments according to~\cref{fig:data-p
 \subsection{Absoluteness and relativeness of the profiles}
 
 Before concluding this section, we mention a significant difference between performance and data profiles.
-Data profiles are absolute because~\cref{eq:data-profile} compares the expense~$t_{p, s}$ with~$n_p + 1$ for each~$p \in \xpb$, which is independent of the other solvers.
+Data profiles are absolute because~\cref{eq:data-profile} compares the expense~$t_{p, s}$ with a quantity independent of the other solvers, namely,~$n_p + 1$ for each~$p \in \xpb$.
 The data profile of a solver does depend weakly on the other solvers, the only dependence being the value of~$\varphi_p^{\ast}$ in the convergence test~\cref{eq:convergence-test-profiles}.
-On the other hand, performance profiles are relative because the value of~$r_{p, s}$ in~\cref{eq:performance-ratio} compares the expense of~$s$ with that of the most efficient solver on~$p$, which depends on all the other solvers. 
+On the other hand, performance profiles are relative because the value of~$r_{p, s}$ in~\cref{eq:performance-ratio} compares the expense of~$s$ with that of the most efficient solver on~$p$, which depends on all the other solvers.
 For example, the data profiles in \cref{fig:data-profile-example-noisy-10} suggest that \gls{cg} outperforms \gls{bfgs} during the corresponding experiment, and the profiles are unlikely to change dramatically if \gls{newuoa} is removed from the comparison.
 In contrast, the comparison between \gls{bfgs} and \gls{cg} is not as conclusive based on the performance profiles in \cref{fig:performance-profile-example-noisy-10} because the profiles may change significantly if \gls{newuoa} is removed from the comparison.
 This phenomenon is studied in~\cite{Gould_Scott_2016}, which presents examples on which comparisons using performance profiles should be made with care.\index{DFO@\glsfmtshort{dfo}|)}
