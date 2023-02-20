@@ -281,7 +281,7 @@ Combining~\cref{eq:least-frobenius-norm-kkt} with the primal feasibility conditi
 where~$\obj(\xpt) \eqdef [\obj(y^1), \obj(y^2), \dots, \obj(y^m)]^{\T}$,~$e \in \R^m$ is the all-one vector, while~$Y_L \in \R^{n \times m}$ and~$Y_H \in \R^{m \times m}$\nomenclature[Sg]{$\R^{m \times n}$}{Real matrix space of dimension~$m \times n$} are defined by
 \begin{equation}
     \label{eq:least-frobenius-kkt-system-matrices}
-    Y_L \eqdef 
+    Y_L \eqdef
     \begin{bmatrix}
         y^1 - \bar{x}   & y^2 - \bar{x} & \cdots    & y^m - \bar{x}
     \end{bmatrix} \quad \text{and} \quad Y_H \eqdef \frac{1}{2} (Y_L^{\T} Y_L) \odot (Y_L^{\T} Y_L).
@@ -547,7 +547,7 @@ These formulae are given in~\cite[\S~3]{Powell_2006}, without a proof.
         & 1 - \delta^{-2} \sum_{j = 1}^{m - n - 1} x_j^2 - \delta^{-1} \sum_{j = m - n}^n x_j,  && \quad \text{if~$i = 1$,}\\
         & (\sqrt{2} \delta)^{-2} x_{i - 1}^2 + (2 \delta)^{-1} x_{i - 1},                       && \quad \text{if~$2 \le i \le m - n$,}\\
         & \delta^{-1} x_{i - 1},                                                                && \quad \text{if~$m - n + 1 \le i \le n + 1$,}\\
-        & (\sqrt{2} \delta)^{-2} x_{i - 1}^2 - (2 \delta)^{-1} x_{i - 1}.                       && \quad \text{otherwise.}
+        & (\sqrt{2} \delta)^{-2} x_{i - n - 1}^2 - (2 \delta)^{-1} x_{i - n - 1}.               && \quad \text{otherwise.}
     \end{empheq}
     In the formulation of~$\lagp[1]$, if~$m = 2n + 1$, we define~$\sum_{j = m - n}^n x_j = 0$.
 \end{lemma}
@@ -625,9 +625,9 @@ We are now equipped to develop bounds on~$\Lambda_p$ in the general case.
     We will establish the bounds using the formulation of~$\Lambda_p$ in~\cref{lem:lambda-poisedness-initial-simple}.
     For the lower bound, by considering only the points in~$\R^n$ whose leading~$m - n - 1$ components are zeros and whose remaining~$2n + 1 - m$ components are equal, we have
     \begin{equation*}
-        \Lambda_p \ge \max_{t \in \R} @@ \set{1 - \delta^{-1} (2n + 1 - m) t : (2n + 1 - m) \abs{t}^p \le \delta^p} = 1 + (2n + 1 - m)^{\frac{p - 1}{p}}.
+        \Lambda_p \ge \max_{t \in \R} @@ \set{1 - \delta^{-1} (2n + 1 - m) t : (2n + 1 - m)^{\frac{1}{p}} \abs{t} \le \delta} = 1 + (2n + 1 - m)^{\frac{p - 1}{p}}.
     \end{equation*}
-    
+
     We now prove the upper bound.
     Note that for any~$p \ge 1$, we have~$\ball[p](\delta) \subseteq \ball[\infty](\delta)$, so that~$\Lambda_p \le \Lambda_{\infty}$.
     Therefore, we only need to show that~$\Lambda_{\infty} \le n$.
@@ -697,21 +697,21 @@ We now calculate the exact value of~$\Lambda_p$ in some special cases.
 
     According to~\cref{thm:lambda-poisedness-initial},~$\Lambda_2$ is lower bounded by the right-hand side of~\cref{eq:lambda-poisedness-2}.
     Therefore, we only need to prove that this right-hand side is also an upper bound for~$\Lambda_2$, using the formulation in \cref{lem:lambda-poisedness-initial-simple}.
-    
+
     For any~$\iter \in \ball[2](\delta)$, we have
     \begin{subequations}
         \begin{align}
             \lagp[1](\iter) &= 1 - \frac{1}{\delta^2} \sum_{j = 1}^{m - n - 1} x_j^2 - \frac{1}{\delta} \sum_{j = m - n}^n x_j\\
-                            &\ge 1 - \frac{1}{\delta^2} \bigg( \delta^2 - \sum_{j = m - n}^n x_j^2 \bigg) - \frac{1}{\delta} \sum_{j = m - n}^n x_j = \sum_{j = m - n}^n \frac{x_j}{\delta} \bigg( 1 - \frac{x_j}{\delta} \bigg)\\
-                            &\ge \min_{y \in \ball[2](1)} @@ \sum_{j = m - n}^n y_j (1 - y_j). \label{eq:lambda-poisedness-initial-2-proof}
+                            &\ge 1 - \frac{1}{\delta^2} \bigg( \delta^2 - \sum_{j = m - n}^n x_j^2 \bigg) - \frac{1}{\delta} \sum_{j = m - n}^n x_j = \sum_{j = m - n}^n \frac{x_j}{\delta} \bigg( \frac{x_j}{\delta} - 1\bigg)\\
+                            &\ge \min_{y \in \ball[2](1)} @@ \sum_{j = m - n}^n y_j (y_j - 1). \label{eq:lambda-poisedness-initial-2-proof}
         \end{align}
     \end{subequations}
     Let~$y^{\ast} \in \ball[2](1)$ be a minimizer in~\cref{eq:lambda-poisedness-initial-2-proof}.
-    \Cref{thm:first-order-necessary-conditions} ensures that there exists a Lagrange multiplier~$\lm[\ast] \ge 0$ such that~$1 - 2 y_j^{\ast} + 2 \lm[\ast] y_j^{\ast} = 0$ for all~$j \in \set{m - n, \dots, n}$.
+    \Cref{thm:first-order-necessary-conditions} ensures that there exists a Lagrange multiplier~$\lm[\ast] \ge 0$ such that~$2 y_j^{\ast} - 1 + 2 \lm[\ast] y_j^{\ast} = 0$ for all~$j \in \set{m - n, \dots, n}$.
     Therefore, the last~$(2n + 1 - m)$ components of~$y^{\ast}$ are equal, and hence,
     \begin{align*}
-        \lagp[1](\iter) \ge \min_{y \in \ball[2](1)} @@ \sum_{j = m - n}^n y_j (1 - y_j)    & = \min_{t \in \R} @@ \set{(2n + 1 - m) t (1 - t) : (2n + 1 - m) t^2 \le 1}\\
-                                                                                            & = -1 - \sqrt{2n + 1 - m}.
+        \lagp[1](\iter) \ge \min_{y \in \ball[2](1)} @@ \sum_{j = m - n}^n y_j (y_j - 1)    & = \min_{t \in \R} @@ \set{(2n + 1 - m) t (t - 1) : (2n + 1 - m) t^2 \le 1}\\
+                                                                                            & \ge -\sqrt{2n + 1 - m}.
     \end{align*}
 
     Furthermore,
