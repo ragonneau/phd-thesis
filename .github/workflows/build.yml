@@ -23,7 +23,7 @@ jobs:
           submodules: recursive
 
       - name: Generate pdf document
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@v3
         with:
           root_file: thesis.tex
           args: -file-line-error -halt-on-error -interaction=nonstopmode
